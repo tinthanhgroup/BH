@@ -246,41 +246,8 @@ var BRANCHES = ['NT','ĐL','PY','PR','BL','ĐN'];
 var KHO_LABEL = {NT:'Nha Trang','ĐL':'Đà Lạt',PY:'Phú Yên',PR:'Phan Rang',BL:'Bảo Lộc','ĐN':'Đak Nông'};
 var BONUS_MAP = {'Grand i10':1.5,'Creta':1.5,'Tucson':1.5,'Staria':1.5,'Stargazer':1.75,'Custin':1.75,'Venue':1.75,'Accent':1.75,'Santafe':2,'Palisade':2,'Elantra':2,'Ioniq':2};
 
-var KCK_DATE = "03/07/2026";
-var KCK_DATA = [
-  ['Grand i10','1.2AT',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Grand i10','SEDAN 1.2AT',{'TRẮNG':{'n':'2025','r':1}}],
-  ['Grand i10','SEDAN 1.2AT TIÊU CHUẨN',{'TRẮNG':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'VÀNG CÁT':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT CAO CẤP',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2026','r':0},'VÀNG CÁT':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Accent','1.5 MT',{'TRẮNG':{'n':'2026','r':0}}],
-  ['Elantra','1.6 AT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Elantra','1.6 AT TIÊU CHUẨN',{'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Elantra','2.0 AT',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 CAO CẤP FACELIFT',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 ĐẶC BIỆT FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
-  ['Tucson','1.6 TURBO 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Tucson','2.0 XĂNG ĐẶC BIỆT 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Tucson','2.0 XĂNG TIÊU CHUẨN 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0}}],
-  ['Tucson','N LINE',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Stargazer','CAO CẤP FL 2026',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Stargazer','ĐẶC BIỆT FL 2026',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Stargazer','TIÊU CHUẨN',{'BẠC':{'n':'2026','r':0},'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Stargazer','X',{'ĐEN':{'n':'2025','r':1}}],
-  ['Stargazer','X CAO CẤP',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Custin','1.5T CAO CẤP',{'TRẮNG':{'n':'2026','r':0},'XANH LỤC BẢO':{'n':'2026','r':0}}],
-  ['Custin','1.5T ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Custin','1.5T TIÊU CHUẨN',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Santafe','HYBRID AWD',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Santafe','2.5 PRESTIGE',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1}}],
-  ['Palisade','PRESTIGE (6 CHỖ)',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Palisade','PRESTIGE (7 CHỖ)',{'ĐEN':{'n':'2026','r':0}}],
-  ['Venue','1.0 T-GDI',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Venue','1.0 T-GDI ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-];
+var KCK_DATE = "06/07/2026";
+var KCK_DATA = [["Test","Test",{}]];
 
 var KCK_COLOR_LABEL={'ĐEN':'Đen','ĐỎ_GRP':'Đỏ/Đỏ đô','TRẮNG':'Trắng','BẠC':'Bạc','XÁM_GRP':'Xám/XTitan','VÀNG CÁT':'Vàng cát'};
 var KCK_COLOR_DOT={'ĐEN':'#1e1e1e','ĐỎ_GRP':'#dc2626','TRẮNG':'#d1d5db','BẠC':'#9ca3af','XÁM_GRP':'#6b7280','VÀNG CÁT':'#d97706'};
