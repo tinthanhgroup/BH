@@ -932,41 +932,8 @@ function exportPDF(){
 
 // ── AUTH WEB APP URL (điền sau khi deploy) ──────────────────
 var AUTH_URL = "https://script.google.com/macros/s/AKfycbx6Gpn3FS0s6w-zjn1nHZemBIIPeHjMQ5pHt__1qLvap8mZ22wenZpxolzGqzCvvH16/exec";
-var KCK_DATE = "03/07/2026";
-var KCK_DATA = [
-  ['Grand i10','1.2AT',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Grand i10','SEDAN 1.2AT',{'TRẮNG':{'n':'2025','r':1}}],
-  ['Grand i10','SEDAN 1.2AT TIÊU CHUẨN',{'TRẮNG':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'VÀNG CÁT':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT CAO CẤP',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2026','r':0},'VÀNG CÁT':{'n':'2025','r':1}}],
-  ['Accent','1.5 AT ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Accent','1.5 MT',{'TRẮNG':{'n':'2026','r':0}}],
-  ['Elantra','1.6 AT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Elantra','1.6 AT TIÊU CHUẨN',{'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Elantra','2.0 AT',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 CAO CẤP FACELIFT',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 ĐẶC BIỆT FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
-  ['Tucson','1.6 TURBO 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Tucson','2.0 XĂNG ĐẶC BIỆT 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Tucson','2.0 XĂNG TIÊU CHUẨN 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0}}],
-  ['Tucson','N LINE',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Stargazer','CAO CẤP FL 2026',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Stargazer','ĐẶC BIỆT FL 2026',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Stargazer','TIÊU CHUẨN',{'BẠC':{'n':'2026','r':0},'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Stargazer','X',{'ĐEN':{'n':'2025','r':1}}],
-  ['Stargazer','X CAO CẤP',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1},'TRẮNG':{'n':'2025','r':1}}],
-  ['Custin','1.5T CAO CẤP',{'TRẮNG':{'n':'2026','r':0},'XANH LỤC BẢO':{'n':'2026','r':0}}],
-  ['Custin','1.5T ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Custin','1.5T TIÊU CHUẨN',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Santafe','HYBRID AWD',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Santafe','2.5 PRESTIGE',{'ĐEN':{'n':'2025','r':1},'ĐỎ_GRP':{'n':'2025','r':1}}],
-  ['Palisade','PRESTIGE (6 CHỖ)',{'ĐEN':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Palisade','PRESTIGE (7 CHỖ)',{'ĐEN':{'n':'2026','r':0}}],
-  ['Venue','1.0 T-GDI',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Venue','1.0 T-GDI ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-];
+var KCK_DATE = "06/07/2026";
+var KCK_DATA = [["Test","Test",{}]];
 function setCGKho(k){window._chuaGiaoKho=k;renderHH();}
 function renderChuaGiao(){
   var KHO_LIST=[{k:'NT',label:'Nha Trang'},{k:'ĐL',label:'Đà Lạt'},{k:'PY',label:'Phú Yên'}];
