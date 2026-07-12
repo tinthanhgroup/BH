@@ -755,7 +755,7 @@ function parseJsonRecords(records, fileDate){
     // Bao gồm cả xe chưa bán lẫn đã bán nhưng chưa xuất hồ sơ
     // Chỉ tính 3 nguồn NT/ĐL/PY, không phải xe lịch sử
     if(kho!==''&&soKhung!==''&&!r.xuatHoSo&&r.ttHoSo&&!r.fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
-      allData.chuaHD.push({model:model,phienBan:phienBan,mau:mau,kho:kho,
+      allData.chuaHD.push({model:model,phienBan:phienBan,mau:mau,kho:kho,soKhung:soKhung,
                            daly:daly,tvbh:tvbh,giaVon:r.giaVon||0,
                            ngayBan:ngayBan,baoCaoDMS:r.baoCaoDMS});
     }
@@ -2357,6 +2357,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'</div>';
 }
 
+function setCHDKho(k){window._chuaHDKho=k;renderHH();}
 function renderChuaHD(){
   var MODEL_ORDER_LOCAL=['Grand i10','Venue','Accent','Elantra','Creta','Tucson','Stargazer','Custin','Santafe','Ioniq','Palisade','Staria'];
   var KHO_LIST=[{k:'NT',label:'Nha Trang'},{k:'ĐL',label:'Đà Lạt'},{k:'PY',label:'Phú Yên'}];
@@ -2480,8 +2481,47 @@ function renderChuaHD(){
     +`<td style="padding:6px 6px;text-align:right;color:${C};font-family:'JetBrains Mono',monospace;">${fmtGia(totAll.giaVon)}</td>`
     +'</tr></tbody></table></div></div></div>';
 
+  // ===== Bảng chi tiết danh sách xe (Model, Số khung, Kho xe, Giá nhập) =====
+  var activeCHDKho=window._chuaHDKho||null; // null = tất cả
+  var detailSrc=activeCHDKho ? src.filter(function(r){return r.daly===activeCHDKho;}) : src;
+  var detailRows=detailSrc.slice().sort(function(a,b){
+    var ia=MODEL_ORDER_LOCAL.indexOf(a.model), ib=MODEL_ORDER_LOCAL.indexOf(b.model);
+    if(ia<0) ia=999; if(ib<0) ib=999;
+    if(ia!==ib) return ia-ib;
+    return (a.soKhung||'').localeCompare(b.soKhung||'');
+  });
+
+  var khoFilterHtml='<div style="display:flex;gap:8px;margin:18px 0 12px;align-items:center">'
+    +'<span style="font-size:11px;color:#94a3b8;font-weight:500">Kho xe:</span>'
+    +[{k:null,label:'Tất cả'}].concat(KHO_LIST).map(function(item){
+      var isAct=(activeCHDKho===item.k);
+      return '<div onclick="setCHDKho('+(item.k===null?'null':"'"+item.k+"'")+');" '
+        +'style="cursor:pointer;padding:4px 12px;border-radius:14px;border:1.5px solid '+(isAct?'#7c3aed':'#e2e8f0')+';background:'+(isAct?'#f5f3ff':'#fff')+';font-size:11px;font-weight:'+(isAct?'600':'400')+';color:'+(isAct?'#6d28d9':'#475569')+'">'+item.label+'</div>';
+    }).join('')
+    +'</div>';
+
+  var detailHtml='<div style="max-width:560px"><div class="table-wrap"><div class="table-scroll" style="max-height:420px;overflow-y:auto"><table style="border-collapse:collapse;font-size:11.5px;width:100%">'
+    +'<thead><tr style="border-bottom:2px solid var(--border);position:sticky;top:0;background:#fff;">'
+    +'<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;">Model</th>'
+    +'<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;">Số khung</th>'
+    +'<th style="padding:6px 8px;text-align:center;font-weight:600;color:var(--muted);font-size:10px;">Kho xe</th>'
+    +'<th style="padding:6px 8px;text-align:right;font-weight:600;color:var(--muted);font-size:10px;">Giá nhập</th>'
+    +'</tr></thead><tbody>'
+    +detailRows.map(function(r){
+      return '<tr style="border-bottom:1px solid var(--border);">'
+        +`<td style="padding:5px 8px;font-weight:600;white-space:nowrap">${r.model||'—'}</td>`
+        +`<td style="padding:5px 8px;font-family:'JetBrains Mono',monospace;color:${CM};white-space:nowrap">${r.soKhung||'—'}</td>`
+        +`<td style="padding:5px 8px;text-align:center;font-weight:600;color:${C}">${r.daly||'—'}</td>`
+        +`<td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;color:${CM}">${fmtGia(r.giaVon)}</td>`
+        +'</tr>';
+    }).join('')
+    +(detailRows.length===0?'<tr><td colspan="4" style="padding:16px;text-align:center;color:#94a3b8;font-style:italic">Không có xe nào</td></tr>':'')
+    +'</tbody></table></div></div></div>';
+
   return `<div class="sec-title" style="color:#7c3aed">Xe chưa xuất hóa đơn${giaNote}</div>`
-    +weekSel+tableHtml;
+    +weekSel+tableHtml
+    +'<div class="sec-title" style="color:#7c3aed;font-size:13px;margin-top:6px">Danh sách chi tiết ('+detailRows.length+' xe)</div>'
+    +khoFilterHtml+detailHtml;
 }
 
 // Parse chuaHD từ records của snapshot lịch sử
@@ -2501,7 +2541,7 @@ function buildChuaHDFromRecords(records){
     if(kho!==''&&soKhung!==''&&!xuatHoSo&&ttHoSo&&!fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
       result.push({
         model:normModel(r.model||''),phienBan:r.phienBan||'',mau:r.mau||'',
-        kho:kho,daly:daly,giaVon:r.giaVon||0
+        kho:kho,daly:daly,giaVon:r.giaVon||0,soKhung:soKhung
       });
     }
   });
