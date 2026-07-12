@@ -751,10 +751,10 @@ function parseJsonRecords(records, fileDate){
     if(ngayBan) allSales.push(salesBase);
     if(ngayCoc) allCoc.push(salesBase);
 
-    // Xe chưa xuất hồ sơ: đã về kho (kho!='') + chưa đánh X cột Xuất hồ sơ + đã có TT Hồ sơ (NH đã báo hồ sơ về)
+    // Xe chưa xuất hồ sơ: đã về kho THỰC (có số khung, không phải đơn BO) + kho!='' + chưa đánh X cột Xuất hồ sơ + đã có TT Hồ sơ
     // Bao gồm cả xe chưa bán lẫn đã bán nhưng chưa xuất hồ sơ
     // Chỉ tính 3 nguồn NT/ĐL/PY, không phải xe lịch sử
-    if(kho!==''&&!r.xuatHoSo&&r.ttHoSo&&!r.fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
+    if(kho!==''&&soKhung!==''&&!r.xuatHoSo&&r.ttHoSo&&!r.fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
       allData.chuaHD.push({model:model,phienBan:phienBan,mau:mau,kho:kho,
                            daly:daly,tvbh:tvbh,giaVon:r.giaVon||0,
                            ngayBan:ngayBan,baoCaoDMS:r.baoCaoDMS});
@@ -2493,13 +2493,14 @@ function buildChuaHDFromRecords(records){
   var result=[];
   (records||[]).forEach(function(r){
     var kho=(r.khoXe||'').trim();
+    var soKhung=(r.soKhung||'').trim();
     var daly=(r.daiLyDatHang||'').trim();
     var xuatHoSo=r.xuatHoSo===true;
     var ttHoSo=hasTTField ? (r.ttHoSo===true) : true; // snapshot cũ chưa có field này → tạm bỏ qua điều kiện
     var fromHistory=r.fromHistory===true;
-    if(kho!==''&&!xuatHoSo&&ttHoSo&&!fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
+    if(kho!==''&&soKhung!==''&&!xuatHoSo&&ttHoSo&&!fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
       result.push({
-        model:r.model||'',phienBan:r.phienBan||'',mau:r.mau||'',
+        model:normModel(r.model||''),phienBan:r.phienBan||'',mau:r.mau||'',
         kho:kho,daly:daly,giaVon:r.giaVon||0
       });
     }
