@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Chấm công Tín Thanh Group</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --bg:#EEF3F9;
+    --panel:#FFFFFF;
+    --ink:#233247;
+    --ink-soft:#7385A0;
+    --line:#E4EAF3;
+    --navy:#1B4F8C;
+    --bh:#1F6FB2;
+    --dv:#5B9BD5;
+    --vp:#9FCBEA;
+    --accent:#E0793C;
+    --gold:#F2C14E;
+    --bad:#C0392B;
+    --good:#4F7A5D;
+    --shadow:0 2px 10px rgba(31,95,153,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
+
+  .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:18px;margin-bottom:22px;flex-wrap:wrap;gap:16px;}
+  .hdr-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:6px;}
+  .hdr h1{font-weight:800;font-size:32px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
+  .hdr .sub{color:var(--ink-soft);font-size:13.5px;margin-top:4px;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  select,input[type=text],input[type=time],input[type=number]{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+    padding:9px 14px;border-radius:7px;border:1.5px solid var(--navy);
+    background:var(--panel);color:var(--navy);
+  }
+  select{cursor:pointer;}
+  select:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--ink-soft);}
+
+  .panel{background:var(--panel);border:none;border-radius:14px;box-shadow:var(--shadow);padding:18px 20px 16px;margin-bottom:16px;}
+  .panel.highlight{border:1.5px solid var(--accent);}
+  .panel h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin:0 0 4px;}
+  .panel h3 .accent{color:var(--accent);}
+  .panel .desc{font-size:11.5px;color:var(--ink-soft);margin:0 0 12px;}
+
+  .branch-grid{display:grid;grid-template-columns:170px repeat(4,1fr);align-items:stretch;column-gap:0;row-gap:0;padding:16px 16px 10px;}
+  .bg-blank{}
+  .branch-pill{background:transparent;border-radius:12px;padding:12px 10px;margin:0 6px 14px;cursor:pointer;border:2px solid transparent;transition:border-color .15s, transform .1s;text-align:center;background:var(--bg);}
+  .branch-pill:hover{transform:translateY(-1px);}
+  .branch-pill.active{border-color:var(--navy);background:var(--panel);box-shadow:var(--shadow);}
+  .branch-pill.disabled{cursor:not-allowed;opacity:.5;}
+  .branch-pill.disabled:hover{transform:none;}
+  .branch-pill .bp-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin-bottom:2px;}
+  .branch-pill .bp-num{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1;}
+  .branch-pill .bp-sub{font-size:10px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;}
+  .branch-pill .bp-pending{font-size:12px;color:var(--ink-soft);font-weight:700;padding:14px 0 8px;}
+  .bg-label{font-size:12px;color:var(--ink-soft);font-weight:600;display:flex;align-items:center;padding:9px 8px 9px 4px;}
+  .bg-value{text-align:center;font-weight:700;color:var(--ink);border-left:1.5px solid var(--line);padding:9px 6px;font-size:13px;font-variant-numeric:tabular-nums;}
+  .bg-value .pct{color:var(--accent);font-weight:700;font-size:11.5px;}
+  .bg-value.empty{color:var(--ink-soft);font-weight:400;font-size:11px;}
+  .bg-full-divider{grid-column:1 / -1;display:flex;align-items:center;gap:10px;margin:10px 0 6px;}
+  .bg-full-divider::before, .bg-full-divider::after{content:'';flex:1;height:0;border-top:1.5px dashed var(--line);}
+  .bg-full-divider span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);white-space:nowrap;}
+  .bg-updated .bg-label, .bg-updated .bg-value{color:var(--ink-soft);font-weight:600;font-size:11.5px;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:16px;}
+  .kpi{background:var(--panel);border:none;border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
+  .kpi.c-warn::before{background:var(--accent);}
+  .kpi.c-bad::before{background:var(--bad);}
+  .kpi .num{font-size:28px;font-weight:800;color:var(--navy);line-height:1;}
+  .kpi .lbl{font-size:11px;color:var(--ink-soft);margin-top:8px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+  .kpi .sub2{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+
+  .config-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center;}
+  .config-item{display:flex;flex-direction:column;gap:4px;}
+  .config-item label{font-size:10.5px;color:var(--ink-soft);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+  .config-item input{width:100px;text-align:center;}
+  .config-note{font-size:11px;color:var(--ink-soft);margin-top:8px;}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);border-bottom:1.5px solid var(--navy);padding:7px 8px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;}
+  th:hover{color:var(--navy);}
+  th.sorted::after{content:' \25BE';}
+  td{padding:7px 8px;border-bottom:1px solid var(--line);}
+  tr:hover td{background:#F7F9FC;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge.bad{background:#FBE4DD;color:var(--bad);}
+  .badge.warn{background:#FBF1DC;color:#C79A3E;}
+  .badge.good{background:#E2EFE4;color:var(--good);}
+  .badge.neutral{background:#EEF3F9;color:var(--ink-soft);}
+  .bar-cell{display:flex;align-items:center;gap:8px;}
+  .bar-track{flex:1;height:8px;background:#EEF3F9;border-radius:4px;overflow:hidden;min-width:60px;}
+  .bar-fill{height:100%;background:var(--accent);border-radius:4px;}
+
+  .grid2{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;}
+  .chart-box{position:relative;height:260px;}
+  .chart-box.small{height:200px;}
+  .search-box{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+  .search-box input[type=text]{flex:1;min-width:180px;}
+  .checkbox-lbl{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
+  .table-wrap{max-height:520px;overflow:auto;}
+  details summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:13px;text-transform:uppercase;letter-spacing:.03em;}
+
+  @media(max-width:1100px){
+    .kpi-row{grid-template-columns:repeat(3,1fr);}
+    .grid2{grid-template-columns:1fr;}
+  }
+  @media(max-width:640px){
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-eyebrow">Báo cáo nội bộ · Chấm công vân tay</div>
+      <h1>Chấm công Tín Thanh Group</h1>
+      <div class="sub" id="subtitle"></div>
+    </div>
+  </div>
+
+  <div class="panel branch-grid" id="branchGrid"></div>
+
+  <details class="panel" open>
+    <summary>Cấu hình giờ chuẩn</summary>
+    <div style="margin-top:14px;">
+      <div class="config-row">
+        <div class="config-item"><label>Giờ vào buổi sáng</label><input type="text" class="time-input" id="cfgGioVaoSang" value="07:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 07:30"></div>
+        <div class="config-item"><label>Giờ ra buổi sáng</label><input type="text" class="time-input" id="cfgGioRaSang" value="11:45" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 11:45"></div>
+        <div class="config-item" style="margin-left:14px;"><label>Giờ vào buổi chiều</label><input type="text" class="time-input" id="cfgGioVaoChieu" value="13:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 13:30"></div>
+        <div class="config-item"><label>Giờ ra buổi chiều</label><input type="text" class="time-input" id="cfgGioRaChieu" value="17:15" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 17:15"></div>
+        <div class="config-item" style="margin-left:14px;"><label>Ngưỡng trễ/sớm (phút)</label><input type="number" id="cfgNguong" value="5" min="0" max="60"></div>
+      </div>
+      <p class="config-note" id="exceptionNote"></p>
+    </div>
+  </details>
+
+  <div class="panel highlight">
+    <h3><span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></h3>
+    <p class="desc">Chọn ngày để xem chi tiết. Mặc định là ngày gần nhất có dữ liệu.</p>
+    <div class="search-box">
+      <select id="todaySelect"></select>
+    </div>
+    <div class="grid2">
+      <div>
+        <h3 style="margin-top:8px;">Đi trễ trong ngày <span id="todayTreCount" style="color:var(--accent);"></span></h3>
+        <table id="todayTreTable">
+          <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Buổi</th><th class="num">Giờ vào</th><th class="num">Trễ (phút)</th></tr></thead>
+          <tbody id="todayTreTbody"></tbody>
+        </table>
+      </div>
+      <div>
+        <h3 style="margin-top:8px;">Nghỉ / vắng chấm công <span id="todayVangCount" style="color:var(--ink-soft);"></span></h3>
+        <table id="todayVangTable">
+          <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Tổ/Nhóm</th></tr></thead>
+          <tbody id="todayVangTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel highlight">
+      <h3><span class="accent">Đi trễ</span> theo phòng ban</h3>
+      <p class="desc">Phòng ban lấy theo file Tổng hợp nhân sự (chuẩn) — sắp xếp theo số lượt trễ giảm dần</p>
+      <table id="phongTable">
+        <thead><tr>
+          <th data-key="phong">Phòng ban</th>
+          <th data-key="sonv" class="num">Số NV</th>
+          <th data-key="tongcong" class="num">Ngày công</th>
+          <th data-key="sotresang" class="num">Trễ sáng</th>
+          <th data-key="sotrechieu" class="num">Trễ chiều</th>
+          <th data-key="sotre" class="num">Tổng lượt trễ</th>
+          <th data-key="tyle" class="num">Tỷ lệ trễ</th>
+        </tr></thead>
+        <tbody id="phongTbody"></tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <h3>Lượt đi trễ &amp; nghỉ theo ngày</h3>
+      <p class="desc">Toàn chi nhánh, 10 ngày gần nhất</p>
+      <div class="chart-box"><canvas id="chartTreTheoNgay"></canvas></div>
+    </div>
+  </div>
+
+  <div class="panel highlight">
+    <h3><span class="accent">Nhân viên đi trễ</span> — chi tiết</h3>
+    <p class="desc">Bấm tiêu đề cột để sắp xếp. Mặc định chỉ hiện người có ít nhất 1 lần đi trễ.</p>
+    <div class="search-box">
+      <input type="text" id="searchNV" placeholder="Tìm theo tên nhân viên...">
+      <select id="filterPhong"><option value="">Tất cả phòng ban</option></select>
+      <label class="checkbox-lbl"><input type="checkbox" id="onlyTre" checked> Chỉ hiện người có đi trễ</label>
+    </div>
+    <div class="table-wrap">
+    <table id="nvTable">
+      <thead><tr>
+        <th data-key="ten">Nhân viên</th>
+        <th data-key="phong">Phòng ban</th>
+        <th data-key="sotresang" class="num">Trễ sáng</th>
+        <th data-key="sotrechieu" class="num">Trễ chiều</th>
+        <th data-key="sotre" class="num">Tổng lượt trễ</th>
+        <th data-key="tyletre" class="num">Tỷ lệ trễ</th>
+        <th data-key="socong" class="num">Ngày công</th>
+        <th data-key="sosom" class="num">Về sớm</th>
+        <th data-key="sothieu" class="num">Thiếu chấm</th>
+      </tr></thead>
+      <tbody id="nvTbody"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <details class="panel">
+    <summary>Số liệu phụ (giờ làm, về sớm...)</summary>
+    <div class="grid2" style="margin-top:16px;">
+      <div>
+        <h3 style="margin-top:8px;">Giờ làm trung bình theo phòng ban</h3>
+        <div class="chart-box small"><canvas id="chartGioTheoPhong"></canvas></div>
+      </div>
+      <div>
+        <h3 style="margin-top:8px;">Tổng hợp đầy đủ theo phòng ban</h3>
+        <table id="phongFullTable">
+          <thead><tr>
+            <th data-key="phong">Phòng ban</th>
+            <th data-key="giotb" class="num">Giờ TB/công</th>
+            <th data-key="sosom" class="num">Về sớm</th>
+            <th data-key="sothieu" class="num">Thiếu chấm</th>
+          </tr></thead>
+          <tbody id="phongFullTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+
+<script>
+let ATT = [];
+const CHAMCONG_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/chamcong.json';
+
+// Ngoại lệ cá nhân: cộng thêm số phút được phép trễ ngoài ngưỡng chung
+const PERSON_EXCEPTIONS = {
+  'Nguyễn Thị Yến Thư': { extraPhut: 60, lyDo: 'Thai sản' },
+};
+
+let sortState = { phong: {key:'sotre', dir:-1}, nv: {key:'sotre', dir:-1}, phongFull: {key:'phong', dir:1} };
+let selectedDate = null;
+let selectedChinhanh = 'Nha Trang';
+const BRANCHES = ['Nha Trang', 'Phú Yên', 'Đà Lạt', 'Bảo Lộc'];
+let BRANCHES_CO_DATA = new Set(ATT.map(r=>r.chinhanh));
+
+function timeToMin(str){
+  if(!str) return null;
+  const [h,m] = str.split(':').map(Number);
+  return h*60+m;
+}
+
+function getConfig(){
+  return {
+    vaoSang: timeToMin(document.getElementById('cfgGioVaoSang').value) ?? 450,
+    vaoChieu: timeToMin(document.getElementById('cfgGioVaoChieu').value) ?? 810,
+    raSang: timeToMin(document.getElementById('cfgGioRaSang').value) ?? 705,
+    raChieu: timeToMin(document.getElementById('cfgGioRaChieu').value) ?? 1035,
+    nguong: parseInt(document.getElementById('cfgNguong').value) || 0,
+  };
+}
+
+function nguongCuaNguoi(ten, cfg){
+  const ex = PERSON_EXCEPTIONS[ten];
+  return ex ? cfg.nguong + ex.extraPhut : cfg.nguong;
+}
+
+function computeDerived(rows, cfg){
+  const NGUONG_QUEN_CHAM = 360; // phut (6 tieng) - chi cham 1 lan va qua muon => co the quen cham vao, chi cham ra
+  return rows.map(r=>{
+    const vaoSangMin = timeToMin(r.giovao_sang);
+    const vaoChieuMin = timeToMin(r.giovao_chieu);
+    const raCuoiMin = timeToMin(r.giora_cuoi);
+    const nguong = nguongCuaNguoi(r.ten_hr, cfg);
+
+    // Chi cham 1 lan trong ngay va lan cham do qua muon (>6 tieng so voi gio vao chuan)
+    // => nhieu kha nang quen cham gio vao, day chi la gio ra => khong tinh la di tre
+    const quenChamCong = r.sopunch === 1 && vaoSangMin !== null && (vaoSangMin - cfg.vaoSang) > NGUONG_QUEN_CHAM;
+
+    const tresang = r.cocong && !quenChamCong && vaoSangMin!==null && vaoSangMin > cfg.vaoSang + nguong;
+    const trechieu = r.co_chieu && vaoChieuMin!==null && vaoChieuMin > cfg.vaoChieu + nguong;
+    const ditre = tresang || trechieu;
+    const vesom = r.giora_cuoi && raCuoiMin!==null && raCuoiMin < cfg.raChieu - cfg.nguong;
+    const phutTreSang = tresang ? (vaoSangMin - cfg.vaoSang) : 0;
+    const phutTreChieu = trechieu ? (vaoChieuMin - cfg.vaoChieu) : 0;
+    return Object.assign({}, r, {ditre, tresang, trechieu, vesom, phutTreSang, phutTreChieu, quenChamCong, phong: r.phong_hr, to: r.to_hr || '—', ngoaiLe: !!PERSON_EXCEPTIONS[r.ten_hr]});
+  });
+}
+
+
+
+function populateFilterOptions(rows){
+  const sel = document.getElementById('filterPhong');
+  const cur = sel.value;
+  const phongs = [...new Set(rows.map(r=>r.phong))].sort();
+  sel.innerHTML = '<option value="">Tất cả phòng ban</option>' + phongs.map(p=>`<option value="${p}">${p}</option>`).join('');
+  if(phongs.includes(cur)) sel.value = cur;
+}
+
+
+
+function aggByPhong(rows){
+  const map = {};
+  rows.forEach(r=>{
+    if(!map[r.phong]) map[r.phong] = {phong:r.phong, nvSet:new Set(), tongcong:0, tonggio:0, gioN:0, sotresang:0, sotrechieu:0, sosom:0, sothieu:0};
+    const g = map[r.phong];
+    g.nvSet.add(r.manv);
+    if(r.cocong) g.tongcong++;
+    if(r.sogiolam!==null){ g.tonggio+=r.sogiolam; g.gioN++; }
+    if(r.tresang) g.sotresang++;
+    if(r.trechieu) g.sotrechieu++;
+    if(r.vesom) g.sosom++;
+    if(r.thieucham) g.sothieu++;
+  });
+  return Object.values(map).map(g=>({
+    phong: g.phong, sonv: g.nvSet.size, tongcong: g.tongcong,
+    giotb: g.gioN ? g.tonggio/g.gioN : 0,
+    sotresang: g.sotresang, sotrechieu: g.sotrechieu, sotre: g.sotresang+g.sotrechieu,
+    sosom: g.sosom, sothieu: g.sothieu,
+    tyle: g.tongcong ? (g.sotresang+g.sotrechieu)/g.tongcong*100 : 0,
+  }));
+}
+
+function aggByNV(rows){
+  const map = {};
+  rows.forEach(r=>{
+    if(!map[r.manv]) map[r.manv] = {manv:r.manv, ten:r.ten_hr, phong:r.phong, to:r.to, socong:0, tonggio:0, gioN:0, sotresang:0, sotrechieu:0, sosom:0, sothieu:0, songay:0};
+    const g = map[r.manv];
+    g.songay++;
+    if(r.cocong) g.socong++;
+    if(r.sogiolam!==null){ g.tonggio+=r.sogiolam; g.gioN++; }
+    if(r.tresang) g.sotresang++;
+    if(r.trechieu) g.sotrechieu++;
+    if(r.vesom) g.sosom++;
+    if(r.thieucham) g.sothieu++;
+  });
+  return Object.values(map).map(g=>({
+    manv:g.manv, ten:g.ten, phong:g.phong, to:g.to, socong:g.socong,
+    tonggio: g.tonggio, giotb: g.gioN ? g.tonggio/g.gioN : 0,
+    sotresang: g.sotresang, sotrechieu: g.sotrechieu, sotre: g.sotresang+g.sotrechieu,
+    sosom:g.sosom, sothieu:g.sothieu,
+    tyletre: g.socong ? (g.sotresang+g.sotrechieu)/g.socong*100 : 0,
+    songayvang: g.songay - g.socong,
+  }));
+}
+
+function sortRows(rows, key, dir){
+  return [...rows].sort((a,b)=>{
+    let va=a[key], vb=b[key];
+    if(typeof va==='string') return dir*va.localeCompare(vb);
+    return dir*((va??0)-(vb??0));
+  });
+}
+
+function renderPhongTable(rows){
+  let agg = aggByPhong(rows);
+  const maxTre = Math.max(1, ...agg.map(g=>g.sotre));
+  const st = sortState.phong;
+  agg = sortRows(agg, st.key, st.dir);
+  document.getElementById('phongTbody').innerHTML = agg.map(g=>`
+    <tr>
+      <td>${g.phong}</td>
+      <td class="num">${g.sonv}</td>
+      <td class="num">${g.tongcong}</td>
+      <td class="num">${g.sotresang>0?`<span class="badge bad">${g.sotresang}</span>`:'0'}</td>
+      <td class="num">${g.sotrechieu>0?`<span class="badge bad">${g.sotrechieu}</span>`:'0'}</td>
+      <td class="num">
+        <div class="bar-cell">
+          <span style="min-width:20px;text-align:right;font-weight:700;color:${g.sotre>0?'var(--bad)':'var(--ink-soft)'}">${g.sotre}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(g.sotre/maxTre*100).toFixed(0)}%"></div></div>
+        </div>
+      </td>
+      <td class="num">${g.tyle.toFixed(0)}%</td>
+    </tr>`).join('');
+  document.querySelectorAll('#phongTable th').forEach(th=>{
+    th.classList.toggle('sorted', th.dataset.key===st.key);
+  });
+}
+
+function renderPhongFullTable(rows){
+  let agg = aggByPhong(rows);
+  const st = sortState.phongFull;
+  agg = sortRows(agg, st.key, st.dir);
+  document.getElementById('phongFullTbody').innerHTML = agg.map(g=>`
+    <tr>
+      <td>${g.phong}</td>
+      <td class="num">${g.giotb.toFixed(1)}h</td>
+      <td class="num">${g.sosom}</td>
+      <td class="num">${g.sothieu}</td>
+    </tr>`).join('');
+  document.querySelectorAll('#phongFullTable th').forEach(th=>{
+    th.classList.toggle('sorted', th.dataset.key===st.key);
+  });
+}
+
+function renderNVTable(rows){
+  const search = document.getElementById('searchNV').value.trim().toLowerCase();
+  const filterPhong = document.getElementById('filterPhong').value;
+  const onlyTre = document.getElementById('onlyTre').checked;
+  let agg = aggByNV(rows);
+  if(search) agg = agg.filter(g=>g.ten.toLowerCase().includes(search));
+  if(filterPhong) agg = agg.filter(g=>g.phong===filterPhong);
+  if(onlyTre) agg = agg.filter(g=>g.sotre>0);
+  const st = sortState.nv;
+  agg = sortRows(agg, st.key, st.dir);
+  document.getElementById('nvTbody').innerHTML = agg.length ? agg.map(g=>`
+    <tr>
+      <td>${g.ten}</td>
+      <td>${g.phong}</td>
+      <td class="num">${g.sotresang>0?`<span class="badge bad">${g.sotresang}</span>`:'0'}</td>
+      <td class="num">${g.sotrechieu>0?`<span class="badge bad">${g.sotrechieu}</span>`:'0'}</td>
+      <td class="num"><b>${g.sotre}</b></td>
+      <td class="num">${g.tyletre.toFixed(0)}%</td>
+      <td class="num">${g.socong}</td>
+      <td class="num">${g.sosom>0?`<span class="badge warn">${g.sosom}</span>`:'0'}</td>
+      <td class="num">${g.sothieu>0?`<span class="badge neutral">${g.sothieu}</span>`:'0'}</td>
+    </tr>`).join('') : `<tr><td colspan="9" style="text-align:center;color:var(--ink-soft);padding:16px;">Không có ai khớp bộ lọc hiện tại</td></tr>`;
+  document.querySelectorAll('#nvTable th').forEach(th=>{
+    th.classList.toggle('sorted', th.dataset.key===st.key);
+  });
+}
+
+let chartTre, chartGio;
+const barValueLabelPlugin = {
+  id: 'barValueLabelPlugin',
+  afterDatasetsDraw(chart) {
+    const {ctx} = chart;
+    chart.data.datasets.forEach((dataset, i) => {
+      const meta = chart.getDatasetMeta(i);
+      if(meta.hidden) return;
+      meta.data.forEach((bar, index) => {
+        const value = dataset.data[index];
+        if(value === null || value === undefined) return;
+        ctx.save();
+        ctx.fillStyle = dataset.borderColor || dataset.backgroundColor;
+        ctx.font = '700 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(value, bar.x, bar.y - 3);
+        ctx.restore();
+      });
+    });
+  }
+};
+
+function renderCharts(rows){
+  const ngayListDay = [...new Set(rows.map(r=>r.ngay))].sort().slice(-10);
+  const treTheoNgay = ngayListDay.map(d=> rows.filter(r=>r.ngay===d && r.ditre).length);
+  const nghiTheoNgay = ngayListDay.map(d=> rows.some(r=>r.ngay===d && r.thu==='CN') ? 0 : rows.filter(r=>r.ngay===d && !r.cocong).length);
+
+  if(chartTre) chartTre.destroy();
+  chartTre = new Chart(document.getElementById('chartTreTheoNgay'), {
+    type:'bar',
+    data:{
+      labels: ngayListDay.map(d=>d.slice(8,10)+'/'+d.slice(5,7)),
+      datasets:[
+        { label:'Trễ', data:treTheoNgay, backgroundColor:'#E0793C', borderRadius:4, maxBarThickness:24 },
+        { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#9FCBEA', borderRadius:4, maxBarThickness:24 },
+      ]
+    },
+    options: {
+      plugins:{ legend:{display:true, position:'top', align:'end', labels:{boxWidth:10, font:{size:11}}} },
+      scales:{ y:{beginAtZero:true, ticks:{precision:0}, grid:{color:'#E4EAF3'}}, x:{grid:{display:false}} },
+      layout:{ padding:{top:16} },
+    },
+    plugins:[barValueLabelPlugin],
+  });
+
+  const agg = aggByPhong(rows);
+  if(chartGio) chartGio.destroy();
+  chartGio = new Chart(document.getElementById('chartGioTheoPhong'), {
+    type:'bar',
+    data:{ labels: agg.map(g=>g.phong.replace('Phòng ','')), datasets:[{ data: agg.map(g=>+g.giotb.toFixed(2)), backgroundColor:'#1F6FB2', borderRadius:4, maxBarThickness:40 }]},
+    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{beginAtZero:true, grid:{color:'#E4EAF3'}}, y:{grid:{display:false}} } }
+  });
+}
+
+function populateTodaySelect(rows){
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  const ngayCoDuLieu = ngayList.filter(d => rows.some(r => r.ngay===d && r.cocong));
+  const sel = document.getElementById('todaySelect');
+  if(!selectedDate || !ngayList.includes(selectedDate)){
+    selectedDate = (ngayCoDuLieu.length ? ngayCoDuLieu[ngayCoDuLieu.length-1] : ngayList[ngayList.length-1]) || null;
+  }
+  sel.innerHTML = ngayList.map(d=>{
+    const rong = !rows.some(r=>r.ngay===d && r.cocong);
+    return `<option value="${d}" ${d===selectedDate?'selected':''}>${d}${rong?' (chưa có dữ liệu)':''}</option>`;
+  }).join('');
+}
+
+function renderToday(rows){
+  const dayRows = rows.filter(r=>r.ngay===selectedDate);
+  document.getElementById('todayLabel').textContent = selectedDate || '—';
+
+  const treList = [];
+  dayRows.forEach(r=>{
+    if(r.tresang) treList.push({ten:r.ten_hr, phong:r.phong, buoi:'Sáng', gio:r.giovao_sang, phut:r.phutTreSang, ngoaiLe:r.ngoaiLe});
+    if(r.trechieu) treList.push({ten:r.ten_hr, phong:r.phong, buoi:'Chiều', gio:r.giovao_chieu, phut:r.phutTreChieu, ngoaiLe:r.ngoaiLe});
+  });
+  treList.sort((a,b)=>b.phut-a.phut);
+  document.getElementById('todayTreCount').textContent = treList.length ? `(${treList.length} lượt)` : '';
+  document.getElementById('todayTreTbody').innerHTML = treList.length ? treList.map(t=>`
+    <tr>
+      <td>${t.ten}${t.ngoaiLe?' <span class="badge neutral">chế độ riêng</span>':''}</td>
+      <td>${t.phong}</td>
+      <td>${t.buoi}</td>
+      <td class="num">${t.gio}</td>
+      <td class="num"><span class="badge bad">${t.phut}p</span></td>
+    </tr>`).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:12px;">Không có ai đi trễ</td></tr>`;
+
+  const laChuNhat = dayRows.some(r=>r.thu==='CN');
+  const vangList = laChuNhat ? [] : dayRows.filter(r=>!r.cocong).map(r=>({ten:r.ten_hr, phong:r.phong, to:r.to}));
+  vangList.sort((a,b)=>a.ten.localeCompare(b.ten));
+  document.getElementById('todayVangCount').textContent = vangList.length ? `(${vangList.length} người)` : '';
+  document.getElementById('todayVangTbody').innerHTML = laChuNhat
+    ? `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:12px;">Chủ nhật - ngày nghỉ theo lịch, không tính vắng</td></tr>`
+    : (vangList.length ? vangList.map(v=>`
+    <tr><td>${v.ten}</td><td>${v.phong}</td><td>${v.to}</td></tr>`).join('')
+    : `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:12px;">Không có ai vắng</td></tr>`);
+
+  const exNames = Object.keys(PERSON_EXCEPTIONS);
+  document.getElementById('exceptionNote').textContent = exNames.length
+    ? '* Chế độ riêng: ' + exNames.map(n=>`${n} (${PERSON_EXCEPTIONS[n].lyDo}, được trễ thêm ${PERSON_EXCEPTIONS[n].extraPhut} phút)`).join('; ')
+    : '';
+}
+
+function branchOverview(chinhanh){
+  const cfg = getConfig();
+  const rows = computeDerived(ATT.filter(r=>r.chinhanh===chinhanh), cfg);
+  if(rows.length===0) return null;
+
+  const nvSet = new Set(rows.map(r=>r.manv));
+  const workingRows = rows.filter(r=>r.thu !== 'CN');
+  const nghiRows = workingRows.filter(r=>!r.cocong);
+  const tongCong = rows.filter(r=>r.cocong).length;
+  const soTre = rows.filter(r=>r.tresang).length + rows.filter(r=>r.trechieu).length;
+  const nvTreSet = new Set(rows.filter(r=>r.tresang || r.trechieu).map(r=>r.manv));
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  const ngayCoDuLieu = ngayList.filter(d => rows.some(r => r.ngay===d && r.cocong));
+  const ngayCapNhat = ngayCoDuLieu.length ? ngayCoDuLieu[ngayCoDuLieu.length-1] : (ngayList.length ? ngayList[ngayList.length-1] : null);
+
+  const rowsHomNay = rows.filter(r=>r.ngay===ngayCapNhat);
+  const laChuNhat = rowsHomNay.some(r=>r.thu==='CN');
+  const nghiHomNay = laChuNhat ? 0 : rowsHomNay.filter(r=>!r.cocong).length;
+  const treHomNay = rowsHomNay.filter(r=>r.tresang).length + rowsHomNay.filter(r=>r.trechieu).length;
+
+  return {
+    chinhanh,
+    tongNV: nvSet.size,
+    nghiHomNay, treHomNay,
+    soNghi: nghiRows.length,
+    tongCongCanCham: workingRows.length,
+    tyLeNghi: workingRows.length ? nghiRows.length/workingRows.length*100 : 0,
+    soNVTre: nvTreSet.size,
+    tyLeNVTre: nvSet.size ? nvTreSet.size/nvSet.size*100 : 0,
+    soLuotTre: soTre,
+    tongCongThucTe: tongCong,
+    tyLeTreNgayCong: tongCong ? soTre/tongCong*100 : 0,
+    ngayCapNhat,
+  };
+}
+
+function renderBranchKPI(){
+  const cells = [];
+
+  // Hang 1: pill chon chi nhanh
+  cells.push(`<div class="bg-blank"></div>`);
+  BRANCHES.forEach(b=>{
+    const active = b === selectedChinhanh;
+    if(!BRANCHES_CO_DATA.has(b)){
+      cells.push(`<div class="branch-pill disabled">
+        <div class="bp-name">${b}</div>
+        <div class="bp-pending">(đang cập nhật)</div>
+      </div>`);
+    } else {
+      const o = branchOverview(b);
+      cells.push(`<div class="branch-pill ${active?'active':''}" data-branch="${b}">
+        <div class="bp-name">${b}</div>
+        <div class="bp-num">${o.tongNV}</div>
+        <div class="bp-sub">nhân viên</div>
+      </div>`);
+    }
+  });
+
+  function metricRow(label, rowClass, getValueHtml){
+    cells.push(`<div class="bg-label ${rowClass||''}">${label}</div>`);
+    BRANCHES.forEach(b=>{
+      if(!BRANCHES_CO_DATA.has(b)){
+        cells.push(`<div class="bg-value empty ${rowClass||''}">—</div>`);
+      } else {
+        cells.push(`<div class="bg-value ${rowClass||''}">${getValueHtml(branchOverview(b))}</div>`);
+      }
+    });
+  }
+
+  metricRow('Nghỉ/vắng (hôm nay)', '', o=>`${o.nghiHomNay}`);
+  metricRow('Đi muộn (hôm nay)', '', o=>`${o.treHomNay}`);
+
+  cells.push(`<div class="bg-full-divider"><span>Lũy kế từ đầu tháng</span></div>`);
+
+  metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} <span class="pct">(${o.tyLeNghi.toFixed(0)}%)</span>`);
+  metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} <span class="pct">(${o.tyLeNVTre.toFixed(0)}%)</span>`);
+  metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} <span class="pct">(${o.tyLeTreNgayCong.toFixed(1)}%)</span>`);
+  metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat || '—'}`);
+
+  document.getElementById('branchGrid').innerHTML = cells.join('');
+
+  document.querySelectorAll('.branch-pill[data-branch]').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      selectedChinhanh = card.dataset.branch;
+      renderAll();
+    });
+  });
+}
+
+function renderAll(){
+  const cfg = getConfig();
+  const chinhanh = selectedChinhanh;
+  const base = ATT.filter(r=>r.chinhanh===chinhanh);
+  const rows = computeDerived(base, cfg);
+
+  renderBranchKPI();
+
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  document.getElementById('subtitle').textContent = rows.length
+    ? `${chinhanh} — dữ liệu từ ${ngayList[0]} đến ${ngayList[ngayList.length-1]} · phòng ban theo file Nhân sự`
+    : `${chinhanh} — chưa có dữ liệu`;
+
+  populateFilterOptions(rows);
+  populateTodaySelect(rows);
+  renderToday(rows);
+  renderPhongTable(rows);
+  renderPhongFullTable(rows);
+  renderNVTable(rows);
+  renderCharts(rows);
+}
+
+
+document.querySelectorAll('#phongTable th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    const st = sortState.phong;
+    st.dir = (st.key===key) ? -st.dir : -1;
+    st.key = key;
+    renderAll();
+  });
+});
+document.querySelectorAll('#phongFullTable th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    const st = sortState.phongFull;
+    st.dir = (st.key===key) ? -st.dir : 1;
+    st.key = key;
+    renderAll();
+  });
+});
+document.querySelectorAll('#nvTable th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    const st = sortState.nv;
+    st.dir = (st.key===key) ? -st.dir : -1;
+    st.key = key;
+    renderAll();
+  });
+});
+
+['cfgGioVaoSang','cfgGioVaoChieu','cfgGioRaSang','cfgGioRaChieu','cfgNguong','filterPhong','onlyTre'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', renderAll);
+});
+document.getElementById('searchNV').addEventListener('input', renderAll);
+document.getElementById('todaySelect').addEventListener('change', (e)=>{
+  selectedDate = e.target.value;
+  renderAll();
+});
+
+async function loadAttendanceData(){
+  try{
+    const res = await fetch(CHAMCONG_JSON_URL+'?t='+Date.now());
+    if(!res.ok) throw new Error('chamcong.json: HTTP '+res.status);
+    const payload = await res.json();
+    ATT = payload.records || [];
+  }catch(e){
+    console.error('Lỗi tải chamcong.json:', e);
+    ATT = [];
+    const sub = document.getElementById('subtitle');
+    if(sub) sub.textContent = 'Không tải được dữ liệu chấm công. Vui lòng thử lại sau.';
+  }
+  BRANCHES_CO_DATA = new Set(ATT.map(r=>r.chinhanh));
+  renderAll();
+}
+loadAttendanceData();
+
+</script>
+</body>
+</html>
