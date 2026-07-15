@@ -239,6 +239,22 @@
     </div>
   </details>
 
+  <details class="panel" id="chuaKhopPanel">
+    <summary>⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
+    <p class="desc">Danh sách nhân viên xuất hiện trong file chấm công nhưng KHÔNG khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.</p>
+    <div class="table-wrap">
+    <table id="chuaKhopTable">
+      <thead><tr>
+        <th>Tên (theo máy chấm công)</th>
+        <th>Mã NV (máy chấm công)</th>
+        <th>Chi nhánh</th>
+        <th class="num">Số ngày có dữ liệu</th>
+      </tr></thead>
+      <tbody id="chuaKhopTbody"></tbody>
+    </table>
+    </div>
+  </details>
+
 </div>
 
 
@@ -337,7 +353,7 @@ function aggByPhong(rows){
 function aggByNV(rows){
   const map = {};
   rows.forEach(r=>{
-    if(!map[r.manv]) map[r.manv] = {manv:r.manv, ten:r.ten_hr, phong:r.phong, to:r.to, socong:0, tonggio:0, gioN:0, sotresang:0, sotrechieu:0, sosom:0, sothieu:0, songay:0};
+    if(!map[r.manv]) map[r.manv] = {manv:r.manv, ten:r.ten_hr, phong:r.phong, to:r.to, socong:0, tonggio:0, gioN:0, sotresang:0, sotrechieu:0, sosom:0, sothieu:0, songay:0, chuaKhopNS: r.daNghiViec===null};
     const g = map[r.manv];
     g.songay++;
     if(r.cocong) g.socong++;
@@ -354,6 +370,7 @@ function aggByNV(rows){
     sosom:g.sosom, sothieu:g.sothieu,
     tyletre: g.socong ? (g.sotresang+g.sotrechieu)/g.socong*100 : 0,
     songayvang: g.songay - g.socong,
+    chuaKhopNS: g.chuaKhopNS,
   }));
 }
 
@@ -404,6 +421,30 @@ function renderPhongFullTable(rows){
   document.querySelectorAll('#phongFullTable th').forEach(th=>{
     th.classList.toggle('sorted', th.dataset.key===st.key);
   });
+}
+
+function renderChuaKhop(rows){
+  const map = {};
+  rows.forEach(r=>{
+    if(r.daNghiViec !== null) return; // chỉ lấy người KHÔNG khớp được (null)
+    const key = r.manv + '|' + r.ten;
+    if(!map[key]) map[key] = {ten:r.ten, manv:r.manv, chinhanh:r.chinhanh, songay:0};
+    map[key].songay++;
+  });
+  const list = Object.values(map).sort((a,b)=>b.songay-a.songay);
+  const summaryEl = document.getElementById('chuaKhopSummary');
+  const panelEl = document.getElementById('chuaKhopPanel');
+  summaryEl.textContent = list.length
+    ? `Nhân sự chưa khớp với dữ liệu Nhân sự (${list.length} người)`
+    : 'Nhân sự chưa khớp với dữ liệu Nhân sự — không có, mọi người đã khớp ✓';
+  panelEl.style.display = list.length ? '' : 'none';
+  document.getElementById('chuaKhopTbody').innerHTML = list.length ? list.map(v=>`
+    <tr>
+      <td>${v.ten}</td>
+      <td>${v.manv||'—'}</td>
+      <td>${v.chinhanh}</td>
+      <td class="num">${v.songay}</td>
+    </tr>`).join('') : '';
 }
 
 function renderNVTable(rows){
@@ -645,6 +686,7 @@ function renderAll(){
   renderPhongTable(rows);
   renderPhongFullTable(rows);
   renderNVTable(rows);
+  renderChuaKhop(rows);
   renderCharts(rows);
 }
 
