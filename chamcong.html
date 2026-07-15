@@ -255,6 +255,21 @@
     </div>
   </details>
 
+  <details class="panel" id="trungVanTayPanel">
+    <summary>🔁 <span id="trungVanTaySummary">Nghi vấn trùng vân tay (1 người, nhiều mã NV)</span></summary>
+    <p class="desc">Danh sách người có CÙNG tên + chi nhánh nhưng dữ liệu chấm công lại nằm dưới từ 2 Mã NV trở lên — dấu hiệu người đó đăng ký từ 2 dấu vân tay trở lên trên máy chấm công. Thường 1 mã có rất nhiều ngày công (mã đang dùng thật) và (các) mã còn lại gần như 0 ngày công (mã "bóng ma", không dùng). Cách sửa: mở sheet Nhân sự, điền Mã NV chính = mã có nhiều công nhất, điền các mã còn lại vào cột "Mã NV phụ" (cách nhau bằng dấu phẩy nếu nhiều hơn 1), rồi chạy lại đồng bộ.</p>
+    <div class="table-wrap">
+    <table id="trungVanTayTable">
+      <thead><tr>
+        <th>Tên</th>
+        <th>Chi nhánh</th>
+        <th>Các Mã NV đang tách rời</th>
+      </tr></thead>
+      <tbody id="trungVanTayTbody"></tbody>
+    </table>
+    </div>
+  </details>
+
 </div>
 
 
@@ -421,6 +436,32 @@ function renderPhongFullTable(rows){
   document.querySelectorAll('#phongFullTable th').forEach(th=>{
     th.classList.toggle('sorted', th.dataset.key===st.key);
   });
+}
+
+function renderTrungVanTay(rows){
+  const byIdentity = {}; // key: ten_hr(chuẩn hoá) + chi nhánh -> { ten, chinhanh, manvMap: {manv: songayCoCong} }
+  rows.forEach(r=>{
+    const nameKey = (r.ten_hr||r.ten||'').trim().toLowerCase() + '|' + (r.chinhanh||'').trim().toLowerCase();
+    if(!byIdentity[nameKey]) byIdentity[nameKey] = {ten:r.ten_hr||r.ten, chinhanh:r.chinhanh, manvMap:{}};
+    const g = byIdentity[nameKey];
+    if(!g.manvMap[r.manv]) g.manvMap[r.manv] = 0;
+    if(r.cocong) g.manvMap[r.manv]++;
+  });
+  const list = Object.values(byIdentity).filter(g=>Object.keys(g.manvMap).length >= 2);
+  list.sort((a,b)=>a.ten.localeCompare(b.ten));
+
+  const summaryEl = document.getElementById('trungVanTaySummary');
+  const panelEl = document.getElementById('trungVanTayPanel');
+  summaryEl.textContent = list.length
+    ? `Nghi vấn trùng vân tay (${list.length} người)`
+    : 'Nghi vấn trùng vân tay — không có, mọi người đã gộp đúng ✓';
+  panelEl.style.display = list.length ? '' : 'none';
+
+  document.getElementById('trungVanTayTbody').innerHTML = list.length ? list.map(g=>{
+    const codes = Object.entries(g.manvMap).sort((a,b)=>b[1]-a[1])
+      .map(([manv,songay])=>`<b>${manv}</b> (${songay} ngày công)`).join(', ');
+    return `<tr><td>${g.ten}</td><td>${g.chinhanh}</td><td>${codes}</td></tr>`;
+  }).join('') : '';
 }
 
 function renderChuaKhop(rows){
@@ -687,6 +728,7 @@ function renderAll(){
   renderPhongFullTable(rows);
   renderNVTable(rows);
   renderChuaKhop(rows);
+  renderTrungVanTay(rows);
   renderCharts(rows);
 }
 
