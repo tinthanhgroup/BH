@@ -270,12 +270,30 @@
     </div>
   </details>
 
+  <details class="panel" id="thieuChamCongPanel">
+    <summary>👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
+    <p class="desc">Danh sách người ĐANG LÀM VIỆC theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng KHÔNG xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.</p>
+    <div class="table-wrap">
+    <table id="thieuChamCongTable">
+      <thead><tr>
+        <th>Tên</th>
+        <th>Phòng</th>
+        <th>Tổ/Nhóm</th>
+        <th>Chức vụ</th>
+      </tr></thead>
+      <tbody id="thieuChamCongTbody"></tbody>
+    </table>
+    </div>
+  </details>
+
 </div>
 
 
 <script>
 let ATT = [];
 const CHAMCONG_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/chamcong.json';
+let NHANSU_ACTIVE = []; // toàn bộ nhân sự đang làm việc, dùng để đối chiếu ngược (ai không có dữ liệu chấm công)
+const NHANSU_JSON_URL_CHECK = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/nhansu.json';
 
 // Ngoại lệ cá nhân: cộng thêm số phút được phép trễ ngoài ngưỡng chung
 const PERSON_EXCEPTIONS = {
@@ -436,6 +454,30 @@ function renderPhongFullTable(rows){
   document.querySelectorAll('#phongFullTable th').forEach(th=>{
     th.classList.toggle('sorted', th.dataset.key===st.key);
   });
+}
+
+function renderThieuChamCong(rows, chinhanh){
+  // Tập tên (chuẩn hoá) những người ĐÃ CÓ ít nhất 1 dòng trong chấm công của chi nhánh này
+  const coChamCong = new Set(rows.map(r=>(r.ten_hr||r.ten||'').trim().toLowerCase()));
+
+  const activeHR = NHANSU_ACTIVE.filter(e=>e.chinhanh===chinhanh);
+  const missing = activeHR.filter(e=>!coChamCong.has((e.ten||'').trim().toLowerCase()));
+  missing.sort((a,b)=>(a.ten||'').localeCompare(b.ten||''));
+
+  const summaryEl = document.getElementById('thieuChamCongSummary');
+  const panelEl = document.getElementById('thieuChamCongPanel');
+  summaryEl.textContent = missing.length
+    ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công (${missing.length} người)`
+    : 'Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, mọi người đã có dữ liệu ✓';
+  panelEl.style.display = missing.length ? '' : 'none';
+
+  document.getElementById('thieuChamCongTbody').innerHTML = missing.length ? missing.map(e=>`
+    <tr>
+      <td>${e.ten||''}</td>
+      <td>${e.phong||''}</td>
+      <td>${e.to||''}</td>
+      <td>${e.chucvu||''}</td>
+    </tr>`).join('') : '';
 }
 
 function renderTrungVanTay(){
@@ -775,6 +817,7 @@ function renderAll(){
   renderNVTable(rows);
   renderChuaKhop(rows);
   renderTrungVanTay();
+  renderThieuChamCong(rows, chinhanh);
   renderCharts(rows);
 }
 
@@ -827,6 +870,16 @@ async function loadAttendanceData(){
     ATT = [];
     const sub = document.getElementById('subtitle');
     if(sub) sub.textContent = 'Không tải được dữ liệu chấm công. Vui lòng thử lại sau.';
+  }
+  try{
+    const res2 = await fetch(NHANSU_JSON_URL_CHECK+'?t='+Date.now());
+    if(res2.ok){
+      const payload2 = await res2.json();
+      NHANSU_ACTIVE = (payload2.records && payload2.records.data) || [];
+    }
+  }catch(e){
+    console.error('Lỗi tải nhansu.json (chỉ ảnh hưởng mục đối chiếu ngược, không ảnh hưởng số liệu chính):', e);
+    NHANSU_ACTIVE = [];
   }
   BRANCHES_CO_DATA = new Set(ATT.map(r=>r.chinhanh));
   renderAll();
