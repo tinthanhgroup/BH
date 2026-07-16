@@ -256,14 +256,14 @@
   </details>
 
   <details class="panel" id="trungVanTayPanel">
-    <summary>🔁 <span id="trungVanTaySummary">Nghi vấn trùng vân tay (1 người, nhiều mã NV)</span></summary>
-    <p class="desc">Danh sách người có CÙNG tên + chi nhánh nhưng dữ liệu chấm công lại nằm dưới từ 2 Mã NV trở lên — dấu hiệu người đó đăng ký từ 2 dấu vân tay trở lên trên máy chấm công. Thường 1 mã có rất nhiều ngày công (mã đang dùng thật) và (các) mã còn lại gần như 0 ngày công (mã "bóng ma", không dùng). Cách sửa: mở sheet Nhân sự, điền Mã NV chính = mã có nhiều công nhất, điền các mã còn lại vào cột "Mã NV phụ" (cách nhau bằng dấu phẩy nếu nhiều hơn 1), rồi chạy lại đồng bộ.</p>
+    <summary>🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
+    <p class="desc">Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp KHÔNG tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).</p>
     <div class="table-wrap">
     <table id="trungVanTayTable">
       <thead><tr>
         <th>Tên</th>
         <th>Chi nhánh</th>
-        <th>Các Mã NV đang tách rời</th>
+        <th>Các Mã NV có nhiều công gần nhau</th>
       </tr></thead>
       <tbody id="trungVanTayTbody"></tbody>
     </table>
@@ -438,28 +438,18 @@ function renderPhongFullTable(rows){
   });
 }
 
-function renderTrungVanTay(rows){
-  const byIdentity = {}; // key: ten_hr(chuẩn hoá) + chi nhánh -> { ten, chinhanh, manvMap: {manv: songayCoCong} }
-  rows.forEach(r=>{
-    const nameKey = (r.ten_hr||r.ten||'').trim().toLowerCase() + '|' + (r.chinhanh||'').trim().toLowerCase();
-    if(!byIdentity[nameKey]) byIdentity[nameKey] = {ten:r.ten_hr||r.ten, chinhanh:r.chinhanh, manvMap:{}};
-    const g = byIdentity[nameKey];
-    if(!g.manvMap[r.manv]) g.manvMap[r.manv] = 0;
-    if(r.cocong) g.manvMap[r.manv]++;
-  });
-  const list = Object.values(byIdentity).filter(g=>Object.keys(g.manvMap).length >= 2);
-  list.sort((a,b)=>a.ten.localeCompare(b.ten));
+function renderTrungVanTay(){
+  const list = lastAmbiguousTrungTen.slice().sort((a,b)=>a.ten.localeCompare(b.ten));
 
   const summaryEl = document.getElementById('trungVanTaySummary');
   const panelEl = document.getElementById('trungVanTayPanel');
   summaryEl.textContent = list.length
-    ? `Nghi vấn trùng vân tay (${list.length} người)`
-    : 'Nghi vấn trùng vân tay — không có, mọi người đã gộp đúng ✓';
+    ? `Cần kiểm tra thủ công (${list.length} người)`
+    : 'Nghi vấn trùng vân tay — không có, mọi trường hợp đã tự gộp hoặc rõ ràng ✓';
   panelEl.style.display = list.length ? '' : 'none';
 
   document.getElementById('trungVanTayTbody').innerHTML = list.length ? list.map(g=>{
-    const codes = Object.entries(g.manvMap).sort((a,b)=>b[1]-a[1])
-      .map(([manv,songay])=>`<b>${manv}</b> (${songay} ngày công)`).join(', ');
+    const codes = g.codes.map(([manv,songay])=>`<b>${manv}</b> (${songay} ngày công)`).join(', ');
     return `<tr><td>${g.ten}</td><td>${g.chinhanh}</td><td>${codes}</td></tr>`;
   }).join('') : '';
 }
@@ -708,11 +698,67 @@ function renderBranchKPI(){
   });
 }
 
+let lastAmbiguousTrungTen = [];
+
+// ── Tự động gộp "mã bóng ma" (dấu vân tay phụ không dùng tới) vào
+//    mã chính, dựa vào: cùng tên + chi nhánh, và mã đó có RẤT ÍT
+//    ngày công so với mã còn lại của cùng người. Trường hợp cả 2
+//    mã đều có nhiều ngày công (nghi có thể là 2 người khác nhau
+//    trùng tên) thì KHÔNG tự gộp, trả về để cảnh báo thủ công.
+function mergeDuplicateManv_(rows){
+  const byIdentity = {};
+  rows.forEach(r=>{
+    const nameKey = (r.ten_hr||r.ten||'').trim().toLowerCase() + '|' + (r.chinhanh||'').trim().toLowerCase();
+    if(!byIdentity[nameKey]) byIdentity[nameKey] = {ten:r.ten_hr||r.ten, chinhanh:r.chinhanh, manvMap:{}};
+    const g = byIdentity[nameKey];
+    if(!g.manvMap[r.manv]) g.manvMap[r.manv] = 0;
+    if(r.cocong) g.manvMap[r.manv]++;
+  });
+
+  const remap = {}; // nameKey -> { ghostManv: mãChính }
+  const ambiguous = [];
+
+  Object.entries(byIdentity).forEach(([nameKey, g])=>{
+    const entries = Object.entries(g.manvMap); // [manv, songayCoCong]
+    if(entries.length < 2) return;
+    entries.sort((a,b)=>b[1]-a[1]);
+    const [domManv, domCong] = entries[0];
+    const ghosts = [];
+    const notGhosts = [];
+    for(let i=1;i<entries.length;i++){
+      const [manv, cong] = entries[i];
+      const isGhost = cong <= Math.max(2, domCong*0.15);
+      if(isGhost) ghosts.push(manv); else notGhosts.push([manv,cong]);
+    }
+    if(ghosts.length){
+      remap[nameKey] = remap[nameKey] || {};
+      ghosts.forEach(mv => remap[nameKey][mv] = domManv);
+    }
+    if(notGhosts.length){
+      ambiguous.push({ten:g.ten, chinhanh:g.chinhanh, codes: entries});
+    }
+  });
+
+  const mergedRows = rows.map(r=>{
+    const nameKey = (r.ten_hr||r.ten||'').trim().toLowerCase() + '|' + (r.chinhanh||'').trim().toLowerCase();
+    const m = remap[nameKey];
+    if(m && m[r.manv]){
+      return Object.assign({}, r, {manv_goc_html:r.manv, manv:m[r.manv]});
+    }
+    return r;
+  });
+
+  return {rows: mergedRows, ambiguous};
+}
+
 function renderAll(){
   const cfg = getConfig();
   const chinhanh = selectedChinhanh;
   const base = ATT.filter(r=>r.chinhanh===chinhanh);
-  const rows = computeDerived(base, cfg);
+  const rowsRaw = computeDerived(base, cfg);
+  const merged = mergeDuplicateManv_(rowsRaw);
+  const rows = merged.rows;
+  lastAmbiguousTrungTen = merged.ambiguous;
 
   renderBranchKPI();
 
@@ -728,7 +774,7 @@ function renderAll(){
   renderPhongFullTable(rows);
   renderNVTable(rows);
   renderChuaKhop(rows);
-  renderTrungVanTay(rows);
+  renderTrungVanTay();
   renderCharts(rows);
 }
 
