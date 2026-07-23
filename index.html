@@ -946,7 +946,7 @@ var _allowedTabs = new Set();
 var _pendingTab = null;
 
 function _stripDiacritics(s){
-  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().trim();
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
 }
 function _classifyGroup(nhomRaw, isAdmin){
   if(isAdmin) return new Set(['bh','dv','ns','cc']);
@@ -1294,6 +1294,7 @@ function checkPassword(){
       _adminPass=val;
       _authenticated=true;
       _allowedTabs=_classifyGroup(res.nhom, res.isAdmin);
+      console.log('[Auth debug] name=', res.name, ' isAdmin=', res.isAdmin, ' nhom(raw)=', JSON.stringify(res.nhom), ' -> allowedTabs=', Array.from(_allowedTabs));
       closePwModal();
       // Hiện tên user ở header
       var badge=document.getElementById('user-badge');
