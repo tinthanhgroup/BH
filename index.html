@@ -1868,7 +1868,7 @@ function transferNoteText(transferLogByMonth, monthKeys){
   const parts=entries.map(([k,v])=>{const [from,to]=k.split('->');return `${from} → ${to} ${String(v).padStart(2,'0')} xe`;});
   return 'Chuyển chỉ tiêu: '+parts.join('; ');
 }
-function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing){
+function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing, show60){
   const wrap=document.getElementById(wrapId);
   if(!wrap) return;
   // Màu chữ cho từng cột (đậm hơn bản gốc để đọc rõ trên nền trắng của bảng)
@@ -1883,11 +1883,13 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     const {g,dms,khop,ky,target}=row;
     const target90=Math.ceil(target*0.9);
     const target80=Math.ceil(target*0.8);
+    const target60=Math.ceil(target*0.6);
     rowsHtml+=`<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:6px 7px;font-weight:600;color:${LABEL_COL};white-space:nowrap;">${g.label}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_DMS};font-family:'JetBrains Mono',monospace;">${fmt(dms)}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KHOP};font-family:'JetBrains Mono',monospace;">${fmt(khop)}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;">${fmt(ky)}</td>
+      ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target60)}</td>`:''}
       ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target80)}</td>`:''}
       ${show90?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target90)}</td>`:''}
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;">${fmt(target)}</td>
@@ -1900,6 +1902,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
       ${th('Báo bán DMS')}
       ${th('Đã phân xe')}
       ${th('Chờ phân xe')}
+      ${show60?th('60% CT (thưởng MKT)'):''}
       ${show80?th('80% CT'):''}
       ${show90?th('90% CT'):''}
       ${th('Chỉ tiêu')}
@@ -1908,6 +1911,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
   </table></div>`;
 
   const bonusParts=[];
+  if(show60) bonusParts.push('60% thưởng MKT (chính sách nhà máy)');
   if(show80) bonusParts.push('80% thưởng Quý HTV (hệ số 0.75)');
   if(show90&&show80) bonusParts.push('90% thưởng quý HTV (hệ số 0.9)');
   const bonusNote=bonusParts.length?`<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">${bonusParts.join('; ')}</div>`:'';
@@ -1928,7 +1932,7 @@ function renderDMSProgress(data){
     return {g,dms,khop,ky,target,total:dms+khop+ky};
   });
   const noteText=transferNoteText(transferLogByMonth,[dmsMonthKey]);
-  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,false,true);
+  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,false,true,true);
 }
 function renderDMSProgressQuarter(data){
   const {bbMap,dmsKhopQ,qMonthKeys,daKy,curQuarter,today,transferLogByMonth}=data;
