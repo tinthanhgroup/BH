@@ -764,7 +764,19 @@ function parseJsonRecords(records, fileDate){
     }
   });
 }
-function toggleType(t){typeFilter=(typeFilter===t?null:t);drillModel=null;drillVersion=null;renderHH();}
+function _canSeeChuaHD(){ return _authenticated && _allowedTabs.has('ns'); }
+function toggleType(t){
+  if(t==='chuaHD' && !_canSeeChuaHD()){
+    if(_authenticated){
+      alert('Bạn không có quyền xem mục "Chưa xuất HD". Chỉ Admin/Ban GĐ được xem mục này.');
+    } else {
+      _pendingTab='__chuaHD__';
+      showPasswordModal();
+    }
+    return;
+  }
+  typeFilter=(typeFilter===t?null:t);drillModel=null;drillVersion=null;renderHH();
+}
 function setDrill(model,version){
   drillModel=model;
   if(version){
@@ -1310,7 +1322,15 @@ function checkPassword(){
       _allowedTabs.forEach(function(t){ if(t!=='cc') _unlockTabUI(t); });
       // Chuyển tới đúng tab đang muốn xem, nếu được phép; nếu không, chuyển
       // tới tab đầu tiên mà nhóm này được phép xem và báo cho người dùng biết.
-      if(_pendingTab && _allowedTabs.has(_pendingTab)){
+      if(_pendingTab==='__chuaHD__'){
+        if(_canSeeChuaHD()){
+          renderHH();
+          toggleType('chuaHD');
+        } else {
+          alert('Mật khẩu đúng, nhưng tài khoản của bạn không có quyền xem mục "Chưa xuất HD". Chỉ Admin/Ban GĐ được xem mục này.');
+          renderHH();
+        }
+      } else if(_pendingTab && _allowedTabs.has(_pendingTab)){
         _doSwitchTab(_pendingTab);
       } else if(_allowedTabs.size>0){
         var firstAllowed=Array.from(_allowedTabs).filter(function(t){return t!=='cc';})[0];
@@ -2347,7 +2367,10 @@ function mkHHFilters(){
     +(allData.lxx||[]).filter(function(r){return r.daly==='NT'||r.daly==='ĐL'||r.daly==='PY';}).length
     +Object.values(window._ngapNuocByModel||{}).reduce(function(s,nn){return s+(nn.NT||0)+(nn['ĐL']||0)+(nn.PY||0);},0);
   var cgBtn=`<span style="width:1px;background:#e0e0e0;height:20px;display:inline-block;margin:0 2px"></span><button class="fbtn${isCG?' active-kho':''}" onclick="toggleType('chuaGiao')" style="${isCG?'border-color:#b45309;color:#92400e;background:#fef3c7':''}"><span class="fbtn-dot" style="background:#b45309;${isCG?'':'opacity:.35'}"></span>Xe chưa BC DMS <span style="font-size:10px;background:${isCG?'#b45309':'#fef3c7'};color:${isCG?'#fff':'#92400e'};border-radius:8px;padding:1px 5px;margin-left:2px">${totChuaGiao}</span></button>`;
-  var hdBtn=`<button class="fbtn${isHD?' active-kho':''}" onclick="toggleType('chuaHD')" style="${isHD?'border-color:#7c3aed;color:#6d28d9;background:#f5f3ff':''}"><span class="fbtn-dot" style="background:#7c3aed;${isHD?'':'opacity:.35'}"></span>Chưa xuất HD <span style="font-size:10px;background:${isHD?'#7c3aed':'#e0e7ff'};color:${isHD?'#fff':'#4338ca'};border-radius:8px;padding:1px 5px;margin-left:2px">${totChuaHD}</span></button>`;
+  var canSeeChuaHD=_canSeeChuaHD();
+  var hdBtn = canSeeChuaHD
+    ? `<button class="fbtn${isHD?' active-kho':''}" onclick="toggleType('chuaHD')" style="${isHD?'border-color:#7c3aed;color:#6d28d9;background:#f5f3ff':''}"><span class="fbtn-dot" style="background:#7c3aed;${isHD?'':'opacity:.35'}"></span>Chưa xuất HD <span style="font-size:10px;background:${isHD?'#7c3aed':'#e0e7ff'};color:${isHD?'#fff':'#4338ca'};border-radius:8px;padding:1px 5px;margin-left:2px">${totChuaHD}</span></button>`
+    : `<button class="fbtn" onclick="toggleType('chuaHD')" title="Chỉ Admin/Ban GĐ được xem mục này"><span class="fbtn-dot" style="background:#9ca3af;opacity:.35"></span>Chưa xuất HD 🔒</button>`;
   var hasActive=(hhFilters.kho||hhFilters.nam||typeFilter);
   return `<div class="filters">`
     +(khoBtns?`<span class="filter-group-label">Kho</span><div class="filter-group">${khoBtns}</div>`:'')
