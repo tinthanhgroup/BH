@@ -1868,7 +1868,7 @@ function transferNoteText(transferLogByMonth, monthKeys){
   const parts=entries.map(([k,v])=>{const [from,to]=k.split('->');return `${from} → ${to} ${String(v).padStart(2,'0')} xe`;});
   return 'Chuyển chỉ tiêu: '+parts.join('; ');
 }
-function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing, show60){
+function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing, show60, show70){
   const wrap=document.getElementById(wrapId);
   if(!wrap) return;
   // Màu chữ cho từng cột (đậm hơn bản gốc để đọc rõ trên nền trắng của bảng)
@@ -1877,22 +1877,26 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
   const LABEL_COL='#1e5a8a';
   const fmt=v=>(v||0).toLocaleString('vi-VN');
 
-  const th=(label,extraStyle)=>`<th style="padding:5px 7px;text-align:right;font-weight:600;color:var(--muted);font-size:10.5px;white-space:nowrap;${extraStyle||''}">${label}</th>`;
+  const BORD_FAINT='border-left:1px solid #eef1f6;';
+  const BORD_STRONG='border-left:1.5px solid #c7cedd;';
+  const th=(label,extraStyle)=>`<th style="padding:5px 7px;text-align:right;font-weight:600;color:var(--muted);font-size:10.5px;white-space:nowrap;${BORD_FAINT}${extraStyle||''}">${label}</th>`;
   let rowsHtml='';
   groupData.forEach(row=>{
     const {g,dms,khop,ky,target}=row;
     const target90=Math.ceil(target*0.9);
     const target80=Math.ceil(target*0.8);
+    const target70=Math.ceil(target*0.7);
     const target60=Math.ceil(target*0.6);
     rowsHtml+=`<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:6px 7px;font-weight:600;color:${LABEL_COL};white-space:nowrap;">${g.label}</td>
-      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_DMS};font-family:'JetBrains Mono',monospace;">${fmt(dms)}</td>
-      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KHOP};font-family:'JetBrains Mono',monospace;">${fmt(khop)}</td>
-      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;">${fmt(ky)}</td>
-      ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target60)}</td>`:''}
-      ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target80)}</td>`:''}
-      ${show90?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;">${fmt(target90)}</td>`:''}
-      <td style="padding:6px 7px;text-align:right;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;">${fmt(target)}</td>
+      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_DMS};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(dms)}</td>
+      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KHOP};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(khop)}</td>
+      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(ky)}</td>
+      ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_STRONG}">${fmt(target60)}</td>`:''}
+      ${show70?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target70)}</td>`:''}
+      ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target80)}</td>`:''}
+      ${show90?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target90)}</td>`:''}
+      <td style="padding:6px 7px;text-align:right;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target)}</td>
     </tr>`;
   });
 
@@ -1902,9 +1906,10 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
       ${th('Báo bán DMS')}
       ${th('Đã phân xe')}
       ${th('Chờ phân xe')}
-      ${show60?th('60% CT (thưởng MKT)'):''}
-      ${show80?th('80% CT'):''}
-      ${show90?th('90% CT'):''}
+      ${show60?th('60% (MKT)',BORD_STRONG):''}
+      ${show70?th('70% (0.7)'):''}
+      ${show80?th('80% (0.8)'):''}
+      ${show90?th('90% (0.9)'):''}
       ${th('Chỉ tiêu')}
     </tr></thead>
     <tbody>${rowsHtml}</tbody>
@@ -1912,8 +1917,8 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
 
   const bonusParts=[];
   if(show60) bonusParts.push('60% thưởng MKT (chính sách nhà máy)');
-  if(show80) bonusParts.push('80% thưởng Quý HTV (hệ số 0.75)');
-  if(show90&&show80) bonusParts.push('90% thưởng quý HTV (hệ số 0.9)');
+  if(show80&&unitLabel==='quý') bonusParts.push('80% thưởng Quý HTV (hệ số 0.75)');
+  if(show90&&show80&&unitLabel==='quý') bonusParts.push('90% thưởng quý HTV (hệ số 0.9)');
   const bonusNote=bonusParts.length?`<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">${bonusParts.join('; ')}</div>`:'';
   wrap.innerHTML=table
     +`<div style="margin-top:4px;">${bonusNote}${noteText?`<div style="font-size:10.5px;color:var(--muted);margin-top:4px;font-style:italic;">${noteText}</div>`:''}</div>`;
@@ -1932,7 +1937,7 @@ function renderDMSProgress(data){
     return {g,dms,khop,ky,target,total:dms+khop+ky};
   });
   const noteText=transferNoteText(transferLogByMonth,[dmsMonthKey]);
-  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,false,true,true);
+  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true);
 }
 function renderDMSProgressQuarter(data){
   const {bbMap,dmsKhopQ,qMonthKeys,daKy,curQuarter,today,transferLogByMonth}=data;
