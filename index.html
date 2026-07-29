@@ -1485,6 +1485,7 @@ function prepareBH(raw,fileDate){
     const branchForTarget=(ctVal&&BRANCHES_BH.includes(ctVal)&&baoBanVal&&baoBanVal.getFullYear()===2026)?ctVal:br;
     rows.push({
       date:dt,branch:br,branchForTarget,model:r[cModel]?String(r[cModel]).trim():'—',
+      namSX:r['NĂM SX']?String(r['NĂM SX']).trim():'',
       status:r[cStatus]?String(r[cStatus]).trim():null,
       kho:r[cKho]?String(r[cKho]).trim():null,
       tvbh:r[cTVBH]?String(r[cTVBH]).trim():null,
@@ -1497,11 +1498,16 @@ function prepareBH(raw,fileDate){
   if(rows.length===0) throw new Error('Không có dòng dữ liệu hợp lệ');
 
   const mmap={};
+  const palisadeMap={}; // Palisade SX 2026 (đặt cọc thiện chí) — đếm riêng theo tháng+chi nhánh
   for(const r of rows){
     if(r.date.getFullYear()<2025) continue;
     const m=`${r.date.getFullYear()}-${String(r.date.getMonth()+1).padStart(2,'0')}`;
     if(!mmap[m]){mmap[m]={};BRANCHES_BH.forEach(b=>mmap[m][b]=0);}
     mmap[m][r.branch]=(mmap[m][r.branch]||0)+1;
+    if(normModelBH(r.model)==='Palisade'&&r.namSX==='2026'){
+      if(!palisadeMap[m]){palisadeMap[m]={};BRANCHES_BH.forEach(b=>palisadeMap[m][b]=0);}
+      palisadeMap[m][r.branch]=(palisadeMap[m][r.branch]||0)+1;
+    }
   }
   const months=Object.keys(mmap).sort();
 
@@ -1538,7 +1544,8 @@ function prepareBH(raw,fileDate){
     const prevTotal=(mmap[pmk]||{})[b]||0;
     const prevExpected=prevTotal>0?(prevTotal/daysInPrevMonth)*dayOfMonth:0;
     const speed=prevExpected>0?Math.round(cur/prevExpected*100):null;
-    kpi[b]={cur,prevTotal,prevExpected:Math.round(prevExpected*10)/10,speed,delta:cur-prevTotal};
+    const palisade=(palisadeMap[cmk]||{})[b]||0;
+    kpi[b]={cur,prevTotal,prevExpected:Math.round(prevExpected*10)/10,speed,delta:cur-prevTotal,palisade};
   });
 
   const inv={tonKho:0,lenh:0,bo:0};
@@ -1750,16 +1757,16 @@ function renderKPI(data){
   const pad=n=>String(n).padStart(2,'0');
   const dtStr=`${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   const brCards=BRANCHES_BH.filter(b=>b!=='ĐN').map(b=>{
-    const {cur,prevTotal,delta}=kpi[b]||{cur:0,prevTotal:0,delta:0};
+    const {cur,prevTotal,delta,palisade}=kpi[b]||{cur:0,prevTotal:0,delta:0,palisade:0};
     const cls=delta>0?'up':delta<0?'down':'same';
     const sign=delta>0?'▲':delta<0?'▼':'—';
     var col=BD1_COLORS[b]||'#ccc';
+    const palisadeNote=palisade>0?` <span style="font-size:12px;font-weight:600;color:#9a6b12;">(${palisade} Palisade)</span>`:'';
 
     return '<div class="kpi-card">'
       +'<div class="kpi-label">'+(BRANCH_NAMES[b]||b)+'</div>'
-      +'<div class="kpi-value">'+(cur||0)+'</div>'
+      +'<div class="kpi-value">'+(cur||0)+palisadeNote+'</div>'
       +'<div class="kpi-sub"><span class="delta '+cls+'">'+sign+Math.abs(delta)+'</span>&nbsp;vs tháng trước</div>'
-      +'</div>';
       +'</div>';
   }).join('');
   const tsCard=`<div class="kpi-card" style="border-top:3px solid #2563eb;background:linear-gradient(135deg,#eff6ff,#fff);">
@@ -1776,17 +1783,17 @@ function updateKpiCards(){
   var BRANCHES_BH=['NT','PR','PY','ĐL','BL','ĐN'];
   var kpi=data.kpi||{};
   var brCards=BRANCHES_BH.filter(function(b){return b!=='ĐN';}).map(function(b){
-    var d=kpi[b]||{cur:0,prevTotal:0,delta:0};
-    var cur=d.cur,delta=d.delta;
+    var d=kpi[b]||{cur:0,prevTotal:0,delta:0,palisade:0};
+    var cur=d.cur,delta=d.delta,palisade=d.palisade||0;
     var cls=delta>0?'up':delta<0?'down':'same';
     var sign=delta>0?'▲':delta<0?'▼':'—';
 
     var col=BD1_COLORS[b]||'#ccc';
+    var palisadeNote=palisade>0?(' <span style="font-size:12px;font-weight:600;color:#9a6b12;">('+palisade+' Palisade)</span>'):'';
     return '<div class="kpi-card">'
       +'<div class="kpi-label">'+(BRANCH_NAMES[b]||b)+'</div>'
-      +'<div class="kpi-value">'+(cur||0)+'</div>'
+      +'<div class="kpi-value">'+(cur||0)+palisadeNote+'</div>'
       +'<div class="kpi-sub"><span class="delta '+cls+'">'+sign+Math.abs(delta)+'</span>&nbsp;vs tháng trước</div>'
-      +'</div>';
       +'</div>';
   }).join('');
   var existing=document.getElementById('kpi-row');
