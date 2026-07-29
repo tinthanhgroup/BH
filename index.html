@@ -1391,7 +1391,7 @@ function prepareBH(raw,fileDate){
   const cDMS   =col(keys,['baocaodms']);
   const cHist  =col(keys,['fromhistory']);
   const cMau   =col(keys,['mau sac','màu sắc','mausac','mau']);
-  const cPhienBan=col(keys,['phien ban','phienban','dac ta xe','dac ta','loai xe','loaixe','version','phiên bản']);
+  const cPhienBan=col(keys,['phien ban','phienban']);
   if(!cDate)   throw new Error('Không tìm thấy cột NGÀY ĐẶT CỌC.\nCác cột: '+keys.join(' | '));
   if(!cBranch) throw new Error('Không tìm thấy cột NGUỒN KHÁCH.\nCác cột: '+keys.join(' | '));
   if(!cModel)  throw new Error('Không tìm thấy cột Model.\nCác cột: '+keys.join(' | '));
