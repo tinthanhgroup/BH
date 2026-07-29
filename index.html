@@ -251,7 +251,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 .bar-anim{animation:barRise .45s cubic-bezier(.4,0,.2,1) both}
 /* Tooltip tuỳ biến cho ô "Chưa có xe" — hiện ngay khi hover, không phụ thuộc title mặc định của trình duyệt */
 .tt-wrap{position:relative;cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
-.tt-box{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:160px;max-width:280px;}
+.tt-box{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:160px;max-width:280px;max-height:260px;overflow-y:auto;}
 .tt-wrap:hover .tt-box{display:block;}
 </style>
 </head>
@@ -1956,7 +1956,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     </tr>`;
   });
 
-  const table=`<div style="overflow-x:auto;overflow-y:visible;padding-top:36px;margin-top:-36px;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto;">
+  const table=`<div style="overflow-x:auto;overflow-y:visible;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto;">
     <thead><tr style="border-bottom:1px solid var(--border);">
       <th style="padding:5px 7px;text-align:left;font-weight:600;color:var(--muted);font-size:10.5px;">Chi nhánh</th>
       ${th('Báo bán DMS')}
