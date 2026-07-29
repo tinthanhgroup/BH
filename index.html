@@ -1382,6 +1382,7 @@ function prepareBH(raw,fileDate){
   const cPhanXe=col(keys,['ngay phan xe','ngayphanxe']);
   const cDMS   =col(keys,['baocaodms']);
   const cHist  =col(keys,['fromhistory']);
+  const cMau   =col(keys,['mau sac','màu sắc','mausac','mau']);
   if(!cDate)   throw new Error('Không tìm thấy cột NGÀY ĐẶT CỌC.\nCác cột: '+keys.join(' | '));
   if(!cBranch) throw new Error('Không tìm thấy cột NGUỒN KHÁCH.\nCác cột: '+keys.join(' | '));
   if(!cModel)  throw new Error('Không tìm thấy cột Model.\nCác cột: '+keys.join(' | '));
@@ -1408,16 +1409,41 @@ function prepareBH(raw,fileDate){
   const dmsKhopQ=dmsKhop; // cùng số liệu, không phân biệt theo kỳ
 
   // ── Đã ký, chờ phân xe: Xe nợ (Trạng thái = "DS nợ"), loại Palisade SX 2026, theo nhóm NT/ĐL/PY ──
+  // Tách 2 loại: "Chờ đóng tiền" (đúng Model+Màu đang có xe tồn kho trống,
+  // chưa phân cho ai) và "Chưa có xe" (không có xe tồn kho trống khớp Model+Màu).
+  // Đối chiếu theo kiểu FIFO: mỗi xe tồn kho trống chỉ "khớp" được 1 đơn DS nợ,
+  // tránh 1 xe trống bị tính khớp cho nhiều đơn nợ cùng lúc.
   const cTrangThai=col(keys,['trang thai','trangthai']);
+  const tonKhoTrongMap={}; // key: "model|mau" -> số lượng xe tồn kho trống còn lại
+  for(const r of raw){
+    const ttVal=cTrangThai?String(r[cTrangThai]||'').trim():'';
+    if(ttVal!=='Xe đã về kho') continue;
+    const pxVal=cPhanXe?r[cPhanXe]:null;
+    if(pxVal) continue; // đã phân xe rồi → không còn "trống"
+    const modelVal=cModel?normModelBH(String(r[cModel]||'').trim()):'';
+    const mauVal=cMau?String(r[cMau]||'').trim().toUpperCase():'';
+    const key=modelVal+'|'+mauVal;
+    tonKhoTrongMap[key]=(tonKhoTrongMap[key]||0)+1;
+  }
   const daKy={NT:0,DL:0,PY:0};
+  const daKyChoTien={NT:0,DL:0,PY:0};
+  const daKyChuaXe={NT:0,DL:0,PY:0};
   for(const r of raw){
     const ttVal=cTrangThai?String(r[cTrangThai]||'').trim():'';
     if(ttVal!=='DS nợ') continue;
     const modelVal=cModel?normModelBH(String(r[cModel]||'').trim()):'';
     const namSXVal=r['NĂM SX']?String(r['NĂM SX']).trim():'';
     if(modelVal==='Palisade'&&namSXVal==='2026') continue;
+    const mauVal=cMau?String(r[cMau]||'').trim().toUpperCase():'';
+    const key=modelVal+'|'+mauVal;
+    const coXeTrong=(tonKhoTrongMap[key]||0)>0;
+    if(coXeTrong) tonKhoTrongMap[key]--;
     const br=r[cBranch]?String(r[cBranch]).trim():'';
-    for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(br)) daKy[g]=(daKy[g]||0)+1;
+    for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(br)){
+      daKy[g]=(daKy[g]||0)+1;
+      if(coXeTrong) daKyChoTien[g]=(daKyChoTien[g]||0)+1;
+      else daKyChuaXe[g]=(daKyChuaXe[g]||0)+1;
+    }
   }
 
   const rows=[];
@@ -1557,7 +1583,7 @@ function prepareBH(raw,fileDate){
   const sold90=rows.filter(r=>r.date>=cut90).length;
   const avgMonth=sold90/3;
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth};
 }
 
 function renderBH(data){
@@ -1876,19 +1902,24 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
 
   const BORD_FAINT='border-left:1px solid #eef1f6;';
   const BORD_STRONG='border-left:1.5px solid #c7cedd;';
+  const hasSplit = groupData.length>0 && groupData[0].choTien!==undefined;
   const th=(label,extraStyle)=>`<th style="padding:5px 7px;text-align:right;font-weight:600;color:var(--muted);font-size:10.5px;white-space:nowrap;${BORD_FAINT}${extraStyle||''}">${label}</th>`;
   let rowsHtml='';
   groupData.forEach(row=>{
-    const {g,dms,khop,ky,target}=row;
+    const {g,dms,khop,ky,choTien,chuaXe,target}=row;
     const target90=Math.ceil(target*0.9);
     const target80=Math.ceil(target*0.8);
     const target70=Math.ceil(target*0.7);
     const target60=Math.ceil(target*0.6);
+    const koCol=hasSplit
+      ? `<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(choTien)}</td>
+         <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(chuaXe)}</td>`
+      : `<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(ky)}</td>`;
     rowsHtml+=`<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:6px 7px;font-weight:600;color:${LABEL_COL};white-space:nowrap;">${g.label}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_DMS};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(dms)}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KHOP};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(khop)}</td>
-      <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(ky)}</td>
+      ${koCol}
       ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_STRONG}">${fmt(target60)}</td>`:''}
       ${show70?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target70)}</td>`:''}
       ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target80)}</td>`:''}
@@ -1902,7 +1933,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
       <th style="padding:5px 7px;text-align:left;font-weight:600;color:var(--muted);font-size:10.5px;">Chi nhánh</th>
       ${th('Báo bán DMS')}
       ${th('Đã phân xe')}
-      ${th('Chờ phân xe')}
+      ${hasSplit?(th('Chờ đóng tiền')+th('Chưa có xe')):th('Chờ phân xe')}
       ${show60?th('60% (MKT)',BORD_STRONG):''}
       ${show70?th('70% (0.7)'):''}
       ${show80?th('80% (0.8)'):''}
@@ -1921,7 +1952,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     +`<div style="margin-top:4px;">${bonusNote}${noteText?`<div style="font-size:10.5px;color:var(--muted);margin-top:4px;font-style:italic;">${noteText}</div>`:''}</div>`;
 }
 function renderDMSProgress(data){
-  const {bbMap,dmsKhop,dmsMonthKey,today,daKy,transferLogByMonth}=data;
+  const {bbMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,transferLogByMonth}=data;
   const m=today.getMonth()+1;
   const badgeM=document.getElementById('dms-progress-badge-m');
   if(badgeM) badgeM.textContent='Theo tháng — T'+m+'/'+today.getFullYear();
@@ -1929,9 +1960,10 @@ function renderDMSProgress(data){
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(bbMap[dmsMonthKey]||{})[g.key]||0;
     const khop=(dmsKhop||{})[g.key]||0;
-    const ky=(daKy||{})[g.key]||0;
+    const choTien=(daKyChoTien||{})[g.key]||0;
+    const chuaXe=(daKyChuaXe||{})[g.key]||0;
     const target=(targets[g.key]||[])[m-1]||0;
-    return {g,dms,khop,ky,target,total:dms+khop+ky};
+    return {g,dms,khop,choTien,chuaXe,target,total:dms+khop+choTien+chuaXe};
   });
   const noteText=transferNoteText(transferLogByMonth,[dmsMonthKey]);
   renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true);
@@ -3281,7 +3313,7 @@ function buildBHFromExport(coc, hh, fileDate){
     if(r.hasBH) insMap[m][br].bh++;
   });
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available:inv.tonKho+inv.lenh,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop:{NT:0,DL:0,PY:0},dmsMonthKey:`${fileDate.getFullYear()}-${String(fileDate.getMonth()+1).padStart(2,'0')}`,daKy:{NT:0,DL:0,PY:0},dmsKhopQ:{NT:0,DL:0,PY:0},qMonthKeys:[],curQuarter:Math.ceil((fileDate.getMonth()+1)/3),transferLogByMonth:{}};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available:inv.tonKho+inv.lenh,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop:{NT:0,DL:0,PY:0},dmsMonthKey:`${fileDate.getFullYear()}-${String(fileDate.getMonth()+1).padStart(2,'0')}`,daKy:{NT:0,DL:0,PY:0},daKyChoTien:{NT:0,DL:0,PY:0},daKyChuaXe:{NT:0,DL:0,PY:0},dmsKhopQ:{NT:0,DL:0,PY:0},qMonthKeys:[],curQuarter:Math.ceil((fileDate.getMonth()+1)/3),transferLogByMonth:{}};
 }
 
 // ═══════════════════════════════════════════════════════════
