@@ -1457,7 +1457,8 @@ function prepareBH(raw,fileDate){
       if(coXeTrong) daKyChoTien[g]=(daKyChoTien[g]||0)+1;
       else {
         daKyChuaXe[g]=(daKyChuaXe[g]||0)+1;
-        const parts=[toTitleCaseVN(modelRaw)];
+        const modelDisplay=modelRaw||modelVal||'';
+        const parts=[toTitleCaseVN(modelDisplay)];
         if(phienBanRaw) parts.push(toTitleCaseVN(phienBanRaw));
         parts.push(toTitleCaseVN(mauRaw));
         daKyChuaXeList[g].push(parts.filter(Boolean).join(' — ')||'—');
