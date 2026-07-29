@@ -251,7 +251,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 .bar-anim{animation:barRise .45s cubic-bezier(.4,0,.2,1) both}
 /* Tooltip tuỳ biến cho ô "Chưa có xe" — hiện ngay khi hover, không phụ thuộc title mặc định của trình duyệt */
 .tt-wrap{position:relative;cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
-.tt-box{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:#1e2740;color:#fff;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:50;min-width:160px;max-width:280px;}
+.tt-box{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:160px;max-width:280px;}
 .tt-wrap:hover .tt-box{display:block;}
 </style>
 </head>
@@ -472,6 +472,10 @@ function col(keys,kws){return keys.find(k=>kws.some(w=>na(k).includes(na(w))))||
 function isoWeek(d){const t=new Date(d);t.setHours(0,0,0,0);const y=t.getFullYear();const jan1=new Date(y,0,1);const week=Math.ceil(((t-jan1)/864e5+jan1.getDay()+1)/7);return {year:y,week:week};}
 function wKey(d){const {year,week}=isoWeek(d);return `${year}-W${String(week).padStart(2,'0')}`;}
 const _NM_BH=[['GRAND I10','Grand i10'],['STARGAZER','Stargazer'],['SANTA','Santafe'],['PALISADE','Palisade'],['TUCSON','Tucson'],['ACCENT','Accent'],['ELANTRA','Elantra'],['CUSTIN','Custin'],['CRETA','Creta'],['VENUE','Venue'],['IONIQ','Ioniq'],['STARIA','Staria']];
+function toTitleCaseVN(s){
+  if(!s) return '';
+  return s.toString().toLowerCase().replace(/(^|\s|[-\/])\S/g,c=>c.toUpperCase());
+}
 function normModelBH(m){
   const s=String(m).toUpperCase();
   for(const [k,v] of _NM_BH) if(s.includes(k)) return v;
@@ -1387,6 +1391,7 @@ function prepareBH(raw,fileDate){
   const cDMS   =col(keys,['baocaodms']);
   const cHist  =col(keys,['fromhistory']);
   const cMau   =col(keys,['mau sac','màu sắc','mausac','mau']);
+  const cPhienBan=col(keys,['phien ban','phienban','dac ta xe','dac ta','loai xe','loaixe','version','phiên bản']);
   if(!cDate)   throw new Error('Không tìm thấy cột NGÀY ĐẶT CỌC.\nCác cột: '+keys.join(' | '));
   if(!cBranch) throw new Error('Không tìm thấy cột NGUỒN KHÁCH.\nCác cột: '+keys.join(' | '));
   if(!cModel)  throw new Error('Không tìm thấy cột Model.\nCác cột: '+keys.join(' | '));
@@ -1440,7 +1445,9 @@ function prepareBH(raw,fileDate){
     const modelVal=cModel?normModelBH(modelRaw):'';
     const namSXVal=r['NĂM SX']?String(r['NĂM SX']).trim():'';
     if(modelVal==='Palisade'&&namSXVal==='2026') continue;
-    const mauVal=cMau?String(r[cMau]||'').trim().toUpperCase():'';
+    const mauRaw=cMau?String(r[cMau]||'').trim():'';
+    const mauVal=mauRaw.toUpperCase(); // dùng để so khớp tồn kho, không dùng để hiển thị
+    const phienBanRaw=cPhienBan?String(r[cPhienBan]||'').trim():'';
     const key=modelVal+'|'+mauVal;
     const coXeTrong=(tonKhoTrongMap[key]||0)>0;
     if(coXeTrong) tonKhoTrongMap[key]--;
@@ -1450,7 +1457,10 @@ function prepareBH(raw,fileDate){
       if(coXeTrong) daKyChoTien[g]=(daKyChoTien[g]||0)+1;
       else {
         daKyChuaXe[g]=(daKyChuaXe[g]||0)+1;
-        daKyChuaXeList[g].push((modelRaw||'—')+' — '+(mauVal||'—'));
+        const parts=[toTitleCaseVN(modelRaw)];
+        if(phienBanRaw) parts.push(toTitleCaseVN(phienBanRaw));
+        parts.push(toTitleCaseVN(mauRaw));
+        daKyChuaXeList[g].push(parts.filter(Boolean).join(' — ')||'—');
       }
     }
   }
