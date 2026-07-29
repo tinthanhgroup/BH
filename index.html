@@ -249,6 +249,10 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 @keyframes barRise{from{transform:scaleY(0);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
 @keyframes barFade{from{opacity:0}to{opacity:1}}
 .bar-anim{animation:barRise .45s cubic-bezier(.4,0,.2,1) both}
+/* Tooltip tuỳ biến cho ô "Chưa có xe" — hiện ngay khi hover, không phụ thuộc title mặc định của trình duyệt */
+.tt-wrap{position:relative;cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
+.tt-box{display:none;position:absolute;bottom:calc(100% + 6px);right:0;background:#1e2740;color:#fff;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:50;min-width:160px;max-width:280px;}
+.tt-wrap:hover .tt-box{display:block;}
 </style>
 </head>
 <body>
@@ -1917,9 +1921,12 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     const target70=Math.ceil(target*0.7);
     const target60=Math.ceil(target*0.6);
     const chuaXeTip=(chuaXeList&&chuaXeList.length)?chuaXeList.join('\n'):'';
+    const chuaXeCellContent = chuaXeTip
+      ? `<span class="tt-wrap">${fmt(chuaXe)}<span class="tt-box">${chuaXeTip.replace(/</g,'&lt;')}</span></span>`
+      : fmt(chuaXe);
     const koCol=hasSplit
       ? `<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(choTien)}</td>
-         <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}${chuaXeTip?'cursor:help;text-decoration:underline dotted;':''}"${chuaXeTip?` title="${chuaXeTip.replace(/"/g,'&quot;')}"`:''}>${fmt(chuaXe)}</td>`
+         <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${chuaXeCellContent}</td>`
       : `<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(ky)}</td>`;
     rowsHtml+=`<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:6px 7px;font-weight:600;color:${LABEL_COL};white-space:nowrap;">${g.label}</td>
@@ -1934,7 +1941,7 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     </tr>`;
   });
 
-  const table=`<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto;">
+  const table=`<div style="overflow-x:auto;overflow-y:visible;padding-top:36px;margin-top:-36px;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto;">
     <thead><tr style="border-bottom:1px solid var(--border);">
       <th style="padding:5px 7px;text-align:left;font-weight:600;color:var(--muted);font-size:10.5px;">Chi nhánh</th>
       ${th('Báo bán DMS')}
