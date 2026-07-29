@@ -1392,6 +1392,7 @@ function prepareBH(raw,fileDate){
   const cHist  =col(keys,['fromhistory']);
   const cMau   =col(keys,['mau sac','màu sắc','mausac','mau']);
   const cPhienBan=col(keys,['phien ban','phienban']);
+  const cKhDatCoc=col(keys,['kh dat coc','khdatcoc']);
   if(!cDate)   throw new Error('Không tìm thấy cột NGÀY ĐẶT CỌC.\nCác cột: '+keys.join(' | '));
   if(!cBranch) throw new Error('Không tìm thấy cột NGUỒN KHÁCH.\nCác cột: '+keys.join(' | '));
   if(!cModel)  throw new Error('Không tìm thấy cột Model.\nCác cột: '+keys.join(' | '));
@@ -1458,10 +1459,13 @@ function prepareBH(raw,fileDate){
       else {
         daKyChuaXe[g]=(daKyChuaXe[g]||0)+1;
         const modelDisplay=modelRaw||modelVal||'';
-        const parts=[toTitleCaseVN(modelDisplay)];
+        const khVal=cKhDatCoc?String(r[cKhDatCoc]||'').trim():'';
+        const parts=[modelDisplay?toTitleCaseVN(modelDisplay):'(Thiếu Model)'];
         if(phienBanRaw) parts.push(toTitleCaseVN(phienBanRaw));
         parts.push(toTitleCaseVN(mauRaw));
-        daKyChuaXeList[g].push(parts.filter(Boolean).join(' — ')||'—');
+        let entry=parts.filter(Boolean).join(' — ')||'—';
+        if(khVal) entry+=' (KH: '+khVal+')';
+        daKyChuaXeList[g].push(entry);
       }
     }
   }
