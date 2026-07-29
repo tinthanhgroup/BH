@@ -253,6 +253,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 .tt-wrap{position:relative;cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
 .tt-box{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:160px;max-width:280px;max-height:260px;overflow-y:auto;}
 .tt-wrap:hover .tt-box{display:block;}
+.tt-box.tt-flip{top:auto;bottom:calc(100% + 6px);}
 </style>
 </head>
 <body>
@@ -1978,6 +1979,23 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
   const bonusNote=bonusParts.length?`<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">${bonusParts.join('; ')}</div>`:'';
   wrap.innerHTML=table
     +`<div style="margin-top:4px;">${bonusNote}${noteText?`<div style="font-size:10.5px;color:var(--muted);margin-top:4px;font-style:italic;">${noteText}</div>`:''}</div>`;
+  attachSmartTooltip(wrap);
+}
+function attachSmartTooltip(container){
+  container.querySelectorAll('.tt-wrap').forEach(function(elWrap){
+    elWrap.addEventListener('mouseenter',function(){
+      const box=elWrap.querySelector('.tt-box');
+      if(!box) return;
+      box.classList.remove('tt-flip');
+      const r=elWrap.getBoundingClientRect();
+      const needed=box.offsetHeight+10;
+      const spaceBelow=window.innerHeight-r.bottom;
+      const spaceAbove=r.top;
+      if(spaceBelow<needed&&spaceAbove>spaceBelow){
+        box.classList.add('tt-flip');
+      }
+    });
+  });
 }
 function renderDMSProgress(data){
   const {bbMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
