@@ -251,7 +251,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 .bar-anim{animation:barRise .45s cubic-bezier(.4,0,.2,1) both}
 /* Tooltip tuỳ biến cho ô "Chưa có xe" — hiện ngay khi hover, không phụ thuộc title mặc định của trình duyệt */
 .tt-wrap{position:relative;cursor:help;text-decoration:underline dotted;text-underline-offset:2px;}
-.tt-box{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:8px 10px;border-radius:8px;font-size:11px;font-weight:500;white-space:pre-line;text-align:left;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:160px;max-width:280px;max-height:260px;overflow-y:auto;}
+.tt-box{display:none;position:absolute;top:calc(100% + 6px);right:0;background:#3d4759;color:#f1f4f9;padding:9px 11px;border-radius:8px;font-size:11px;font-weight:500;text-align:left;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,.18);z-index:50;min-width:180px;max-width:320px;max-height:280px;overflow-y:auto;}
 .tt-wrap:hover .tt-box{display:block;}
 .tt-box.tt-flip{top:auto;bottom:calc(100% + 6px);}
 </style>
@@ -1943,9 +1943,11 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     const target80=Math.ceil(target*0.8);
     const target70=Math.ceil(target*0.7);
     const target60=Math.ceil(target*0.6);
-    const chuaXeTip=(chuaXeList&&chuaXeList.length)?chuaXeList.join('\n'):'';
+    const chuaXeTip=(chuaXeList&&chuaXeList.length)
+      ? chuaXeList.map((t,i)=>`<div style="${i>0?'margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.15);':''}"><b>${i+1}.</b> ${t.replace(/</g,'&lt;')}</div>`).join('')
+      : '';
     const chuaXeCellContent = chuaXeTip
-      ? `<span class="tt-wrap">${fmt(chuaXe)}<span class="tt-box">${chuaXeTip.replace(/</g,'&lt;')}</span></span>`
+      ? `<span class="tt-wrap">${fmt(chuaXe)}<span class="tt-box">${chuaXeTip}</span></span>`
       : fmt(chuaXe);
     const koCol=hasSplit
       ? `<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KY};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(choTien)}</td>
@@ -2016,6 +2018,9 @@ function renderDMSProgress(data){
     const choTien=(daKyChoTien||{})[g.key]||0;
     const chuaXe=(daKyChuaXe||{})[g.key]||0;
     const chuaXeList=(daKyChuaXeList||{})[g.key]||[];
+    if(chuaXe!==chuaXeList.length){
+      console.warn('[DEBUG lệch số Chưa có xe] Chi nhánh:',g.key,'| Đếm được:',chuaXe,'| Số dòng trong danh sách:',chuaXeList.length,'| Danh sách:',chuaXeList);
+    }
     const target=(targets[g.key]||[])[m-1]||0;
     return {g,dms,khop,choTien,chuaXe,chuaXeList,target,total:dms+khop+choTien+chuaXe};
   });
