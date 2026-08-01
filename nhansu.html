@@ -312,7 +312,7 @@
 
   <div class="hdr">
     <div>
-      <div class="hdr-eyebrow">Báo cáo nội bộ · Cập nhật 06/2026 · Trọng tâm: Khối Dịch vụ</div>
+      <div class="hdr-eyebrow" id="hdrEyebrow">Báo cáo nội bộ · Cập nhật 06/2026 · Trọng tâm: Khối Dịch vụ</div>
       <h1>Báo cáo nhân sự Tín Thanh Group</h1>
     </div>
   </div>
@@ -320,7 +320,7 @@
   <div class="panel" style="margin-bottom:16px;" id="orgKpiPanel"></div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Tình hình nhân sự — Tháng 06/2026</h3>
+    <h3 id="thangNayTitle">Tình hình nhân sự — Tháng 06/2026</h3>
     <p class="desc">Biến động trong tháng gần nhất có dữ liệu đầy đủ</p>
     <div class="turnover-kpi-row" id="thangNayKpiRow" style="grid-template-columns:repeat(4,1fr);"></div>
     <div id="hdCanXuLyBox" style="margin-top:12px;"></div>
@@ -424,7 +424,7 @@
 
   </details>
 
-  <div class="footnote">Dữ liệu tổng hợp từ hồ sơ nhân sự Phú Yên, Nha Trang, Đà Lạt &amp; Bảo Lộc, tháng 06/2026</div>
+  <div class="footnote" id="footnoteText">Dữ liệu tổng hợp từ hồ sơ nhân sự Phú Yên, Nha Trang, Đà Lạt &amp; Bảo Lộc, tháng 06/2026</div>
 
 </div>
 
@@ -1069,7 +1069,17 @@ function dinhBienRowMerged(loc, tos, label){
 
 function fmtVND(n){ return (n/1000000).toLocaleString('vi-VN') + ' triệu'; }
 
-const THANG_NAY = '2026-06';
+const _now = new Date();
+const THANG_NAY = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
+const THANG_NAY_DISPLAY = String(_now.getMonth()+1).padStart(2,'0')+'/'+_now.getFullYear();
+(function(){
+  var eyebrow=document.getElementById('hdrEyebrow');
+  if(eyebrow) eyebrow.textContent='Báo cáo nội bộ · Cập nhật '+THANG_NAY_DISPLAY+' · Trọng tâm: Khối Dịch vụ';
+  var title=document.getElementById('thangNayTitle');
+  if(title) title.textContent='Tình hình nhân sự — Tháng '+THANG_NAY_DISPLAY;
+  var fn=document.getElementById('footnoteText');
+  if(fn) fn.textContent='Dữ liệu tổng hợp từ hồ sơ nhân sự Phú Yên, Nha Trang, Đà Lạt & Bảo Lộc, tháng '+THANG_NAY_DISPLAY;
+})();
 const THANG_TRUOC = (function(){
   const parts = THANG_NAY.split('-').map(Number);
   const d = new Date(parts[0], parts[1]-2, 1); // lùi 1 tháng
