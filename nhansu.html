@@ -511,7 +511,7 @@ function renderOrgKpi(){
     {key:'Đà Lạt', cls:'dl'}, {key:'Bảo Lộc', cls:'bl'}
   ];
 
-  const REF = new Date('2026-07-07');
+  const REF = new Date();
   function in180(d){
     if(!d) return false;
     const days = (REF-new Date(d))/(1000*60*60*24);
@@ -541,10 +541,12 @@ function renderOrgKpi(){
     HIRES.forEach(h=>{ if(h.diadiem===loc && in180(h.ngayvao)) tang[h.chucvu]=(tang[h.chucvu]||0)+1; });
     DATA.forEach(d=>{ if(d.diadiem===loc && in180(d.ngaynghi)) giam[d.chucvu]=(giam[d.chucvu]||0)+1; });
     TURNOVER.forEach(t=>{ if(t.diadiem===loc && in180(t.ngaynghi)) giam[t.chucvu]=(giam[t.chucvu]||0)+1; });
-    const entries = [
-      ...Object.entries(tang).map(([cv,v])=>({cv, v, sign:1})),
-      ...Object.entries(giam).map(([cv,v])=>({cv, v, sign:-1})),
-    ].sort((a,b)=> b.v-a.v).slice(0,4);
+    // Lấy riêng top tăng và top giảm (thay vì gộp chung rồi cắt top 4 theo
+    // số lượng) — tránh trường hợp nghỉ việc bị "tăng" lấn hết chỗ hiển thị
+    // dù tổng số người nghỉ thực tế nhiều hơn.
+    const tangEntries = Object.entries(tang).map(([cv,v])=>({cv, v, sign:1})).sort((a,b)=>b.v-a.v).slice(0,3);
+    const giamEntries = Object.entries(giam).map(([cv,v])=>({cv, v, sign:-1})).sort((a,b)=>b.v-a.v).slice(0,3);
+    const entries = [...tangEntries, ...giamEntries];
     if(entries.length===0) return `<div class="orgkpi-biendong"><div class="title">Biến động 6T</div>Không có biến động</div>`;
     const lines = entries.map(e=> e.sign>0? `<span class="pos">+${e.v} ${e.cv}</span>` : `<span class="neg">-${e.v} ${e.cv}</span>`).join('<br>');
     return `<div class="orgkpi-biendong"><div class="title">Biến động 6T</div>${lines}</div>`;
