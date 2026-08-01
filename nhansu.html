@@ -183,6 +183,12 @@
     letter-spacing:-0.01em;color:var(--navy);
   }
   .section-sub{color:var(--ink-soft);font-size:13.5px;margin-top:4px;}
+  summary.section-divider{cursor:pointer;user-select:none;}
+  summary.section-divider::-webkit-details-marker{display:none;}
+  summary.section-divider::marker{content:'';}
+  .section-toggle-icon{display:inline-block;transition:transform .2s;margin-right:6px;font-size:20px;color:var(--navy);}
+  details[open]>summary.section-toggle-icon{transform:rotate(90deg);}
+  details[open]>summary .section-toggle-icon{transform:rotate(90deg);}
   .panel{
     background:var(--panel);border:none;border-radius:14px;box-shadow:var(--shadow);
     padding:18px 20px 14px;
@@ -316,23 +322,24 @@
   <div class="panel" style="margin-bottom:16px;">
     <h3>Tình hình nhân sự — Tháng 06/2026</h3>
     <p class="desc">Biến động trong tháng gần nhất có dữ liệu đầy đủ</p>
-    <div class="turnover-kpi-row" id="thangNayKpiRow" style="grid-template-columns:repeat(5,1fr);"></div>
+    <div class="turnover-kpi-row" id="thangNayKpiRow" style="grid-template-columns:repeat(4,1fr);"></div>
     <div id="hdCanXuLyBox" style="margin-top:12px;"></div>
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Biến động mới nhất</h3>
-    <p class="desc">10 sự kiện nhận việc / nghỉ việc gần đây nhất trên toàn hệ thống</p>
+    <h3>Biến động 45 ngày gần nhất</h3>
+    <p class="desc">Toàn bộ sự kiện nhận việc / nghỉ việc trong 45 ngày gần nhất trên toàn hệ thống</p>
     <table>
       <thead><tr><th>STT</th><th>Ngày</th><th>Loại biến động</th><th>Nhân sự</th><th>Địa điểm</th><th>Khối</th><th>Ghi chú</th></tr></thead>
       <tbody id="bienDongTable"></tbody>
     </table>
   </div>
 
-  <div class="section-divider">
-    <h1 class="section-title">Chuyên đề 1: Dịch vụ</h1>
-    <p class="section-sub">Phân tích chuyên sâu khối Dịch vụ — điểm nóng nhân sự hiện tại</p>
-  </div>
+  <details class="section-details" ontoggle="if(this.open) setTimeout(()=>window.dispatchEvent(new Event('resize')),50);">
+  <summary class="section-divider">
+    <h1 class="section-title"><span class="section-toggle-icon">▶</span>Chuyên đề 1: Dịch vụ</h1>
+    <p class="section-sub">Phân tích chuyên sâu khối Dịch vụ — điểm nóng nhân sự hiện tại (bấm để mở/thu gọn)</p>
+  </summary>
 
   <div class="grid" style="grid-template-columns:1fr 1fr;">
     <div class="panel">
@@ -401,16 +408,21 @@
     <div class="risk-grid" id="riskGrid"></div>
   </div>
 
-  <div class="section-divider">
-    <h1 class="section-title">Chuyên đề 2: Cơ cấu các chi nhánh</h1>
-    <p class="section-sub">So sánh cơ cấu tổ chức giữa 4 địa điểm</p>
-  </div>
+  </details>
+
+  <details class="section-details" ontoggle="if(this.open) setTimeout(()=>window.dispatchEvent(new Event('resize')),50);">
+  <summary class="section-divider">
+    <h1 class="section-title"><span class="section-toggle-icon">▶</span>Chuyên đề 2: Cơ cấu các chi nhánh</h1>
+    <p class="section-sub">So sánh cơ cấu tổ chức giữa 4 địa điểm (bấm để mở/thu gọn)</p>
+  </summary>
 
   <div class="panel" style="margin-bottom:16px;">
     <h3>Sức khỏe nhân sự theo Địa điểm</h3>
     <p class="desc">So sánh nhanh giữa 4 địa điểm</p>
     <table class="branch-table" id="branchTable"></table>
   </div>
+
+  </details>
 
   <div class="footnote">Dữ liệu tổng hợp từ hồ sơ nhân sự Phú Yên, Nha Trang, Đà Lạt &amp; Bảo Lộc, tháng 06/2026</div>
 
@@ -1058,30 +1070,25 @@ function dinhBienRowMerged(loc, tos, label){
 function fmtVND(n){ return (n/1000000).toLocaleString('vi-VN') + ' triệu'; }
 
 const THANG_NAY = '2026-06';
+const THANG_TRUOC = (function(){
+  const parts = THANG_NAY.split('-').map(Number);
+  const d = new Date(parts[0], parts[1]-2, 1); // lùi 1 tháng
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+})();
 
 function renderThangNay(){
   const nghiThangNay = TURNOVER.filter(d=>d.ngaynghi && d.ngaynghi.startsWith(THANG_NAY)).length
     + DATA.filter(d=>d.ngaynghi && d.ngaynghi.startsWith(THANG_NAY)).length;
   const tuyenThangNay = DATA.filter(d=>d.ngayvao && d.ngayvao.startsWith(THANG_NAY)).length;
-  const locsDB = ['Nha Trang','Phú Yên','Đà Lạt'];
-  const toListDB = ['Đồng','Sơn','SCC'];
-  let conThieu = locsDB.reduce((sum,loc)=> sum + toListDB.reduce((s2,to)=>{
-    const r = dinhBienRow(loc,to); return s2 + (r.trangthai==='Thiếu'? Math.abs(r.gap):0);
-  },0), 0);
-  const blMerged = dinhBienRowMerged('Bảo Lộc', ['Đồng','SCC'], 'Đồng+SCC');
-  const blSon = dinhBienRow('Bảo Lộc','Sơn');
-  conThieu += (blMerged.trangthai==='Thiếu'? Math.abs(blMerged.gap):0) + (blSon.trangthai==='Thiếu'? Math.abs(blSon.gap):0);
-
-  const hdCanhBao = HD_HET_HAN.filter(h=>h.songay<=60);
-  const hdCount = hdCanhBao.length;
-  const hdLbl = hdCount>0 ? `HĐ cần xử lý (≤60 ngày, ${HD_HET_HAN.length} có dữ liệu)` : `HĐ cần xử lý (${HD_HET_HAN.length} có dữ liệu)`;
+  const nghiThangTruoc = TURNOVER.filter(d=>d.ngaynghi && d.ngaynghi.startsWith(THANG_TRUOC)).length
+    + DATA.filter(d=>d.ngaynghi && d.ngaynghi.startsWith(THANG_TRUOC)).length;
+  const tuyenThangTruoc = DATA.filter(d=>d.ngayvao && d.ngayvao.startsWith(THANG_TRUOC)).length;
 
   document.getElementById('thangNayKpiRow').innerHTML = `
+    <div class="kpi c-warn"><div class="num">${nghiThangTruoc}</div><div class="lbl">Nghỉ việc tháng trước</div></div>
     <div class="kpi c-warn"><div class="num">${nghiThangNay}</div><div class="lbl">Nghỉ việc tháng này</div></div>
+    <div class="kpi c-bh"><div class="num">${tuyenThangTruoc}</div><div class="lbl">Tuyển mới tháng trước</div></div>
     <div class="kpi c-bh"><div class="num">${tuyenThangNay}</div><div class="lbl">Tuyển mới tháng này</div></div>
-    <div class="kpi c-warn"><div class="num">${conThieu}</div><div class="lbl">Còn thiếu KTV (theo định biên)</div></div>
-    <div class="kpi c-bh"><div class="num">01</div><div class="lbl">Đề xuất tuyển dụng</div><div class="sub">MKT Nha Trang</div></div>
-    <div class="kpi ${hdCount>0?'c-warn':''}"><div class="num">${hdCount}</div><div class="lbl">${hdLbl}</div></div>
   `;
 
   if(HD_HET_HAN.length>0){
@@ -1092,7 +1099,7 @@ function renderThangNay(){
       return `<tr><td>${h.ten}</td><td>${h.diadiem}</td><td>${h.phong}</td><td>${h.chucvu}</td><td>${h.hethanhd}</td><td>${trangthai}</td></tr>`;
     }).join('');
     document.getElementById('hdCanXuLyBox').innerHTML = `
-      <details ${hdCount>0?'open':''}>
+      <details>
         <summary style="cursor:pointer;font-weight:600;color:#5B5F58;">Danh sách hợp đồng có ngày hết hạn (${HD_HET_HAN.length} người có dữ liệu / 171 đang làm việc)</summary>
         <table style="margin-top:8px;">
           <thead><tr><th>Nhân sự</th><th>Địa điểm</th><th>Phòng</th><th>Chức vụ</th><th>Ngày hết hạn HĐ</th><th>Trạng thái</th></tr></thead>
@@ -1114,7 +1121,9 @@ function renderBienDong(){
     if(t.ngaynghi) events.push({ngay:t.ngaynghi, loai:'Nghỉ việc', ten:t.ten, diadiem:t.diadiem, khoi:t.khoi, ghichu:t.chucvu, ngayvao:t.ngayvao});
   });
   events.sort((a,b)=> new Date(b.ngay) - new Date(a.ngay));
-  const top = events.slice(0,10);
+  const refDate = events.length ? new Date(events[0].ngay) : new Date();
+  const cutoff = new Date(refDate); cutoff.setDate(cutoff.getDate()-45);
+  const top = events.filter(e=> new Date(e.ngay) >= cutoff);
 
   function tenureBadge(e){
     if(e.loai!=='Nghỉ việc' || !e.ngayvao) return '';
