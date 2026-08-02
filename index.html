@@ -298,6 +298,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
       <div class="file-badge"><span class="dot"></span><span id="file-name-badge">—</span></div>
       <button class="btn-reload" onclick="reloadFile()">↺ Tải file khác</button>
       <button id="btn-pdf" onclick="exportPDF()" style="display:none;background:linear-gradient(135deg,#c0392b,#e74c3c);border:none;border-radius:8px;padding:6px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;display:none;align-items:center;gap:5px;">🖨 Xuất PDF</button>
+      <button id="btn-order-excel" onclick="exportOrderExcel()" title="Xuất chi tiết xe tồn + xe nợ ra 1 file Excel (2 sheet) để tính toán đặt hàng" style="background:linear-gradient(135deg,#0f7a3d,#16a34a);border:none;border-radius:8px;padding:6px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:5px;">📊 Xuất đặt hàng</button>
       <button class="btn-export" onclick="exportHTML()">⬇ Xuất file</button>
       
     </div>
@@ -425,6 +426,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════
 // SHARED CONSTANTS & STATE
@@ -3216,6 +3218,86 @@ function renderChiTiet(){
     +'<div class="table-wrap" style="margin-bottom:12px"><div class="drill-header">'+(chartBranchFilter?'Ký hợp đồng theo tháng — '+(BRANCH_NAMES[chartBranchFilter]||chartBranchFilter)+' (theo model) <span style="font-size:10px;color:#94a3b8;cursor:pointer" onclick="chartBranchFilter=null;renderChiTiet()">✕ Bỏ lọc</span>':'Ký hợp đồng theo tháng (2024 → nay) — tổng hệ thống')+'</div><div style="padding:12px">'+(chartBranchFilter?'':legend)+chartBD1()+'</div></div>'
     +'<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px"><div class="table-wrap" style="flex:2;min-width:320px"><div class="drill-header">Ký hợp đồng theo tuần — năm 2026'+khoTitle+'</div><div style="padding:12px">'+chartBD2()+'</div></div><div class="table-wrap" style="flex:1;min-width:260px"><div class="drill-header">5 tuần gần nhất'+khoTitle+'</div><div style="padding:12px">'+chartBD3()+'</div></div></div>'
     +'<div style="display:flex;gap:12px;flex-wrap:wrap">'+vinhTable(top7Month,'Vinh danh tháng '+mStr,'Cả hệ thống')+vinhTable(top7Year,'Vinh danh năm '+CY,'Lũy kế từ đầu năm')+'</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// XUẤT EXCEL ĐẶT HÀNG (Chi tiết xe tồn + Chi tiết xe nợ, 2 sheet)
+// ═══════════════════════════════════════════════════════════
+function exportOrderExcel(){
+  if(typeof XLSX==='undefined'){
+    alert('Thư viện xuất Excel chưa tải xong, vui lòng đợi vài giây rồi thử lại.');
+    return;
+  }
+  if((!allData.stock||!allData.stock.length)&&(!allData.debt||!allData.debt.length)){
+    alert('Chưa có dữ liệu tồn kho / xe nợ để xuất.');
+    return;
+  }
+
+  // ── Sheet 1: Chi tiết xe tồn (đúng dữ liệu bảng "Chi tiết tồn kho", tôn trọng bộ lọc Kho/Năm SX đang chọn) ──
+  var stockRows=(allData.stock||[]).filter(function(r){
+    if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+    if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
+    return true;
+  });
+  stockRows.sort(function(a,b){
+    var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);
+    if(ia<0)ia=999;if(ib<0)ib=999;
+    return ia-ib||a.phienBan.localeCompare(b.phienBan)||a.mau.localeCompare(b.mau);
+  });
+  var stockData=stockRows.map(function(r,i){
+    var days=daysSince(r.ngayNhap);
+    return {
+      '#':i+1,
+      'Model':r.model||'',
+      'Phiên bản':r.phienBan||'',
+      'Màu sắc':r.mau||'',
+      'Năm SX':r.namSX||'',
+      'Chi nhánh':khoLabel(r.kho)||r.kho||'',
+      'Số khung':r.soKhung||'',
+      'Ngày nhập kho':r.ngayNhap?fmtDateHH(r.ngayNhap):'',
+      'Số ngày tồn':days!==null?days:'',
+      'Hiệu lực LC':getLCBaoLanh(r.model,r.phienBan)||''
+    };
+  });
+
+  // ── Sheet 2: Chi tiết xe nợ (đúng dữ liệu bảng "Xe nợ khách – chưa phân xe", tôn trọng cùng bộ lọc) ──
+  var debtRows=(allData.debt||[]).filter(function(r){
+    if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+    if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
+    return true;
+  });
+  debtRows.sort(function(a,b){
+    var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);
+    if(ia<0)ia=999;if(ib<0)ib=999;
+    return ia-ib||a.phienBan.localeCompare(b.phienBan);
+  });
+  var debtData=debtRows.map(function(r,i){
+    var dd=daysSince(r.ngayCoc);
+    return {
+      '#':i+1,
+      'Model':r.model||'',
+      'Phiên bản':r.phienBan||'',
+      'Màu sắc':r.mau||'',
+      'Năm SX':r.namSX||'',
+      'Chi nhánh':khoLabel(r.kho)||r.kho||'',
+      'Khách hàng':r.khach||'',
+      'TVBH':r.tvbh||'',
+      'Ngày đặt cọc':r.ngayCoc?fmtDateHH(r.ngayCoc):'',
+      'Số ngày chờ':dd!==null?dd:''
+    };
+  });
+
+  var wb=XLSX.utils.book_new();
+  var ws1=XLSX.utils.json_to_sheet(stockData);
+  ws1['!cols']=[{wch:4},{wch:14},{wch:24},{wch:12},{wch:8},{wch:12},{wch:20},{wch:14},{wch:12},{wch:10}];
+  XLSX.utils.book_append_sheet(wb,ws1,'Chi tiết xe tồn');
+
+  var ws2=XLSX.utils.json_to_sheet(debtData);
+  ws2['!cols']=[{wch:4},{wch:14},{wch:24},{wch:12},{wch:8},{wch:12},{wch:20},{wch:14},{wch:14},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws2,'Chi tiết xe nợ');
+
+  var stamp=new Date().toLocaleDateString('vi-VN').split('/').join('-');
+  XLSX.writeFile(wb,'DatHang_'+stamp+'.xlsx');
 }
 
 // ═══════════════════════════════════════════════════════════
