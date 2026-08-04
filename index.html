@@ -400,7 +400,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 <div id="pw-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;">
   <div style="background:#fff;border-radius:14px;padding:32px 28px;width:min(360px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.18);text-align:center;">
     <div style="font-size:28px;margin-bottom:10px;">🔒</div>
-    <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">Báo cáo Bán hàng</div>
+    <div id="pw-modal-title" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">Báo cáo Bán hàng</div>
     <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Vui lòng nhập mật khẩu để xem</div>
     <input id="pw-input" type="password" placeholder="Nhập mật khẩu..."
       onkeydown="if(event.key==='Enter')checkPassword();if(event.key==='Escape')closePwModal();"
@@ -773,7 +773,7 @@ function parseJsonRecords(records, fileDate){
     }
   });
 }
-function _canSeeChuaHD(){ return _authenticated && _allowedTabs.has('ns'); }
+function _canSeeChuaHD(){ return _authenticated && (_isAdmin || _isGD); }
 function toggleType(t){
   if(t==='chuaHD' && !_canSeeChuaHD()){
     if(_authenticated){
@@ -961,10 +961,12 @@ function afterParse(fileDate){
 // Ban GĐ: xem 2-3-4 (bh, dv, ns) — không có Chấm công
 // Bán hàng/MKT: chỉ xem 2 (bh)
 // Dịch vụ: chỉ xem 3 (dv)
+// HCNS: chỉ xem 4 (ns)
 // Nhóm không xác định: không có quyền xem mục nào (an toàn)
 var _authenticated = false;
 var _allowedTabs = new Set();
 var _pendingTab = null;
+var _isAdmin = false, _isGD = false; // dùng riêng cho các mục chỉ Admin/Ban GĐ được xem (vd: "Chưa xuất HD")
 
 function _stripDiacritics(s){
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
@@ -973,12 +975,16 @@ function _classifyGroup(nhomRaw, isAdmin){
   if(isAdmin) return new Set(['bh','dv','ns','cc']);
   var n = _stripDiacritics(nhomRaw);
   if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns']);
+  if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns']);
   if(n.indexOf('ban hang')>=0 || n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh']);
   if(n.indexOf('dich vu')>=0) return new Set(['dv']);
   return new Set();
 }
 function _tabLabel(t){
   return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'BC Nhân sự'}[t];
+}
+function _pwModalTitle(t){
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'Báo cáo Nhân sự'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1272,6 +1278,8 @@ var USERS_SHEET_ID = "1eYlQoR5kJJs5bOVXm85x0YpBGpxfMH7DBSUKQ2hwvr4";
 var _adminPass = '';
 
 function showPasswordModal(){
+  var titleEl=document.getElementById('pw-modal-title');
+  if(titleEl) titleEl.textContent=_pwModalTitle(_pendingTab);
   document.getElementById('pw-modal').style.display='flex';
   setTimeout(function(){
     var inp=document.getElementById('pw-input');
@@ -1312,6 +1320,8 @@ function checkPassword(){
       _adminPass=val;
       _authenticated=true;
       _allowedTabs=_classifyGroup(res.nhom, res.isAdmin);
+      _isAdmin=!!res.isAdmin;
+      _isGD=(function(n){n=_stripDiacritics(n);return n.indexOf('gd')>=0||n.indexOf('giam doc')>=0;})(res.nhom);
       console.log('[Auth debug] name=', res.name, ' isAdmin=', res.isAdmin, ' nhom(raw)=', JSON.stringify(res.nhom), ' -> allowedTabs=', Array.from(_allowedTabs));
       closePwModal();
       // Hiện tên user ở header
