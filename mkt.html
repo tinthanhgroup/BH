@@ -226,10 +226,23 @@ function renderBranchTable(list){
   });
 }
 
+// Parse "dd/MM/yyyy" -> số có thể so sánh (yyyyMMdd), tránh lỗi sắp xếp
+// theo kiểu chuỗi (vd "07/09" bị xếp trước "10/08" nếu so bằng localeCompare).
+function dateSortKey(s){
+  if(!s) return 0;
+  const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(!m) return 0;
+  return parseInt(m[3],10)*10000 + parseInt(m[2],10)*100 + parseInt(m[1],10);
+}
+
 function renderDetail(list){
   const sorted = [...list].sort((a,b)=>{
     if(a.treHan!==b.treHan) return a.treHan?-1:1;
-    return (a.tuNgay||'').localeCompare(b.tuNgay||'');
+    const d = dateSortKey(a.tuNgay) - dateSortKey(b.tuNgay);
+    if(d!==0) return d;
+    const c = (a.chinhanh||'').localeCompare(b.chinhanh||'');
+    if(c!==0) return c;
+    return (parseInt(a.maHM,10)||0) - (parseInt(b.maHM,10)||0);
   });
   document.getElementById('detailCount').textContent = sorted.length;
   document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
