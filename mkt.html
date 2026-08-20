@@ -97,7 +97,7 @@
       <h3>Thực hiện theo Chi nhánh</h3>
       <p class="desc">Tổng đăng ký / đã đăng / trễ hạn theo từng chi nhánh (theo bộ lọc đang chọn)</p>
       <table>
-        <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th><th>Hoàn thành</th></tr></thead>
+        <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th></tr></thead>
         <tbody id="branchTable"></tbody>
       </table>
     </div>
@@ -106,6 +106,15 @@
       <p class="desc">% số bài đã đăng / tổng số bài đăng ký</p>
       <div class="chart-box"><canvas id="chartBranch"></canvas></div>
     </div>
+  </div>
+
+  <div class="panel">
+    <h3>Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
+    <p class="desc">Số bài đã <b>đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
+    <table>
+      <thead><tr id="weeklyHead"></tr></thead>
+      <tbody id="weeklyTable"></tbody>
+    </table>
   </div>
 
   <div class="panel">
@@ -202,11 +211,7 @@ function renderBranchTable(list){
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.done}</td>
       <td style="color:${r.late>0?'var(--red)':'var(--ink-soft)'};font-weight:700;">${r.late}</td>
-      <td style="min-width:110px;">
-        <div style="font-weight:700;">${r.pct}%</div>
-        <div class="barwrap"><div class="barfill" style="width:${r.pct}%;background:${r.pct>=80?'var(--green)':(r.pct>=50?'var(--gold)':'var(--red)')}"></div></div>
-      </td>
-    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 
   if(chartBranch) chartBranch.destroy();
   const ctx = document.getElementById('chartBranch').getContext('2d');
@@ -264,6 +269,41 @@ function renderDetail(list){
       <td>${link}</td>
     </tr>`;
   }).join('');
+}
+
+// ── Theo Tuần: kiểm tra tối thiểu 1 bài/tuần/chi nhánh (không phụ thuộc bộ lọc — luôn dùng toàn bộ POSTS) ──
+function renderWeekly(){
+  const branches = COVERAGE_BRANCH_ORDER.filter(b=>POSTS.some(p=>p.chinhanh===b));
+  uniqSorted(POSTS.map(p=>p.chinhanh)).forEach(b=>{ if(!branches.includes(b)) branches.push(b); });
+
+  const weeks = {};
+  POSTS.forEach(p=>{
+    const key = p.tuan || '(?)';
+    if(!weeks[key]) weeks[key] = { tuan:key, sortKey:dateSortKey(p.tuNgay), counts:{} };
+    weeks[key].counts[p.chinhanh] = (weeks[key].counts[p.chinhanh]||0) + 1;
+  });
+  const rows = Object.values(weeks).sort((a,b)=> a.sortKey - b.sortKey);
+
+  document.getElementById('weeklyHead').innerHTML =
+    '<th>Tuần</th>' + branches.map(b=>`<th style="text-align:center;">${b}</th>`).join('') + '<th>Cảnh báo</th>';
+
+  const totals = {}; branches.forEach(b=>totals[b]=0);
+  const bodyRows = rows.map(r=>{
+    const missing = [];
+    const cells = branches.map(b=>{
+      const c = r.counts[b] || 0;
+      totals[b] += c;
+      if(c===0) missing.push(b);
+      return `<td style="text-align:center;font-weight:700;${c===0?'background:#FADBD8;color:#C0392B;':''}">${c}</td>`;
+    }).join('');
+    const canh = missing.length===0
+      ? '<span class="badge done">Đạt</span>'
+      : `<span class="badge late">Thiếu: ${missing.join(', ')}</span>`;
+    return `<tr><td style="font-weight:700;">${r.tuan}</td>${cells}<td>${canh}</td></tr>`;
+  }).join('');
+  const totalRow = `<tr style="font-weight:800;background:#F1F5F9;"><td>TỔNG</td>${branches.map(b=>`<td style="text-align:center;">${totals[b]}</td>`).join('')}<td></td></tr>`;
+
+  document.getElementById('weeklyTable').innerHTML = bodyRows + totalRow;
 }
 
 // ── Độ phủ hạng mục theo chi nhánh (không phụ thuộc bộ lọc — luôn dùng toàn bộ POSTS) ──
@@ -346,6 +386,7 @@ async function loadData(){
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + POSTS.length + ' bài đăng ký';
     document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ Nhật ký đăng bài Fanpage các chi nhánh, đồng bộ tự động mỗi giờ.';
     populateFilterOptions();
+    renderWeekly();
     renderCoverage();
     render();
   }catch(e){
