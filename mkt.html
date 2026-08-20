@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MKT Thương hiệu — Tín Thanh Group</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root{
@@ -39,8 +38,7 @@
   .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
   .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  .grid2{display:grid;grid-template-columns:1.1fr 0.9fr;gap:18px;}
-  @media(max-width:980px){.grid2{grid-template-columns:1fr;} .kpi-row{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
 
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
   thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
@@ -57,7 +55,6 @@
   .dash{color:var(--ink-soft);}
   .barwrap{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:4px;}
   .barfill{height:100%;background:var(--green);}
-  .chart-box{position:relative;height:280px;}
   .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
 </style>
@@ -92,24 +89,17 @@
     </div>
   </div>
 
-  <div class="grid2">
-    <div class="panel">
-      <h3>Thực hiện theo Chi nhánh</h3>
-      <p class="desc">Tổng đăng ký / đã đăng / trễ hạn theo từng chi nhánh (theo bộ lọc đang chọn)</p>
-      <table>
-        <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th></tr></thead>
-        <tbody id="branchTable"></tbody>
-      </table>
-    </div>
-    <div class="panel">
-      <h3>Tỷ lệ hoàn thành theo Chi nhánh</h3>
-      <p class="desc">% số bài đã đăng / tổng số bài đăng ký</p>
-      <div class="chart-box"><canvas id="chartBranch"></canvas></div>
-    </div>
+  <div class="panel">
+    <h3>1. Thực hiện theo Chi nhánh</h3>
+    <p class="desc">Tổng đăng ký / đã đăng / trễ hạn / hoàn thành theo từng chi nhánh (theo bộ lọc đang chọn)</p>
+    <table>
+      <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th><th>Hoàn thành</th></tr></thead>
+      <tbody id="branchTable"></tbody>
+    </table>
   </div>
 
   <div class="panel">
-    <h3>Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
+    <h3>2. Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
     <p class="desc">Số bài đã <b>đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
     <table>
       <thead><tr id="weeklyHead"></tr></thead>
@@ -118,7 +108,7 @@
   </div>
 
   <div class="panel">
-    <h3>Độ phủ hạng mục theo Chi nhánh</h3>
+    <h3>3. Độ phủ hạng mục theo Chi nhánh</h3>
     <p class="desc">Số bài đã <b>đăng ký</b> theo từng hạng mục (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — ô tô đỏ = chi nhánh đó chưa đăng ký hạng mục này lần nào, cần rà soát bổ sung kế hoạch.</p>
     <table>
       <thead><tr id="coverageHead"></tr></thead>
@@ -127,7 +117,7 @@
   </div>
 
   <div class="panel">
-    <h3>Chi tiết bài đăng (<span id="detailCount">0</span>)</h3>
+    <h3>4. Chi tiết bài đăng (<span id="detailCount">0</span>)</h3>
     <p class="desc">Bấm vào link để mở bài đăng Facebook. Dòng tô đỏ = đã quá "Đến ngày" nhưng chưa đăng.</p>
     <table>
       <thead><tr>
@@ -143,12 +133,8 @@
 </div>
 
 <script>
-Chart.defaults.maintainAspectRatio = false;
-Chart.defaults.responsive = true;
-
 const MKT_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/mkt.json';
 let POSTS = [];
-let chartBranch = null;
 let state = { chinhanh:'', tuan:'', nhom:'', trangthai:'', q:'' };
 
 function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
@@ -211,24 +197,11 @@ function renderBranchTable(list){
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.done}</td>
       <td style="color:${r.late>0?'var(--red)':'var(--ink-soft)'};font-weight:700;">${r.late}</td>
-    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
-
-  if(chartBranch) chartBranch.destroy();
-  const ctx = document.getElementById('chartBranch').getContext('2d');
-  chartBranch = new Chart(ctx, {
-    type:'bar',
-    data:{
-      labels: rows.map(r=>r.b),
-      datasets:[{ label:'% hoàn thành', data: rows.map(r=>r.pct),
-        backgroundColor: rows.map(r=>r.pct>=80?'#1FA97A':(r.pct>=50?'#F2C14E':'#D64545')),
-        borderRadius:6, maxBarThickness:46 }]
-    },
-    options:{
-      indexAxis:'y',
-      plugins:{legend:{display:false}, tooltip:{callbacks:{label:(c)=>c.parsed.x+'%'}}},
-      scales:{ x:{min:0,max:100,ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}} }
-    }
-  });
+      <td style="min-width:110px;">
+        <div style="font-weight:700;">${r.pct}%</div>
+        <div class="barwrap"><div class="barfill" style="width:${r.pct}%;background:${r.pct>=80?'var(--green)':(r.pct>=50?'var(--gold)':'var(--red)')}"></div></div>
+      </td>
+    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // Parse "dd/MM/yyyy" -> số có thể so sánh (yyyyMMdd), tránh lỗi sắp xếp
