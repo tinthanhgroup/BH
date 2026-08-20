@@ -310,6 +310,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-dv-btn" onclick="switchTab('dv')">3. BC Dịch vụ 🔒</div>
     <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. BC Nhân sự 🔒</div>
     <div class="tab" id="tab-cc-btn" style="display:none" onclick="switchTab('cc')">5. Chấm công</div>
+    <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">6. MKT Thương hiệu 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -379,6 +380,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-dv" class="tab-panel" style="padding:0;overflow:hidden;">
     <iframe id="dv-iframe" src="" style="width:125%;height:125%;border:none;display:block;transform:scale(0.8);transform-origin:top left;" allowfullscreen></iframe>
+  </div>
+  <div id="tab-mkt" class="tab-panel" style="padding:0;">
+    <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
 
   <!-- TAB HÀNG HÓA -->
@@ -957,9 +961,9 @@ function afterParse(fileDate){
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════
 // ── PHÂN QUYỀN THEO NHÓM ─────────────────────────────────────
-// Admin: xem đủ 2-3-4-5 (bh, dv, ns, cc)
-// Ban GĐ: xem 2-3-4 (bh, dv, ns) — không có Chấm công
-// Bán hàng/MKT: chỉ xem 2 (bh)
+// Admin: xem đủ 2-3-4-5-6 (bh, dv, ns, cc, mkt)
+// Ban GĐ: xem 2-3-4-6 (bh, dv, ns, mkt) — không có Chấm công
+// Bán hàng/MKT: xem 2-6 (bh, mkt)
 // Dịch vụ: chỉ xem 3 (dv)
 // HCNS: chỉ xem 4 (ns)
 // Nhóm không xác định: không có quyền xem mục nào (an toàn)
@@ -972,19 +976,19 @@ function _stripDiacritics(s){
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
 }
 function _classifyGroup(nhomRaw, isAdmin){
-  if(isAdmin) return new Set(['bh','dv','ns','cc']);
+  if(isAdmin) return new Set(['bh','dv','ns','cc','mkt']);
   var n = _stripDiacritics(nhomRaw);
-  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns']);
+  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns']);
-  if(n.indexOf('ban hang')>=0 || n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh']);
+  if(n.indexOf('ban hang')>=0 || n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt']);
   if(n.indexOf('dich vu')>=0) return new Set(['dv']);
   return new Set();
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'BC Nhân sự'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'BC Nhân sự', mkt:'MKT Thương hiệu'}[t];
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'Báo cáo Nhân sự'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'Báo cáo Nhân sự', mkt:'MKT Thương hiệu'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1013,9 +1017,11 @@ function _fixEmbedPanelHeights(){
   var cc=document.getElementById('tab-cc');
   var ns=document.getElementById('tab-ns');
   var dv=document.getElementById('tab-dv');
+  var mkt=document.getElementById('tab-mkt');
   if(cc) cc.style.height=h;
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
+  if(mkt) mkt.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
 
@@ -1024,7 +1030,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','cc','admin'];
+  const tabOrder=['hh','bh','dv','ns','cc','mkt','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1052,6 +1058,14 @@ function _doSwitchTab(t){
     if(!dvIframe.getAttribute('data-loaded')){
       dvIframe.src='https://app.powerbi.com/view?r=eyJrIjoiZjgwMjc5ZTktYjQwZi00YjE2LWE3MzktOWExNjcxZTRkZWQ5IiwidCI6IjAzYmNiZjgzLTM3ZjEtNGJhNC05NDQzLTNmMTIyNzY1ZDNhNSIsImMiOjEwfQ%3D%3D';
       dvIframe.setAttribute('data-loaded','1');
+    }
+  }
+  // Lazy load iframe MKT Thương hiệu
+  if(t==='mkt'){
+    var mktIframe=document.getElementById('mkt-iframe');
+    if(!mktIframe.getAttribute('data-loaded')){
+      mktIframe.src='https://tinthanhgroup.github.io/BH/mkt.html';
+      mktIframe.setAttribute('data-loaded','1');
     }
   }
   const pdfBtn=document.getElementById('btn-pdf');
