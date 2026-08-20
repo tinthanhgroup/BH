@@ -109,6 +109,15 @@
   </div>
 
   <div class="panel">
+    <h3>Độ phủ hạng mục theo Chi nhánh</h3>
+    <p class="desc">Số bài đã <b>đăng ký</b> theo từng hạng mục (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — ô tô đỏ = chi nhánh đó chưa đăng ký hạng mục này lần nào, cần rà soát bổ sung kế hoạch.</p>
+    <table>
+      <thead><tr id="coverageHead"></tr></thead>
+      <tbody id="coverageTable"></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
     <h3>Chi tiết bài đăng (<span id="detailCount">0</span>)</h3>
     <p class="desc">Bấm vào link để mở bài đăng Facebook. Dòng tô đỏ = đã quá "Đến ngày" nhưng chưa đăng.</p>
     <table>
@@ -244,6 +253,42 @@ function renderDetail(list){
   }).join('');
 }
 
+// ── Độ phủ hạng mục theo chi nhánh (không phụ thuộc bộ lọc — luôn dùng toàn bộ POSTS) ──
+var COVERAGE_BRANCH_ORDER = ['Nha Trang','Phú Yên','Đà Lạt'];
+function renderCoverage(){
+  const branches = COVERAGE_BRANCH_ORDER.filter(b=>POSTS.some(p=>p.chinhanh===b));
+  uniqSorted(POSTS.map(p=>p.chinhanh)).forEach(b=>{ if(!branches.includes(b)) branches.push(b); });
+
+  const cats = {};
+  POSTS.forEach(p=>{
+    const key = p.maHM || '(?)';
+    if(!cats[key]) cats[key] = { maHM:key, nhom:p.nhom, hangMuc:p.hangMuc, counts:{} };
+    cats[key].counts[p.chinhanh] = (cats[key].counts[p.chinhanh]||0) + 1;
+  });
+  const rows = Object.values(cats).sort((a,b)=> (parseInt(a.maHM,10)||999) - (parseInt(b.maHM,10)||999));
+
+  document.getElementById('coverageHead').innerHTML =
+    '<th>Mã HM</th><th>Nhóm</th><th>Hạng mục</th>' +
+    branches.map(b=>`<th style="text-align:center;">${b}</th>`).join('') +
+    '<th style="text-align:center;">Tổng</th>';
+
+  const totals = {}; branches.forEach(b=>totals[b]=0); let grand=0;
+  const bodyRows = rows.map(r=>{
+    let rowTotal = 0;
+    const cells = branches.map(b=>{
+      const c = r.counts[b] || 0;
+      totals[b] += c; rowTotal += c;
+      const zero = c===0;
+      return `<td style="text-align:center;font-weight:700;${zero?'background:#FADBD8;color:#C0392B;':''}">${c}</td>`;
+    }).join('');
+    grand += rowTotal;
+    return `<tr><td style="font-weight:700;">${r.maHM}</td><td>${r.nhom||''}</td><td style="max-width:380px;">${r.hangMuc||''}</td>${cells}<td style="text-align:center;font-weight:800;">${rowTotal}</td></tr>`;
+  }).join('');
+  const totalRow = `<tr style="font-weight:800;background:#F1F5F9;"><td colspan="3">TỔNG</td>${branches.map(b=>`<td style="text-align:center;">${totals[b]}</td>`).join('')}<td style="text-align:center;">${grand}</td></tr>`;
+
+  document.getElementById('coverageTable').innerHTML = bodyRows + totalRow;
+}
+
 function populateFilterOptions(){
   const chinhanhs = uniqSorted(POSTS.map(p=>p.chinhanh));
   const tuans = uniqSorted(POSTS.map(p=>p.tuan));
@@ -288,6 +333,7 @@ async function loadData(){
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + POSTS.length + ' bài đăng ký';
     document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ Nhật ký đăng bài Fanpage các chi nhánh, đồng bộ tự động mỗi giờ.';
     populateFilterOptions();
+    renderCoverage();
     render();
   }catch(e){
     console.error('Lỗi tải mkt.json:', e);
