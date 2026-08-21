@@ -38,7 +38,9 @@
   .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
   .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+  .grid2{display:grid;grid-template-columns:1fr 1.3fr;gap:18px;margin-bottom:18px;}
+  .grid2 .panel{margin-bottom:0;}
+  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;}}
 
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
   thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
@@ -89,22 +91,24 @@
     </div>
   </div>
 
-  <div class="panel">
-    <h3>1. Thực hiện theo Chi nhánh</h3>
-    <p class="desc">Tổng đăng ký / đã đăng / trễ hạn / hoàn thành theo từng chi nhánh (theo bộ lọc đang chọn)</p>
-    <table>
-      <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th><th>Hoàn thành</th></tr></thead>
-      <tbody id="branchTable"></tbody>
-    </table>
-  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>1. Thực hiện theo Chi nhánh</h3>
+      <p class="desc">Tổng đăng ký / đã đăng / trễ hạn / hoàn thành theo từng chi nhánh (theo bộ lọc đang chọn)</p>
+      <table>
+        <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th><th>Hoàn thành</th></tr></thead>
+        <tbody id="branchTable"></tbody>
+      </table>
+    </div>
 
-  <div class="panel">
-    <h3>2. Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
-    <p class="desc">Số bài đã <b>đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
-    <table>
-      <thead><tr id="weeklyHead"></tr></thead>
-      <tbody id="weeklyTable"></tbody>
-    </table>
+    <div class="panel">
+      <h3>2. Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
+      <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
+      <table>
+        <thead><tr id="weeklyHead"></tr></thead>
+        <tbody id="weeklyTable"></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="panel">
@@ -252,29 +256,35 @@ function renderWeekly(){
   const weeks = {};
   POSTS.forEach(p=>{
     const key = p.tuan || '(?)';
-    if(!weeks[key]) weeks[key] = { tuan:key, sortKey:dateSortKey(p.tuNgay), counts:{} };
+    if(!weeks[key]) weeks[key] = { tuan:key, sortKey:dateSortKey(p.tuNgay), counts:{}, done:{} };
     weeks[key].counts[p.chinhanh] = (weeks[key].counts[p.chinhanh]||0) + 1;
+    if(p.daDang) weeks[key].done[p.chinhanh] = (weeks[key].done[p.chinhanh]||0) + 1;
   });
   const rows = Object.values(weeks).sort((a,b)=> a.sortKey - b.sortKey);
 
   document.getElementById('weeklyHead').innerHTML =
     '<th>Tuần</th>' + branches.map(b=>`<th style="text-align:center;">${b}</th>`).join('') + '<th>Cảnh báo</th>';
 
-  const totals = {}; branches.forEach(b=>totals[b]=0);
+  const totals = {}, totalsDone = {}; branches.forEach(b=>{totals[b]=0; totalsDone[b]=0;});
   const bodyRows = rows.map(r=>{
     const missing = [];
     const cells = branches.map(b=>{
       const c = r.counts[b] || 0;
-      totals[b] += c;
+      const d = r.done[b] || 0;
+      totals[b] += c; totalsDone[b] += d;
       if(c===0) missing.push(b);
-      return `<td style="text-align:center;font-weight:700;${c===0?'background:#FADBD8;color:#C0392B;':''}">${c}</td>`;
+      let style = '';
+      if(c===0) style = 'background:#FADBD8;color:#C0392B;';
+      else if(d>=c) style = 'color:var(--green);';
+      else style = 'color:#B8860B;';
+      return `<td style="text-align:center;font-weight:700;${style}">${d}/${c}</td>`;
     }).join('');
     const canh = missing.length===0
       ? '<span class="badge done">Đạt</span>'
       : `<span class="badge late">Thiếu: ${missing.join(', ')}</span>`;
     return `<tr><td style="font-weight:700;">${r.tuan}</td>${cells}<td>${canh}</td></tr>`;
   }).join('');
-  const totalRow = `<tr style="font-weight:800;background:#F1F5F9;"><td>TỔNG</td>${branches.map(b=>`<td style="text-align:center;">${totals[b]}</td>`).join('')}<td></td></tr>`;
+  const totalRow = `<tr style="font-weight:800;background:#F1F5F9;"><td>TỔNG</td>${branches.map(b=>`<td style="text-align:center;">${totalsDone[b]}/${totals[b]}</td>`).join('')}<td></td></tr>`;
 
   document.getElementById('weeklyTable').innerHTML = bodyRows + totalRow;
 }
