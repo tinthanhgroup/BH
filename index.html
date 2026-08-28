@@ -773,7 +773,8 @@ function parseJsonRecords(records, fileDate){
     if(kho!==''&&soKhung!==''&&!r.xuatHoSo&&r.ttHoSo&&!r.fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
       allData.chuaHD.push({model:model,phienBan:phienBan,mau:mau,kho:kho,soKhung:soKhung,
                            daly:daly,tvbh:tvbh,giaVon:r.giaVon||0,
-                           ngayBan:ngayBan,baoCaoDMS:r.baoCaoDMS});
+                           ngayBan:ngayBan,baoCaoDMS:r.baoCaoDMS,
+                           nguonKhach:nguonKhach,khach:khach,xuatHoSo:!!r.xuatHoSo});
     }
   });
 }
@@ -2646,6 +2647,43 @@ function renderChuaHD(){
   var hasGiaVon=src.some(function(r){return r.giaVon>0;});
   var giaNote=hasGiaVon?'':' <span style="font-size:10px;color:#94a3b8;font-style:italic">(Giá vốn sẽ có sau lần sync tiếp theo)</span>';
 
+  // ===== Cảnh báo: xe bán ngang cho đại lý khác (Nguồn khách = "Khác") nhưng admin dịch vụ quên đánh dấu Xuất hóa đơn =====
+  // Điều kiện: Nguồn khách = "Khác" VÀ Xuất hồ sơ (Xuất HĐ) vẫn đang rỗng (chưa đánh dấu X)
+  var banNgangRows=src.filter(function(r){
+    return (r.nguonKhach||'').trim().toLowerCase()==='khác' && !r.xuatHoSo;
+  })
+    .slice().sort(function(a,b){
+      var ia=MODEL_ORDER_LOCAL.indexOf(a.model), ib=MODEL_ORDER_LOCAL.indexOf(b.model);
+      if(ia<0) ia=999; if(ib<0) ib=999;
+      if(ia!==ib) return ia-ib;
+      return (a.soKhung||'').localeCompare(b.soKhung||'');
+    });
+  var banNgangHtml='';
+  if(banNgangRows.length>0){
+    banNgangHtml='<div class="sec-title" style="color:#b45309;font-size:13px;">⚠️ Xe bán ngang cho đại lý khác — chưa xuất hóa đơn ('+banNgangRows.length+' xe)</div>'
+      +'<div style="font-size:11px;color:#94a3b8;margin:-4px 0 10px;">Nguồn khách = "Khác" (bán cho đại lý khác, không phải khách lẻ) nhưng cột Xuất hóa đơn vẫn đang để trống — admin dịch vụ dễ quên đánh dấu nhóm này, cần rà soát lại.</div>'
+      +'<div style="max-width:680px;margin-bottom:20px;"><div class="table-wrap"><div class="table-scroll"><table style="border-collapse:collapse;font-size:11.5px;width:100%">'
+      +'<thead><tr style="border-bottom:2px solid var(--border);">'
+      +'<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;">Model</th>'
+      +'<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;">Số khung</th>'
+      +'<th style="padding:6px 8px;text-align:center;font-weight:600;color:var(--muted);font-size:10px;">Kho</th>'
+      +'<th style="padding:6px 8px;text-align:left;font-weight:600;color:var(--muted);font-size:10px;">Khách (đại lý mua)</th>'
+      +'<th style="padding:6px 8px;text-align:center;font-weight:600;color:var(--muted);font-size:10px;">TVBH</th>'
+      +'<th style="padding:6px 8px;text-align:right;font-weight:600;color:var(--muted);font-size:10px;">Giá vốn</th>'
+      +'</tr></thead><tbody>'
+      +banNgangRows.map(function(r){
+        return '<tr style="border-bottom:1px solid var(--border);background:#fffbeb;">'
+          +`<td style="padding:5px 8px;font-weight:600;white-space:nowrap">${r.model||'—'}</td>`
+          +`<td style="padding:5px 8px;font-family:'JetBrains Mono',monospace;color:#78350f;white-space:nowrap">${r.soKhung||'—'}</td>`
+          +`<td style="padding:5px 8px;text-align:center;font-weight:600;color:#b45309">${r.daly||'—'}</td>`
+          +`<td style="padding:5px 8px;color:#78350f;white-space:nowrap">${r.khach||'—'}</td>`
+          +`<td style="padding:5px 8px;text-align:center;color:${r.tvbh?'#78350f':'#94a3b8'}">${r.tvbh||'(trống)'}</td>`
+          +`<td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;color:#78350f">${fmtGia(r.giaVon)}</td>`
+          +'</tr>';
+      }).join('')
+      +'</tbody></table></div></div></div>';
+  }
+
   // Header: Model | NT SL | NT Giá | ĐL SL | ĐL Giá | PY SL | PY Giá | Tổng SL | Tổng Giá
   var TH=function(t,extra){return `<th style="padding:6px 6px;text-align:right;font-weight:600;color:var(--muted);font-size:10px;white-space:nowrap;${extra||''}">${t}</th>`;};
   var tableHtml='<div style="max-width:760px"><div class="table-wrap"><div class="table-scroll"><table style="border-collapse:collapse;font-size:11.5px;width:100%">'
@@ -2727,7 +2765,7 @@ function renderChuaHD(){
     +'</tbody></table></div></div></div>';
 
   return `<div class="sec-title" style="color:#7c3aed">Xe chưa xuất hóa đơn${giaNote}</div>`
-    +weekSel+tableHtml
+    +weekSel+banNgangHtml+tableHtml
     +'<div class="sec-title" style="color:#7c3aed;font-size:13px;margin-top:6px">Danh sách chi tiết ('+detailRows.length+' xe)</div>'
     +khoFilterHtml+detailHtml;
 }
@@ -2749,7 +2787,9 @@ function buildChuaHDFromRecords(records){
     if(kho!==''&&soKhung!==''&&!xuatHoSo&&ttHoSo&&!fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
       result.push({
         model:normModel(r.model||''),phienBan:r.phienBan||'',mau:r.mau||'',
-        kho:kho,daly:daly,giaVon:r.giaVon||0,soKhung:soKhung
+        kho:kho,daly:daly,giaVon:r.giaVon||0,soKhung:soKhung,
+        nguonKhach:(r.nguonKhach||'').trim(),khach:(r.khDatCoc||'').trim(),tvbh:(r.tvbh||'').trim(),
+        xuatHoSo:xuatHoSo
       });
     }
   });
