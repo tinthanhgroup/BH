@@ -2333,9 +2333,9 @@ const TARGET_GROUPS=[
   {key:'PY',label:'Phú Yên',sub:'PY',color:'#82c9a0'},
 ];
 const DEFAULT_TARGETS={
-  NT:[58,26,33,35,35,37,35,22,29,42,46,48],
-  DL:[35,11,21,39,42,42,25,14,36,46,49,55],
-  PY:[22,10,14,15,16,17,12,9,16,18,20,24],
+  NT:[58,26,33,35,35,37,26,22,31,40,42,58],
+  DL:[35,11,21,39,42,42,18,14,22,28,29,34],
+  PY:[22,10,14,15,16,17,11,9,12,13,14,16],
 };
 function loadTargets(){
   try{const saved=JSON.parse(localStorage.getItem('tt_targets_2026')||'{}');const result={};TARGET_GROUPS.forEach(g=>{result[g.key]=(saved[g.key]&&saved[g.key].some(v=>v>0))?saved[g.key]:DEFAULT_TARGETS[g.key];});return result;}
