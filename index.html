@@ -311,6 +311,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. BC Nhân sự 🔒</div>
     <div class="tab" id="tab-cc-btn" style="display:none" onclick="switchTab('cc')">5. Chấm công</div>
     <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">6. MKT Thương hiệu 🔒</div>
+    <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">7. Theo dõi Chính sách</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -383,6 +384,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-mkt" class="tab-panel" style="padding:0;">
     <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+  </div>
+  <div id="tab-policy" class="tab-panel" style="padding:0;">
+    <iframe id="policy-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
 
   <!-- TAB HÀNG HÓA -->
@@ -997,7 +1001,7 @@ function _unlockTabUI(t){
 }
 
 function switchTab(t){
-  if(t==='hh' || t==='admin' || t==='cc'){
+  if(t==='hh' || t==='admin' || t==='cc' || t==='policy'){
     _doSwitchTab(t);
     return;
   }
@@ -1019,10 +1023,12 @@ function _fixEmbedPanelHeights(){
   var ns=document.getElementById('tab-ns');
   var dv=document.getElementById('tab-dv');
   var mkt=document.getElementById('tab-mkt');
+  var policy=document.getElementById('tab-policy');
   if(cc) cc.style.height=h;
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
   if(mkt) mkt.style.height=h;
+  if(policy) policy.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
 
@@ -1031,7 +1037,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','cc','mkt','admin'];
+  const tabOrder=['hh','bh','dv','ns','cc','mkt','policy','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1067,6 +1073,14 @@ function _doSwitchTab(t){
     if(!mktIframe.getAttribute('data-loaded')){
       mktIframe.src='https://tinthanhgroup.github.io/BH/mkt.html';
       mktIframe.setAttribute('data-loaded','1');
+    }
+  }
+  // Lazy load iframe Theo dõi Chính sách
+  if(t==='policy'){
+    var policyIframe=document.getElementById('policy-iframe');
+    if(!policyIframe.getAttribute('data-loaded')){
+      policyIframe.src='https://tinthanhgroup.github.io/BH/theo_doi_chinh_sach.html';
+      policyIframe.setAttribute('data-loaded','1');
     }
   }
   const pdfBtn=document.getElementById('btn-pdf');
