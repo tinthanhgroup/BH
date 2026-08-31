@@ -2571,17 +2571,23 @@ function renderChuaHD(){
   var MODEL_ORDER_LOCAL=['Grand i10','Venue','Accent','Elantra','Creta','Tucson','Stargazer','Custin','Santafe','Ioniq','Palisade','Staria'];
   var KHO_LIST=[{k:'NT',label:'Nha Trang'},{k:'ĐL',label:'Đà Lạt'},{k:'PY',label:'Phú Yên'}];
   var activeWeek=window._chuaHDWeek||null;
+  var activeMonth=window._chuaHDMonth||null;
 
-  var src = activeWeek&&window._weeklySnapData
-    ? buildChuaHDFromRecords(window._weeklySnapData)
-    : (allData.chuaHD||[]);
+  var src = activeMonth&&window._monthlySnapData
+    ? buildChuaHDFromRecords(window._monthlySnapData)
+    : (activeWeek&&window._weeklySnapData
+        ? buildChuaHDFromRecords(window._weeklySnapData)
+        : (allData.chuaHD||[]));
 
   // Snapshot cũ không có field xuatHoSo → không thể tính chính xác
   if(src===null){
-    var weekSel0=/* dropdown */'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;"><span style="font-size:11px;color:#94a3b8;font-weight:500">Tuần:</span><select onchange="hhSelectWeek(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;"><option value="">Tuần hiện tại</option>'+(window._weeklySnaps||[]).map(function(s){return`<option value="${s.week}"${activeWeek===s.week?' selected':''}>${s.week.replace('_',' — ').replace('W','Tuần ')} (${(s.saved_vn||'').substring(0,10)})</option>`;}).join('')+'</select><span style="font-size:10.5px;color:#7c3aed;font-style:italic">Đang xem lịch sử</span></div>';
+    var weekSel0=/* dropdown */'<div style="display:flex;gap:16px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
+      +'<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#94a3b8;font-weight:500">Tuần:</span><select onchange="hhSelectWeek(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;"><option value="">Tuần hiện tại</option>'+(window._weeklySnaps||[]).map(function(s){return`<option value="${s.week}"${activeWeek===s.week?' selected':''}>${s.week.replace('_',' — ').replace('W','Tuần ')} (${(s.saved_vn||'').substring(0,10)})</option>`;}).join('')+'</select></div>'
+      +'<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#94a3b8;font-weight:500">Tháng:</span><select onchange="hhSelectMonth(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;"><option value="">—</option>'+(window._monthlySnaps||[]).map(function(s){return`<option value="${s.month}"${activeMonth===s.month?' selected':''}>${s.month.replace('_M',' — Tháng ')} (${(s.saved_vn||'').substring(0,10)})</option>`;}).join('')+'</select></div>'
+      +'<span style="font-size:10.5px;color:#7c3aed;font-style:italic">Đang xem lịch sử</span></div>';
     return '<div class="sec-title" style="color:#7c3aed">Xe chưa xuất hóa đơn</div>'
       +weekSel0
-      +'<div style="padding:16px;color:#94a3b8;font-size:12px;font-style:italic">⚠️ Snapshot tuần này được lưu trước khi có field "Xuất hồ sơ" — không thể hiển thị chính xác.<br>Vui lòng chạy <b>manualSync()</b> rồi <b>testWeeklySnapshot()</b> để tạo lại snapshot với dữ liệu đầy đủ.</div>';
+      +'<div style="padding:16px;color:#94a3b8;font-size:12px;font-style:italic">⚠️ Snapshot này được lưu trước khi có field "Xuất hồ sơ" — không thể hiển thị chính xác.<br>Vui lòng chạy <b>manualSync()</b> rồi <b>testWeeklySnapshot()</b>/<b>testMonthlySnapshot()</b> để tạo lại snapshot với dữ liệu đầy đủ.</div>';
   }
 
   // Build modelMap[model][kho] = {sl, giaVon}
@@ -2622,17 +2628,27 @@ function renderChuaHD(){
   var fmtSL=function(v){return v||'—';};
   var C='#7c3aed', CM='#475569';
 
-  // Dropdown chọn tuần
+  // Dropdown chọn tuần / tháng
   var weekSnaps=window._weeklySnaps||[];
-  var weekSel='<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
+  var monthSnaps=window._monthlySnaps||[];
+  var weekSel='<div style="display:flex;gap:16px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
+    +'<div style="display:flex;gap:8px;align-items:center;">'
     +'<span style="font-size:11px;color:#94a3b8;font-weight:500">Tuần:</span>'
     +'<select onchange="hhSelectWeek(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;">'
     +`<option value="" ${!activeWeek?'selected':''}>Tuần hiện tại</option>`
     +weekSnaps.map(function(s){
       return `<option value="${s.week}" ${activeWeek===s.week?'selected':''}>${s.week.replace('_',' — ').replace('W','Tuần ')} (${s.saved_vn?s.saved_vn.substring(0,10):''})</option>`;
     }).join('')
-    +'</select>'
-    +(activeWeek?'<span style="font-size:10.5px;color:#7c3aed;font-style:italic">Đang xem lịch sử</span>':'')
+    +'</select></div>'
+    +'<div style="display:flex;gap:8px;align-items:center;">'
+    +'<span style="font-size:11px;color:#94a3b8;font-weight:500">Tháng:</span>'
+    +'<select onchange="hhSelectMonth(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;">'
+    +`<option value="" ${!activeMonth?'selected':''}>—</option>`
+    +monthSnaps.map(function(s){
+      return `<option value="${s.month}" ${activeMonth===s.month?'selected':''}>${s.month.replace('_M',' — Tháng ')} (${s.saved_vn?s.saved_vn.substring(0,10):''})</option>`;
+    }).join('')
+    +'</select></div>'
+    +((activeWeek||activeMonth)?'<span style="font-size:10.5px;color:#7c3aed;font-style:italic">Đang xem lịch sử</span>':'')
     +'</div>';
 
   if(!window._weeklySnapsLoaded){
@@ -2641,6 +2657,14 @@ function renderChuaHD(){
     fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/data_weekly.json?t='+Date.now())
       .then(function(r){return r.ok?r.json():null;})
       .then(function(d){if(d&&d.snapshots){window._weeklySnaps=(d.snapshots||[]).slice().reverse();renderHH();}})
+      .catch(function(){});
+  }
+  if(!window._monthlySnapsLoaded){
+    window._monthlySnapsLoaded=true;
+    window._monthlySnaps=[];
+    fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/data_monthly.json?t='+Date.now())
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){if(d&&d.snapshots){window._monthlySnaps=(d.snapshots||[]).slice().reverse();renderHH();}})
       .catch(function(){});
   }
 
@@ -2802,6 +2826,9 @@ function buildChuaHDFromRecords(records){
 function hhSelectWeek(week){
   window._chuaHDWeek=week||null;
   window._weeklySnapData=null;
+  // Chọn Tuần thì bỏ chọn Tháng (chỉ xem 1 loại lịch sử tại 1 thời điểm)
+  window._chuaHDMonth=null;
+  window._monthlySnapData=null;
   if(!week){renderHH();return;}
   // Tìm snapshot tương ứng từ danh sách đã load
   var snap=(window._weeklySnaps||[]).find(function(s){return s.week===week;});
@@ -2815,6 +2842,29 @@ function hhSelectWeek(week){
       .then(function(d){
         var found=(d.snapshots||[]).find(function(s){return s.week===week;});
         if(found){window._weeklySnapData=found.records||[];}
+        renderHH();
+      }).catch(function(){renderHH();});
+  }
+}
+
+// Hàm gọi khi chọn tháng từ dropdown
+function hhSelectMonth(month){
+  window._chuaHDMonth=month||null;
+  window._monthlySnapData=null;
+  // Chọn Tháng thì bỏ chọn Tuần
+  window._chuaHDWeek=null;
+  window._weeklySnapData=null;
+  if(!month){renderHH();return;}
+  var snap=(window._monthlySnaps||[]).find(function(s){return s.month===month;});
+  if(snap&&snap.records){
+    window._monthlySnapData=snap.records;
+    renderHH();
+  } else {
+    fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/data_monthly.json?t='+Date.now())
+      .then(function(r){return r.json();})
+      .then(function(d){
+        var found=(d.snapshots||[]).find(function(s){return s.month===month;});
+        if(found){window._monthlySnapData=found.records||[];}
         renderHH();
       }).catch(function(){renderHH();});
   }
