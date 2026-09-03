@@ -47,6 +47,12 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 4. Muốn cài trigger mới/xoá trigger cũ: mỗi file đều có sẵn cặp hàm `setupXxxTrigger()` / `removeXxxTrigger()` tự dọn trigger cũ (theo tên hàm) trước khi tạo mới — không tự viết `ScriptApp.newTrigger()` tay, gọi đúng các hàm có sẵn.
 5. Muốn test snapshot cuối tuần/cuối tháng ngay lập tức (không đợi đúng ngày): dùng `testWeeklySnapshot()` / `testMonthlySnapshot()` — các hàm này **bỏ qua điều kiện ngày**, gọi thẳng phần lõi.
 
+## Quy ước giao diện chung giữa các trang module
+
+`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html` là 4 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (đã từng xảy ra: `theo_doi_chinh_sach.html` có header nhỏ hơn và màu đen thay vì xanh navy như 3 file kia). Khi sửa hoặc thêm màu/size cho tiêu đề `<h1>` đầu trang, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
+- Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
+- Cỡ chữ: `32px`, `font-weight:800` (riêng `mkt.html` đang dùng `28px`, không phải lỗi — chỉ là chưa đồng bộ, có thể nâng lên `32px` nếu được yêu cầu chỉnh đồng bộ toàn bộ).
+
 ## Hệ thống phân quyền (`index.html`)
 
 - Nguồn: cột "Nhóm" trong Sheet Users, nhận diện theo **từ khoá chứa trong chuỗi** (không cần khớp tuyệt đối, không phân biệt hoa/thường/dấu — xem `_stripDiacritics()`), hoặc cờ `isAdmin=TRUE`.

@@ -14,6 +14,7 @@
     --card:#ffffff;
     --blue:#0f4c92;
     --blue-deep:#0a3866;
+    --navy:#1B4F8C;
     --active-bg:#eaf6ee;
     --active-ink:#1c7a3e;
     --active-dot:#2ea44f;
@@ -43,10 +44,11 @@
     flex-wrap:wrap;
   }
   .masthead h1{
-    font-size:26px;
+    font-size:32px;
     margin:0 0 6px;
-    font-weight:700;
+    font-weight:800;
     letter-spacing:-0.01em;
+    color:var(--navy);
   }
   .masthead p{
     margin:0;
@@ -104,8 +106,8 @@
     margin-bottom:3px;
   }
   .col-title .name{
-    font-size:16.5px;
-    font-weight:700;
+    font-size:14.5px;
+    font-weight:400;
     line-height:1.35;
   }
   .col-title .cat{
@@ -325,6 +327,8 @@ const policies = [
     toLabel: "31/12/2026",
     fromLabel: "01/07/2026",
     summary: {
+      quyLabel: "THƯỞNG QUÝ",
+      thangLabel: "THƯỞNG THÁNG",
       quy: [
         "A = DS xác thực quý / Chỉ tiêu quý ×100%. A&lt;90%: không thưởng.",
         "A≥90%: <b>T = 100 triệu + (H × 0.7% × Doanh thu tính thưởng)</b>",
@@ -464,12 +468,12 @@ function render(){
         <div class="policy-body-inner">
           <div class="summary-grid">
             <div class="block">
-              <h4>NỘI DUNG CHÍNH</h4>
+              <h4>${p.summary.quyLabel || 'NỘI DUNG CHÍNH'}</h4>
               <ul>${p.summary.quy.map(x=>`<li>${x}</li>`).join('')}</ul>
               ${renderTable(p.summary.quyTable)}
             </div>
             <div class="block">
-              <h4>THÊM</h4>
+              <h4>${p.summary.thangLabel || 'THÊM'}</h4>
               <ul>${p.summary.thang.map(x=>`<li>${x}</li>`).join('')}</ul>
             </div>
             <div class="note">${p.summary.note}</div>
