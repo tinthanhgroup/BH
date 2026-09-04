@@ -3624,6 +3624,8 @@ setTimeout(function(){
   } else {
     // Không có data nhúng → tự động tải từ Google Sheets
     fetchGSheet();
+    // Tự động làm mới dữ liệu mỗi 30 phút (chỉ áp dụng bản online — file export tĩnh dùng nhánh __injected ở trên, không chạy dòng này)
+    setInterval(fetchGSheet, 30*60*1000);
   }
 },0);
 

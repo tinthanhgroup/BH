@@ -33,7 +33,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 | File | Việc làm | Trigger | Ghi vào |
 |---|---|---|---|
-| `TinThanh_AutoSync.gs` | Đồng bộ Sheet "DATA TỔNG" → `data.json`. Chứa cả `weeklySnapshot()` + `monthlySnapshot()` | `autoSync`: 1 trigger `everyHours(1)` (24/7) · `weeklySnapshot`: Thứ 6 21h · `monthlySnapshot`: hàng ngày 21h (tự bỏ qua nếu chưa phải ngày cuối tháng — xem `isLastDayOfMonth_()`) | `data.json`, `data_weekly.json`, `data_monthly.json` |
+| `TinThanh_AutoSync.gs` | Đồng bộ Sheet "DATA TỔNG" → `data.json`. Chứa cả `weeklySnapshot()` + `monthlySnapshot()` | `autoSync`: 1 trigger `everyMinutes(30)` (24/7) · `weeklySnapshot`: Thứ 6 21h · `monthlySnapshot`: hàng ngày 21h (tự bỏ qua nếu chưa phải ngày cuối tháng — xem `isLastDayOfMonth_()`) | `data.json`, `data_weekly.json`, `data_monthly.json` |
 | `TinThanh_ChamCong_Sync.gs` | Đọc Excel chấm công (admin từng chi nhánh tự upload lên Drive) → `chamcong.json` — chi tiết [docs/module-chamcong.md](docs/module-chamcong.md) | 9h & 10h hàng ngày | `chamcong.json` |
 | `TinThanh_NhanSu_Sync.gs` | Đọc Sheet Nhân sự (2 tab: đang làm / đã nghỉ) → `nhansu.json` — chi tiết [docs/module-nhansu.md](docs/module-nhansu.md) | 12h hàng ngày | `nhansu.json` |
 | `TinThanh_MKT_Sync.gs` | Đọc Sheet "Nhật ký đăng bài" Fanpage → `mkt.json` — chi tiết [docs/module-mkt.md](docs/module-mkt.md) | `mktSync`: 1 trigger `everyHours(4)` (~6 lần/ngày) | `mkt.json` |
