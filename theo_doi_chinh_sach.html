@@ -10,7 +10,7 @@
     --ink:#1c2430;
     --ink-soft:#5b6472;
     --line:#dfe3e8;
-    --paper:#fbfaf8;
+    --bg:#EEF3F9;
     --card:#ffffff;
     --blue:#0f4c92;
     --blue-deep:#0a3866;
@@ -21,17 +21,23 @@
     --inactive-bg:#f3f1ee;
     --inactive-ink:#8a8378;
     --inactive-dot:#b8b0a3;
+    /* Hệ thống cỡ chữ dùng chung — hạn chế số lượng cỡ chữ khác nhau trên trang,
+       chỉ 5 mức thay vì mỗi chỗ 1 giá trị lẻ (10.5/11/11.5/12/12.5/13/13.5/14/14.5px). */
+    --fs-h1:32px;
+    --fs-md:14px;
+    --fs-base:13px;
+    --fs-sm:12px;
+    --fs-xs:11px;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:var(--paper);
+    background:var(--bg);
     color:var(--ink);
     font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     -webkit-font-smoothing:antialiased;
-    padding:40px 20px 80px;
   }
-  .wrap{max-width:880px;margin:0 auto;}
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
 
   .masthead{
     border-bottom:2px solid var(--ink);
@@ -44,7 +50,7 @@
     flex-wrap:wrap;
   }
   .masthead h1{
-    font-size:32px;
+    font-size:var(--fs-h1);
     margin:0 0 6px;
     font-weight:800;
     letter-spacing:-0.01em;
@@ -54,11 +60,11 @@
     margin:0;
     color:var(--ink-soft);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:13.5px;
+    font-size:var(--fs-base);
   }
   .today-tag{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12.5px;
+    font-size:var(--fs-sm);
     color:var(--blue-deep);
     background:#eaf1fa;
     border:1px solid #cddcef;
@@ -67,61 +73,57 @@
     white-space:nowrap;
   }
 
-  .policy{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:4px;
-    margin-bottom:14px;
-    overflow:hidden;
-    transition:border-color .15s ease;
-  }
-  .policy.is-open{border-color:#c7ccd3;}
-
-  .policy-head{
+  /* ── Bảng danh sách chính sách ─────────────────────────────
+     1 hàng tiêu đề duy nhất (Chính sách/Ngày cập nhật/Thời gian áp
+     dụng/Trạng thái) thay vì lặp lại nhãn cột trên từng dòng — và vì
+     là 1 bảng thật, các cột luôn thẳng hàng xuống mọi dòng. */
+  .policy-table{
     width:100%;
-    display:grid;
-    grid-template-columns:1fr 100px 230px 96px 22px;
-    gap:20px;
-    align-items:start;
-    padding:18px 20px;
-    background:none;
-    border:none;
-    cursor:pointer;
-    text-align:left;
-    font-family:inherit;
-    color:inherit;
+    border-collapse:collapse;
+    table-layout:fixed;
   }
-  .policy-head:hover{background:#fafafa;}
+  .policy-table thead th{
+    text-align:left;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-xs);
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+    padding:8px 10px;
+    border-bottom:2px solid var(--line);
+  }
+  .policy-table tbody td{
+    padding:10px;
+    vertical-align:top;
+  }
+  .policy-table tr.policy-row{cursor:pointer;transition:background .15s ease;}
+  .policy-table tr.policy-row:hover{background:#f7fafd;}
+  .policy-table tr.policy-row td{border-bottom:1px solid var(--line);}
+  .policy-table tr.policy-row.is-open td{border-bottom-color:#c7ccd3;}
+  .policy-table tr.policy-detail-row td{padding:0;}
 
   .col-title{min-width:0;}
-  .col-title .stt{
-    font-weight:700;
-    color:var(--blue-deep);
-  }
   .col-title .code{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:11px;
+    font-size:var(--fs-xs);
     letter-spacing:.02em;
     color:var(--ink-soft);
     margin-bottom:3px;
   }
   .col-title .name{
-    font-size:14.5px;
+    font-size:var(--fs-md);
     font-weight:400;
     line-height:1.35;
   }
-  .col-title .cat{
-    display:inline-block;
+  .col-stt{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:10.5px;
-    font-weight:700;
-    letter-spacing:.03em;
-    color:var(--blue-deep);
-    background:#eaf1fa;
-    border:1px solid #cddcef;
-    padding:2px 8px;
-    border-radius:10px;
-    margin-top:6px;
+    font-size:var(--fs-base);
+    color:var(--ink-soft);
+  }
+  .col-dept{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-base);
+    color:var(--ink);
   }
 
   .filter-bar{
@@ -133,7 +135,7 @@
   }
   .filter-btn{
     font-family:inherit;
-    font-size:12.5px;
+    font-size:var(--fs-sm);
     font-weight:600;
     padding:6px 14px;
     border-radius:20px;
@@ -148,22 +150,22 @@
     border-color:var(--blue-deep);
   }
 
-  .col-meta{
+  /* Cột "Ngày cập nhật"/"Thời gian áp dụng" — nhãn cột giờ chỉ nằm ở
+     hàng tiêu đề (thead), các ô này chỉ chứa giá trị, không lặp nhãn. */
+  .policy-table td.col-updated,
+  .policy-table td.col-range{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12.5px;
-    color:var(--ink-soft);
-    white-space:nowrap;
+    font-size:var(--fs-base);
+    color:var(--ink);
   }
-  /* Cột "Thời gian áp dụng" có độ dài rất khác nhau giữa các chính sách
-     (VD "31/12/2026" ngắn vs "Đến khi có công văn điều chỉnh" dài) — cho
-     phép xuống dòng trong độ rộng cột cố định, tránh tràn/đẩy lệch cột. */
-  .col-meta.col-range{white-space:normal;}
-  .col-meta .k{display:block;font-size:10.5px;text-transform:none;color:#9aa1ab;margin-bottom:2px;}
-  .col-meta .v{color:var(--ink);font-size:13px;}
+  /* Độ dài "Thời gian áp dụng" khác nhau nhiều giữa các chính sách
+     (VD "31/12/2026" ngắn vs "Đến khi có công văn điều chỉnh" dài) —
+     cho phép xuống dòng trong đúng độ rộng cột cố định của colgroup. */
+  .policy-table td.col-range{white-space:normal;}
 
   .status{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12px;
+    font-size:var(--fs-sm);
     font-weight:600;
     padding:5px 11px 5px 9px;
     border-radius:20px;
@@ -183,9 +185,8 @@
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);
     transition:transform .2s ease;
-    align-self:center;
   }
-  .policy.is-open .chev{transform:rotate(180deg);}
+  .policy-table tr.policy-row.is-open .chev{transform:rotate(180deg);}
 
   .policy-body{
     max-height:0;
@@ -197,7 +198,7 @@
     border-top:1px solid var(--line);
     margin-top:0;
   }
-  .policy.is-open .policy-body-inner{padding-top:18px;}
+  .policy-table tr.policy-detail-row.is-open .policy-body-inner{padding-top:18px;}
 
   .summary-grid{
     display:grid;
@@ -206,16 +207,33 @@
   }
   @media (max-width:640px){
     .summary-grid{grid-template-columns:1fr;}
-    .policy-head{grid-template-columns:1fr auto;grid-template-areas:"title chev" "meta meta" "status status";}
-    .col-title{grid-area:title;}
-    .chev{grid-area:chev;}
-    .col-meta{grid-area:meta;}
-    .status{grid-area:status;justify-self:start;margin-top:4px;}
+    /* Bảng không đủ chỗ trên màn hình hẹp — chuyển từng dòng thành 1 khối
+       xếp dọc (thead ẩn đi), và hiện lại nhãn cột ngay trước giá trị vì
+       không còn hàng tiêu đề chung để tham chiếu. */
+    .policy-table, .policy-table tbody, .policy-table td, .policy-table tr.policy-detail-row{display:block;width:auto!important;}
+    .policy-table thead{display:none;}
+    /* Xếp lại thứ tự hiển thị bằng flex order — tiêu đề chính sách lên
+       đầu tiên cho dễ đọc, thay vì đúng thứ tự cột STT/Phòng ban.../Chính sách. */
+    .policy-table tr.policy-row{display:flex;flex-direction:column;padding:14px 16px;position:relative;border-bottom:1px solid var(--line);}
+    .policy-table tr.policy-row td{border-bottom:none;padding:2px 0;}
+    .policy-table td.col-title{order:1;}
+    .policy-table td.col-dept{order:2;}
+    .policy-table td.col-updated{order:3;}
+    .policy-table td.col-range{order:4;}
+    .policy-table td.col-status{order:5;margin-top:4px;}
+    .policy-table td.col-stt{order:6;color:var(--ink-soft);}
+    .policy-table tr.policy-row td.col-chev{order:0;position:absolute;top:14px;right:16px;padding:0;}
+    .policy-table tr.policy-row.is-open{border-bottom-color:#c7ccd3;}
+    .policy-table td.col-updated,.policy-table td.col-range{padding-right:70px;}
+    .policy-table td.col-stt::before{content:"STT ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-dept::before{content:"Phòng ban: ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-updated::before{content:"Ngày cập nhật: ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-range::before{content:"Thời gian áp dụng: ";font-weight:600;color:var(--ink-soft);}
   }
 
   .block h4{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:11.5px;
+    font-size:var(--fs-xs);
     font-weight:700;
     color:var(--blue-deep);
     margin:0 0 8px;
@@ -223,7 +241,7 @@
   .block ul{
     margin:0;
     padding-left:18px;
-    font-size:14px;
+    font-size:var(--fs-md);
     line-height:1.65;
   }
   .block li{margin-bottom:5px;}
@@ -231,7 +249,7 @@
   .block table.mini{
     width:100%;
     border-collapse:collapse;
-    font-size:13px;
+    font-size:var(--fs-base);
     margin-top:2px;
   }
   .block table.mini th, .block table.mini td{
@@ -243,14 +261,14 @@
     background:#f5f6f8;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-weight:600;
-    font-size:11px;
+    font-size:var(--fs-xs);
     color:var(--ink-soft);
   }
 
   .note{
     grid-column:1 / -1;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12px;
+    font-size:var(--fs-sm);
     color:var(--ink-soft);
     background:#f8f7f4;
     border-left:2px solid var(--blue);
@@ -270,7 +288,7 @@
     align-items:center;
     gap:7px;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12.5px;
+    font-size:var(--fs-sm);
     font-weight:600;
     color:var(--blue-deep);
     background:#fff;
@@ -284,7 +302,7 @@
   .pdf-btn svg{flex-shrink:0;}
   .pdf-unavailable{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:12px;
+    font-size:var(--fs-sm);
     color:#a9aeb6;
     font-style:italic;
   }
@@ -292,7 +310,7 @@
   .foot{
     text-align:center;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:11.5px;
+    font-size:var(--fs-xs);
     color:#a9aeb6;
     margin-top:34px;
   }
@@ -479,60 +497,85 @@ function render(){
     return parseVNDate(b.p.updated) - parseVNDate(a.p.updated);
   });
 
-  list.innerHTML = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
+  const rows = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
     const i = originalIdx;
     const stt = displayIdx + 1;
-    void 0; // isActive đã được tính sẵn ở bước sắp xếp phía trên
     return `
-    <div class="policy" data-idx="${i}">
-      <button class="policy-head" onclick="toggle(${i})">
-        <div class="col-title">
-          <div class="code"><span class="stt">${stt}.</span> ${p.code}</div>
-          <div class="name">${p.name}</div>
-          ${p.category ? `<div class="cat">${p.category}</div>` : ''}
-        </div>
-        <div class="col-meta">
-          <span class="k">Ngày cập nhật</span>
-          <span class="v">${p.updated}</span>
-        </div>
-        <div class="col-meta col-range">
-          <span class="k">Thời gian áp dụng</span>
-          <span class="v">${p.fromLabel} — ${p.toLabel}</span>
-        </div>
+    <tr class="policy-row" data-idx="${i}" onclick="toggle(${i})">
+      <td class="col-stt">${stt}</td>
+      <td class="col-dept">${p.category || '—'}</td>
+      <td class="col-title">
+        <div class="code">${p.code}</div>
+        <div class="name">${p.name}</div>
+      </td>
+      <td class="col-updated">${p.updated}</td>
+      <td class="col-range">${p.fromLabel} — ${p.toLabel}</td>
+      <td class="col-status">
         <span class="status ${isActive ? 'active' : 'inactive'}">
           <span class="dot"></span>${isActive ? 'Active' : 'Inactive'}
         </span>
+      </td>
+      <td class="col-chev">
         <span class="chev">
           <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
-      </button>
-      <div class="policy-body" id="body-${i}">
-        <div class="policy-body-inner">
-          <div class="summary-grid">
-            ${(p.summary.quy && p.summary.quy.length) ? `<div class="block">
-              <h4>${p.summary.quyLabel || 'NỘI DUNG CHÍNH'}</h4>
-              <ul>${p.summary.quy.map(x=>`<li>${x}</li>`).join('')}</ul>
-              ${renderTable(p.summary.quyTable)}
-            </div>` : ''}
-            ${(p.summary.thang && p.summary.thang.length) ? `<div class="block">
-              <h4>${p.summary.thangLabel || 'THÊM'}</h4>
-              <ul>${p.summary.thang.map(x=>`<li>${x}</li>`).join('')}</ul>
-            </div>` : ''}
-            ${p.summary.note ? `<div class="note">${p.summary.note}</div>` : ''}
-            <div class="source-row">
-              ${p.pdfUrl
-                ? `<a class="pdf-btn" href="${p.pdfUrl}" target="_blank" rel="noopener">
-                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
-                     ${p.pdfLabel || 'Xem chính sách gốc (PDF, mở trên Google Drive)'}
-                   </a>`
-                : `<span class="pdf-unavailable">Chưa có file gốc đính kèm</span>`
-              }
+      </td>
+    </tr>
+    <tr class="policy-detail-row" data-idx="${i}">
+      <td colspan="7">
+        <div class="policy-body" id="body-${i}">
+          <div class="policy-body-inner">
+            <div class="summary-grid">
+              ${(p.summary.quy && p.summary.quy.length) ? `<div class="block">
+                <h4>${p.summary.quyLabel || 'NỘI DUNG CHÍNH'}</h4>
+                <ul>${p.summary.quy.map(x=>`<li>${x}</li>`).join('')}</ul>
+                ${renderTable(p.summary.quyTable)}
+              </div>` : ''}
+              ${(p.summary.thang && p.summary.thang.length) ? `<div class="block">
+                <h4>${p.summary.thangLabel || 'THÊM'}</h4>
+                <ul>${p.summary.thang.map(x=>`<li>${x}</li>`).join('')}</ul>
+              </div>` : ''}
+              ${p.summary.note ? `<div class="note">${p.summary.note}</div>` : ''}
+              <div class="source-row">
+                ${p.pdfUrl
+                  ? `<a class="pdf-btn" href="${p.pdfUrl}" target="_blank" rel="noopener">
+                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
+                       ${p.pdfLabel || 'Xem chính sách gốc (PDF, mở trên Google Drive)'}
+                     </a>`
+                  : `<span class="pdf-unavailable">Chưa có file gốc đính kèm</span>`
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>`;
+      </td>
+    </tr>`;
   }).join('');
+
+  list.innerHTML = `
+    <table class="policy-table">
+      <colgroup>
+        <col style="width:40px">
+        <col style="width:150px">
+        <col>
+        <col style="width:130px">
+        <col style="width:230px">
+        <col style="width:96px">
+        <col style="width:36px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Phòng ban</th>
+          <th>Chính sách</th>
+          <th>Ngày cập nhật</th>
+          <th>Thời gian áp dụng</th>
+          <th>Trạng thái</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
 function setCategory(c){
@@ -541,14 +584,17 @@ function setCategory(c){
 }
 
 function toggle(i){
-  const el = document.querySelector(`.policy[data-idx="${i}"]`);
+  const row = document.querySelector(`tr.policy-row[data-idx="${i}"]`);
+  const detailRow = document.querySelector(`tr.policy-detail-row[data-idx="${i}"]`);
   const body = document.getElementById(`body-${i}`);
-  const isOpen = el.classList.contains('is-open');
+  const isOpen = row.classList.contains('is-open');
   if(isOpen){
     body.style.maxHeight = null;
-    el.classList.remove('is-open');
+    row.classList.remove('is-open');
+    detailRow.classList.remove('is-open');
   } else {
-    el.classList.add('is-open');
+    row.classList.add('is-open');
+    detailRow.classList.add('is-open');
     body.style.maxHeight = body.scrollHeight + 'px';
   }
 }
