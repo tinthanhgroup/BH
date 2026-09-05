@@ -392,11 +392,48 @@ const policies = [
       ],
       note: "Thay thế bản 06/07/2026 — nới ngưỡng HTBH về 60% và nâng trần hỗ trợ lên 100%, quay lại giải ngân theo tháng."
     }
+  },
+  {
+    pdfUrl: "https://drive.google.com/drive/u/0/folders/1OlEJV6x7dVW447W8syLeaHgtzKyBEpMT",
+    pdfLabel: "Xem thông báo gốc & tài liệu chương trình hội viên (Google Drive)",
+    category: "Chăm sóc khách hàng",
+    code: "Số 229/2026/TB.CSKH-HTV · Ký ngày 27/07/2026",
+    name: "Chương trình Hội viên Hyundai 2026 — bản sửa đổi 27/07",
+    updated: "27/07/2026",
+    from: new Date(2026,7,1),
+    to: null,
+    toLabel: "Đến khi có công văn điều chỉnh",
+    fromLabel: "01/08/2026",
+    summary: {
+      quy: [
+        "<b>Đổi cơ chế ưu đãi:</b> từ 01/09/2026, chuyển từ tích điểm tiêu dùng sang chiết khấu trực tiếp theo hạng Hội viên.",
+        "<b>Dừng ghi nhận điểm tích lũy mới từ 01/08/2026</b> (dịch vụ, sinh nhật, giới thiệu mua xe) — điểm đã tích trước đó vẫn giữ nguyên, dùng bình thường.",
+        "Giai đoạn chuyển tiếp 01/08–31/08/2026: vẫn áp dụng chương trình cũ, chỉ trừ việc không tích điểm mới.",
+        "Từ 01/09/2026: hệ thống áp chiết khấu theo hạng trước, phần còn lại của hóa đơn mới dùng điểm cũ (nếu còn hiệu lực)."
+      ],
+      thang: [
+        "5 hạng Hội viên: New, Standard, Gold, Platinum, Inactive.",
+        "Chiết khấu dịch vụ (trên giá trị trước VAT, không áp dụng bảo hiểm/bảo hành): <b>Gold 2%, Platinum 5%</b>. Voucher sinh nhật: Gold 50.000đ, Platinum 100.000đ.",
+        "Quyền lợi khác tăng dần theo hạng (New/Standard &lt; Gold &lt; Platinum): cập nhật AVN, kiểm tra tổng quát, ưu tiên tiếp nhận xe, phòng chờ hội viên, rửa xe miễn phí, hỗ trợ kỹ thuật tại chỗ, đưa đón hội viên, nhận/giao xe tận nơi, kiểm tra xe trước hành trình dài, khử khuẩn khử mùi xe.",
+        "<b>Xét hạng theo 2 tiêu chí đồng thời trong kỳ 12 tháng:</b> số lượt dịch vụ hợp lệ (New 1, Standard 3, Gold 4) và số tiền chi trả dịch vụ (Standard &gt;0, Gold ≥8 triệu, Platinum ≥15 triệu).",
+        "Không phát sinh dịch vụ hợp lệ ≥12 tháng liên tiếp → tự động chuyển Inactive."
+      ],
+      note: "Sửa đổi, bổ sung Thông báo gốc số 607/2025/TB.CSKH-HTV (11/12/2025) — các nội dung không được nêu ở đây vẫn áp dụng theo bản gốc."
+    }
   }
 ];
 
 function fmtDate(d){
   return d.toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+// Parse chuỗi "dd/MM/yyyy" (field updated) thành Date để so sánh —
+// không dùng localeCompare trên chuỗi ngày (sắp sai thứ tự tháng).
+function parseVNDate(s){
+  if(!s) return null;
+  var parts = s.split('/');
+  if(parts.length!==3) return null;
+  return new Date(+parts[2], +parts[1]-1, +parts[0]);
 }
 
 function renderTable(t){
@@ -434,7 +471,7 @@ function render(){
   // Sắp xếp: Active trước Inactive; trong mỗi nhóm, ngày cập nhật gần nhất lên trên
   withStatus.sort((a, b) => {
     if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
-    return b.p.from - a.p.from;
+    return parseVNDate(b.p.updated) - parseVNDate(a.p.updated);
   });
 
   list.innerHTML = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
@@ -467,21 +504,21 @@ function render(){
       <div class="policy-body" id="body-${i}">
         <div class="policy-body-inner">
           <div class="summary-grid">
-            <div class="block">
+            ${(p.summary.quy && p.summary.quy.length) ? `<div class="block">
               <h4>${p.summary.quyLabel || 'NỘI DUNG CHÍNH'}</h4>
               <ul>${p.summary.quy.map(x=>`<li>${x}</li>`).join('')}</ul>
               ${renderTable(p.summary.quyTable)}
-            </div>
-            <div class="block">
+            </div>` : ''}
+            ${(p.summary.thang && p.summary.thang.length) ? `<div class="block">
               <h4>${p.summary.thangLabel || 'THÊM'}</h4>
               <ul>${p.summary.thang.map(x=>`<li>${x}</li>`).join('')}</ul>
-            </div>
-            <div class="note">${p.summary.note}</div>
+            </div>` : ''}
+            ${p.summary.note ? `<div class="note">${p.summary.note}</div>` : ''}
             <div class="source-row">
               ${p.pdfUrl
                 ? `<a class="pdf-btn" href="${p.pdfUrl}" target="_blank" rel="noopener">
                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
-                     Xem chính sách gốc (PDF, mở trên Google Drive)
+                     ${p.pdfLabel || 'Xem chính sách gốc (PDF, mở trên Google Drive)'}
                    </a>`
                 : `<span class="pdf-unavailable">Chưa có file gốc đính kèm</span>`
               }

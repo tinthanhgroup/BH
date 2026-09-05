@@ -8,7 +8,7 @@
 
 **`const TODAY = new Date();`** — PHẢI luôn là ngày thực tế lúc mở file, **TUYỆT ĐỐI không gán cứng** kiểu `new Date(2026,7,31)` (đã từng bị lỗi này — trạng thái Active/Inactive sẽ sai vĩnh viễn kể từ ngày cụ thể đó nếu gán cứng).
 
-**Logic Active/Inactive:** `TODAY >= p.from && (p.to === null || TODAY <= p.to)`. Danh sách sort: Active lên trước Inactive, trong mỗi nhóm sort theo `from` giảm dần (mới nhất lên đầu). Số thứ tự (`stt`) đánh theo **thứ tự hiển thị sau sort**, không phải thứ tự khai báo trong mảng — tự động đổi khi 1 chính sách chuyển Active↔Inactive.
+**Logic Active/Inactive:** `TODAY >= p.from && (p.to === null || TODAY <= p.to)`. Danh sách sort: Active lên trước Inactive, trong mỗi nhóm sort theo **`updated`** giảm dần (ngày cập nhật gần nhất lên đầu — không phải `from`). `updated` là chuỗi `"dd/MM/yyyy"`, được parse qua hàm `parseVNDate()` thành `Date` để so sánh đúng thứ tự (không dùng `localeCompare` trên chuỗi ngày). Số thứ tự (`stt`) đánh theo **thứ tự hiển thị sau sort**, không phải thứ tự khai báo trong mảng — tự động đổi khi 1 chính sách chuyển Active↔Inactive hoặc khi `updated` thay đổi.
 
 **Bộ lọc `category`** (nút bấm dạng pill) **tự ẩn** nếu tất cả policy chỉ thuộc đúng 1 category — chỉ hiện khi có ≥2 category khác nhau trong mảng, tránh giao diện rối khi chưa cần.
 
