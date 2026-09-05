@@ -81,11 +81,11 @@
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-base);
   }
   .policy-table thead th{
     text-align:left;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-xs);
     font-weight:700;
     letter-spacing:.02em;
     color:var(--ink-soft);
@@ -103,28 +103,16 @@
   .policy-table tr.policy-detail-row td{padding:0;}
 
   .col-title{min-width:0;}
-  .col-title .code{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-xs);
-    letter-spacing:.02em;
-    color:var(--ink-soft);
-    margin-bottom:3px;
-  }
   .col-title .name{
-    font-size:var(--fs-md);
     font-weight:400;
     line-height:1.35;
   }
-  .col-stt{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-base);
+  .col-code{
+    letter-spacing:.02em;
     color:var(--ink-soft);
   }
-  .col-dept{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-base);
-    color:var(--ink);
-  }
+  .col-stt{color:var(--ink-soft);}
+  .col-dept{color:var(--ink);}
 
   .filter-bar{
     display:flex;
@@ -154,8 +142,6 @@
      hàng tiêu đề (thead), các ô này chỉ chứa giá trị, không lặp nhãn. */
   .policy-table td.col-updated,
   .policy-table td.col-range{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-base);
     color:var(--ink);
   }
   /* Độ dài "Thời gian áp dụng" khác nhau nhiều giữa các chính sách
@@ -164,8 +150,6 @@
   .policy-table td.col-range{white-space:normal;}
 
   .status{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:var(--fs-sm);
     font-weight:600;
     padding:5px 11px 5px 9px;
     border-radius:20px;
@@ -217,11 +201,12 @@
     .policy-table tr.policy-row{display:flex;flex-direction:column;padding:14px 16px;position:relative;border-bottom:1px solid var(--line);}
     .policy-table tr.policy-row td{border-bottom:none;padding:2px 0;}
     .policy-table td.col-title{order:1;}
-    .policy-table td.col-dept{order:2;}
-    .policy-table td.col-updated{order:3;}
-    .policy-table td.col-range{order:4;}
-    .policy-table td.col-status{order:5;margin-top:4px;}
-    .policy-table td.col-stt{order:6;color:var(--ink-soft);}
+    .policy-table td.col-code{order:2;}
+    .policy-table td.col-dept{order:3;}
+    .policy-table td.col-updated{order:4;}
+    .policy-table td.col-range{order:5;}
+    .policy-table td.col-status{order:6;margin-top:4px;}
+    .policy-table td.col-stt{order:7;color:var(--ink-soft);}
     .policy-table tr.policy-row td.col-chev{order:0;position:absolute;top:14px;right:16px;padding:0;}
     .policy-table tr.policy-row.is-open{border-bottom-color:#c7ccd3;}
     .policy-table td.col-updated,.policy-table td.col-range{padding-right:70px;}
@@ -341,7 +326,7 @@ let activeCategory = ''; // '' = tất cả
 const policies = [
   {
     pdfUrl: "https://drive.google.com/file/d/1qf-3Fveq1oset83msy3SkeC_ZrC4XBiP/view?usp=drive_link",
-    category: "Bán hàng - Marketing",
+    category: "Bán hàng - MKT",
     code: "Số 52/2026/CV-HTV · Ký ngày 06/07/2026",
     name: "Chính sách Thưởng kinh doanh (Quý & Tháng)",
     updated: "06/07/2026",
@@ -368,7 +353,7 @@ const policies = [
   },
   {
     pdfUrl: "https://drive.google.com/file/d/17t-nTU0C4G7OBT9srDW3xERY8qCHaJ7_/view?usp=drive_link",
-    category: "Bán hàng - Marketing",
+    category: "Bán hàng - MKT",
     code: "Thông báo điều chỉnh · Cập nhật ngày 06/07/2026 (đã thay thế)",
     name: "Chính sách Hỗ trợ Marketing Đại lý — bản 06/07",
     updated: "06/07/2026",
@@ -393,7 +378,7 @@ const policies = [
   },
   {
     pdfUrl: "https://drive.google.com/file/d/1UDg9k0cS7f9WRhxshyZ9zbzsL8QP4c5Q/view?usp=drive_link",
-    category: "Bán hàng - Marketing",
+    category: "Bán hàng - MKT",
     code: "Thông báo điều chỉnh · Cập nhật ngày 23/07/2026",
     name: "Chính sách Hỗ trợ Marketing Đại lý — bản 23/07",
     updated: "23/07/2026",
@@ -419,7 +404,7 @@ const policies = [
   {
     pdfUrl: "https://drive.google.com/drive/u/0/folders/1OlEJV6x7dVW447W8syLeaHgtzKyBEpMT",
     pdfLabel: "Xem thông báo gốc & tài liệu chương trình hội viên (Google Drive)",
-    category: "Chăm sóc khách hàng",
+    category: "CSKH",
     code: "Số 229/2026/TB.CSKH-HTV · Ký ngày 27/07/2026",
     name: "Chương trình Hội viên Hyundai 2026 — bản sửa đổi 27/07",
     updated: "27/07/2026",
@@ -505,9 +490,9 @@ function render(){
       <td class="col-stt">${stt}</td>
       <td class="col-dept">${p.category || '—'}</td>
       <td class="col-title">
-        <div class="code">${p.code}</div>
         <div class="name">${p.name}</div>
       </td>
+      <td class="col-code">${(p.code || '').split(' · ')[0]}</td>
       <td class="col-updated">${p.updated}</td>
       <td class="col-range">${p.fromLabel} — ${p.toLabel}</td>
       <td class="col-status">
@@ -522,7 +507,7 @@ function render(){
       </td>
     </tr>
     <tr class="policy-detail-row" data-idx="${i}">
-      <td colspan="7">
+      <td colspan="8">
         <div class="policy-body" id="body-${i}">
           <div class="policy-body-inner">
             <div class="summary-grid">
@@ -558,6 +543,7 @@ function render(){
         <col style="width:40px">
         <col style="width:150px">
         <col>
+        <col style="width:200px">
         <col style="width:130px">
         <col style="width:230px">
         <col style="width:96px">
@@ -568,6 +554,7 @@ function render(){
           <th>STT</th>
           <th>Phòng ban</th>
           <th>Chính sách</th>
+          <th>Số công văn</th>
           <th>Ngày cập nhật</th>
           <th>Thời gian áp dụng</th>
           <th>Trạng thái</th>

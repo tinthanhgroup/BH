@@ -4,7 +4,7 @@
 
 **KHÔNG có backend/Apps Script/Google Sheet nào** — đây là file **tĩnh hoàn toàn**, dữ liệu hardcode ngay trong mảng JS `policies` (xem "Quy trình cập nhật dữ liệu thủ công" trong CLAUDE.md gốc để biết cách thêm chính sách mới). Quyết định có chủ đích: tần suất thêm chính sách thấp (vài lần/năm), không đáng để dựng cả pipeline Sheet→Apps Script→JSON chỉ cho việc này.
 
-**Field mỗi object trong `policies[]`:** `pdfUrl` (link Google Drive, share công khai — KHÔNG nhúng base64, từng làm khiến file nặng >6MB), `category` (dùng để lọc, hiện chỉ có `"Bán hàng - Marketing"`), `code`, `name`, `updated`, `from`/`to` (kiểu `Date`, `to: null` = còn hiệu lực vô thời hạn), `fromLabel`/`toLabel` (chuỗi hiển thị, phải tự khớp tay với `from`/`to` — không tự sinh ra từ Date), `summary` (object gồm các mục tóm tắt nội dung).
+**Field mỗi object trong `policies[]`:** `pdfUrl` (link Google Drive, share công khai — KHÔNG nhúng base64, từng làm khiến file nặng >6MB), `category` (dùng để lọc và hiển thị ở cột "Phòng ban" — hiện có `"Bán hàng - MKT"` và `"CSKH"`, dùng tên viết tắt cho gọn cột), `code` (Số công văn, hiển thị cột riêng — bỏ phần "Ký ngày.../Cập nhật ngày..." khi render vì trùng với cột "Ngày cập nhật"), `name`, `updated`, `from`/`to` (kiểu `Date`, `to: null` = còn hiệu lực vô thời hạn), `fromLabel`/`toLabel` (chuỗi hiển thị, phải tự khớp tay với `from`/`to` — không tự sinh ra từ Date), `summary` (object gồm các mục tóm tắt nội dung).
 
 **`const TODAY = new Date();`** — PHẢI luôn là ngày thực tế lúc mở file, **TUYỆT ĐỐI không gán cứng** kiểu `new Date(2026,7,31)` (đã từng bị lỗi này — trạng thái Active/Inactive sẽ sai vĩnh viễn kể từ ngày cụ thể đó nếu gán cứng).
 
