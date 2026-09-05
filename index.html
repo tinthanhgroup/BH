@@ -685,6 +685,7 @@ function jsonRecordToBHRow(r){
     'Loại xe2':                      r.loaiXe2     || null,
     'Phiên bản':                     r.phienBan    || null,
     'Trạng thái':                    r.trangThai   || null,
+    'Giá vốn':                       r.giaVon      || null,
     'baoCaoDMS':                     r.baoCaoDMS===true,
     'fromHistory':                   !!r.fromHistory,
   };
@@ -1438,6 +1439,7 @@ function prepareBH(raw,fileDate){
   const cMau   =col(keys,['mau sac','màu sắc','mausac','mau']);
   const cPhienBan=col(keys,['phien ban','phienban']);
   const cKhDatCoc=col(keys,['kh dat coc','khdatcoc']);
+  const cGiaVon=col(keys,['gia von','giavon']);
   if(!cDate)   throw new Error('Không tìm thấy cột NGÀY ĐẶT CỌC.\nCác cột: '+keys.join(' | '));
   if(!cBranch) throw new Error('Không tìm thấy cột NGUỒN KHÁCH.\nCác cột: '+keys.join(' | '));
   if(!cModel)  throw new Error('Không tìm thấy cột Model.\nCác cột: '+keys.join(' | '));
@@ -1537,6 +1539,7 @@ function prepareBH(raw,fileDate){
       hasBH:cBH&&r[cBH]?String(r[cBH]).trim().toUpperCase()==='X':false,
       hasHD:cHD&&r[cHD]?true:false,
       hdDate:cHD&&r[cHD]?new Date(r[cHD]):null,
+      giaVon:cGiaVon&&r[cGiaVon]?Number(r[cGiaVon])||0:0,
     });
   }
   if(rows.length===0) throw new Error('Không có dòng dữ liệu hợp lệ');
@@ -1616,6 +1619,7 @@ function prepareBH(raw,fileDate){
 
   const GROUPS={NT:['NT','PR'],DL:['ĐL','BL','ĐN'],PY:['PY']};
   const bbMap={};
+  const bbGiaVonMap={}; // giống bbMap nhưng cộng dồn Giá vốn thay vì đếm số lượng
   const transferLogByMonth={}; // key: "2026-04", value: {"A->B": count}
   function branchGroupOf(br){for(const[g,brs]of Object.entries(GROUPS))if(brs.includes(br))return g;return null;}
   for(const r of rows){
@@ -1623,8 +1627,12 @@ function prepareBH(raw,fileDate){
     if(r.baoBan.getFullYear()<2026) continue;
     const m=`${r.baoBan.getFullYear()}-${String(r.baoBan.getMonth()+1).padStart(2,'0')}`;
     if(!bbMap[m]) bbMap[m]={NT:0,DL:0,PY:0};
+    if(!bbGiaVonMap[m]) bbGiaVonMap[m]={NT:0,DL:0,PY:0};
     for(const [g,brs] of Object.entries(GROUPS))
-      if(brs.includes(r.branchForTarget)) bbMap[m][g]=(bbMap[m][g]||0)+1;
+      if(brs.includes(r.branchForTarget)){
+        bbMap[m][g]=(bbMap[m][g]||0)+1;
+        bbGiaVonMap[m][g]=(bbGiaVonMap[m][g]||0)+(r.giaVon||0);
+      }
     if(r.branchForTarget!==r.branch){
       const gFrom=branchGroupOf(r.branch),gTo=branchGroupOf(r.branchForTarget);
       if(gFrom&&gTo&&gFrom!==gTo){
@@ -1659,7 +1667,7 @@ function prepareBH(raw,fileDate){
   const sold90=rows.filter(r=>r.date>=cut90).length;
   const avgMonth=sold90/3;
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth};
 }
 
 function renderBH(data){
@@ -1967,14 +1975,16 @@ function transferNoteText(transferLogByMonth, monthKeys){
   const parts=entries.map(([k,v])=>{const [from,to]=k.split('->');return `${from} → ${to} ${String(v).padStart(2,'0')} xe`;});
   return 'Chuyển chỉ tiêu: '+parts.join('; ');
 }
-function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing, show60, show70){
+function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, show80, hideMissing, show60, show70, showGiaVon, show95){
   const wrap=document.getElementById(wrapId);
   if(!wrap) return;
   // Màu chữ cho từng cột (đậm hơn bản gốc để đọc rõ trên nền trắng của bảng)
   const C_DMS='#3b6ea5',C_KHOP='#3f7ab0',C_KY='#5a6b85';
   const C_90='#c08552'; // dùng chung cho cột 80% và 90%
+  const C_GIAVON='#78350f';
   const LABEL_COL='#1e5a8a';
   const fmt=v=>(v||0).toLocaleString('vi-VN');
+  const fmtTy=v=>v?(v/1e9).toLocaleString('vi-VN',{maximumFractionDigits:2,minimumFractionDigits:2}):'—';
 
   const BORD_FAINT='border-left:1px solid #eef1f6;';
   const BORD_STRONG='border-left:1.5px solid #c7cedd;';
@@ -1982,7 +1992,8 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
   const th=(label,extraStyle)=>`<th style="padding:5px 7px;text-align:right;font-weight:600;color:var(--muted);font-size:10.5px;white-space:nowrap;${BORD_FAINT}${extraStyle||''}">${label}</th>`;
   let rowsHtml='';
   groupData.forEach(row=>{
-    const {g,dms,khop,ky,choTien,chuaXe,chuaXeList,target}=row;
+    const {g,dms,giaVon,khop,ky,choTien,chuaXe,chuaXeList,target}=row;
+    const target95=Math.ceil(target*0.95);
     const target90=Math.ceil(target*0.9);
     const target80=Math.ceil(target*0.8);
     const target70=Math.ceil(target*0.7);
@@ -2000,35 +2011,64 @@ function renderDMSBars(wrapId, groupData, unitLabel, show90, noteText, trackW, s
     rowsHtml+=`<tr style="border-bottom:1px solid var(--border);">
       <td style="padding:6px 7px;font-weight:600;color:${LABEL_COL};white-space:nowrap;">${g.label}</td>
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_DMS};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(dms)}</td>
+      ${showGiaVon?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_GIAVON};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmtTy(giaVon)}</td>`:''}
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_KHOP};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(khop)}</td>
       ${koCol}
       ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_STRONG}">${fmt(target60)}</td>`:''}
       ${show70?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target70)}</td>`:''}
       ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target80)}</td>`:''}
       ${show90?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target90)}</td>`:''}
+      ${show95?`<td style="padding:6px 7px;text-align:right;font-weight:700;color:${C_90};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target95)}</td>`:''}
       <td style="padding:6px 7px;text-align:right;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(target)}</td>
     </tr>`;
   });
+
+  // Hàng Tổng — cộng dồn cả 3 chi nhánh, kể cả Giá vốn báo bán
+  const totalRow=groupData.reduce((s,row)=>({
+    dms:s.dms+(row.dms||0), giaVon:s.giaVon+(row.giaVon||0), khop:s.khop+(row.khop||0),
+    ky:s.ky+(row.ky||0), choTien:s.choTien+(row.choTien||0), chuaXe:s.chuaXe+(row.chuaXe||0),
+    target:s.target+(row.target||0)
+  }),{dms:0,giaVon:0,khop:0,ky:0,choTien:0,chuaXe:0,target:0});
+  const t95=Math.ceil(totalRow.target*0.95), t90=Math.ceil(totalRow.target*0.9), t80=Math.ceil(totalRow.target*0.8), t70=Math.ceil(totalRow.target*0.7), t60=Math.ceil(totalRow.target*0.6);
+  const totalKoCol=hasSplit
+    ? `<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.choTien)}</td>
+       <td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.chuaXe)}</td>`
+    : `<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.ky)}</td>`;
+  const totalRowHtml=`<tr style="border-top:1.5px solid var(--border);background:#f7f8fa;">
+    <td style="padding:6px 7px;font-weight:800;color:${LABEL_COL};white-space:nowrap;">Tổng</td>
+    <td style="padding:6px 7px;text-align:right;font-weight:800;color:${C_DMS};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.dms)}</td>
+    ${showGiaVon?`<td style="padding:6px 7px;text-align:right;font-weight:800;color:${C_GIAVON};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmtTy(totalRow.giaVon)}</td>`:''}
+    <td style="padding:6px 7px;text-align:right;font-weight:800;color:${C_KHOP};font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.khop)}</td>
+    ${totalKoCol}
+    ${show60?`<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_STRONG}">${fmt(t60)}</td>`:''}
+    ${show70?`<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(t70)}</td>`:''}
+    ${show80?`<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(t80)}</td>`:''}
+    ${show90?`<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(t90)}</td>`:''}
+    ${show95?`<td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(t95)}</td>`:''}
+    <td style="padding:6px 7px;text-align:right;font-weight:800;font-family:'JetBrains Mono',monospace;${BORD_FAINT}">${fmt(totalRow.target)}</td>
+  </tr>`;
 
   const table=`<div style="overflow-x:auto;overflow-y:visible;"><table style="width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto;">
     <thead><tr style="border-bottom:1px solid var(--border);">
       <th style="padding:5px 7px;text-align:left;font-weight:600;color:var(--muted);font-size:10.5px;">Chi nhánh</th>
       ${th('Báo bán DMS')}
+      ${showGiaVon?th('Giá trị (tỉ)'):''}
       ${th('Đã phân xe')}
       ${hasSplit?(th('Chờ đóng tiền')+th('Chưa có xe')):th('Chờ phân xe')}
       ${show60?th('60% (MKT)',BORD_STRONG):''}
       ${show70?th(unitLabel==='quý'?'70%':'70% (0.7)'):''}
       ${show80?th(unitLabel==='quý'?'80%':'80% (0.8)'):''}
       ${show90?th(unitLabel==='quý'?'90%':'90% (0.9)'):''}
+      ${show95?th('95%'):''}
       ${th('Chỉ tiêu')}
     </tr></thead>
-    <tbody>${rowsHtml}</tbody>
+    <tbody>${rowsHtml}${totalRowHtml}</tbody>
   </table></div>`;
 
   const bonusParts=[];
   if(show60) bonusParts.push('60% thưởng MKT (chính sách nhà máy)');
   if(show80&&unitLabel==='quý') bonusParts.push('80% thưởng Quý HTV (hệ số 0.75)');
-  if(show90&&show80&&unitLabel==='quý') bonusParts.push('90% thưởng quý HTV (hệ số 0.9)');
+  if(show90&&unitLabel==='quý') bonusParts.push('90% (thưởng quý HTV)');
   const bonusNote=bonusParts.length?`<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">${bonusParts.join('; ')}</div>`:'';
   wrap.innerHTML=table
     +`<div style="margin-top:4px;">${bonusNote}${noteText?`<div style="font-size:10.5px;color:var(--muted);margin-top:4px;font-style:italic;">${noteText}</div>`:''}</div>`;
@@ -2062,13 +2102,14 @@ function attachSmartTooltip(container){
   });
 }
 function renderDMSProgress(data){
-  const {bbMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
+  const {bbMap,bbGiaVonMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
   const m=today.getMonth()+1;
   const badgeM=document.getElementById('dms-progress-badge-m');
   if(badgeM) badgeM.textContent='Theo tháng — T'+m+'/'+today.getFullYear();
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(bbMap[dmsMonthKey]||{})[g.key]||0;
+    const giaVon=((bbGiaVonMap||{})[dmsMonthKey]||{})[g.key]||0;
     const khop=(dmsKhop||{})[g.key]||0;
     const choTien=(daKyChoTien||{})[g.key]||0;
     const chuaXe=(daKyChuaXe||{})[g.key]||0;
@@ -2077,25 +2118,26 @@ function renderDMSProgress(data){
       console.warn('[DEBUG lệch số Chưa có xe] Chi nhánh:',g.key,'| Đếm được:',chuaXe,'| Số dòng trong danh sách:',chuaXeList.length,'| Danh sách:',chuaXeList);
     }
     const target=(targets[g.key]||[])[m-1]||0;
-    return {g,dms,khop,choTien,chuaXe,chuaXeList,target,total:dms+khop+choTien+chuaXe};
+    return {g,dms,giaVon,khop,choTien,chuaXe,chuaXeList,target,total:dms+khop+choTien+chuaXe};
   });
   const noteText=transferNoteText(transferLogByMonth,[dmsMonthKey]);
-  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true);
+  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true,false);
 }
 function renderDMSProgressQuarter(data){
-  const {bbMap,dmsKhopQ,qMonthKeys,daKy,curQuarter,today,transferLogByMonth}=data;
+  const {bbMap,bbGiaVonMap,dmsKhopQ,qMonthKeys,daKy,curQuarter,today,transferLogByMonth}=data;
   const badgeQ=document.getElementById('dms-progress-badge-q');
   if(badgeQ) badgeQ.textContent='Theo quý — Q'+curQuarter+'/'+today.getFullYear();
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(qMonthKeys||[]).reduce((s,mk)=>s+((bbMap[mk]||{})[g.key]||0),0);
+    const giaVon=(qMonthKeys||[]).reduce((s,mk)=>s+(((bbGiaVonMap||{})[mk]||{})[g.key]||0),0);
     const khop=(dmsKhopQ||{})[g.key]||0;
     const ky=(daKy||{})[g.key]||0;
     const target=(targets[g.key]||[]).reduce((s,v,i)=>(qMonthKeys&&qMonthKeys.includes(`${today.getFullYear()}-${String(i+1).padStart(2,'0')}`))?s+(v||0):s,0);
-    return {g,dms,khop,ky,target,total:dms+khop+ky};
+    return {g,dms,giaVon,khop,ky,target,total:dms+khop+ky};
   });
   const noteText=transferNoteText(transferLogByMonth,qMonthKeys);
-  renderDMSBars('dms-progress-wrap-q',groupData,'quý',true,noteText,820,true,true);
+  renderDMSBars('dms-progress-wrap-q',groupData,'quý',true,noteText,820,false,true,undefined,undefined,true,true);
 }
 function renderWeeklyGrid(data){
   const {last5,curWK}=data;
@@ -3598,7 +3640,7 @@ function buildBHFromExport(coc, hh, fileDate){
     if(r.hasBH) insMap[m][br].bh++;
   });
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available:inv.tonKho+inv.lenh,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop:{NT:0,DL:0,PY:0},dmsMonthKey:`${fileDate.getFullYear()}-${String(fileDate.getMonth()+1).padStart(2,'0')}`,daKy:{NT:0,DL:0,PY:0},daKyChoTien:{NT:0,DL:0,PY:0},daKyChuaXe:{NT:0,DL:0,PY:0},daKyChuaXeList:{NT:[],DL:[],PY:[]},dmsKhopQ:{NT:0,DL:0,PY:0},qMonthKeys:[],curQuarter:Math.ceil((fileDate.getMonth()+1)/3),transferLogByMonth:{}};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available:inv.tonKho+inv.lenh,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap:{},GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop:{NT:0,DL:0,PY:0},dmsMonthKey:`${fileDate.getFullYear()}-${String(fileDate.getMonth()+1).padStart(2,'0')}`,daKy:{NT:0,DL:0,PY:0},daKyChoTien:{NT:0,DL:0,PY:0},daKyChuaXe:{NT:0,DL:0,PY:0},daKyChuaXeList:{NT:[],DL:[],PY:[]},dmsKhopQ:{NT:0,DL:0,PY:0},qMonthKeys:[],curQuarter:Math.ceil((fileDate.getMonth()+1)/3),transferLogByMonth:{}};
 }
 
 // ═══════════════════════════════════════════════════════════
