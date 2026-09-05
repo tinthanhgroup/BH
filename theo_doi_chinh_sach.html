@@ -80,9 +80,9 @@
   .policy-head{
     width:100%;
     display:grid;
-    grid-template-columns:1fr auto auto auto 22px;
+    grid-template-columns:1fr 100px 230px 96px 22px;
     gap:20px;
-    align-items:center;
+    align-items:start;
     padding:18px 20px;
     background:none;
     border:none;
@@ -154,6 +154,10 @@
     color:var(--ink-soft);
     white-space:nowrap;
   }
+  /* Cột "Thời gian áp dụng" có độ dài rất khác nhau giữa các chính sách
+     (VD "31/12/2026" ngắn vs "Đến khi có công văn điều chỉnh" dài) — cho
+     phép xuống dòng trong độ rộng cột cố định, tránh tràn/đẩy lệch cột. */
+  .col-meta.col-range{white-space:normal;}
   .col-meta .k{display:block;font-size:10.5px;text-transform:none;color:#9aa1ab;margin-bottom:2px;}
   .col-meta .v{color:var(--ink);font-size:13px;}
 
@@ -179,6 +183,7 @@
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);
     transition:transform .2s ease;
+    align-self:center;
   }
   .policy.is-open .chev{transform:rotate(180deg);}
 
@@ -490,7 +495,7 @@ function render(){
           <span class="k">Ngày cập nhật</span>
           <span class="v">${p.updated}</span>
         </div>
-        <div class="col-meta">
+        <div class="col-meta col-range">
           <span class="k">Thời gian áp dụng</span>
           <span class="v">${p.fromLabel} — ${p.toLabel}</span>
         </div>
