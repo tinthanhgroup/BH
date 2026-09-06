@@ -244,7 +244,8 @@ function logMobileView(){
 var MODEL_ORDER = ['Grand i10','Venue','Accent','Elantra','Creta','Tucson','Stargazer','Custin','Santafe','Ioniq','Palisade','Staria'];
 var BRANCHES = ['NT','ĐL','PY','PR','BL','ĐN'];
 var KHO_LABEL = {NT:'Nha Trang','ĐL':'Đà Lạt',PY:'Phú Yên',PR:'Phan Rang',BL:'Bảo Lộc','ĐN':'Đak Nông'};
-var BONUS_MAP = {'Grand i10':1.5,'Creta':1.5,'Tucson':1.5,'Staria':1.5,'Stargazer':1.75,'Custin':1.75,'Venue':1.75,'Accent':1.75,'Santafe':2,'Palisade':2,'Elantra':2,'Ioniq':2};
+// Mức thưởng TVBH theo Công văn số 51/2026/CV-HTV: Nhóm D1 (2tr/xe), Nhóm D2 (2,5tr/xe)
+var BONUS_MAP = {'Grand i10':2,'Custin':2,'Venue':2,'Elantra':2,'Staria':2,'Santafe':2.5,'Palisade':2.5,'Creta':2.5,'Accent':2.5,'Tucson':2.5,'Stargazer':2.5,'Ioniq':2.5};
 
 var KCK_DATE = "03/09/2026";
 var KCK_DATA = [
@@ -752,7 +753,7 @@ function renderDrillHTML(){
     sumTot+=tot; sumDebt+=m.debt; sumStock+=m.stock; sumBO+=m.bo; sumLXX+=m.lxx;
     var act=(selModel===m.name);
     var bonus=BONUS_MAP[m.name];
-    var bonusBadge=bonus?'<span class="bonus">'+(bonus===1.5?'1,5tr':bonus===1.75?'1,75tr':'2tr')+'</span>':'';
+    var bonusBadge=bonus?'<span class="bonus">'+(bonus===2?'2tr':'2,5tr')+'</span>':'';
     var yr25=(yr25Map[m.name]||0);
     totYr25+=yr25;
     lv1+='<div class="drill-row'+(act?' active':'')+'" onclick="clickModel(\''+esc(m.name)+'\')">'
@@ -782,6 +783,7 @@ function renderDrillHTML(){
     +'<div class="panel-hdr">Lev 1 – Model <span class="bonus">thưởng HTV</span></div>'
     +'<div class="lev1-col-hdr"><span class="ch-name"></span><span class="ch-yr25">2025</span><span class="ch-col" style="color:var(--c-stock)">Tồn</span><span class="ch-col" style="color:var(--c-bo)">BO</span><span class="ch-col" style="color:var(--c-lxx)">LXX</span><span class="ch-debt">Nợ</span></div>'
     +'<div id="lev1-body">'+lv1+'</div>'
+    +'<div style="font-size:10px;color:var(--muted);padding:4px 10px 8px;font-style:italic;">* Mức thưởng TVBH theo Công văn số 51/2026/CV-HTV</div>'
     +'</div>';
 
   // LEV2

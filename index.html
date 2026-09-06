@@ -507,6 +507,8 @@ function normModel(m){
   if(ml.includes('staria')) return 'Staria';
   return m.toString().trim();
 }
+// Palisade Hybrid = xe phiên bản mới, mã LX3 — cần đếm riêng trong 1 số KPI
+function isPalisadeLX3(r){return r.model==='Palisade' && (r.phienBan||'').toLowerCase().includes('hybrid');}
 function khoLabel(k){return k?(KHO_LABEL[k]||k):'—';}
 function normMau(mau){
   if(!mau||mau==='—') return mau||'—';
@@ -2579,17 +2581,20 @@ function hhSetNam(y){hhFilters.nam=(hhFilters.nam===y?'':y);renderHH();}
 function hhClearFilters(){hhFilters={q:'',kho:'',nam:''};typeFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
   var totCXN=allData.chuaXN?allData.chuaXN.length:0;
+  var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(isPalisadeLX3).length:0;
+  var totD_LX3=allData.debt.filter(isPalisadeLX3).length;
   var tot2025=0;
   allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)===2025&&(!hhFilters.kho||r.kho===hhFilters.kho)) tot2025++;});
   var tot120=allData.stock.filter(function(r){if(hhFilters.kho&&r.kho!==hhFilters.kho)return false;return daysSince(r.ngayNhap)>60;}).length;
   var totNM=allData.stock.filter(function(r){if(hhFilters.kho&&r.kho!==hhFilters.kho)return false;return !!r.isNhaMay;}).length;
   var fmtMod=fileLastModified?fileLastModified.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-  function statEl(type,label,val,colorCls,accentColor,extraStyle){
+  function statEl(type,label,val,colorCls,accentColor,extraStyle,lx3Count){
     var isActive=typeFilter===type;
     var ac=isActive?accentColor:'transparent';
     var bg=isActive?'#f0f5ff':'#fff';
     var dot=isActive?'<span class="pulse-dot"></span>':'';
-    return `<div class="stat clickable${isActive?' active-filter':''}" onclick="toggleType('${type}')" style="border-left:3px solid ${ac};background:${bg};${extraStyle||''}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">${label}${dot}</div><div class="stat-num ${colorCls}">${val}</div></div>`;
+    var lx3Sub=(lx3Count>0)?`<div style="font-size:10px;font-weight:600;opacity:.75">(${lx3Count} LX3)</div>`:'';
+    return `<div class="stat clickable${isActive?' active-filter':''}" onclick="toggleType('${type}')" style="border-left:3px solid ${ac};background:${bg};${extraStyle||''}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">${label}${dot}</div><div class="stat-num ${colorCls}">${val}</div>${lx3Sub}</div>`;
   }
   // NEW badge: hiện trong 3 ngày kể từ KCK_DATE
   var kckParts=KCK_DATE.split('/');
@@ -2607,10 +2612,10 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'</div>'
     +'<div class="stat clickable" onclick="hhClearFilters()" title="Bỏ toàn bộ lọc" style="cursor:pointer;min-width:96px"><div class="stat-label">Tổng</div><div class="stat-num gray">'+(totS+totB+totL)+'</div></div>'
     +'<div class="stat-sep"></div>'
-    +`<div class="stat clickable${typeFilter==='chuaXN'?' active-filter':''}" onclick="toggleType('chuaXN')" style="border-left:3px solid ${typeFilter==='chuaXN'?'#0d7c66':'transparent'};background:${typeFilter==='chuaXN'?'#e6faf5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px;color:#0d7c66">Chờ XN${typeFilter==='chuaXN'?'<span class="pulse-dot" style="background:#0d7c66"></span>':''}</div><div class="stat-num" style="color:#0d7c66">${totCXN}</div></div>`
+    +`<div class="stat clickable${typeFilter==='chuaXN'?' active-filter':''}" onclick="toggleType('chuaXN')" style="border-left:3px solid ${typeFilter==='chuaXN'?'#0d7c66':'transparent'};background:${typeFilter==='chuaXN'?'#e6faf5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px;color:#0d7c66">Chờ XN${typeFilter==='chuaXN'?'<span class="pulse-dot" style="background:#0d7c66"></span>':''}</div><div class="stat-num" style="color:#0d7c66">${totCXN}</div>${totCXN_LX3>0?`<div style="font-size:10px;font-weight:600;opacity:.75;color:#0d7c66">(${totCXN_LX3} LX3)</div>`:''}</div>`
     +'<div class="stat clickable'+(typeFilter==='kck'?' active-filter':'')+'" onclick="toggleType(\'kck\')" style="border-left:3px solid '+(typeFilter==='kck'?'#7c3aed':'transparent')+';background:'+(typeFilter==='kck'?'#f5f3ff':'#fff')+';position:relative">'+(showNew?'<div style="position:absolute;top:-7px;right:-4px;background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;letter-spacing:.3px;animation:kckblink 1s step-start infinite">NEW</div>':'')+'<div class="stat-label" style="color:#7c3aed">KCK</div><div class="stat-num" style="font-size:13px;color:#7c3aed;font-weight:600">'+kckShort+'</div></div>'
     +'<div class="stat-sep"></div>'
-    +statEl('debt','Xe nợ',totD,'red','var(--c-debt)')
+    +statEl('debt','Xe nợ',totD,'red','var(--c-debt)',undefined,totD_LX3)
     +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03')
     +'<div class="stat-sep"></div>'
     +'<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">'
@@ -2937,8 +2942,9 @@ function renderHH(){
   var totDaPhan=allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;}).length;
   var mx=1;
   models.forEach(function(m){var t=m.stock+m.bo+m.lxx;if(t>mx)mx=t;});
-  var BONUS_MAP={'Grand i10':1.5,'Creta':1.5,'Tucson':1.5,'Staria':1.5,'Stargazer':1.75,'Custin':1.75,'Venue':1.75,'Accent':1.75,'Santafe':2,'Palisade':2,'Elantra':2,'Ioniq':2};
-  function bonusBadge(mn){var b=BONUS_MAP[mn];if(!b)return '';var label=b===1.5?'1,5tr':b===1.75?'1,75tr':'2tr';return '<span class="bonus-badge">'+label+'</span>';}
+  // Mức thưởng TVBH theo Công văn số 51/2026/CV-HTV: Nhóm D1 (2tr/xe), Nhóm D2 (2,5tr/xe)
+  var BONUS_MAP={'Grand i10':2,'Custin':2,'Venue':2,'Elantra':2,'Staria':2,'Santafe':2.5,'Palisade':2.5,'Creta':2.5,'Accent':2.5,'Tucson':2.5,'Stargazer':2.5,'Ioniq':2.5};
+  function bonusBadge(mn){var b=BONUS_MAP[mn];if(!b)return '';var label=b===2?'2tr':'2,5tr';return '<span class="bonus-badge">'+label+'</span>';}
   var yr25Map={};
   allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)!==2025)return;if(hhFilters.kho&&r.kho!==hhFilters.kho)return;yr25Map[r.model]=(yr25Map[r.model]||0)+1;});
   var totYr25=Object.values(yr25Map).reduce(function(a,b){return a+b;},0);
@@ -3184,7 +3190,8 @@ function renderHH(){
       +'<div class="drill-panel" id="dp2" style="flex:0 0 25%"><div class="drill-header">Lev 2 – Phiên bản'+h2+'</div><div class="drill-body">'+lv2+'</div></div>'
       +'<div class="drill-resizer" id="rs2"></div>'
       +'<div class="drill-panel" id="dp3" style="flex:1;min-width:0"><div class="drill-header">Lev 3 – Màu sắc · Chi nhánh'+h3+'</div><div class="drill-body" style="overflow-x:auto">'+lv3+'</div></div>'
-      +'</div>';
+      +'</div>'
+      +'<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">* Mức thưởng TVBH (badge bên cạnh tên Model) theo Công văn số 51/2026/CV-HTV</div>';
   }
   document.getElementById('hh-content').innerHTML=mkStats(totS,totB,totL,totD,totDaPhan)+mkHHFilters()+bodyContent;
   setTimeout(initResizers,0);
