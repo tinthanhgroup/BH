@@ -98,6 +98,8 @@
   }
   .policy-table tr.policy-row{cursor:pointer;transition:background .15s ease;}
   .policy-table tr.policy-row:hover{background:#f7fafd;}
+  .policy-table tr.policy-row.is-active{background:#eaf3fc;}
+  .policy-table tr.policy-row.is-active:hover{background:#dcebfa;}
   .policy-table tr.policy-row td{border-bottom:1px solid var(--line);}
   .policy-table tr.policy-row.is-open td{border-bottom-color:#c7ccd3;}
   .policy-table tr.policy-detail-row td{padding:0;}
@@ -486,7 +488,7 @@ function render(){
     const i = originalIdx;
     const stt = displayIdx + 1;
     return `
-    <tr class="policy-row" data-idx="${i}" onclick="toggle(${i})">
+    <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
       <td class="col-stt">${stt}</td>
       <td class="col-dept">${p.category || '—'}</td>
       <td class="col-title">
