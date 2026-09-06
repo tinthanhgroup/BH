@@ -312,8 +312,7 @@
 
   <div class="hdr">
     <div>
-      <div class="hdr-eyebrow" id="hdrEyebrow">Báo cáo nội bộ · Cập nhật 06/2026 · Trọng tâm: Khối Dịch vụ</div>
-      <h1>Báo cáo nhân sự Tín Thanh Group</h1>
+      <h1>Báo cáo nhân sự</h1>
     </div>
   </div>
 
@@ -1075,8 +1074,6 @@ const _now = new Date();
 const THANG_NAY = _now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0');
 const THANG_NAY_DISPLAY = String(_now.getMonth()+1).padStart(2,'0')+'/'+_now.getFullYear();
 (function(){
-  var eyebrow=document.getElementById('hdrEyebrow');
-  if(eyebrow) eyebrow.textContent='Báo cáo nội bộ · Cập nhật '+THANG_NAY_DISPLAY+' · Trọng tâm: Khối Dịch vụ';
   var title=document.getElementById('thangNayTitle');
   if(title) title.textContent='Tình hình nhân sự — Tháng '+THANG_NAY_DISPLAY;
   var fn=document.getElementById('footnoteText');
