@@ -109,12 +109,32 @@
     font-weight:400;
     line-height:1.35;
   }
+  .important-badge{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 7px;
+    border-radius:8px;
+    font-size:var(--fs-xs);
+    font-weight:700;
+    vertical-align:middle;
+    border:1px solid #a9cdf0;
+    background:#dbe9fb;
+    color:var(--blue-deep);
+  }
   .col-code{
     letter-spacing:.02em;
     color:var(--ink-soft);
   }
   .col-stt{color:var(--ink-soft);}
   .col-dept{color:var(--ink);}
+  .col-dept .dept-pill{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:10px;
+    border:1px solid #bfe3c8;
+    background:var(--active-bg);
+    color:var(--active-ink);
+  }
 
   .filter-bar{
     display:flex;
@@ -331,6 +351,7 @@ const policies = [
     category: "Bán hàng - MKT",
     code: "Số 52/2026/CV-HTV · Ký ngày 06/07/2026",
     name: "Chính sách Thưởng kinh doanh (Quý & Tháng)",
+    important: true,
     updated: "06/07/2026",
     from: new Date(2026,6,1),
     to: new Date(2026,11,31),
@@ -383,6 +404,7 @@ const policies = [
     category: "Bán hàng - MKT",
     code: "Thông báo điều chỉnh · Cập nhật ngày 23/07/2026",
     name: "Chính sách Hỗ trợ Marketing Đại lý — bản 23/07",
+    important: true,
     updated: "23/07/2026",
     from: new Date(2026,6,23),
     to: null,
@@ -429,6 +451,65 @@ const policies = [
         "Không phát sinh dịch vụ hợp lệ ≥12 tháng liên tiếp → tự động chuyển Inactive."
       ],
       note: "Sửa đổi, bổ sung Thông báo gốc số 607/2025/TB.CSKH-HTV (11/12/2025) — các nội dung không được nêu ở đây vẫn áp dụng theo bản gốc."
+    }
+  },
+  {
+    pdfUrl: "https://drive.google.com/file/d/1wuraR3M8-N3AhZgJXww_n1hFDgNmabXi/view?usp=drive_link",
+    category: "Bán hàng - MKT",
+    code: "Số 51/2026/CV-HTV · Ký ngày 06/07/2026",
+    name: "Chính sách Thưởng TVBH & QLBH",
+    updated: "06/07/2026",
+    from: new Date(2026,6,1),
+    to: new Date(2026,11,31),
+    toLabel: "31/12/2026",
+    fromLabel: "01/07/2026",
+    summary: {
+      quyLabel: "THƯỞNG TVBH",
+      thangLabel: "THƯỞNG QLBH",
+      quy: [
+        "<b>T(TVBH) = H1×D1 + H2×D2</b> (D1/D2 = số xe bán theo nhóm model, H1/H2 = đơn giá thưởng/xe)",
+        "Nhóm D1 (H1 = 2.000.000đ/xe): Grand i10, Custin, Venue, Elantra, Staria",
+        "Nhóm D2 (H2 = 2.500.000đ/xe): Santa Fe, Palisade, Creta, Accent, Tucson, Stargazer, Ioniq5",
+        "Giải ngân 3 đợt/tháng (1–10, 11–20, 21–cuối tháng), tạm tính theo DMS, 100% ngay, chuyển TK cá nhân TVBH trong tối đa 20 ngày",
+        "Điều kiện: có HĐLĐ chính thức với Đại lý + ký Hợp đồng cộng tác viên với HTV; khai báo/cập nhật liên tục trạng thái trên DMS, CRM, HTA"
+      ],
+      thang: [
+        "A = DS bán hàng tháng / Chỉ tiêu tháng ×100%. A&lt;85%: không thưởng.",
+        "A≥85%: <b>T(QLBH) = H(QLBH) × D(QLBH)</b>"
+      ],
+      thangTable: {head:["A","≥85%","≥95%","≥100%"], row:["H(QLBH)","250.000","350.000","450.000"]},
+      note: "Áp dụng cho Đại lý ngoài Hà Nội & TP.HCM. Điều kiện Marketing bắt buộc (cả TVBH & QLBH): Facebook cá nhân công khai tối thiểu 1 bài/ngày & 4 ngày/tuần (bắt buộc), Zalo/TikTok/YouTube tối thiểu 1 bài/tuần (khuyến nghị). Giải ngân QLBH 1 lần/tháng, 100% ngay, chuyển tới Đại lý → Đại lý chi trả lại cho QLBH kèm xác nhận có chữ ký. HTV hậu kiểm theo hóa đơn thực tế, có thể thu hồi nếu hậu kiểm không đạt; HTV có quyền thay đổi/kết thúc sớm chính sách tùy tình hình bán hàng."
+    }
+  },
+  {
+    pdfUrl: "https://drive.google.com/file/d/1FnQgERaY7OKxvZnU_dpGGZMesxhgtztK/view?usp=drive_link",
+    category: "Bán hàng - MKT",
+    code: "Số 87/2026/CV-HTV · Ký ngày 01/09/2026",
+    name: "Thưởng TVBH nâng cao một số dòng xe — Tháng 9/2026",
+    updated: "01/09/2026",
+    from: new Date(2026,8,1),
+    to: new Date(2026,8,30),
+    toLabel: "30/09/2026",
+    fromLabel: "01/09/2026",
+    summary: {
+      quyLabel: "MỨC THƯỞNG MỚI",
+      thangLabel: "LƯU Ý QUAN TRỌNG",
+      quy: [
+        "<b>Grand i10 Sedan</b> (Năm SX 2025): 5.000.000đ/xe",
+        "<b>Accent</b> (Năm SX 2025): 5.000.000đ/xe",
+        "<b>Elantra</b> (Năm SX 2025): 5.000.000đ/xe",
+        "<b>Venue</b> (Năm SX 2026): 5.000.000đ/xe",
+        "<b>Stargazer</b> (Năm SX 2025): 8.000.000đ/xe",
+        "<b>Santa Fe</b> (Năm SX 2025): 8.000.000đ/xe",
+        "<b>Ioniq 5</b> (Năm SX ≤2025): 8.000.000đ/xe"
+      ],
+      thang: [
+        "Mức thưởng này <b>thay thế tạm thời</b> mức thưởng tương ứng của các model trên trong CV 51/2026/CV-HTV — model khác không có trong bảng vẫn áp dụng theo CV 51/2026 như cũ.",
+        "Mọi quy định khác (giải ngân, điều kiện nhận thưởng, chứng từ thanh toán...) áp dụng y như CV 51/2026/CV-HTV — văn bản này chỉ điều chỉnh phần mức thưởng/model.",
+        "Điều khoản <b>\"im lặng là đồng ý\"</b>: không phản hồi trong 24h kể từ khi nhận công văn = coi như đồng ý.",
+        "HTV có quyền thay đổi/kết thúc sớm."
+      ],
+      note: "Chỉ áp dụng trong tháng 9/2026 (01/09–30/09/2026) — ngắn hơn nhiều so với chu kỳ 6 tháng của CV 51/2026/CV-HTV, tự hết hiệu lực đúng hạn; CV 51/2026 vẫn còn hiệu lực song song cho các model không nằm trong bảng trên."
     }
   }
 ];
@@ -490,9 +571,9 @@ function render(){
     return `
     <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
       <td class="col-stt">${stt}</td>
-      <td class="col-dept">${p.category || '—'}</td>
+      <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
       <td class="col-title">
-        <div class="name">${p.name}</div>
+        <div class="name">${p.name}${p.important ? ' <span class="important-badge">⭐ Nổi bật</span>' : ''}</div>
       </td>
       <td class="col-code">${(p.code || '').split(' · ')[0]}</td>
       <td class="col-updated">${p.updated}</td>
@@ -521,6 +602,7 @@ function render(){
               ${(p.summary.thang && p.summary.thang.length) ? `<div class="block">
                 <h4>${p.summary.thangLabel || 'THÊM'}</h4>
                 <ul>${p.summary.thang.map(x=>`<li>${x}</li>`).join('')}</ul>
+                ${renderTable(p.summary.thangTable)}
               </div>` : ''}
               ${p.summary.note ? `<div class="note">${p.summary.note}</div>` : ''}
               <div class="source-row">
