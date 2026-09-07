@@ -198,6 +198,11 @@
     letter-spacing:.05em;color:var(--navy);margin:0 0 4px;
   }
   .panel .desc{font-size:11.5px;color:var(--ink-soft);margin:0 0 12px;}
+  .panel summary{
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.05em;color:var(--navy);margin:0 0 4px;cursor:pointer;
+  }
+  .panel[open] summary{margin-bottom:4px;}
   .chart-box{position:relative;height:230px;overflow:hidden;}
   .chart-box.tall{height:280px;}
 
@@ -319,20 +324,20 @@
   <div class="panel" style="margin-bottom:16px;" id="orgKpiPanel"></div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3 id="thangNayTitle">Tình hình nhân sự — Tháng 06/2026</h3>
+    <h3><span class="chart-num">2</span> <span id="thangNayTitle">Tình hình nhân sự — Tháng 06/2026</span></h3>
     <p class="desc">Biến động trong tháng gần nhất có dữ liệu đầy đủ</p>
     <div class="turnover-kpi-row" id="thangNayKpiRow" style="grid-template-columns:repeat(4,1fr);"></div>
     <div id="hdCanXuLyBox" style="margin-top:12px;"></div>
   </div>
 
-  <div class="panel" style="margin-bottom:16px;">
-    <h3>Biến động 45 ngày gần nhất</h3>
+  <details class="panel" style="margin-bottom:16px;">
+    <summary><span class="chart-num">3</span> Biến động 45 ngày gần nhất</summary>
     <p class="desc">Toàn bộ sự kiện nhận việc / nghỉ việc trong 45 ngày gần nhất trên toàn hệ thống</p>
     <table>
       <thead><tr><th>STT</th><th>Ngày</th><th>Loại biến động</th><th>Nhân sự</th><th>Địa điểm</th><th>Khối</th><th>Ghi chú</th></tr></thead>
       <tbody id="bienDongTable"></tbody>
     </table>
-  </div>
+  </details>
 
   <details class="section-details" ontoggle="if(this.open) setTimeout(()=>window.dispatchEvent(new Event('resize')),50);">
   <summary class="section-divider">
@@ -342,37 +347,37 @@
 
   <div class="grid" style="grid-template-columns:1fr 1fr;">
     <div class="panel">
-      <h3><span class="chart-num">1</span> Nhân sự DV — theo Địa điểm</h3>
+      <h3><span class="chart-num">4</span> Nhân sự DV — theo Địa điểm</h3>
       <p class="desc">4 địa điểm: Nha Trang, Phú Yên, Đà Lạt, Bảo Lộc</p>
       <div class="chart-box"><canvas id="chartDvLocation"></canvas></div>
     </div>
     <div class="panel">
-      <h3><span class="chart-num">2</span> Số lượng KTV Đồng / Sơn / SCC — theo Địa điểm</h3>
+      <h3><span class="chart-num">5</span> Số lượng KTV Đồng / Sơn / SCC — theo Địa điểm</h3>
       <p class="desc">Đang làm việc — bao gồm cả Quản đốc phụ trách tổ đó</p>
       <div class="grid4" id="ktvGrid" style="grid-template-columns:repeat(2,1fr);"></div>
     </div>
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Số lượng nhân sự Gián tiếp Dịch vụ — theo Địa điểm</h3>
+    <h3><span class="chart-num">6</span> Số lượng nhân sự Gián tiếp Dịch vụ — theo Địa điểm</h3>
     <p class="desc">Đang làm việc, tính riêng từng địa điểm</p>
     <div class="grid4" id="giantiepGrid"></div>
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3><span class="chart-num">3</span> Độ tuổi — từng nhân viên</h3>
+    <h3><span class="chart-num">7</span> Độ tuổi — từng nhân viên</h3>
     <p class="desc">Chỉ tính lao động SX trực tiếp. Mỗi cột là 1 nhân viên, chiều cao = tuổi. Sắp xếp theo địa điểm, trong mỗi địa điểm xếp từ cao xuống thấp.</p>
     <div class="chart-box" style="height:340px;"><canvas id="chartTuoiAll"></canvas></div>
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3><span class="chart-num">4</span> Thâm niên — từng nhân viên</h3>
+    <h3><span class="chart-num">8</span> Thâm niên — từng nhân viên</h3>
     <p class="desc">Chỉ tính lao động SX trực tiếp. Mỗi cột là 1 nhân viên, chiều cao = số tháng thâm niên. Sắp xếp theo địa điểm, trong mỗi địa điểm xếp từ cao xuống thấp.</p>
     <div class="chart-box" style="height:340px;"><canvas id="chartThamNienAll"></canvas></div>
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3><span class="chart-num">5</span> Biến động nhân sự Dịch vụ — Lịch sử nghỉ việc (2024–2026)</h3>
+    <h3><span class="chart-num">9</span> Biến động nhân sự Dịch vụ — Lịch sử nghỉ việc (2024–2026)</h3>
     <p class="desc">Chỉ tính nghỉ việc khối Dịch vụ, tổng hợp từ hồ sơ 4 địa điểm, giai đoạn 2024–2026. Đà Lạt &amp; Bảo Lộc chưa có số liệu 2026 đầy đủ, sẽ cập nhật sau. Đây là dữ liệu quá khứ, tách riêng khỏi số liệu nhân sự đang làm việc ở trên.</p>
     <div class="grid" style="grid-template-columns:1fr 1.3fr;align-items:center;">
       <div>
@@ -392,7 +397,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Định biên KTV theo Doanh thu nhân công 2025</h3>
+    <h3><span class="chart-num">10</span> Định biên KTV theo Doanh thu nhân công 2025</h3>
     <p class="desc">Năng suất/người: Đồng 30–60tr · Sơn 30–50tr · SCC 30–40tr. <b>Thiếu</b> nếu Hiện có &lt; CEILING(DT/năng suất tối đa); <b>Dư</b> nếu Hiện có &gt; CEILING(DT/30tr); còn lại là Đủ. Nhân sự hiện có = KTV + Quản đốc. Riêng Bảo Lộc: KTV SCC kiêm nhiệm Đồng nên gộp chung 1 dòng "Đồng + SCC".</p>
     <div class="turnover-kpi-row" id="dinhbienKpiRow" style="grid-template-columns:repeat(4,1fr);"></div>
     <table style="margin-top:16px;">
@@ -402,7 +407,7 @@
   </div>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Điểm nóng / Rủi ro nhân sự</h3>
+    <h3><span class="chart-num">11</span> Điểm nóng / Rủi ro nhân sự</h3>
     <p class="desc">Dựa trên thừa/thiếu định biên KTV theo doanh thu</p>
     <div class="risk-grid" id="riskGrid"></div>
   </div>
@@ -416,7 +421,7 @@
   </summary>
 
   <div class="panel" style="margin-bottom:16px;">
-    <h3>Sức khỏe nhân sự theo Địa điểm</h3>
+    <h3><span class="chart-num">12</span> Sức khỏe nhân sự theo Địa điểm</h3>
     <p class="desc">So sánh nhanh giữa 4 địa điểm</p>
     <table class="branch-table" id="branchTable"></table>
   </div>
@@ -555,6 +560,7 @@ function renderOrgKpi(){
   locs.forEach(l=> locCounts[l.key] = DATA.filter(d=>d.diadiem===l.key && d.trangthai==='Đang làm việc').length);
 
   document.getElementById('orgKpiPanel').innerHTML = `
+    <h3><span class="chart-num">1</span> Tổng quan nhân sự</h3>
     <div class="orgkpi-top">
       <div class="orgkpi-total" style="border-color:${COLORS['Dịch vụ']};background:${COLORS_SOFT['Dịch vụ']};">
         <div class="lbl">Tổng nhân sự</div>
