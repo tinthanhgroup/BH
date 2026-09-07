@@ -128,8 +128,8 @@
 
   <div class="panel branch-grid" id="branchGrid"></div>
 
-  <details class="panel" open>
-    <summary>Cấu hình giờ chuẩn</summary>
+  <div class="panel">
+    <h3>1. Cấu hình giờ chuẩn</h3>
     <div style="margin-top:14px;">
       <div class="config-row">
         <div class="config-item"><label>Giờ vào buổi sáng</label><input type="text" class="time-input" id="cfgGioVaoSang" value="07:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 07:30"></div>
@@ -140,10 +140,10 @@
       </div>
       <p class="config-note" id="exceptionNote"></p>
     </div>
-  </details>
+  </div>
 
   <div class="panel highlight">
-    <h3><span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></h3>
+    <h3>2. <span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></h3>
     <p class="desc">Chọn ngày để xem chi tiết. Mặc định là ngày gần nhất có dữ liệu.</p>
     <div class="search-box">
       <select id="todaySelect"></select>
@@ -167,8 +167,8 @@
   </div>
 
   <div class="grid2">
-    <div class="panel highlight">
-      <h3><span class="accent">Đi trễ</span> theo phòng ban</h3>
+    <details class="panel highlight">
+      <summary>3. <span class="accent">Đi trễ</span> theo phòng ban</summary>
       <p class="desc">Phòng ban lấy theo file Tổng hợp nhân sự (chuẩn) — sắp xếp theo số lượt trễ giảm dần</p>
       <table id="phongTable">
         <thead><tr>
@@ -182,16 +182,16 @@
         </tr></thead>
         <tbody id="phongTbody"></tbody>
       </table>
-    </div>
-    <div class="panel">
-      <h3>Lượt đi trễ &amp; nghỉ theo ngày</h3>
+    </details>
+    <details class="panel">
+      <summary>4. Lượt đi trễ &amp; nghỉ theo ngày</summary>
       <p class="desc">Toàn chi nhánh, 10 ngày gần nhất</p>
       <div class="chart-box"><canvas id="chartTreTheoNgay"></canvas></div>
-    </div>
+    </details>
   </div>
 
-  <div class="panel highlight">
-    <h3><span class="accent">Nhân viên đi trễ</span> — chi tiết</h3>
+  <details class="panel highlight">
+    <summary>5. <span class="accent">Nhân viên đi trễ</span> — chi tiết</summary>
     <p class="desc">Bấm tiêu đề cột để sắp xếp. Mặc định chỉ hiện người có ít nhất 1 lần đi trễ.</p>
     <div class="search-box">
       <input type="text" id="searchNV" placeholder="Tìm theo tên nhân viên...">
@@ -214,10 +214,10 @@
       <tbody id="nvTbody"></tbody>
     </table>
     </div>
-  </div>
+  </details>
 
   <details class="panel">
-    <summary>Số liệu phụ (giờ làm, về sớm...)</summary>
+    <summary>6. Số liệu phụ (giờ làm, về sớm...)</summary>
     <div class="grid2" style="margin-top:16px;">
       <div>
         <h3 style="margin-top:8px;">Giờ làm trung bình theo phòng ban</h3>
@@ -239,7 +239,7 @@
   </details>
 
   <details class="panel" id="chuaKhopPanel">
-    <summary>⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
+    <summary>7. ⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
     <p class="desc">Danh sách nhân viên xuất hiện trong file chấm công nhưng KHÔNG khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.</p>
     <div class="table-wrap">
     <table id="chuaKhopTable">
@@ -255,7 +255,7 @@
   </details>
 
   <details class="panel" id="trungVanTayPanel">
-    <summary>🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
+    <summary>8. 🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
     <p class="desc">Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp KHÔNG tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).</p>
     <div class="table-wrap">
     <table id="trungVanTayTable">
@@ -270,7 +270,7 @@
   </details>
 
   <details class="panel" id="thieuChamCongPanel">
-    <summary>👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
+    <summary>9. 👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
     <p class="desc">Danh sách người ĐANG LÀM VIỆC theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng KHÔNG xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.</p>
     <div class="table-wrap">
     <table id="thieuChamCongTable">
