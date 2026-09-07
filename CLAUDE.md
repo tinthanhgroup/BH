@@ -49,9 +49,14 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 ## Quy ước giao diện chung giữa các trang module
 
-`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html` là 4 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (đã từng xảy ra: `theo_doi_chinh_sach.html` có header nhỏ hơn và màu đen thay vì xanh navy như 3 file kia). Khi sửa hoặc thêm màu/size cho tiêu đề `<h1>` đầu trang, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
+`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html` là 4 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
 - Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
-- Cỡ chữ: `32px`, `font-weight:800` (riêng `mkt.html` đang dùng `28px`, không phải lỗi — chỉ là chưa đồng bộ, có thể nâng lên `32px` nếu được yêu cầu chỉnh đồng bộ toàn bộ).
+- Tiêu đề `<h1>` đầu trang: cỡ chữ `32px`, `font-weight:800`.
+- Container chính `.wrap`: `max-width:1280px`.
+- Màu hover cho dòng bảng (`tr:hover`): `#F7F9FC`.
+- Font: `'Inter', sans-serif` cho toàn bộ trang, kể cả bảng/mô tả — không để fallback stack (`-apple-system`...) đứng trước Inter, sẽ khiến chữ hiển thị bằng font hệ điều hành thay vì Inter.
+- **Đánh số mục/panel**: dùng badge tròn `<span class="chart-num">N</span>` (nền `--navy`, chữ trắng, tròn 20px) đặt trước tiêu đề trong `<h3>`/`<summary>` — không dùng kiểu số thường `"3. Tiêu đề"`. CSS class `.chart-num` cần khai báo riêng trong từng file (copy nguyên khối từ 1 trong 4 file trên).
+- **Panel nào luôn hiện, panel nào thu gọn**: theo nguyên tắc "1-2 mục quan trọng/tổng quan nhất luôn hiện (`<div class="panel">`), các mục còn lại thu gọn mặc định (`<details class="panel"><summary>...`)" — áp dụng khi 1 trang có nhiều panel/bảng để tránh rối mắt. Panel có logic tự ẩn khi rỗng (`style.display='none'` khi không có dữ liệu, ví dụ các mục cảnh báo trong `chamcong.html`) không tính vào quy tắc này.
 
 ## Hệ thống phân quyền (`index.html`)
 

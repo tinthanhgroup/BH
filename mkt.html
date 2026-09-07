@@ -13,10 +13,10 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1320px;margin:0 auto;padding:26px 26px 60px;}
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
   .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
   .hdr-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-bottom:6px;}
-  .hdr h1{font-weight:800;font-size:28px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
+  .hdr h1{font-weight:800;font-size:32px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
   .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
 
   .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
@@ -31,6 +31,11 @@
   .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
   .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
   .panel summary{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;cursor:pointer;}
+  .chart-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;
+    font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
+  }
   .panel[open] summary{margin-bottom:4px;}
   .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
 
@@ -50,7 +55,7 @@
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
   thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
   tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
-  tbody tr:hover{background:#F7FAFD;}
+  tbody tr:hover{background:#F7F9FC;}
   tbody tr.late{background:#FDF1F1;}
   tbody tr.late:hover{background:#FBE5E5;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
@@ -101,7 +106,7 @@
 
   <div class="grid2">
     <div class="panel">
-      <h3>1. Thực hiện theo Chi nhánh</h3>
+      <h3><span class="chart-num">1</span> Thực hiện theo Chi nhánh</h3>
       <p class="desc">Tổng đăng ký / đã đăng / trễ hạn / hoàn thành theo từng chi nhánh (theo bộ lọc đang chọn)</p>
       <table>
         <thead><tr><th>Chi nhánh</th><th>Đăng ký</th><th>Đã đăng</th><th>Trễ hạn</th><th>Hoàn thành</th></tr></thead>
@@ -110,7 +115,7 @@
     </div>
 
     <div class="panel">
-      <h3>2. Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
+      <h3><span class="chart-num">2</span> Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
       <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
       <table>
         <thead><tr id="weeklyHead"></tr></thead>
@@ -120,7 +125,7 @@
   </div>
 
   <details class="panel">
-    <summary>3. Độ phủ hạng mục theo Chi nhánh</summary>
+    <summary><span class="chart-num">3</span> Độ phủ hạng mục theo Chi nhánh</summary>
     <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng hạng mục (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — ô tô đỏ = chi nhánh đó chưa đăng ký hạng mục này lần nào, cần rà soát bổ sung kế hoạch.</p>
     <table>
       <thead><tr id="coverageHead"></tr></thead>
@@ -129,7 +134,7 @@
   </details>
 
   <details class="panel">
-    <summary>4. Chi tiết bài đăng (<span id="detailCount">0</span>)</summary>
+    <summary><span class="chart-num">4</span> Chi tiết bài đăng (<span id="detailCount">0</span>)</summary>
     <p class="desc">Bấm vào link để mở bài đăng Facebook. Dòng tô đỏ = đã quá "Đến ngày" nhưng chưa đăng.</p>
     <table>
       <thead><tr>
