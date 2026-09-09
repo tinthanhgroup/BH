@@ -51,7 +51,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 `chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html` là 4 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
 - Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
-- Tiêu đề `<h1>` đầu trang: cỡ chữ `32px`, `font-weight:800`.
+- Tiêu đề `<h1>` đầu trang: cỡ chữ `24px`, `font-weight:800`.
 - Container chính `.wrap`: `max-width:1280px`.
 - Màu hover cho dòng bảng (`tr:hover`): `#F7F9FC`.
 - Font: `'Inter', sans-serif` cho toàn bộ trang, kể cả bảng/mô tả — không để fallback stack (`-apple-system`...) đứng trước Inter, sẽ khiến chữ hiển thị bằng font hệ điều hành thay vì Inter.
