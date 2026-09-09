@@ -3099,7 +3099,7 @@ function renderHH(){
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
       return true;
     });
-    if(typeFilter==='old60') dRows.sort(function(a,b){return (daysSince(b.ngayNhap)||0)-(daysSince(a.ngayNhap)||0);});
+    if(typeFilter==='old60') dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||(daysSince(b.ngayNhap)||0)-(daysSince(a.ngayNhap)||0);});
     else dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||a.phienBan.localeCompare(b.phienBan);});
     var isDebt=typeFilter==='debt',isDaPhan=typeFilter==='daphan',isLxx=typeFilter==='lxx',is2025t=typeFilter==='yr2025',isInvT=typeFilter==='inventory',isOld60=typeFilter==='old60',isNM=typeFilter==='nhamay',isCXN=typeFilter==='chuaXN';
     var tdNW='white-space:nowrap';
@@ -3116,7 +3116,7 @@ function renderHH(){
     else ths+='<th style="'+tdNW+'">Ngày XN đơn hàng</th>';
     var dtbody='';
     var prevModel='',modelSpanMap={};
-    var doMerge=typeFilter!=='old60';
+    var doMerge=true;
 
     // Với chuaXN: gom các xe giống nhau lại
     if(isCXN){
