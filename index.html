@@ -97,7 +97,11 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .kpi-sub{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;}
 .delta{font-weight:600;}.delta.up{color:#16a34a;}.delta.down{color:#dc2626;}.delta.same{color:var(--muted);}
 
-.chart-monthly{grid-column:1/2;}.commentary-box{grid-column:2/3;}
+.chart-monthly{grid-column:1/2;min-width:0;}.commentary-box{grid-column:2/3;}
+.chart-hscroll{overflow-x:auto;scrollbar-width:thin;}
+.chart-hscroll::-webkit-scrollbar{height:8px;width:8px;}
+.chart-hscroll::-webkit-scrollbar-thumb{background:#c3ccdb;border-radius:4px;}
+.chart-hscroll::-webkit-scrollbar-thumb:hover{background:#a7b2c6;}
 .row-4-5{grid-column:1/-1;display:grid;grid-template-columns:62fr 38fr;gap:14px;}
 .chart-weekly-branch{grid-column:auto;}.chart-sys-weekly{grid-column:auto;}
 .commentary-box{background:#eff6ff;border:1.5px solid #93c5fd;border-radius:12px;padding:16px;box-shadow:0 1px 6px rgba(0,0,0,.05);overflow-y:auto;max-height:460px;}
@@ -322,7 +326,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
       <div class="card chart-monthly">
         <div class="card-title">2. Ký hợp đồng hàng tháng <div class="badge" id="week-badge">Tuần —</div><div class="badge" id="history-warn-badge" style="display:none;background:#fff3cd;color:#856404;cursor:pointer" onclick="retryHistoryLoad()">⚠️ Thiếu dữ liệu lịch sử — bấm để tải lại</div></div>
         <div style="margin-bottom:6px"><span style="font-size:10px;font-weight:700;color:var(--muted);margin-right:6px">Lọc theo model:</span><span id="model-legend" style="display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center"></span></div>
-        <div style="overflow-x:auto"><svg id="monthly-svg" style="display:block;height:300px;"></svg></div>
+        <div class="chart-hscroll"><svg id="monthly-svg" style="display:block;height:300px;"></svg></div>
         <div class="branch-legend" id="monthly-legend" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)"></div>
       </div>
       <div class="commentary-box">
@@ -475,6 +479,7 @@ var salesKhoFilter = null;
 // ═══════════════════════════════════════════════════════════
 // SHARED HELPERS
 // ═══════════════════════════════════════════════════════════
+var MONTHLY_CHART_START = new Date(2025,6,1); // Biểu đồ "2. Ký hợp đồng hàng tháng" chỉ lấy dữ liệu từ 07/2025 trở đi
 function na(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLowerCase().replace(/[\s\n_]/g,'');}
 function na2(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[đĐ]/g,'d').toLowerCase().replace(/\s+/g,'');}
 function col(keys,kws){return keys.find(k=>kws.some(w=>na(k).includes(na(w))))||null;}
@@ -1549,7 +1554,7 @@ function prepareBH(raw,fileDate){
   const mmap={};
   const palisadeMap={}; // Palisade SX 2026 (đặt cọc thiện chí) — đếm riêng theo tháng+chi nhánh
   for(const r of rows){
-    if(r.date.getFullYear()<2025) continue;
+    if(r.date<MONTHLY_CHART_START) continue;
     const m=`${r.date.getFullYear()}-${String(r.date.getMonth()+1).padStart(2,'0')}`;
     if(!mmap[m]){mmap[m]={};BRANCHES_BH.forEach(b=>mmap[m][b]=0);}
     mmap[m][r.branch]=(mmap[m][r.branch]||0)+1;
@@ -3552,7 +3557,7 @@ function buildBHFromExport(coc, hh, fileDate){
 
   const mmap={};
   rows.forEach(function(r){
-    if(r.date.getFullYear()<2025) return;
+    if(r.date<MONTHLY_CHART_START) return;
     var m=r.date.getFullYear()+'-'+String(r.date.getMonth()+1).padStart(2,'0');
     if(!mmap[m]){mmap[m]={};BRANCHES_BH.forEach(b=>mmap[m][b]=0);}
     mmap[m][r.branch]=(mmap[m][r.branch]||0)+1;
