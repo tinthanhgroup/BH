@@ -1096,7 +1096,12 @@ function _doSwitchTab(t){
   const pdfBtn=document.getElementById('btn-pdf');
   if(pdfBtn) pdfBtn.style.display=(t==='bh'?'flex':'none');
   if(t==='hh') renderHH();
-  else if(t==='bh') renderBH(_bhData);
+  else if(t==='bh'){
+    renderBH(_bhData);
+    // renderBH() có thể bị bỏ qua nếu đã render 1 lần trước đó lúc tab còn ẩn (data.json load xong trước khi user bấm vào tab)
+    // → lúc đó clientWidth đo được = 0 (display:none) khiến biểu đồ 2 và 5 bị lệch cỡ. Luôn đo lại khi tab thật sự hiện ra.
+    if(window._D){ renderMonthlyByModel(); renderSysWeekly(window._D); }
+  }
   else if(t==='admin') renderAdminTab();
 }
 
