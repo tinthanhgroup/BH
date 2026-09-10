@@ -471,7 +471,9 @@ var fileLastModified = null;
 
 // HH UI state
 var currentTab = 'hh';
-var hhFilters = {q:'',kho:'',nam:''};
+var hhFilters = {q:'',kho:[],nam:''};
+function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
+function khoMatch(k){return !khoActive()||hhFilters.kho.indexOf(k)!==-1;}
 var typeFilter = null;
 var drillModel = null, drillVersion = null;
 var salesKhoFilter = null;
@@ -562,7 +564,7 @@ function yrCell(n){
   if(y===2026) cls='yr26'; else if(y===2025) cls='yr25'; else if(y===2024) cls='yr24';
   return '<td><span class="yr-badge '+cls+'">'+n+'</span></td>';
 }
-function khoFromTVBH(t){if(!t) return '';var s=t.toString().trim();var dot=s.lastIndexOf('.');return dot>=0?s.substring(dot+1).toUpperCase():'';}
+function khoFromTVBH(t){if(!t) return '';var s=t.toString().trim();var dot=s.lastIndexOf('.');return dot>=0?normKhoStr(s.substring(dot+1).toUpperCase()):'';}
 function timeAgoStr(date){
   if(!date) return '';
   var diffMs=Date.now()-date.getTime();
@@ -2500,7 +2502,7 @@ function buildHierarchy(){
   function add(arr){
     arr.forEach(function(r){
       if(typeFilter&&r.type!==typeFilter) return;
-      if(hhFilters.kho&&r.kho!==hhFilters.kho) return;
+      if(!khoMatch(r.kho)) return;
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return;
       var m=r.model;
       if(!mMap[m]) mMap[m]={name:m,stock:0,bo:0,lxx:0,debt:0,versions:{}};
@@ -2545,7 +2547,7 @@ function mkHHFilters(){
   var KHO_LIST=[['NT','Nha Trang'],['ĐL','Đà Lạt'],['PY','Phú Yên'],['PR','Phan Rang'],['BL','Bảo Lộc']];
   var khoBtns='';
   KHO_LIST.forEach(function(pair){
-    var k=pair[0], label=pair[1], isAct=hhFilters.kho===k;
+    var k=pair[0], label=pair[1], isAct=hhFilters.kho.indexOf(k)!==-1;
     // Đếm tồn kho của từng chi nhánh (theo filter năm nếu có)
     var cnt=allData.stock.filter(function(r){
       if(r.kho!==k) return false;
@@ -2553,7 +2555,7 @@ function mkHHFilters(){
       return true;
     }).length;
     var cntLabel=cnt?' <span style="font-weight:700;opacity:.85">'+cnt+'</span>':'';
-    khoBtns+=`<button class="fbtn${isAct?' active-kho':''}" data-kho="${k}" onclick="hhSetKho('${k}')"><span class="fbtn-dot fbtn-dot-kho" style="${isAct?'':'opacity:.35'}"></span>${label}${cntLabel}</button>`;
+    khoBtns+=`<button class="fbtn${isAct?' active-kho':''}" data-kho="${k}" title="Giữ Ctrl (hoặc ⌘) và bấm để chọn nhiều chi nhánh" onclick="hhSetKho('${k}',event)"><span class="fbtn-dot fbtn-dot-kho" style="${isAct?'':'opacity:.35'}"></span>${label}${cntLabel}</button>`;
   });
   var namBtns='';
   years.forEach(function(y){
@@ -2572,7 +2574,7 @@ function mkHHFilters(){
   var hdBtn = canSeeChuaHD
     ? `<button class="fbtn${isHD?' active-kho':''}" onclick="toggleType('chuaHD')" style="${isHD?'border-color:#7c3aed;color:#6d28d9;background:#f5f3ff':''}"><span class="fbtn-dot" style="background:#7c3aed;${isHD?'':'opacity:.35'}"></span>Chưa xuất HD <span style="font-size:10px;background:${isHD?'#7c3aed':'#e0e7ff'};color:${isHD?'#fff':'#4338ca'};border-radius:8px;padding:1px 5px;margin-left:2px">${totChuaHD}</span></button>`
     : `<button class="fbtn" onclick="toggleType('chuaHD')" title="Chỉ Admin/Ban GĐ được xem mục này"><span class="fbtn-dot" style="background:#9ca3af;opacity:.35"></span>Chưa xuất HD 🔒</button>`;
-  var hasActive=(hhFilters.kho||hhFilters.nam||typeFilter);
+  var hasActive=(khoActive()||hhFilters.nam||typeFilter);
   return `<div class="filters">`
     +(khoBtns?`<span class="filter-group-label">Kho</span><div class="filter-group">${khoBtns}</div>`:'')
     +(namBtns?`<span style="width:1px;background:#e0e0e0;height:20px;display:inline-block;margin:0 2px"></span><span class="filter-group-label">Năm SX</span><div class="filter-group">${namBtns}</div>`:'')
@@ -2581,17 +2583,25 @@ function mkHHFilters(){
     +(hasActive?`<button class="btn-clear" onclick="hhClearFilters()">✕ Xóa lọc</button>`:'')
     +`</div>`;
 }
-function hhSetKho(k){hhFilters.kho=(hhFilters.kho===k?'':k);drillModel=null;drillVersion=null;renderHH();}
+function hhSetKho(k,evt){
+  if(evt&&(evt.ctrlKey||evt.metaKey)){
+    var idx=hhFilters.kho.indexOf(k);
+    if(idx!==-1) hhFilters.kho.splice(idx,1); else hhFilters.kho.push(k);
+  } else {
+    hhFilters.kho=(hhFilters.kho.length===1&&hhFilters.kho[0]===k)?[]:[k];
+  }
+  drillModel=null;drillVersion=null;renderHH();
+}
 function hhSetNam(y){hhFilters.nam=(hhFilters.nam===y?'':y);renderHH();}
-function hhClearFilters(){hhFilters={q:'',kho:'',nam:''};typeFilter=null;drillModel=null;drillVersion=null;renderHH();}
+function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
   var totCXN=allData.chuaXN?allData.chuaXN.length:0;
   var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(isPalisadeLX3).length:0;
   var totD_LX3=allData.debt.filter(isPalisadeLX3).length;
   var tot2025=0;
-  allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)===2025&&(!hhFilters.kho||r.kho===hhFilters.kho)) tot2025++;});
-  var tot120=allData.stock.filter(function(r){if(hhFilters.kho&&r.kho!==hhFilters.kho)return false;return daysSince(r.ngayNhap)>60;}).length;
-  var totNM=allData.stock.filter(function(r){if(hhFilters.kho&&r.kho!==hhFilters.kho)return false;return !!r.isNhaMay;}).length;
+  allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)===2025&&khoMatch(r.kho)) tot2025++;});
+  var tot120=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return daysSince(r.ngayNhap)>60;}).length;
+  var totNM=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return !!r.isNhaMay;}).length;
   var fmtMod=fileLastModified?fileLastModified.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
   function statEl(type,label,val,colorCls,accentColor,extraStyle,lx3Count){
     var isActive=typeFilter===type;
@@ -2951,7 +2961,7 @@ function renderHH(){
   var BONUS_MAP={'Grand i10':2,'Custin':2,'Venue':2,'Elantra':2,'Staria':2,'Santafe':2.5,'Palisade':2.5,'Creta':2.5,'Accent':2.5,'Tucson':2.5,'Stargazer':2.5,'Ioniq':2.5};
   function bonusBadge(mn){var b=BONUS_MAP[mn];if(!b)return '';var label=b===2?'2tr':'2,5tr';return '<span class="bonus-badge">'+label+'</span>';}
   var yr25Map={};
-  allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)!==2025)return;if(hhFilters.kho&&r.kho!==hhFilters.kho)return;yr25Map[r.model]=(yr25Map[r.model]||0)+1;});
+  allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)!==2025)return;if(!khoMatch(r.kho))return;yr25Map[r.model]=(yr25Map[r.model]||0)+1;});
   var totYr25=Object.values(yr25Map).reduce(function(a,b){return a+b;},0);
   var lv1ColHdr='<div class="lev1-col-hdr"><span class="ch-name"></span><span class="ch-yr25">\'25</span><span class="ch-bars" style="text-align:center">Tồn kho & BO</span><span class="ch-tot">∑</span><span class="ch-debt">Nợ</span></div>';
   var lv1='';var sumTot=0,sumDebt=0;
@@ -3095,7 +3105,7 @@ function renderHH(){
       if(typeFilter==='yr2025'&&parseInt(r.namSX)!==2025) return false;
       if(typeFilter==='old60'&&!(daysSince(r.ngayNhap)>60)) return false;
       if(typeFilter==='nhamay'&&!r.isNhaMay) return false;
-      if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+      if(!khoMatch(r.kho)) return false;
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
       return true;
     });
@@ -3214,7 +3224,7 @@ function renderInventoryTab(){
   }
   // Lấy rows tồn kho thực tế (stock), sort theo model → phiên bản → màu
   var rows=allData.stock.filter(function(r){
-    if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+    if(!khoMatch(r.kho)) return false;
     if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
     return true;
   });
@@ -3424,7 +3434,7 @@ function exportOrderExcel(){
 
   // ── Sheet 1: Chi tiết xe tồn (đúng dữ liệu bảng "Chi tiết tồn kho", tôn trọng bộ lọc Kho/Năm SX đang chọn) ──
   var stockRows=(allData.stock||[]).filter(function(r){
-    if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+    if(!khoMatch(r.kho)) return false;
     if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
     return true;
   });
@@ -3451,7 +3461,7 @@ function exportOrderExcel(){
 
   // ── Sheet 2: Chi tiết xe nợ (đúng dữ liệu bảng "Xe nợ khách – chưa phân xe", tôn trọng cùng bộ lọc) ──
   var debtRows=(allData.debt||[]).filter(function(r){
-    if(hhFilters.kho&&r.kho!==hhFilters.kho) return false;
+    if(!khoMatch(r.kho)) return false;
     if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
     return true;
   });
