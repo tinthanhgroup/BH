@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quy định nội bộ Tín Thanh</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --ink:#1c2430;
+    --ink-soft:#5b6472;
+    --line:#dfe3e8;
+    --bg:#EEF3F9;
+    --card:#ffffff;
+    --blue:#0f4c92;
+    --blue-deep:#0a3866;
+    --navy:#1B4F8C;
+    --active-bg:#eaf6ee;
+    --active-ink:#1c7a3e;
+    --active-dot:#2ea44f;
+    --inactive-bg:#f3f1ee;
+    --inactive-ink:#8a8378;
+    --inactive-dot:#b8b0a3;
+    --fs-h1:24px;
+    --fs-md:14px;
+    --fs-base:13px;
+    --fs-sm:12px;
+    --fs-xs:11px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
+
+  .masthead{
+    padding-bottom:18px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .masthead h1{
+    font-size:var(--fs-h1);
+    margin:0 0 6px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    color:var(--navy);
+  }
+  .masthead p{
+    margin:0;
+    color:var(--ink-soft);
+    font-family:'Inter',sans-serif;
+    font-size:var(--fs-base);
+  }
+  .today-tag{
+    font-family:'Inter',sans-serif;
+    font-size:var(--fs-sm);
+    color:var(--blue-deep);
+    background:#eaf1fa;
+    border:1px solid #cddcef;
+    padding:5px 12px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+
+  .toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .search-box{
+    flex:1;
+    min-width:220px;
+    position:relative;
+  }
+  .search-box input{
+    width:100%;
+    font-family:'Inter',sans-serif;
+    font-size:var(--fs-base);
+    padding:9px 14px 9px 34px;
+    border-radius:8px;
+    border:1.5px solid #cddcef;
+    background:#fff;
+    color:var(--ink);
+  }
+  .search-box input:focus{outline:none;border-color:var(--blue);}
+  .search-box svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-soft);pointer-events:none;}
+  .search-clear{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:16px;line-height:1;padding:4px;display:none;
+  }
+
+  .filter-bar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  .filter-btn{
+    font-family:inherit;
+    font-size:var(--fs-sm);
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:20px;
+    border:1px solid #cddcef;
+    background:#fff;
+    color:var(--blue-deep);
+    cursor:pointer;
+  }
+  .filter-btn.active{
+    background:var(--blue-deep);
+    color:#fff;
+    border-color:var(--blue-deep);
+  }
+
+  .empty-hint{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--ink-soft);
+    font-size:var(--fs-base);
+  }
+
+  .policy-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-family:'Inter',sans-serif;
+    font-size:var(--fs-base);
+  }
+  .policy-table thead th{
+    text-align:left;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+    padding:8px 10px;
+    border-bottom:2px solid var(--line);
+  }
+  .policy-table tbody td{
+    padding:10px;
+    vertical-align:top;
+  }
+  .policy-table tr.policy-row{cursor:pointer;transition:background .15s ease;}
+  .policy-table tr.policy-row:hover{background:#F7F9FC;}
+  .policy-table tr.policy-row.is-active{background:#eaf3fc;}
+  .policy-table tr.policy-row.is-active:hover{background:#dcebfa;}
+  .policy-table tr.policy-row td{border-bottom:1px solid var(--line);}
+  .policy-table tr.policy-row.is-open td{border-bottom-color:#c7ccd3;}
+  .policy-table tr.policy-detail-row td{padding:0;}
+
+  .col-title{min-width:0;}
+  .col-title .name{font-weight:400;line-height:1.35;}
+  mark{background:#fff1a8;color:inherit;border-radius:2px;padding:0 1px;}
+  .col-code{letter-spacing:.02em;color:var(--ink-soft);}
+  .col-stt{color:var(--ink-soft);}
+  .col-dept{color:var(--ink);}
+  .col-dept .dept-pill{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:10px;
+    border:1px solid #bfe3c8;
+    background:var(--active-bg);
+    color:var(--active-ink);
+  }
+
+  .policy-table td.col-updated,
+  .policy-table td.col-range{color:var(--ink);}
+  .policy-table td.col-range{white-space:normal;}
+
+  .status{
+    font-weight:600;
+    padding:5px 11px 5px 9px;
+    border-radius:20px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  .status .dot{width:6px;height:6px;border-radius:50%;}
+  .status.active{background:var(--active-bg);color:var(--active-ink);}
+  .status.active .dot{background:var(--active-dot);}
+  .status.inactive{background:var(--inactive-bg);color:var(--inactive-ink);}
+  .status.inactive .dot{background:var(--inactive-dot);}
+
+  .chev{
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);
+    transition:transform .2s ease;
+  }
+  .policy-table tr.policy-row.is-open .chev{transform:rotate(180deg);}
+
+  .policy-body{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .policy-body-inner{padding:0 20px 22px 20px;border-top:1px solid var(--line);margin-top:0;}
+  .policy-table tr.policy-detail-row.is-open .policy-body-inner{padding-top:18px;}
+
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px 28px;}
+  @media (max-width:640px){
+    .summary-grid{grid-template-columns:1fr;}
+    .policy-table, .policy-table tbody, .policy-table td, .policy-table tr.policy-detail-row{display:block;width:auto!important;}
+    .policy-table thead{display:none;}
+    .policy-table tr.policy-row{display:flex;flex-direction:column;padding:14px 16px;position:relative;border-bottom:1px solid var(--line);}
+    .policy-table tr.policy-row td{border-bottom:none;padding:2px 0;}
+    .policy-table td.col-title{order:1;}
+    .policy-table td.col-code{order:2;}
+    .policy-table td.col-dept{order:3;}
+    .policy-table td.col-updated{order:4;}
+    .policy-table td.col-range{order:5;}
+    .policy-table td.col-status{order:6;margin-top:4px;}
+    .policy-table td.col-stt{order:7;color:var(--ink-soft);}
+    .policy-table tr.policy-row td.col-chev{order:0;position:absolute;top:14px;right:16px;padding:0;}
+    .policy-table tr.policy-row.is-open{border-bottom-color:#c7ccd3;}
+    .policy-table td.col-updated,.policy-table td.col-range{padding-right:70px;}
+    .policy-table td.col-stt::before{content:"STT ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-dept::before{content:"Phân loại: ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-updated::before{content:"Ngày cập nhật: ";font-weight:600;color:var(--ink-soft);}
+    .policy-table td.col-range::before{content:"Hiệu lực áp dụng: ";font-weight:600;color:var(--ink-soft);}
+  }
+
+  .block h4{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-xs);
+    font-weight:700;
+    color:var(--blue-deep);
+    margin:0 0 8px;
+  }
+  .block ul{margin:0;padding-left:18px;font-size:var(--fs-md);line-height:1.65;}
+  .block li{margin-bottom:5px;}
+  .block li b{font-weight:700;}
+  .block table.mini{width:100%;border-collapse:collapse;font-size:var(--fs-base);margin-top:2px;}
+  .block table.mini th, .block table.mini td{border:1px solid var(--line);padding:5px 8px;text-align:center;}
+  .block table.mini th{
+    background:#f5f6f8;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-weight:600;
+    font-size:var(--fs-xs);
+    color:var(--ink-soft);
+  }
+
+  .note{
+    grid-column:1 / -1;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-sm);
+    color:var(--ink-soft);
+    background:#f8f7f4;
+    border-left:2px solid var(--blue);
+    padding:9px 12px;
+    margin-top:2px;
+  }
+
+  .source-row{grid-column:1 / -1;display:flex;align-items:center;justify-content:flex-start;margin-top:4px;}
+  .doc-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-sm);
+    font-weight:600;
+    color:var(--blue-deep);
+    background:#fff;
+    border:1px solid #c7d3e2;
+    padding:7px 13px;
+    border-radius:5px;
+    text-decoration:none;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .doc-btn:hover{background:#eef3fa;border-color:var(--blue);}
+  .doc-btn svg{flex-shrink:0;}
+  .doc-unavailable{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-sm);
+    color:#a9aeb6;
+    font-style:italic;
+  }
+
+  .foot{
+    text-align:center;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:var(--fs-xs);
+    color:#a9aeb6;
+    margin-top:34px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <h1>Quy định nội bộ</h1>
+      <p>Hyundai Tín Thanh · Tra cứu quy định/quy chế nội bộ theo hiệu lực áp dụng</p>
+    </div>
+    <div class="today-tag" id="todayTag"></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" id="searchInput" placeholder="Tìm theo tên, số hiệu, nội dung tóm tắt..." oninput="setSearch(this.value)">
+      <button class="search-clear" id="searchClearBtn" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filterBar"></div>
+
+  <div id="list"></div>
+
+  <div class="foot">Nhấn vào từng quy định để xem tóm tắt chi tiết · Nội dung tóm tắt do Claude đọc từ file Word gốc, đã được duyệt trước khi đăng</div>
+</div>
+
+<script>
+const TODAY = new Date(); // luôn lấy đúng ngày thực tế khi mở file
+let activeCategory = ''; // '' = tất cả
+let searchQuery = '';
+
+function stripDiacritics(s){
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase();
+}
+
+// docUrl: link Google Drive file Word gốc (đã share, xem qua Drive preview).
+// Tóm tắt "summary.blocks" do Claude đọc file Word gốc rồi tổng hợp lại — đây
+// là "file A" dùng để hiển thị + tìm theo từ khóa, người dùng đã duyệt nội dung
+// trước khi đăng lên (xem docs/module-quydinh.md để biết quy trình cập nhật).
+const quyDinh = [
+  {
+    docUrl: "https://drive.google.com/file/d/1ihPz-L3dY3wR3U9sOZuumi91y2DBfHuW/view",
+    category: "Tài chính - Chi phí",
+    code: "Số 01.26",
+    name: "Quy định chi phí tiếp khách",
+    updated: "01/01/2026",
+    from: new Date(2026,0,1),
+    to: null,
+    fromLabel: "01/01/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "MỤC TIÊU",
+          items: [
+            "Xác định rõ các đối tượng trong hoạt động tiếp khách tại các chi nhánh",
+            "Quy định hạn mức mỗi lần tiếp khách và cách xử lý khi vượt hạn mức",
+            "Thuận tiện cho Tài chính - Kế toán kiểm soát chi phí và báo cáo Ban Giám đốc"
+          ]
+        },
+        {
+          title: "ĐỊNH MỨC THEO ĐỐI TƯỢNG",
+          table: {
+            head: ["Đối tượng","Tần suất","Định mức chi phí"],
+            rows: [
+              ["HTV (phụ trách Bán hàng & Marketing đại lý)","01 quý/lần","Tiếp 1 người: 350.000đ · 2 người: 500.000đ · 3 người: 600.000đ /bữa ăn"],
+              ["DRP Bán hàng","01 quý 02 lần (1 hỗ trợ + 1 đánh giá)","—"],
+              ["DRP Dịch vụ","01 quý 01 lần","—"],
+              ["Bảo hiểm — BGĐ đơn vị hợp tác","01 lần/đơn vị/quý","≤ 1.500.000đ/lần"],
+              ["Bảo hiểm — tổ chức giao lưu","01 lần/đơn vị/năm","≤ 3.000.000đ/lần"],
+              ["Cơ quan nhà nước (PCCC, môi trường, Thuế)","01 lần/năm/đơn vị + đột xuất","≤ 2.000.000đ/lần; phát sinh đột xuất phải đề xuất Tổng Giám đốc"]
+            ]
+          }
+        },
+        {
+          title: "HẠN MỨC TỔNG",
+          items: [
+            "Trong 01 tháng: <b>không quá 4.000.000đ</b>",
+            "Trong 01 quý: <b>không quá 10.000.000đ</b>",
+            "Trong 01 năm: <b>không quá 40.000.000đ</b>",
+            "Vượt các khoản chi vượt định mức: bộ phận phát sinh tự chịu trách nhiệm phần vượt"
+          ]
+        }
+      ],
+      note: "Tổng chi phí tiếp khách gồm cả ăn uống và quà tặng (nếu có). Khi tổng chi phí vượt các ngưỡng trên, Kế toán báo cáo TGĐ/Giám đốc đại lý; Giám đốc đại lý có trách nhiệm giải trình với TGĐ. Áp dụng cho tất cả bộ phận, chi nhánh và văn phòng đại diện thuộc hệ thống."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1Dm9FNAOiZh4hxlJhFfTeXE0_gRYEMEVq/view",
+    category: "Bán hàng - Lương thưởng",
+    code: "",
+    name: "Quy định cơ chế tính lương khối Tư vấn bán hàng (TVBH)",
+    updated: "10/03/2026",
+    from: new Date(2026,2,1),
+    to: null,
+    fromLabel: "01/03/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "LƯƠNG CƠ BẢN THEO CẤP BẬC",
+          table: {
+            head: ["Danh mục","Mức lương","Ghi chú"],
+            rows: [
+              ["TVBH học việc","2.500.000đ","Nhân sự chưa có kinh nghiệm ngành Ô tô"],
+              ["TVBH thử việc","4.000.000đ","Cần vượt qua bài test quy định TVBH"],
+              ["TVBH chính thức","5.100.000đ","Đã vượt qua giai đoạn thử việc"]
+            ]
+          }
+        },
+        {
+          title: "THƯỞNG VƯỢT CHỈ TIÊU",
+          items: [
+            "Điều kiện xét thưởng: KPI tháng ≥ 75%, xét theo số lượng xe giao ra trong tháng của TVBH"
+          ],
+          table: {
+            head: ["Mức hoàn thành","Đạt 100% chỉ tiêu","Vượt 1-2 xe","Vượt 3-4 xe","Vượt ≥5 xe"],
+            rows: [["Mức thưởng","500.000đ/xe","500.000đ/xe","800.000đ/xe","1.000.000đ"]]
+          }
+        },
+        {
+          title: "PHẠT KHÔNG HOÀN THÀNH CHỈ TIÊU",
+          items: [
+            "Điều kiện xét phạt: KPI tháng &lt; 55%, theo số hợp đồng ký trong tháng và mức đầu tư Marketing Online của TVBH"
+          ],
+          table: {
+            head: ["Đầu tư Marketing Online/tháng","&lt; 1.5tr","&lt; 2tr","&lt; 2.5tr","&gt; 2.5tr"],
+            rows: [["Mức phạt","500.000đ/hợp đồng","300.000đ/hợp đồng","200.000đ/hợp đồng","Không phạt"]]
+          }
+        },
+        {
+          title: "THU NHẬP KHÁC",
+          items: [
+            "Hoa hồng khai thác bảo hiểm: <b>50%</b>; tỷ lệ khai thác quý ≥80% thưởng thêm 200.000đ/hợp đồng bảo hiểm (không tính HĐ công ty tặng hoặc HĐ cạnh tranh giảm phí để chốt); tỷ lệ &lt;50% phạt 200.000đ/chỉ tiêu không khai thác được",
+            "Hoa hồng khai thác ngân hàng: trích 50% (TVBH 42% · GĐBH 5% · Admin 3%), đã trừ thuế TNDN 20% trước khi phân bổ",
+            "Khai thác phụ kiện: áp dụng theo quy định hiện hành",
+            "Không tuân thủ kênh khai thác Bảo hiểm/Ngân hàng/Phụ kiện của công ty: phạt hành chính 5.000.000đ, có thể bị sa thải"
+          ]
+        },
+        {
+          title: "PHÍ ĐĂNG KÝ XE",
+          items: [
+            "Mức thu: <b>3.500.000đ/xe</b> — TVBH kê khai và thu, Kế toán thực hiện thu-chi theo bảng kê, phải có xác nhận (chữ ký) của khách hàng",
+            "Khách không đóng phí đăng ký: phải thanh toán đủ 100% giá trị xe trước khi được giao hồ sơ đăng ký",
+            "Phân bổ: TVBH 2.000.000đ (thực hiện đăng ký) · TP Bán hàng 100.000đ (kiểm tra & phê duyệt bảng kê) · BP Tài chính-KT 50.000đ (thu chi) · Quỹ PKD 250.000đ · Quỹ lương/thưởng phòng KD 1.100.000đ"
+          ]
+        }
+      ],
+      note: "Nội dung bảng thưởng/phạt theo KPI được chuyển thể từ bảng trong file Word gốc (định dạng bảng phức tạp, đã chuẩn hoá 1 lỗi in ấn rõ ràng trong bảng thưởng vượt chỉ tiêu) — nên đối chiếu file gốc khi cần số liệu chính xác tuyệt đối."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1uSpfgphqOmklU2rhWF0P_JDToBDaCaaR/view",
+    category: "Bán hàng - MKT",
+    code: "",
+    name: "Quy định định mức ngân sách Marketing 2026",
+    updated: "01/01/2026",
+    from: new Date(2026,0,1),
+    to: null,
+    fromLabel: "01/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "PHẠM VI NGÂN SÁCH",
+          items: [
+            "Gồm: Marketing online (FB/Zalo/TikTok/Google...), Marketing offline (lái thử, phát tờ rơi), chương trình ra mắt xe/MKT riêng có HTV hỗ trợ, ấn phẩm trưng bày showroom (standee, backdrop...)",
+            "Không gồm: chi phí liên quan xe lái thử (khấu hao, xăng, bảo dưỡng, decal...) và chi phí dịch vụ sửa chữa (in ấn, dựng bảng biển...)"
+          ]
+        },
+        {
+          title: "CÔNG THỨC & ĐỊNH MỨC 2026",
+          items: ["<b>Ngân sách Marketing = 850.000đ × chỉ tiêu bán hàng chi nhánh</b>"],
+          table: {
+            head: ["Đại lý","Q1","Q2","Q3","Q4","Chỉ tiêu năm 2026 (xe)","Ngân sách MKT (triệu đồng)"],
+            rows: [
+              ["Phú Yên","46","48","44","62","200","170"],
+              ["Nha Trang","105","110","99","136","450","382.5"],
+              ["Đà Lạt","87","94","84","115","380","323"]
+            ]
+          }
+        },
+        {
+          title: "THỰC HIỆN",
+          items: [
+            "Phòng Bán hàng chủ động phân bổ chi phí theo hạng mục trong ngân sách tháng đã duyệt, được phép bù trừ chi phí giữa các tháng trong cùng kỳ kế hoạch",
+            "Kế toán hạch toán và theo dõi riêng, đối chiếu và cảnh báo Ban Giám đốc nếu chi phí vượt định mức (căn cứ Báo cáo KQKD cuối mỗi Quý)",
+            "Định mức có thể thay đổi tuỳ tình hình mỗi thị trường, do Tổng Giám đốc phê duyệt"
+          ]
+        }
+      ],
+      note: "Cột Q1-Q4 là chỉ tiêu bán hàng theo quý (số xe), cột \"Chỉ tiêu năm 2026\" là tổng cả năm, cột \"Ngân sách MKT\" quy đổi ra triệu đồng theo công thức trên."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/13VLLn02uDCXSrE01coQ45ROZkPKwTeS8/view",
+    category: "Bán hàng - MKT",
+    code: "Số 02.26",
+    name: "Quy định đăng bài trên Fanpage chính thức",
+    updated: "01/03/2026",
+    from: new Date(2026,2,1),
+    to: null,
+    fromLabel: "01/03/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "YÊU CẦU CHUNG",
+          table: {
+            head: ["Nội dung","Chi tiết"],
+            rows: [
+              ["Số bài tối thiểu","04 bài/tuần"],
+              ["Ngày đăng (có thể thay đổi)","Thứ 2 - Thứ 3 - Thứ 5 - Thứ 7"],
+              ["Tỷ lệ nội dung khuyến nghị","30% sản phẩm/Bán hàng · 20% Dịch vụ-CSKH · 20% nội bộ · 15% tương tác · 15% bàn giao xe"],
+              ["Yêu cầu hình ảnh","Rõ nét, có logo, đúng nhận diện thương hiệu HTV"],
+              ["Yêu cầu caption","Bắt buộc có CTA (Inbox / Hotline / để lại SĐT)"]
+            ]
+          }
+        },
+        {
+          title: "PHÂN BỔ NỘI DUNG THEO NGÀY",
+          items: [
+            "<b>Thứ 2</b> — Bán hàng/Khuyến mãi (không gồm bài chạy quảng cáo): tạo nhu cầu, ra số",
+            "<b>Thứ 3</b> — Bàn giao xe/Khách hàng: xây dựng niềm tin",
+            "<b>Thứ 5</b> — Dịch vụ/Kiến thức/Review: tạo giá trị",
+            "<b>Thứ 7</b> — Văn hoá nội bộ/Xe đẹp/Tương tác/CSKH: xây thương hiệu"
+          ]
+        },
+        {
+          title: "KPI & ĐÁNH GIÁ",
+          items: [
+            "Tối thiểu <b>15 bài/tháng</b>, bài hợp lệ phải đạt yêu cầu hình ảnh & caption",
+            "Từ 80% trở lên (≥12 bài/tháng): Hoàn thành",
+            "Dưới 80% số bài hợp lệ: <b>giảm 50% thưởng doanh số xuất bán xe</b> của tháng",
+            "Không đạt 2 tháng liên tiếp: nhắc nhở + yêu cầu kế hoạch cải thiện",
+            "Giám sát: báo cáo tuần (gửi link tổng hợp Thứ 7 hàng tuần) + kiểm tra định kỳ tối thiểu 2 lần/tháng hoặc đột xuất"
+          ]
+        }
+      ],
+      note: "Trách nhiệm: Nhân sự MKT chi nhánh lập kế hoạch/triển khai/báo cáo; Giám đốc Kinh doanh/Dịch vụ phối hợp cung cấp nội dung và chấm KPI hàng tháng (liên quan thưởng doanh số xuất bán). Áp dụng cho tất cả chi nhánh, văn phòng đại diện thuộc hệ thống."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1zQC0bfB7-Vz2tsVolSZtWQUkD87ZshGR/view",
+    category: "Tài chính - Chi phí",
+    code: "",
+    name: "Quy định hóa đơn chi phí bộ phận Bán hàng & Dịch vụ",
+    updated: "07/03/2026",
+    from: new Date(2026,2,7),
+    to: null,
+    fromLabel: "07/03/2026 (ngày ký)",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "MỤC ĐÍCH",
+          items: [
+            "Kiểm soát chi phí phát sinh trong hoạt động của công ty",
+            "Đảm bảo chi phí được hạch toán hợp lệ, hợp pháp theo quy định thuế",
+            "Hạn chế rủi ro khi quyết toán thuế do thiếu chứng từ, hóa đơn hợp lệ",
+            "Nâng cao trách nhiệm của Trưởng bộ phận trong quản lý chi phí"
+          ]
+        },
+        {
+          title: "CHI PHÍ PHÒNG BÁN HÀNG",
+          items: [
+            "Tiếp khách (tiếp nhân sự HTV làm việc với đại lý): cần hóa đơn VAT nhà hàng/quán ăn/café",
+            "Marketing (standee, banner, poster, POSM, in ấn): hóa đơn VAT từ đơn vị cung cấp; testdrive tại quán café: hóa đơn nước uống; Digital Marketing: dùng thẻ visa tên công ty thay visa cá nhân Giám đốc bán hàng",
+            "Mua sắm phụ kiện xe mới: hóa đơn VAT từ nhà cung cấp phụ kiện",
+            "Vận chuyển xe (kho/nhà máy/đại lý, thuê xe kéo): hóa đơn VAT hoặc hóa đơn dịch vụ vận tải hợp lệ; hỗ trợ tài xế có thể dùng loại hóa đơn khác thay thế"
+          ]
+        },
+        {
+          title: "CHI PHÍ PHÒNG DỊCH VỤ",
+          items: [
+            "Tiếp khách (đối tác bảo hiểm, khách dịch vụ, quà tặng đối tác): hóa đơn VAT nhà hàng/café",
+            "Vật tư chính: hóa đơn VAT từ nhà cung cấp do công ty chỉ định. Vật tư chưa có hóa đơn (li nhựa sơn, khăn lau xe, lưới chuột, ốc vít, dây rút, băng keo, keo 502, đá cắt-mài, que hàn, mũi khoan, phí gửi hàng liên chi nhánh): mua từ 500.000đ/lần trở lên phải có hóa đơn thay thế",
+            "Gia công có hóa đơn (phay mâm; sửa dụng cụ/thiết bị xưởng qua Kingtech, Tân Phát): cần hóa đơn VAT hợp lệ. Gia công chưa có hóa đơn (vớt dĩa/li hợp bánh đà, ép bạc đạn/cao su, láp - thước lái - xi lanh, đèn xe, ống gas/nước cao áp, cắt phôi chìa khóa, súc két nước, sửa máy đề, bảo dưỡng máy phát...): không yêu cầu hóa đơn"
+          ]
+        },
+        {
+          title: "TRƯỜNG HỢP KHÔNG LẤY ĐƯỢC HÓA ĐƠN",
+          items: [
+            "Trưởng bộ phận giải trình lý do bằng văn bản và xác nhận khoản chi là cần thiết cho hoạt động kinh doanh",
+            "Có thể dùng hóa đơn ăn uống/tiếp khách để thay thế hợp thức hóa chi phí, giá trị hóa đơn thay thế không vượt quá giá trị chi phí thực tế"
+          ]
+        }
+      ],
+      note: "Trưởng bộ phận: kiểm soát chi phí, đảm bảo chi phí ≥500.000đ có hóa đơn VAT hợp lệ, tự chịu trách nhiệm nếu thiếu hóa đơn. Phòng Kế toán: kiểm tra tính hợp lệ hóa đơn, có quyền từ chối thanh toán khoản không đúng quy định. Áp dụng toàn bộ chi nhánh thuộc hệ thống TT Group."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1qAu8cx20dS2LtTmDuJdbugR4h3TUlo37/view",
+    category: "Tài chính - Chi phí",
+    code: "",
+    name: "Quy định sử dụng Quỹ Bán hàng & Quỹ Dịch vụ",
+    updated: "07/03/2026",
+    from: new Date(2026,2,7),
+    to: null,
+    fromLabel: "07/03/2026 (ngày ký)",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "CÁC KHOẢN CHI TỪ QUỸ BÁN HÀNG",
+          items: [
+            "Thưởng: TVBH vượt chỉ tiêu doanh số hàng tháng; TVBH khai thác tốt doanh thu bảo hiểm hàng quý",
+            "Chi phí: hiếu hỉ nhân sự bán hàng; thưởng lễ/tết cho bộ phận bán hàng và khối VP; liên hoan tập thể định kỳ 6 tháng/lần (<b>tối đa 4.000.000đ/lần</b>); tổ chức tổng kết cuối năm cho bán hàng và khối VP"
+          ]
+        },
+        {
+          title: "CÁC KHOẢN CHI TỪ QUỸ DỊCH VỤ",
+          items: [
+            "Thưởng: cá nhân bộ phận dịch vụ có thành tích xuất sắc hàng quý theo đánh giá Ban lãnh đạo",
+            "Chi phí: hiếu hỉ nhân sự dịch vụ; thưởng lễ/tết cho xưởng dịch vụ; liên hoan tập thể định kỳ 6 tháng/lần (<b>tối đa 4.000.000đ/lần</b>); tổ chức tổng kết cuối năm cho dịch vụ"
+          ]
+        },
+        {
+          title: "NGUYÊN TẮC & QUY TRÌNH",
+          items: [
+            "Chi đúng mục đích, đúng đối tượng, đúng phạm vi; minh bạch, tiết kiệm, hợp lý",
+            "Phải có đề xuất chi (mục đích, nội dung, số tiền dự kiến, thời gian thực hiện) và được phê duyệt trước khi thực hiện",
+            "Sau khi chi phải hoàn thiện chứng từ/hóa đơn và quyết toán với Phòng Kế toán",
+            "Không sử dụng quỹ cho mục đích cá nhân hoặc trái quy định của công ty"
+          ]
+        }
+      ],
+      note: "Phòng Kế toán theo dõi thu-chi và kiểm tra chứng từ, tổng hợp báo cáo định kỳ theo yêu cầu Ban Giám đốc. Ban Giám đốc giám sát việc sử dụng quỹ, quyết định khoản chi ngoài phạm vi quy định khi cần thiết. Sử dụng sai mục đích: cá nhân/bộ phận liên quan phải giải trình và hoàn trả chi phí."
+    }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1jWQKDEg6YL6DfXihDHXbgzmv6VbpgVnA/view",
+    category: "Dịch vụ",
+    code: "08/2026",
+    name: "Quy định trách nhiệm đôn đốc, thu hồi công nợ bảo hiểm",
+    updated: "01/08/2026",
+    from: new Date(2026,7,1),
+    to: null,
+    fromLabel: "Kỳ chi lương tháng 08/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "TRÁCH NHIỆM CÁC BỘ PHẬN",
+          items: [
+            "<b>Phòng Kế toán:</b> ghi nhận/theo dõi đầy đủ công nợ bảo hiểm; gửi báo cáo công nợ cho Bộ phận Dịch vụ hàng tuần; đối chiếu công nợ với đối tác bảo hiểm hàng tuần; phối hợp GĐDV xử lý vướng mắc; tính khoản bù chi phí của GĐDV vào kỳ chi lương",
+            "<b>Giám đốc Dịch vụ (GĐDV):</b> đầu mối chính theo dõi/đôn đốc thu hồi công nợ, chủ động phối hợp Kế toán và đối tác bảo hiểm; với khoản nợ quá hạn, chịu trách nhiệm <b>100% chi phí tài chính phát sinh</b>, được cấn trừ vào thưởng doanh thu hàng tháng"
+          ]
+        },
+        {
+          title: "MỐC THỜI GIAN THEO DÕI CÔNG NỢ",
+          table: {
+            head: ["Mốc","Thời điểm","Áp dụng cho"],
+            rows: [
+              ["M","Ngày xuất hóa đơn","Ghi nhận thời điểm phát sinh hóa đơn"],
+              ["N","M + 5 ngày (kể cả ngày nghỉ)","Hoàn tất bàn giao hồ sơ, xác định công nợ"],
+              ["N+30","30 ngày kể từ N","LSC dưới 100 triệu đồng (gồm VAT)"],
+              ["N+45","45 ngày kể từ N","LSC 100 - 300 triệu đồng (gồm VAT)"],
+              ["N+55","55 ngày kể từ N","LSC trên 300 triệu đồng (gồm VAT)"]
+            ]
+          }
+        },
+        {
+          title: "NGƯỠNG MIỄN & LÃI SUẤT",
+          items: [
+            "Ngưỡng miễn tính phí = <b>20% doanh thu bảo hiểm trung bình 10 tháng đầu năm 2025</b> (có VAT, theo số liệu DMS), chỉ tính phần công nợ vượt ngưỡng",
+            "Đà Lạt và Bảo Lộc thực chất là <b>1 đại lý</b>, chỉ tách thành 2 xưởng dịch vụ — nên dùng chung 1 ngưỡng miễn tính phí (không tính riêng theo từng xưởng)",
+            "Lãi suất áp dụng: <b>4%/năm</b> trên giá trị công nợ tính phí (tương đương ~8%/năm theo thời gian quá hạn bình quân giả định 15 ngày = 0,5 tháng)",
+            "Chi phí tài chính tháng = Giá trị công nợ tính phí × 4% ÷ 12"
+          ],
+          table: {
+            head: ["Chi nhánh / Xưởng DV","Doanh thu TB 10 tháng đầu 2025 (có VAT)","Ngưỡng miễn tính phí"],
+            rows: [
+              ["Đà Lạt - Bảo Lộc (1 đại lý, 2 xưởng)","Đà Lạt 440tr + Bảo Lộc 330tr","160.000.000đ (chung cho cả 2 xưởng)"],
+              ["Nha Trang","1.000.000.000đ","200.000.000đ"],
+              ["Phú Yên","430.000.000đ","90.000.000đ"]
+            ]
+          }
+        },
+        {
+          title: "VÍ DỤ MINH HỌA",
+          items: [
+            "31/07: công nợ quá hạn 455tr → làm tròn xuống 450tr, trừ ngưỡng miễn 200tr = 250tr tính phí → chi phí tháng 7 = 250tr × 4% ÷ 12 ≈ <b>0,83 triệu đồng</b>, GĐDV chịu toàn bộ, cấn trừ vào thưởng doanh thu tháng",
+            "31/08 nếu còn nợ 400tr: tiếp tục tính cho tháng 8; nếu thu hồi một phần còn 282tr → làm tròn 280tr, tính phí trên 80tr",
+            "Nếu khoản nợ quá hạn được thanh toán đầy đủ vào hoặc trước 31/08: không tính chi phí tài chính của tháng 8"
+          ]
+        },
+        {
+          title: "NGUYÊN TẮC ÁP DỤNG",
+          items: [
+            "Xác định 1 lần tại thời điểm cuối mỗi tháng, không tính theo số ngày quá hạn thực tế trong tháng",
+            "Công nợ làm tròn xuống hàng chục triệu đồng trước khi tính phí",
+            "Chi phí tài chính tiếp tục phát sinh khi công nợ còn tồn tại tại thời điểm chốt cuối mỗi tháng",
+            "Công nợ quá hạn do nguyên nhân khách quan (có hồ sơ/chứng từ chứng minh) được xem xét loại trừ sau khi Tổng Giám đốc phê duyệt"
+          ]
+        }
+      ],
+      note: "Đà Lạt và Bảo Lộc dùng chung 1 ngưỡng miễn tính phí 160.000.000đ vì là 1 đại lý (2 xưởng dịch vụ), không tách riêng theo từng xưởng như Nha Trang/Phú Yên."
+    }
+  }
+];
+
+function fmtDate(d){
+  return d.toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+// Parse chuỗi "dd/MM/yyyy" (field updated) thành Date để so sánh —
+// không dùng localeCompare trên chuỗi ngày (sắp sai thứ tự tháng).
+function parseVNDate(s){
+  if(!s) return null;
+  var parts = s.split('/');
+  if(parts.length!==3) return null;
+  return new Date(+parts[2], +parts[1]-1, +parts[0]);
+}
+
+function renderTable(t){
+  if(!t) return '';
+  var head = t.head.map(function(h){return '<th>'+h+'</th>';}).join('');
+  var rows = t.rows.map(function(r){return '<tr>'+r.map(function(v){return '<td>'+v+'</td>';}).join('')+'</tr>';}).join('');
+  return '<table class="mini"><tr>'+head+'</tr>'+rows+'</table>';
+}
+
+// Tô sáng từ khóa tìm kiếm trong văn bản hiển thị (giữ nguyên HTML tag như <b>,
+// chỉ tô các đoạn text thường — đơn giản hoá: chỉ tô khi text không chứa tag).
+function highlight(text, q){
+  if(!q || !text || /[<>]/.test(text)) return text;
+  var idx = stripDiacritics(text).indexOf(q);
+  if(idx<0) return text;
+  return text.slice(0,idx) + '<mark>' + text.slice(idx, idx+q.length) + '</mark>' + text.slice(idx+q.length);
+}
+
+// Gộp toàn bộ nội dung tóm tắt của 1 quy định thành 1 chuỗi phẳng để tìm từ khóa.
+function flattenSearchText(p){
+  var parts = [p.name, p.code, p.category, p.updated];
+  (p.summary.blocks||[]).forEach(function(b){
+    parts.push(b.title);
+    (b.items||[]).forEach(function(i){parts.push(i);});
+    if(b.table){
+      parts.push(b.table.head.join(' '));
+      b.table.rows.forEach(function(r){parts.push(r.join(' '));});
+    }
+  });
+  if(p.summary.note) parts.push(p.summary.note);
+  return stripDiacritics(parts.join(' | '));
+}
+
+function render(){
+  document.getElementById('todayTag').textContent = 'Hôm nay: ' + fmtDate(TODAY);
+  const list = document.getElementById('list');
+
+  const categories = [...new Set(quyDinh.map(p => p.category).filter(Boolean))];
+  const filterBar = document.getElementById('filterBar');
+  if(categories.length > 1){
+    filterBar.innerHTML = ['', ...categories].map(c => {
+      const label = c === '' ? 'Tất cả' : c;
+      const isOn = activeCategory === c;
+      return `<button class="filter-btn${isOn?' active':''}" onclick="setCategory('${c.replace(/'/g,"\\'")}')">${label}</button>`;
+    }).join('');
+  } else {
+    filterBar.innerHTML = '';
+  }
+
+  const q = stripDiacritics(searchQuery.trim());
+
+  const withStatus = quyDinh
+    .map((p, originalIdx) => {
+      const isActive = TODAY >= p.from && (p.to === null || TODAY <= p.to);
+      return { p, originalIdx, isActive };
+    })
+    .filter(({ p }) => !activeCategory || p.category === activeCategory)
+    .filter(({ p }) => !q || flattenSearchText(p).indexOf(q) >= 0);
+
+  withStatus.sort((a, b) => {
+    if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+    return parseVNDate(b.p.updated) - parseVNDate(a.p.updated);
+  });
+
+  if(!withStatus.length){
+    list.innerHTML = '<div class="empty-hint">Không tìm thấy quy định nào khớp với bộ lọc/từ khóa hiện tại.</div>';
+    return;
+  }
+
+  const rows = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
+    const i = originalIdx;
+    const stt = displayIdx + 1;
+    return `
+    <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
+      <td class="col-stt">${stt}</td>
+      <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
+      <td class="col-title">
+        <div class="name">${highlight(p.name, q)}</div>
+      </td>
+      <td class="col-code">${highlight(p.code || '—', q)}</td>
+      <td class="col-updated">${p.updated}</td>
+      <td class="col-range">${p.fromLabel} — ${p.toLabel}</td>
+      <td class="col-status">
+        <span class="status ${isActive ? 'active' : 'inactive'}">
+          <span class="dot"></span>${isActive ? 'Đang áp dụng' : 'Hết hiệu lực'}
+        </span>
+      </td>
+      <td class="col-chev">
+        <span class="chev">
+          <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </td>
+    </tr>
+    <tr class="policy-detail-row" data-idx="${i}">
+      <td colspan="8">
+        <div class="policy-body" id="body-${i}">
+          <div class="policy-body-inner">
+            <div class="summary-grid">
+              ${(p.summary.blocks||[]).map(b => `<div class="block">
+                <h4>${b.title}</h4>
+                ${(b.items && b.items.length) ? `<ul>${b.items.map(x=>`<li>${x}</li>`).join('')}</ul>` : ''}
+                ${renderTable(b.table)}
+              </div>`).join('')}
+              ${p.summary.note ? `<div class="note">${p.summary.note}</div>` : ''}
+              <div class="source-row">
+                ${p.docUrl
+                  ? `<a class="doc-btn" href="${p.docUrl}" target="_blank" rel="noopener">
+                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
+                       Xem file gốc (Word, mở trên Google Drive)
+                     </a>`
+                  : `<span class="doc-unavailable">Chưa có file gốc đính kèm</span>`
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  list.innerHTML = `
+    <table class="policy-table">
+      <colgroup>
+        <col style="width:40px">
+        <col style="width:150px">
+        <col>
+        <col style="width:110px">
+        <col style="width:100px">
+        <col style="width:210px">
+        <col style="width:120px">
+        <col style="width:36px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Phân loại</th>
+          <th>Quy định</th>
+          <th>Số hiệu</th>
+          <th>Ngày cập nhật</th>
+          <th>Hiệu lực áp dụng</th>
+          <th>Trạng thái</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function setCategory(c){
+  activeCategory = c;
+  render();
+}
+
+function setSearch(v){
+  searchQuery = v;
+  document.getElementById('searchClearBtn').style.display = v ? 'block' : 'none';
+  render();
+}
+
+function clearSearch(){
+  searchQuery = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClearBtn').style.display = 'none';
+  render();
+}
+
+function toggle(i){
+  const row = document.querySelector(`tr.policy-row[data-idx="${i}"]`);
+  const detailRow = document.querySelector(`tr.policy-detail-row[data-idx="${i}"]`);
+  const body = document.getElementById(`body-${i}`);
+  const isOpen = row.classList.contains('is-open');
+  if(isOpen){
+    body.style.maxHeight = null;
+    row.classList.remove('is-open');
+    detailRow.classList.remove('is-open');
+  } else {
+    row.classList.add('is-open');
+    detailRow.classList.add('is-open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+render();
+</script>
+</body>
+</html>

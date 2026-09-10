@@ -16,14 +16,15 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.BC Nhân sự · 5.Chấm công (ẩn, chỉ Admin) · 6.MKT Thương hiệu · 7.Chính sách HTV (mở tự do) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 8 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.BC Nhân sự · 5.Chấm công (ẩn, chỉ Admin) · 6.MKT Thương hiệu · 7.Chính sách HTV (mở tự do) · 8.Quy định nội bộ (mở tự do) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia** | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong tab 5 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
 | `mkt.html` | Báo cáo tổng hợp MKT Thương hiệu (Nhật ký đăng bài Fanpage), nhúng iframe trong tab 6 | Không tự có auth (như trên) | [docs/module-mkt.md](docs/module-mkt.md) |
 | `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 7 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
+| `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong tab 8 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-quydinh.md](docs/module-quydinh.md) |
 
-Các trang nhúng iframe (`chamcong/nhansu/mkt/theo_doi_chinh_sach.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
+Các trang nhúng iframe (`chamcong/nhansu/mkt/theo_doi_chinh_sach/quy_dinh_noi_bo.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
 
 **Mở file `docs/module-*.md` tương ứng khi thực sự đang sửa module đó** — các file này không tự động nạp vào context, chỉ đọc khi cần để đỡ tốn context cho các module không liên quan.
 
@@ -49,7 +50,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 ## Quy ước giao diện chung giữa các trang module
 
-`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html` là 4 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
+`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html`, `quy_dinh_noi_bo.html` là 5 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
 - Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
 - Tiêu đề `<h1>` đầu trang: cỡ chữ `24px`, `font-weight:800`.
 - Container chính `.wrap`: `max-width:1280px`.
@@ -88,10 +89,11 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 - **Chỉ tiêu tháng**: sửa mảng `DEFAULT_TARGETS` trong `index.html`.
 - **KCK**: nhận file `KCK.xlsx` → đọc bằng `openpyxl` (không dùng `pandas`, cần đọc **font color** của cell, `pandas` không đọc được) → forward-fill cột "Đặc tả xe"/"Năm SX" (dữ liệu gốc dạng merged-cell) → bỏ dòng "Total"/subtotal → group theo Model+Phiên bản → ghi đè `KCK_DATA`/`KCK_DATE` trong **cả** `index.html` và `mobile.html`. Xử lý trường hợp trùng màu 2 năm SX khác nhau trong cùng Model+Phiên bản: ưu tiên giữ bản ghi có cờ "sắp hết" (không để năm mới ghi đè mất cảnh báo).
 - **Chính sách HTV** (`theo_doi_chinh_sach.html`): người dùng gửi PDF → Claude đọc, tóm tắt nội dung chính/thêm/ghi chú → người dùng duyệt lại → thêm object mới vào mảng `policies` (hardcode, KHÔNG dùng Google Sheet — quyết định có chủ đích). PDF gốc để trên Google Drive (link chia sẻ công khai), gán vào field `pdfUrl` — không nhúng base64 (từng làm vậy, khiến file nặng >6MB, đã bỏ).
+- **Quy định nội bộ** (`quy_dinh_noi_bo.html`, xem chi tiết [docs/module-quydinh.md](docs/module-quydinh.md)): người dùng gửi file Word (`.docx`) hoặc link thư mục Google Drive → Claude đọc (file `.docx` là binary, không đọc trực tiếp được — trích xuất bằng PowerShell mở file như ZIP, đọc `word/document.xml`, bóc tag XML) → tóm tắt thành các block nội dung → người dùng duyệt lại → thêm object mới vào mảng `quyDinh` (hardcode, giống hệt cơ chế `policies` của Chính sách HTV). File Word gốc để trên Google Drive (link chia sẻ công khai), gán vào field `docUrl`.
 
 ## Trước khi sửa bất kỳ file nào
 
-1. Luôn kiểm tra cú pháp JS sau khi sửa `<script>` inline trong file `.html` (dùng `node --check`), vì không có type-check/lint tự động nào khác.
+1. Luôn kiểm tra cú pháp JS sau khi sửa `<script>` inline trong file `.html` (dùng `node --check`), vì không có type-check/lint tự động nào khác. **Máy này không có sẵn `node`** (đã xác nhận `node`/`npx` không tồn tại trong cả Bash lẫn PowerShell) — dùng cách thay thế: chạy Edge headless dump DOM (`msedge.exe --headless=new --disable-gpu --no-sandbox --virtual-time-budget=5000 --enable-logging=stderr --dump-dom <file URL>`), kiểm tra `stderr` không có `SyntaxError`/`Uncaught` và DOM sau khi render có đúng nội dung mong đợi (ví dụ text/class cụ thể) — coi như bằng chứng script chạy được, không chỉ là parse được cú pháp suông.
 2. `index.html` và `mobile.html` có 1 số phần dữ liệu **trùng lặp có chủ đích** (KCK_DATA, KCK_DATE) — sửa 1 file thì luôn kiểm tra có cần sửa file kia không.
 3. Nếu thêm 1 script `.gs` mới hoặc thêm trigger mới: nhắc người dùng kiểm tra trang **⏰ Triggers** trước, vì hạn mức ~20 trigger tính chung cả project — không giả định còn chỗ trống.
 4. Repo này chạy trong VS Code với Claude Code, có git access trực tiếp qua Bash/PowerShell. Khi sửa xong file `.html`, có thể tự `git add`/`git commit` nếu người dùng yêu cầu — GitHub Pages tự deploy lại sau khi push, không cần bước thủ công nào thêm. **Luôn hỏi xác nhận trước khi `git push`**, kể cả khi trong cùng phiên đã push trước đó.
