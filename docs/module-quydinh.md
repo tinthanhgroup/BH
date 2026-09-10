@@ -17,7 +17,7 @@
 
 Cấu trúc gần giống `policies[]` của Chính sách HTV nhưng khác tên field và phần tóm tắt linh hoạt hơn (nhiều mục, có bảng nhiều dòng thay vì chỉ 1 dòng):
 
-- `docUrl`: link Google Drive file Word gốc (dạng `https://drive.google.com/file/d/<ID>/view`).
+- `docUrl`: link Google Drive file gốc (dạng `https://drive.google.com/file/d/<ID>/view`) — nguồn không nhất thiết phải là Word, có thể là Excel (ví dụ file kế hoạch/đề xuất chương trình khuyến mãi) hoặc định dạng khác miễn Drive xem được. `docLabel` (tùy chọn): đè chữ trên nút "Xem file gốc" khi nguồn không phải Word (mặc định là `"Xem file gốc (Word, mở trên Google Drive)"`), ví dụ `"Xem file gốc (Excel, mở trên Google Drive)"`.
 - `category`: dùng để lọc + hiển thị cột "Phân loại". Hiện có 4 nhóm: `"Tài chính - Chi phí"`, `"Bán hàng - Lương thưởng"`, `"Bán hàng - MKT"`, `"Dịch vụ"` — thêm nhóm mới nếu quy định không khớp nhóm nào có sẵn, không gượng ép vào nhóm gần đúng.
 - `code`: số hiệu văn bản nếu có (nhiều file quy định gốc bị bỏ trống "Số:" — khi đó để `code: ""`, **không tự bịa số**).
 - `name`, `updated` (chuỗi `"dd/MM/yyyy"`, dùng `parseVNDate()` để sort).

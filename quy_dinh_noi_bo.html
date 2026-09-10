@@ -690,6 +690,49 @@ const quyDinh = [
       ],
       note: "Đà Lạt và Bảo Lộc dùng chung 1 ngưỡng miễn tính phí 160.000.000đ vì là 1 đại lý (2 xưởng dịch vụ), không tách riêng theo từng xưởng như Nha Trang/Phú Yên."
     }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1dfPWgX0or67g3gA-yTMoPBOvML01NkkM/view",
+    docLabel: "Xem file gốc (Excel, mở trên Google Drive)",
+    category: "Dịch vụ",
+    code: "",
+    name: "Chương trình khuyến mãi bán lốp — Nha Trang & Phú Yên",
+    updated: "09/09/2026",
+    from: new Date(2026,8,1),
+    to: new Date(2026,8,30),
+    fromLabel: "01/09/2026",
+    toLabel: "30/09/2026",
+    summary: {
+      blocks: [
+        {
+          title: "ƯU ĐÃI ĐỐI VỚI KHÁCH HÀNG",
+          table: {
+            head: ["Mức","Số lượng lốp","Ưu đãi"],
+            rows: [
+              ["M1","Từ 1 lốp","Miễn phí nhân công lắp đặt: tháo lắp và cân mâm kẹp chì (cân bằng động)"],
+              ["M2","Từ 2 lốp","Miễn phí kiểm tra hệ thống gầm xe (32 hạng mục, ~15 phút, áp dụng linh hoạt làm cơ sở cảnh báo hạng mục cần làm sớm) + Giảm 50% dịch vụ cân chỉnh góc đặt bánh xe"],
+              ["M3","Từ 4 lốp","Giảm 50% dịch vụ cân chỉnh góc đặt bánh xe (như mức M2) + Ưu tiên sắp xếp lịch dịch vụ"]
+            ]
+          }
+        },
+        {
+          title: "CHÍNH SÁCH GIÁ & KHAI THÁC DỊCH VỤ",
+          items: [
+            "Giảm giá lốp toàn danh mục: <b>10%</b> trên giá bán niêm yết có VAT",
+            "Giá bán bình quân sau khuyến mãi (có VAT): <b>1.852.200đ/lốp</b> (cơ sở tính: 80% lốp Accent + 20% lốp Tucson)",
+            "Cân chỉnh góc đặt bánh xe sau giảm 50%: <b>350.000đ/xe</b> (chưa VAT) — niêm yết 700.000đ/xe, áp dụng từ mức M2 (từ 2 lốp trở lên)"
+          ]
+        },
+        {
+          title: "THƯỞNG CỐ VẤN DỊCH VỤ (CVDV)",
+          items: [
+            "Mục tiêu: <b>8 lốp/CVDV/tháng</b>",
+            "Thưởng: <b>30.000đ/lốp cố định</b> + <b>1,0% doanh thu chưa VAT</b> (tính trên doanh thu lốp sau khuyến mãi và dịch vụ cân chỉnh góc)"
+          ]
+        }
+      ],
+      note: "Chương trình được duyệt ngày 09/09/2026, áp dụng từ 01/09/2026 đến hết 30/09/2026, khớp với thời gian trong đề xuất gốc. Tóm tắt chỉ lấy nội dung mục 3.1-3.3 của sheet \"1. Kế hoạch KD\" (nội dung chương trình áp dụng cho khách hàng/CVDV) — các mục 1,2,4,5,6 trong file là số liệu tính toán/căn cứ nội bộ (nhu cầu, tồn kho, lợi nhuận...), không thuộc phạm vi công bố."
+    }
   }
 ];
 
@@ -812,7 +855,7 @@ function render(){
                 ${p.docUrl
                   ? `<a class="doc-btn" href="${p.docUrl}" target="_blank" rel="noopener">
                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
-                       Xem file gốc (Word, mở trên Google Drive)
+                       ${p.docLabel || 'Xem file gốc (Word, mở trên Google Drive)'}
                      </a>`
                   : `<span class="doc-unavailable">Chưa có file gốc đính kèm</span>`
                 }
