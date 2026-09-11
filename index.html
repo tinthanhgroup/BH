@@ -65,6 +65,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .tab.active::after{display:none;}
 .tab:hover:not(.active){color:var(--text);background:rgba(37,99,235,.06);}
 
+/* ── SUB-TABS (dùng bên trong 1 tab gộp nhiều báo cáo, ví dụ Nhân sự & Chấm công) ── */
+.subtabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;padding:8px 20px 0;gap:2px;flex-shrink:0;}
+.subtab{padding:7px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .15s;border:1px solid transparent;border-bottom:none;border-radius:8px 8px 0 0;}
+.subtab.active{color:var(--accent);background:var(--bg);border-color:var(--border);}
+.subtab:hover:not(.active){color:var(--text);background:rgba(37,99,235,.06);}
+.subtab-panel{display:none;flex:1;min-height:0;}
+.subtab-panel.active{display:block;}
+#tab-ns.tab-panel.active{display:flex;flex-direction:column;}
+
 /* ── CONTENT AREAS ── */
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
@@ -312,11 +321,10 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab active" onclick="switchTab('hh')">1. Hàng hóa</div>
     <div class="tab" id="tab-bh-btn" onclick="switchTab('bh')">2. BC Bán hàng 🔒</div>
     <div class="tab" id="tab-dv-btn" onclick="switchTab('dv')">3. BC Dịch vụ 🔒</div>
-    <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. BC Nhân sự 🔒</div>
-    <div class="tab" id="tab-cc-btn" style="display:none" onclick="switchTab('cc')">5. Chấm công</div>
-    <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">6. MKT Thương hiệu 🔒</div>
-    <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">7. Chính sách HTV</div>
-    <div class="tab" id="tab-noiquy-btn" onclick="switchTab('noiquy')">8. Quy định nội bộ</div>
+    <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. Nhân sự &amp; Chấm công 🔒</div>
+    <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT Thương hiệu 🔒</div>
+    <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
+    <div class="tab" id="tab-noiquy-btn" onclick="switchTab('noiquy')">7. Quy định nội bộ</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -378,11 +386,17 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 
   <!-- TAB ADMIN -->
   <div id="tab-admin" class="tab-panel" style="padding:24px;max-width:1100px;margin:0 auto;"></div>
-  <div id="tab-cc" class="tab-panel" style="padding:0;">
-    <iframe id="cc-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
-  </div>
   <div id="tab-ns" class="tab-panel" style="padding:0;">
-    <iframe id="ns-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    <div class="subtabs">
+      <div class="subtab active" id="subtab-ns-btn" onclick="switchNsSub('ns')">Báo cáo Nhân sự</div>
+      <div class="subtab" id="subtab-cc-btn" onclick="switchNsSub('cc')">Chấm công</div>
+    </div>
+    <div id="subpanel-ns" class="subtab-panel active">
+      <iframe id="ns-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
+    <div id="subpanel-cc" class="subtab-panel">
+      <iframe id="cc-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
   </div>
   <div id="tab-dv" class="tab-panel" style="padding:0;overflow:hidden;">
     <iframe id="dv-iframe" src="" style="width:125%;height:125%;border:none;display:block;transform:scale(0.8);transform-origin:top left;" allowfullscreen></iframe>
@@ -475,6 +489,7 @@ var fileLastModified = null;
 
 // HH UI state
 var currentTab = 'hh';
+var _nsActiveSub = 'ns'; // sub-tab đang chọn trong tab gộp "Nhân sự & Chấm công": 'ns' hoặc 'cc'
 var hhFilters = {q:'',kho:[],nam:''};
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
 function khoMatch(k){return !khoActive()||hhFilters.kho.indexOf(k)!==-1;}
@@ -980,11 +995,11 @@ function afterParse(fileDate){
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════════════
 // ── PHÂN QUYỀN THEO NHÓM ─────────────────────────────────────
-// Admin: xem đủ 2-3-4-5-6 (bh, dv, ns, cc, mkt)
-// Ban GĐ: xem 2-3-4-6 (bh, dv, ns, mkt) — không có Chấm công
-// Bán hàng/MKT: xem 2-6 (bh, mkt)
+// Admin: xem đủ 2-3-4-5 (bh, dv, ns, mkt) — tab "ns" gộp cả Nhân sự + Chấm công
+// Ban GĐ: xem 2-3-4-5 (bh, dv, ns, mkt) — cũng thấy Chấm công (nằm trong tab "ns")
+// Bán hàng/MKT: xem 2-5 (bh, mkt)
 // Dịch vụ: chỉ xem 3 (dv)
-// HCNS: chỉ xem 4 (ns)
+// HCNS: chỉ xem 4 (ns) — gồm cả sub-tab Chấm công
 // Nhóm không xác định: không có quyền xem mục nào (an toàn)
 var _authenticated = false;
 var _allowedTabs = new Set();
@@ -995,7 +1010,7 @@ function _stripDiacritics(s){
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
 }
 function _classifyGroup(nhomRaw, isAdmin){
-  if(isAdmin) return new Set(['bh','dv','ns','cc','mkt']);
+  if(isAdmin) return new Set(['bh','dv','ns','mkt']);
   var n = _stripDiacritics(nhomRaw);
   if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns']);
@@ -1004,10 +1019,10 @@ function _classifyGroup(nhomRaw, isAdmin){
   return new Set();
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'BC Nhân sự', mkt:'MKT Thương hiệu'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'Nhân sự & Chấm công', mkt:'MKT Thương hiệu'}[t];
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'Báo cáo Nhân sự', mkt:'MKT Thương hiệu'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'Nhân sự & Chấm công', mkt:'MKT Thương hiệu'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1015,7 +1030,7 @@ function _unlockTabUI(t){
 }
 
 function switchTab(t){
-  if(t==='hh' || t==='admin' || t==='cc' || t==='policy' || t==='noiquy'){
+  if(t==='hh' || t==='admin' || t==='policy' || t==='noiquy'){
     _doSwitchTab(t);
     return;
   }
@@ -1033,13 +1048,11 @@ function _fixEmbedPanelHeights(){
   var tabs=document.querySelector('.tabs');
   var used=(header?header.offsetHeight:56)+(tabs?tabs.offsetHeight:0);
   var h='calc(100vh - '+used+'px)';
-  var cc=document.getElementById('tab-cc');
   var ns=document.getElementById('tab-ns');
   var dv=document.getElementById('tab-dv');
   var mkt=document.getElementById('tab-mkt');
   var policy=document.getElementById('tab-policy');
   var noiquy=document.getElementById('tab-noiquy');
-  if(cc) cc.style.height=h;
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
   if(mkt) mkt.style.height=h;
@@ -1053,27 +1066,15 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','cc','mkt','policy','noiquy','admin'];
+  const tabOrder=['hh','bh','dv','ns','mkt','policy','noiquy','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  // Lazy load iframe Chấm công
-  if(t==='cc'){
-    var ccIframe=document.getElementById('cc-iframe');
-    if(!ccIframe.getAttribute('data-loaded')){
-      ccIframe.src='https://tinthanhgroup.github.io/BH/chamcong.html';
-      ccIframe.setAttribute('data-loaded','1');
-    }
-  }
-  // Lazy load iframe Nhân sự
+  // Tab "ns" gộp 2 sub-tab Nhân sự + Chấm công — mở đúng sub-tab đang chọn (mặc định Nhân sự lần đầu vào)
   if(t==='ns'){
-    var iframe=document.getElementById('ns-iframe');
-    if(!iframe.getAttribute('data-loaded')){
-      iframe.src='https://tinthanhgroup.github.io/BH/nhansu.html';
-      iframe.setAttribute('data-loaded','1');
-    }
+    switchNsSub(_nsActiveSub);
   }
   // Lazy load iframe Dịch vụ (Power BI)
   if(t==='dv'){
@@ -1117,6 +1118,28 @@ function _doSwitchTab(t){
     if(window._D){ renderMonthlyByModel(); renderSysWeekly(window._D); }
   }
   else if(t==='admin') renderAdminTab();
+}
+
+// Chuyển sub-tab bên trong tab gộp "Nhân sự & Chấm công", lazy-load đúng iframe khi mở lần đầu.
+function switchNsSub(sub){
+  _nsActiveSub = sub;
+  document.getElementById('subtab-ns-btn').classList.toggle('active', sub==='ns');
+  document.getElementById('subtab-cc-btn').classList.toggle('active', sub==='cc');
+  document.getElementById('subpanel-ns').classList.toggle('active', sub==='ns');
+  document.getElementById('subpanel-cc').classList.toggle('active', sub==='cc');
+  if(sub==='ns'){
+    var iframe=document.getElementById('ns-iframe');
+    if(!iframe.getAttribute('data-loaded')){
+      iframe.src='https://tinthanhgroup.github.io/BH/nhansu.html';
+      iframe.setAttribute('data-loaded','1');
+    }
+  } else if(sub==='cc'){
+    var ccIframe=document.getElementById('cc-iframe');
+    if(!ccIframe.getAttribute('data-loaded')){
+      ccIframe.src='https://tinthanhgroup.github.io/BH/chamcong.html';
+      ccIframe.setAttribute('data-loaded','1');
+    }
+  }
 }
 
 function exportPDF(){
@@ -1390,15 +1413,13 @@ function checkPassword(){
       // Hiện tên user ở header
       var badge=document.getElementById('user-badge');
       if(badge){badge.textContent='👤 '+res.name; badge.style.display='flex';}
-      // Hiện tab Admin + Chấm công nếu là admin
+      // Hiện tab Admin nếu là admin
       if(res.isAdmin){
         var adminBtn=document.getElementById('tab-admin-btn');
         if(adminBtn) adminBtn.style.display='';
-        var ccBtn=document.getElementById('tab-cc-btn');
-        if(ccBtn) ccBtn.style.display='';
       }
       // Bỏ icon khoá 🔒 khỏi các tab được phép xem
-      _allowedTabs.forEach(function(t){ if(t!=='cc') _unlockTabUI(t); });
+      _allowedTabs.forEach(function(t){ _unlockTabUI(t); });
       // Chuyển tới đúng tab đang muốn xem, nếu được phép; nếu không, chuyển
       // tới tab đầu tiên mà nhóm này được phép xem và báo cho người dùng biết.
       if(_pendingTab==='__chuaHD__'){
@@ -1412,7 +1433,7 @@ function checkPassword(){
       } else if(_pendingTab && _allowedTabs.has(_pendingTab)){
         _doSwitchTab(_pendingTab);
       } else if(_allowedTabs.size>0){
-        var firstAllowed=Array.from(_allowedTabs).filter(function(t){return t!=='cc';})[0];
+        var firstAllowed=Array.from(_allowedTabs)[0];
         if(firstAllowed){
           alert('Mật khẩu đúng, nhưng tài khoản của bạn không có quyền xem mục "'+_tabLabel(_pendingTab)+'". Đã chuyển tới mục "'+_tabLabel(firstAllowed)+'".');
           _doSwitchTab(firstAllowed);

@@ -16,13 +16,15 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 8 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.BC Nhân sự · 5.Chấm công (ẩn, chỉ Admin) · 6.MKT Thương hiệu · 7.Chính sách HTV (mở tự do) · 8.Quy định nội bộ (mở tự do) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.Nhân sự & Chấm công (2 sub-tab trong cùng 1 tab) · 5.MKT Thương hiệu · 6.Chính sách HTV (mở tự do) · 7.Quy định nội bộ (mở tự do) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia** | — | — |
-| `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong tab 5 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
-| `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
-| `mkt.html` | Báo cáo tổng hợp MKT Thương hiệu (Nhật ký đăng bài Fanpage), nhúng iframe trong tab 6 | Không tự có auth (như trên) | [docs/module-mkt.md](docs/module-mkt.md) |
-| `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 7 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
-| `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong tab 8 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-quydinh.md](docs/module-quydinh.md) |
+| `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
+| `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
+| `mkt.html` | Báo cáo tổng hợp MKT Thương hiệu (Nhật ký đăng bài Fanpage), nhúng iframe trong tab 5 | Không tự có auth (như trên) | [docs/module-mkt.md](docs/module-mkt.md) |
+| `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 6 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
+| `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong tab 7 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-quydinh.md](docs/module-quydinh.md) |
+
+Tab 4 "Nhân sự & Chấm công" gộp 2 báo cáo vào 1 tab (từ 09/2026, trước đó là 2 tab riêng) vì cả 2 giờ dùng chung đúng 1 tập quyền xem (Admin/Ban GĐ/HCNS) — không còn lý do tách riêng. Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), chuyển qua hàm `switchNsSub('ns'|'cc')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab). Toàn bộ việc kiểm tra quyền chỉ còn gate ở cấp tab `ns` (bằng `_allowedTabs.has('ns')`) — không còn permission riêng cho `cc`.
 
 Các trang nhúng iframe (`chamcong/nhansu/mkt/theo_doi_chinh_sach/quy_dinh_noi_bo.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
 
@@ -66,12 +68,14 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
   | Nhóm (chứa từ khoá) | Xem được tab |
   |---|---|
-  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự, Chấm công, MKT) |
-  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự, MKT (không Chấm công) |
-  | `hcns` / `nhan su` | Chỉ Nhân sự |
+  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT) |
+  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT |
+  | `hcns` / `nhan su` | Chỉ Nhân sự & Chấm công |
   | `ban hang` / `mkt` / `marketing` | Bán hàng, MKT |
   | `dich vu` | Chỉ Dịch vụ |
   | Không khớp gì | Không xem được tab khoá nào (an toàn theo mặc định) |
+
+  Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
 
 - Đây là khoá **client-side** (ẩn hiển thị), KHÔNG phải bảo mật dữ liệu thật — dữ liệu vẫn tải hết về trình duyệt. Không tự ý nâng cấp thành "bảo mật thật" trừ khi được yêu cầu (đổi kiến trúc lớn).
 - Mục "Xe chưa xuất HĐ" dùng cờ riêng `_isAdmin`/`_isGD`, **không dùng chung** điều kiện với quyền xem tab Nhân sự (2 thứ này từng bị gộp chung gây lộ dữ liệu ngoài ý muốn cho nhóm HCNS — đã tách hẳn, giữ nguyên tách biệt).
