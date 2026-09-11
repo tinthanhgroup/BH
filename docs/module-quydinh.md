@@ -7,6 +7,7 @@
 ## Kiến trúc 3 tầng
 
 1. **File gốc (Word)** — lưu trên Google Drive, thư mục nội bộ do công ty quản lý (`2. Quy dinh noi bo/1. Da duyet/<năm>/`), share ở chế độ "Anyone with the link". Link từng file nằm ở field `docUrl` trong `quyDinh[]`.
+   - Thư mục Drive đang dùng trên thực tế (tên hiển thị "Chính sách nội bộ", chứa các file .docx/.xlsx quy định đã duyệt — kể cả file nguồn không phải Word, như file Excel tham số lương DV): `https://drive.google.com/drive/folders/1WkcR_fG57D0RAwpS9gapiUr9NisDQsaY` — dùng link này (thay `id=` trong `embeddedfolderview?id=<ID>#list`) để WebFetch tra ID file mới khi cần điền `docUrl`.
 2. **File A (tổng hợp)** — chính là mảng `quyDinh[]` trong file này. Mỗi phần tử có field `summary.blocks` — nội dung do **Claude đọc trực tiếp file Word gốc rồi tóm tắt lại**, người dùng duyệt lại trước khi commit/push. Đây là "nguồn dữ liệu" thật sự mà cả 2 cách tra cứu (xem danh sách + tìm từ khóa) dùng.
 3. **Tương tác người dùng** — trang `quy_dinh_noi_bo.html` cho 2 cách tra cứu:
    - **Xem file gốc**: nút "Xem file gốc" trong phần chi tiết mỗi quy định, mở `docUrl` (Google Drive preview) ở tab mới.
@@ -24,6 +25,7 @@ Cấu trúc gần giống `policies[]` của Chính sách HTV nhưng khác tên 
 - `from`/`to` (kiểu `Date`, `to: null` = còn hiệu lực vô thời hạn) + `fromLabel`/`toLabel` (chuỗi hiển thị, tự khớp tay với `from`/`to`) — **dùng lại đúng logic Active/Inactive của Chính sách HTV**: `TODAY >= from && (to === null || TODAY <= to)`.
 - `summary.blocks`: mảng các khối nội dung, mỗi khối `{title, items?: string[], table?: {head: string[], rows: string[][]}}` — khác với Chính sách HTV (chỉ có 2 khối cố định `quy`/`thang`), ở đây số khối tùy theo nội dung từng quy định, và `table.rows` hỗ trợ **nhiều dòng dữ liệu** (không chỉ 1 dòng như hàm `renderTable` gốc bên Chính sách HTV).
 - `summary.note`: ghi chú cuối — dùng cả cho lưu ý nghiệp vụ lẫn **cảnh báo khi nội dung trích xuất từ Word bị mơ hồ/thiếu dữ liệu** (ví dụ bảng bị lệch cột khi convert từ XML, merged-cell bị mất khi bóc tag). Từng gặp ở quy định "22. Thu hồi công nợ bảo hiểm": bảng ngưỡng miễn phí ban đầu thiếu 1 giá trị do ô gộp (Đà Lạt + Bảo Lộc dùng chung 1 ngưỡng vì thực chất là 1 đại lý, 2 xưởng dịch vụ — quy XML flatten không nhân đôi giá trị ô gộp) — ban đầu để trống chờ người dùng xác nhận, sau khi hỏi lại mới điền đúng số. Nguyên tắc: khi không chắc, **không bịa số**, để trống/ghi chú yêu cầu xác nhận thay vì đoán.
+- **Block "log thay đổi"**: entry "Quy định cách tính lương xưởng Dịch vụ" có thêm 1 block riêng dạng bảng (STT / Kỳ áp dụng / Nội dung điều chỉnh) ghi lại lịch sử điều chỉnh cách tính lương theo thời gian. Khác với các block khác (Claude tóm tắt từ file gốc), **bảng log này do người dùng tự bổ sung dòng mới thủ công** khi có thay đổi — không cần gửi lại file Excel gốc cho Claude đọc lại mỗi lần chỉ để thêm 1 dòng log.
 
 ## Quy trình cập nhật khi có quy định mới
 

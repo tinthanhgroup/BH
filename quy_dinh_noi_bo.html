@@ -20,6 +20,8 @@
     --active-dot:#2ea44f;
     --inactive-bg:#f3f1ee;
     --inactive-ink:#8a8378;
+    --new-bg:#fff1e0;
+    --new-ink:#b45309;
     --inactive-dot:#b8b0a3;
     --fs-h1:24px;
     --fs-md:14px;
@@ -159,6 +161,17 @@
 
   .col-title{min-width:0;}
   .col-title .name{font-weight:400;line-height:1.35;}
+  .badge-new{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 7px;
+    border-radius:10px;
+    font-size:11px;
+    font-weight:700;
+    vertical-align:middle;
+    background:var(--new-bg);
+    color:var(--new-ink);
+  }
   mark{background:#fff1a8;color:inherit;border-radius:2px;padding:0 1px;}
   .col-code{letter-spacing:.02em;color:var(--ink-soft);}
   .col-stt{color:var(--ink-soft);}
@@ -733,6 +746,75 @@ const quyDinh = [
       ],
       note: "Chương trình được duyệt ngày 09/09/2026, áp dụng từ 01/09/2026 đến hết 30/09/2026, khớp với thời gian trong đề xuất gốc. Tóm tắt chỉ lấy nội dung mục 3.1-3.3 của sheet \"1. Kế hoạch KD\" (nội dung chương trình áp dụng cho khách hàng/CVDV) — các mục 1,2,4,5,6 trong file là số liệu tính toán/căn cứ nội bộ (nhu cầu, tồn kho, lợi nhuận...), không thuộc phạm vi công bố."
     }
+  },
+  {
+    docUrl: "https://drive.google.com/file/d/1zWdyYD6JXaTGprOcKTeRcTHmI0sOTAV3/view",
+    docLabel: "Xem file gốc (Excel, mở trên Google Drive)",
+    category: "Dịch vụ",
+    code: "",
+    name: "Quy định cách tính lương xưởng Dịch vụ",
+    updated: "01/07/2026",
+    from: new Date(2026,6,1),
+    to: null,
+    fromLabel: "Kỳ lương tháng 07/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "1. LƯƠNG CƠ BẢN THEO CẤP BẬC (VNĐ/tháng)",
+          table: {
+            head: ["Cấp bậc","NT","PY","DL","BL"],
+            rows: [
+              ["Quản đốc","6.000.000","5.500.000","6.000.000","6.000.000"],
+              ["Trưởng nhóm","5.500.000","5.000.000","5.500.000","5.500.000"],
+              ["KTV","5.100.000","4.450.000","5.100.000","5.100.000"]
+            ]
+          }
+        },
+        {
+          title: "2. ĐỊNH MỨC DOANH THU CƠ SỞ (VNĐ/người/tháng)",
+          table: {
+            head: ["Bộ phận","NT","PY","DL","BL"],
+            rows: [
+              ["Đồng","6.000.000","6.000.000","6.000.000","6.000.000"],
+              ["Sơn","6.000.000","6.000.000","6.000.000","6.000.000"],
+              ["SCC","8.000.000","8.000.000","8.000.000","8.000.000"]
+            ]
+          }
+        },
+        {
+          title: "3. TỶ LỆ % DOANH THU VƯỢT ĐỊNH MỨC DÙNG TÍNH THƯỞNG",
+          table: {
+            head: ["Bộ phận","Vai trò","NT","PY","DL","BL"],
+            rows: [
+              ["Đồng","Quản đốc (riêng)","—","—","—","1%"],
+              ["Đồng","Trưởng nhóm (riêng)","—","1%","—","—"],
+              ["Đồng","Chung","18%","17%","18%","17%"],
+              ["Đồng","<b>Tổng</b>","<b>18%</b>","<b>18%</b>","<b>18%</b>","<b>18%</b>"],
+              ["Sơn","Quản đốc (riêng)","—","2,5%","1,5%","1,5%"],
+              ["Sơn","Pha màu (riêng)","1,15%","—","0,8%","1,6%"],
+              ["Sơn","Trưởng nhóm (riêng)","1,15%","—","—","—"],
+              ["Sơn","Chung","13,7%","13,5%","14,2%","13,4%"],
+              ["Sơn","<b>Tổng</b>","<b>16%</b>","<b>16%</b>","<b>16,5%</b>","<b>16,5%</b>"],
+              ["SCC","Quản đốc (riêng)","2,5%","2%","0%","3%"],
+              ["SCC","Trưởng nhóm (riêng)","1%","0,5%","4%","—"],
+              ["SCC","Chung","16,5%","16,5%","16,5%","16,5%"],
+              ["SCC","<b>Tổng (target chính thức)</b>","<b>19%</b>","<b>19%</b>","<b>19%</b>","<b>19%</b>"]
+            ]
+          }
+        },
+        {
+          title: "4. LOG THAY ĐỔI CÁCH TÍNH LƯƠNG",
+          table: {
+            head: ["STT","Kỳ áp dụng","Nội dung điều chỉnh"],
+            rows: [
+              ["1","Kỳ lương 08/2026","Áp dụng quy định trách nhiệm đôn đốc, thu hồi công nợ bảo hiểm cho Giám đốc Dịch vụ (GĐDV)"]
+            ]
+          }
+        }
+      ],
+      note: "Với SCC, \"Tổng\" hiển thị 19% (target chính thức cả 4 chi nhánh), nhưng nếu cộng riêng các dòng thành viên của NT/DL/BL thì ra cao hơn 19% — do công ty giữ nguyên tỷ lệ phân bổ cũ từ hồi target còn cao hơn, không phải sai số."
+    }
   }
 ];
 
@@ -798,10 +880,13 @@ function render(){
 
   const q = stripDiacritics(searchQuery.trim());
 
+  const threeMonthsAgo = new Date(TODAY.getFullYear(), TODAY.getMonth() - 3, TODAY.getDate());
   const withStatus = quyDinh
     .map((p, originalIdx) => {
       const isActive = TODAY >= p.from && (p.to === null || TODAY <= p.to);
-      return { p, originalIdx, isActive };
+      const updatedDate = parseVNDate(p.updated);
+      const isNew = isActive && updatedDate !== null && updatedDate >= threeMonthsAgo;
+      return { p, originalIdx, isActive, isNew };
     })
     .filter(({ p }) => !activeCategory || p.category === activeCategory)
     .filter(({ p }) => !q || flattenSearchText(p).indexOf(q) >= 0);
@@ -816,7 +901,7 @@ function render(){
     return;
   }
 
-  const rows = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
+  const rows = withStatus.map(({ p, originalIdx, isActive, isNew }, displayIdx) => {
     const i = originalIdx;
     const stt = displayIdx + 1;
     return `
@@ -824,7 +909,7 @@ function render(){
       <td class="col-stt">${stt}</td>
       <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
       <td class="col-title">
-        <div class="name">${highlight(p.name, q)}</div>
+        <div class="name">${highlight(p.name, q)}${isNew ? '<span class="badge-new">Mới</span>' : ''}</div>
       </td>
       <td class="col-code">${highlight(p.code || '—', q)}</td>
       <td class="col-updated">${p.updated}</td>
