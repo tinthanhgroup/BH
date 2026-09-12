@@ -121,9 +121,16 @@
     <div class="empty" id="hotEmptyMsg" style="display:none;">Không có khách Hot/Veryhot nào khớp bộ lọc.</div>
   </div>
 
+  <details class="panel" open>
+    <summary><span class="chart-num">3</span> Lead theo tuần theo Model (6 tuần gần nhất)</summary>
+    <p class="desc">Số lead mới (tính theo <b>Ngày tạo</b>) mỗi tuần (Thứ 2 – Chủ nhật), chia theo Model đang được legend màu bên dưới — trong bộ lọc đang chọn.</p>
+    <div id="weeklyLegend" style="margin-bottom:10px;"></div>
+    <div style="overflow-x:auto;"><svg id="weeklyChartSvg" style="display:block;"></svg></div>
+  </details>
+
   <div class="grid2">
     <details class="panel" open>
-      <summary><span class="chart-num">3</span> Lead theo Nhóm nguồn</summary>
+      <summary><span class="chart-num">4</span> Lead theo Nhóm nguồn</summary>
       <table>
         <thead><tr><th>Nhóm nguồn</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
         <tbody id="sourceTable"></tbody>
@@ -131,7 +138,7 @@
     </details>
 
     <details class="panel" open>
-      <summary><span class="chart-num">4</span> Lead theo Chi nhánh</summary>
+      <summary><span class="chart-num">5</span> Lead theo Chi nhánh</summary>
       <table>
         <thead><tr><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
         <tbody id="branchTable"></tbody>
@@ -140,7 +147,7 @@
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">5</span> Lead theo Nhân viên phụ trách</summary>
+    <summary><span class="chart-num">6</span> Lead theo Nhân viên phụ trách</summary>
     <table>
       <thead><tr><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
       <tbody id="staffTable"></tbody>
@@ -148,7 +155,16 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">6</span> Model quan tâm nhiều nhất</summary>
+    <summary><span class="chart-num">7</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
+    <p class="desc">Lead thiếu Tiến trình và/hoặc Model theo từng nhân viên, dùng để GĐBH mỗi chi nhánh chấn chỉnh trong giai đoạn mới triển khai CRM — chỉ áp dụng tạm thời, sẽ bỏ khi dữ liệu nhập đã ổn định.</p>
+    <table>
+      <thead><tr><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
+      <tbody id="missingTable"></tbody>
+    </table>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">8</span> Model quan tâm nhiều nhất</summary>
     <table>
       <thead><tr><th>Model</th><th>Số lead</th><th>Đã ký HĐ</th></tr></thead>
       <tbody id="modelTable"></tbody>
@@ -282,18 +298,22 @@ function renderBranchTable(list){
     </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 }
 
+function staffLabel(l){
+  return l.nhanVienTen || l.nhanVien || '(Chưa gán)';
+}
+
 function renderStaffTable(list){
   const map = {};
   list.forEach(l=>{
     const k = l.nhanVien || '(Chưa gán)';
-    if(!map[k]) map[k] = {total:0, won:0, chinhanh:l.chiNhanh};
+    if(!map[k]) map[k] = {total:0, won:0, chinhanh:l.chiNhanh, label:staffLabel(l)};
     map[k].total++;
     if(isWon(l)) map[k].won++;
   });
   const rows = Object.keys(map).map(k=>({key:k, ...map[k]})).sort((a,b)=>b.total-a.total);
   document.getElementById('staffTable').innerHTML = rows.length ? rows.map(r=>`
     <tr>
-      <td style="font-weight:700;">${r.key}</td>
+      <td style="font-weight:700;">${r.label}</td>
       <td>${r.chinhanh||'<span class="dash">—</span>'}</td>
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.won}</td>
@@ -343,7 +363,7 @@ function renderHotList(list){
       <td style="font-weight:700;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge test">test</span>':''}</td>
       <td>${l.sdtHienThi||'<span class="dash">—</span>'}</td>
       <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
-      <td>${l.nhanVien||'<span class="dash">—</span>'}</td>
+      <td>${staffLabel(l)}</td>
       <td>${l.model||'<span class="dash">—</span>'}</td>
       <td>${l.tienTrinh||'<span class="dash">—</span>'}</td>
       <td>${trangThaiBadge(l.trangThai)}</td>
@@ -371,11 +391,13 @@ function setChiNhanh(b){
 function populateFilterOptions(){
   const base = LEADS.filter(l=>state.showTest || !l.isTest);
   const nguons = uniqSorted(base.map(l=>l.nhomNguon));
-  const staffs = uniqSorted(base.map(l=>l.nhanVien));
+  const staffMap = {};
+  base.forEach(l=>{ if(l.nhanVien) staffMap[l.nhanVien] = staffLabel(l); });
+  const staffs = Object.keys(staffMap).sort((a,b)=>staffMap[a].localeCompare(staffMap[b]));
   const trangthais = uniqSorted(base.map(l=>l.trangThai));
   renderChiNhanhButtons();
   document.getElementById('fNguon').innerHTML = '<option value="">Tất cả nhóm nguồn</option>' + nguons.map(c=>`<option value="${c}">${c}</option>`).join('');
-  document.getElementById('fNhanVien').innerHTML = '<option value="">Tất cả nhân viên</option>' + staffs.map(c=>`<option value="${c}">${c}</option>`).join('');
+  document.getElementById('fNhanVien').innerHTML = '<option value="">Tất cả nhân viên</option>' + staffs.map(c=>`<option value="${c}">${staffMap[c]}</option>`).join('');
   document.getElementById('fTrangThai').innerHTML = '<option value="">Tất cả trạng thái</option>' + trangthais.map(c=>`<option value="${c}">${c}</option>`).join('');
 }
 
@@ -404,11 +426,123 @@ function render(){
   const list = baseFiltered();
   renderKPI(list);
   renderFunnel(list);
+  renderWeeklyChart(list);
   renderSourceTable(list);
   renderBranchTable(list);
   renderStaffTable(list);
   renderModelTable(list);
+  renderMissingDataTable(list);
   renderHotList(list);
+}
+
+// ── Mục 3: Lead theo tuần theo Model (6 tuần gần nhất, tính theo Ngày tạo) ──
+const MODEL_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#D64545','#F2C14E','#7A5CA3','#2E9DA6','#9C6644'];
+
+function startOfWeekTs(ts){
+  const d = new Date(ts);
+  const day = (d.getDay()+6)%7; // Thứ 2 = 0 ... Chủ nhật = 6
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate()-day);
+  return d.getTime();
+}
+function fmtDdMm(ts){
+  const d = new Date(ts);
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+}
+
+function renderWeeklyChart(list){
+  const withDate = list.filter(l=>l._ngayTaoTs);
+  const nowStart = startOfWeekTs(Date.now());
+  const weekStarts = [];
+  for(let i=5;i>=0;i--) weekStarts.push(nowStart - i*7*86400000);
+
+  const totalByModel = {};
+  withDate.forEach(l=>{
+    const m = l.model || '(Chưa nhập Model)';
+    totalByModel[m] = (totalByModel[m]||0)+1;
+  });
+  const modelsSorted = Object.keys(totalByModel).sort((a,b)=>totalByModel[b]-totalByModel[a]);
+  const hasOther = modelsSorted.length > 8;
+  const showModels = hasOther ? modelsSorted.slice(0,7) : modelsSorted;
+  const legendKeys = hasOther ? [...showModels, 'Khác'] : showModels;
+  const colorOf = {};
+  legendKeys.forEach((m,i)=>{ colorOf[m] = m==='Khác' ? '#9AA5B1' : MODEL_COLORS[i % MODEL_COLORS.length]; });
+
+  const weeks = weekStarts.map(ws=>{
+    const we = ws + 7*86400000;
+    const counts = {};
+    withDate.forEach(l=>{
+      if(l._ngayTaoTs<ws || l._ngayTaoTs>=we) return;
+      let m = l.model || '(Chưa nhập Model)';
+      if(hasOther && !showModels.includes(m)) m = 'Khác';
+      counts[m] = (counts[m]||0)+1;
+    });
+    const total = Object.values(counts).reduce((s,v)=>s+v,0);
+    return { label: fmtDdMm(ws), counts, total };
+  });
+
+  const legendHtml = legendKeys.length ? legendKeys.map(m=>
+    `<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-right:14px;">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorOf[m]};"></span>${m}
+    </span>`).join('') : '<span class="dash">Chưa có dữ liệu</span>';
+  document.getElementById('weeklyLegend').innerHTML = legendHtml;
+
+  const maxTotal = Math.max(...weeks.map(w=>w.total), 1);
+  const chartH = 200, barW = 46, gap = 34, padL = 16, padT = 14, padB = 26;
+  const svgW = padL*2 + weeks.length*(barW+gap) - gap;
+  const svgH = padT + chartH + padB;
+
+  let bars = '';
+  weeks.forEach((w,i)=>{
+    const x = padL + i*(barW+gap);
+    let y = padT+chartH;
+    legendKeys.forEach(m=>{
+      const c = w.counts[m]||0;
+      if(c<=0) return;
+      const h = (c/maxTotal)*chartH;
+      y -= h;
+      bars += `<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" fill="${colorOf[m]}" rx="2"/>`;
+    });
+    if(w.total>0) bars += `<text x="${x+barW/2}" y="${(y-6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)">${w.total}</text>`;
+    bars += `<text x="${x+barW/2}" y="${svgH-8}" text-anchor="middle" font-size="11" fill="var(--ink-soft)">${w.label}</text>`;
+  });
+
+  const svg = document.getElementById('weeklyChartSvg');
+  svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
+  svg.setAttribute('width', svgW);
+  svg.setAttribute('height', svgH);
+  svg.innerHTML = bars;
+}
+
+// ── Mục 7: Dữ liệu thiếu (Tiến trình/Model) theo Chi nhánh + Nhân viên ──
+function renderMissingDataTable(list){
+  const map = {};
+  let totalMissing = 0;
+  list.forEach(l=>{
+    const chiNhanh = l.chiNhanh || '(Chưa gán)';
+    const staffKey = l.nhanVien || '(Chưa gán)';
+    const key = chiNhanh+'|'+staffKey;
+    if(!map[key]) map[key] = {chiNhanh, label:staffLabel(l), total:0, thieuTT:0, thieuModel:0, thieuAny:0};
+    map[key].total++;
+    const thieuTT = (l.tienTrinhMaxNum||0)===0;
+    const thieuModel = !l.model;
+    if(thieuTT) map[key].thieuTT++;
+    if(thieuModel) map[key].thieuModel++;
+    if(thieuTT || thieuModel){ map[key].thieuAny++; totalMissing++; }
+  });
+  const rows = Object.values(map)
+    .filter(r=>r.thieuAny>0)
+    .sort((a,b)=> a.chiNhanh.localeCompare(b.chiNhanh) || b.thieuAny-a.thieuAny);
+  document.getElementById('missingCount').textContent = totalMissing;
+  document.getElementById('missingTable').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-weight:700;color:var(--navy);">${r.chiNhanh}</td>
+      <td>${r.label}</td>
+      <td>${r.total}</td>
+      <td style="${r.thieuTT>0?'color:var(--red);font-weight:700;':''}">${r.thieuTT}</td>
+      <td style="${r.thieuModel>0?'color:var(--red);font-weight:700;':''}">${r.thieuModel}</td>
+      <td>${fmtPct(r.thieuAny,r.total)}</td>
+    </tr>`).join('') : `<tr><td colspan="6" class="empty">Không có lead thiếu dữ liệu 🎉</td></tr>`;
 }
 
 // Parse "HH:mm:ss dd/MM/yyyy" (chuỗi ngày giờ crm.json trả về) -> timestamp
@@ -425,7 +559,7 @@ async function loadData(){
     const res = await fetch(CRM_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('crm.json: HTTP '+res.status);
     const json = await res.json();
-    LEADS = ((json.records && json.records.leads) || []).map(l=>({...l, _ngayCapNhatTs: parseVNDateTime(l.ngayCapNhat)}));
+    LEADS = ((json.records && json.records.leads) || []).map(l=>({...l, _ngayCapNhatTs: parseVNDateTime(l.ngayCapNhat), _ngayTaoTs: parseVNDateTime(l.ngayTao)}));
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LEADS.length + ' khách hàng (đã gộp trùng theo SĐT)';
     document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ CRM Bizfly, đồng bộ tự động mỗi 30 phút. Mỗi khách hàng chỉ tính 1 lần theo SĐT, lấy trạng thái mới nhất.';
     populateFilterOptions();

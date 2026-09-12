@@ -20,20 +20,32 @@ Cột dùng: *Tên khách hàng, Số điện thoại, Ngày tạo, Ngày cập 
 
 ## Field mỗi object trong `records.leads[]`
 
-`ten, sdt (khóa dedup, đã chuẩn hóa), sdtHienThi (giá trị gốc để hiển thị), ngayTao, ngayCapNhat, model, nhanVien, chiNhanh, chiNhanhSuyLuan, tienTrinh, tienTrinhMaxNum, tienTrinhMaxLabel, trangThai, nguon, nhomNguon, soLanCapNhat (số dòng log đã gộp — phản ánh mức độ tương tác/độ phức tạp xử lý), isTest`.
+`ten, sdt (khóa dedup, đã chuẩn hóa), sdtHienThi (giá trị gốc để hiển thị), ngayTao, ngayCapNhat, model, nhanVien, nhanVienTen (tên thật tra theo CRM_STAFF_MAP, rỗng nếu email chưa có trong roster — crm.html tự fallback hiển thị email), chiNhanh, chiNhanhSuyLuan, tienTrinh, tienTrinhMaxNum, tienTrinhMaxLabel, trangThai, nguon, nhomNguon, soLanCapNhat (số dòng log đã gộp — phản ánh mức độ tương tác/độ phức tạp xử lý), isTest`.
+
+## Roster nhân viên (`CRM_STAFF_MAP` trong `.gs`)
+
+Người dùng cung cấp trực tiếp danh sách 26 nhân viên (Khu vực/Chức danh/Họ tên/Email) 09/2026 — hardcode thành `CRM_STAFF_MAP` (email thường → `{ten, chiNhanh}`), **ưu tiên cao hơn** suy luận tần suất (`buildBranchByEmail_CRM_`): tra roster trước, chỉ fallback sang suy luận tần suất khi email không có trong roster (nhân viên mới chưa kịp cập nhật). Sửa tay `CRM_STAFF_MAP` khi có nhân viên mới/nghỉ việc/đổi chi nhánh — không có cơ chế tự động đồng bộ từ nguồn nào khác.
+
+2 email trong roster gốc người dùng gửi bị lệch chính tả so với dữ liệu thực tế trên Sheet CRM (gõ tay nhầm) — đã xác nhận với người dùng và sửa `CRM_STAFF_MAP` theo đúng email trên Sheet:
+- Võ Minh Nhã: dùng `minhnha2312@gmail.com` (không phải `minhha2312@gmail.com` như roster gốc).
+- Võ Trịnh Chí Đức: dùng `ducvotrinhchi@gmail.com` (không phải `ducvotrinchi@gmail.com` như roster gốc).
 
 ## `crm.html`
 
-Theo đúng khuôn mẫu style dùng chung giữa các module (xem CLAUDE.md gốc — `--navy`, `.chart-num`, `.wrap` 1280px, Inter font, `tr:hover #F7F9FC`). 6 mục đánh số, mục 1 (Phễu chuyển đổi) luôn hiện, còn lại (2-6) thu gọn mặc định:
+Theo đúng khuôn mẫu style dùng chung giữa các module (xem CLAUDE.md gốc — `--navy`, `.chart-num`, `.wrap` 1280px, Inter font, `tr:hover #F7F9FC`). 8 mục đánh số, mục 1-2 luôn hiện (không thu gọn — quan trọng nhất), còn lại thu gọn mặc định (trừ mục 4-5 trong `.grid2` để `open` sẵn theo quy ước cũ):
 
 1. **Phễu chuyển đổi theo Tiến trình** — cột động, tự suy ra danh sách bước từ dữ liệu thực tế (`buildStages()`, không hardcode tên bước — nếu công ty đổi/thêm bước trong CRM thì phễu tự cập nhật theo, không cần sửa code). Đếm **tích lũy** (số khách có `tienTrinhMaxNum >= N`), không phải đếm riêng từng bước.
-2. Lead theo Nhóm nguồn.
-3. Lead theo Chi nhánh.
-4. Lead theo Nhân viên phụ trách.
-5. Model quan tâm nhiều nhất.
-6. Danh sách chi tiết lead (bảng đầy đủ, tìm kiếm theo tên/SĐT/model).
+2. **Khách Hot & Veryhot cần theo dõi** — bảng riêng, LUÔN hiện (không phải toàn bộ lead — bảng tổng đã xem được trên app CRM nên cố ý không lặp lại ở đây, quyết định có chủ đích 09/2026). Veryhot luôn xếp trên Hot (`trangThaiPriority()`), trong cùng nhóm thì mới cập nhật gần nhất lên trước; dòng Veryhot tô nền đỏ nhạt (`.veryhot-row`).
+3. **Lead theo tuần theo Model (6 tuần gần nhất)** — biểu đồ cột chồng (stacked bar) tự vẽ bằng SVG thuần (không dùng thư viện chart), tính theo **Ngày tạo**, tuần từ Thứ 2 đến Chủ nhật (`startOfWeekTs()`). Model hiển thị tối đa 7 màu riêng (`MODEL_COLORS`, cycle nếu >8 model) + gộp phần dư vào "Khác"; lead thiếu Model tính vào nhóm "(Chưa nhập Model)" riêng (không gộp vào "Khác").
+4. Lead theo Nhóm nguồn.
+5. Lead theo Chi nhánh.
+6. Lead theo Nhân viên phụ trách (hiển thị `nhanVienTen`, fallback email nếu chưa có trong roster).
+7. **Dữ liệu thiếu — giai đoạn triển khai**: bảng Chi nhánh × Nhân viên, đếm lead thiếu Tiến trình (`tienTrinhMaxNum===0`) và/hoặc thiếu Model, dùng cho GĐBH từng chi nhánh chấn chỉnh nhân viên trong giai đoạn mới triển khai CRM (09/2026). **Chỉ mang tính tạm thời** — cân nhắc bỏ mục này khi dữ liệu nhập đã ổn định, tránh biến thành báo cáo "trị" nhân viên lâu dài ngoài ý định ban đầu.
+8. Model quan tâm nhiều nhất.
 
 "Đã ký hợp đồng" (`isWon()`) nhận diện bằng cách tìm chuỗi "ký hợp đồng" (không dấu) trong `tienTrinhMaxLabel` — không hardcode đúng số bước 6, để vẫn đúng nếu công ty đổi thứ tự bước trong CRM. "Đã dừng/không mua" (`isLost()`) = `tienTrinhMaxNum >= 7`.
+
+Bảng "Danh sách chi tiết lead" (hiện toàn bộ) đã **bỏ hẳn** khỏi trang (từng có ở bản đầu, xem lịch sử git nếu cần) theo yêu cầu người dùng — lý do: quá nhiều dòng, và xem được đầy đủ trên ứng dụng CRM gốc rồi.
 
 ## Tab CRM trong `index.html`
 
