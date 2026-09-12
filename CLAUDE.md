@@ -71,13 +71,14 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
   | Nhóm (chứa từ khoá) | Xem được tab |
   |---|---|
   | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM) |
-  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM |
+  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT |
   | `hcns` / `nhan su` | Chỉ Nhân sự & Chấm công |
-  | `ban hang` / `mkt` / `marketing` | Bán hàng, MKT, CRM |
+  | `mkt` / `marketing` | Bán hàng, MKT, CRM |
+  | `ban hang` (không khớp `mkt`/`marketing`) | Bán hàng, MKT |
   | `dich vu` | Chỉ Dịch vụ |
   | Không khớp gì | Không xem được tab khoá nào (an toàn theo mặc định) |
 
-  CRM dùng chung đúng tập quyền với Bán hàng (không có nhóm riêng) — quyết định có chủ đích vì CRM cũng là dữ liệu lead/khách hàng bán xe.
+  **CRM tạm ẩn bớt từ 09/2026** — chỉ Admin và nhóm MKT xem được, kể cả GĐ/Bán hàng thường (trước đây cùng nhóm quyền với Bán hàng) cũng không còn thấy tab CRM nữa, cho tới khi có quyết định mở rộng lại (dữ liệu CRM còn ít, mới trong giai đoạn triển khai).
 
   Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
 

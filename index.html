@@ -1014,11 +1014,14 @@ function _stripDiacritics(s){
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
 }
 function _classifyGroup(nhomRaw, isAdmin){
+  // CRM (Bizfly) tạm ẩn bớt 09/2026 — chỉ Admin và nhóm MKT xem được,
+  // kể cả GĐ/Bán hàng thường cũng KHÔNG có, cho tới khi mở rộng lại.
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm']);
   var n = _stripDiacritics(nhomRaw);
-  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm']);
+  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns']);
-  if(n.indexOf('ban hang')>=0 || n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt','crm']);
+  if(n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt','crm']);
+  if(n.indexOf('ban hang')>=0) return new Set(['bh','mkt']);
   if(n.indexOf('dich vu')>=0) return new Set(['dv']);
   return new Set();
 }
