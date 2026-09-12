@@ -325,7 +325,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT Thương hiệu 🔒</div>
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-noiquy-btn" onclick="switchTab('noiquy')">7. Quy định nội bộ</div>
-    <div class="tab" id="tab-crm-btn" onclick="switchTab('crm')">8. CRM 🔒</div>
+    <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">8. CRM 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -1434,6 +1434,11 @@ function checkPassword(){
       if(res.isAdmin){
         var adminBtn=document.getElementById('tab-admin-btn');
         if(adminBtn) adminBtn.style.display='';
+      }
+      // CRM tạm ẩn hẳn khỏi thanh tab — chỉ hiện nếu Admin/nhóm MKT (xem _classifyGroup())
+      if(_allowedTabs.has('crm')){
+        var crmBtn=document.getElementById('tab-crm-btn');
+        if(crmBtn) crmBtn.style.display='';
       }
       // Bỏ icon khoá 🔒 khỏi các tab được phép xem
       _allowedTabs.forEach(function(t){ _unlockTabUI(t); });
