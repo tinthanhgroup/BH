@@ -16,16 +16,16 @@
   .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
   .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
   .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
-  .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
+  .hdr .sub{color:var(--ink-soft);font-size:12px;margin-top:4px;}
 
   .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
   .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
   .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
   .kpi.green::before{background:var(--green);} .kpi.red::before{background:var(--red);} .kpi.gold::before{background:var(--gold);}
-  .kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
-  .kpi-num{font-size:26px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
+  .kpi-label{font-size:10.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .kpi-num{font-size:21px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
   .kpi.green .kpi-num{color:var(--green);} .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:#B8860B;}
-  .kpi-sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+  .kpi-sub{font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
 
   .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
   .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
@@ -36,28 +36,28 @@
     font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
   }
   .panel[open] summary{margin-bottom:4px;}
-  .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
+  .panel .desc{margin:0 0 14px;font-size:11px;color:var(--ink-soft);}
 
   .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
-  select,input[type=text]{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
+  select,input[type=text]{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 11px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
   input[type=text]{cursor:text;font-weight:500;min-width:200px;}
-  .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
+  .reset-btn{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:7px 13px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
   .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .chk-label{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;user-select:none;}
+  .chk-label{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;user-select:none;}
   .chk-label input{cursor:pointer;}
   .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .filter-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:7px 15px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
+  .filter-btn{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
   .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
   .grid2 .panel{margin-bottom:0;}
   @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;}}
 
-  table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
-  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table{width:100%;border-collapse:collapse;font-size:10.5px;}
+  thead th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:6px 8px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  tbody td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
   tbody tr:hover{background:#F7F9FC;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge{display:inline-block;padding:2px 6px;border-radius:20px;font-size:9.5px;font-weight:700;}
   .badge.veryhot{background:var(--red);color:#fff;}
   .badge.hot{background:#FBE5E5;color:var(--red);}
   .badge.warm{background:#FFF3E0;color:#B8860B;}
@@ -68,11 +68,12 @@
   .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
 
-  .funnel-flex{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;}
-  .funnel-svg-wrap{flex:1 1 300px;min-width:240px;}
-  .funnel-conv-table{flex:1 1 260px;min-width:220px;border-collapse:collapse;font-size:12.5px;align-self:center;}
-  .funnel-conv-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);}
-  .funnel-conv-table td{padding:9px 10px;border-bottom:1px solid var(--line);}
+  .funnel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+  .funnel-mini{background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 8px 8px;}
+  .funnel-mini-title{font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px;}
+  .funnel-conv-table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:8px;}
+  .funnel-conv-table th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink-soft);font-weight:700;padding:4px;border-bottom:1.5px solid var(--line);}
+  .funnel-conv-table td{padding:4px;border-bottom:1px solid var(--line);}
   .funnel-lost{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
   .grid3 .panel{margin-bottom:0;}
@@ -105,20 +106,21 @@
   </div>
 
   <div class="panel">
-    <h3><span class="chart-num">1</span> Phễu chuyển đổi theo Tiến trình</h3>
-    <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại — tránh sai lệch khi CRM ghi lùi bước) trong bộ lọc đang chọn.</p>
-    <div class="funnel-flex">
-      <div class="funnel-svg-wrap"><svg id="funnelSvg" style="display:block;margin:0 auto;"></svg></div>
-      <table class="funnel-conv-table">
-        <thead><tr><th>Chuyển đổi</th><th>Tỷ lệ</th></tr></thead>
-        <tbody id="funnelConvTable"></tbody>
-      </table>
-    </div>
+    <h3><span class="chart-num">1</span> Phễu chuyển đổi theo Tiến trình — từng Chi nhánh</h3>
+    <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại) của từng chi nhánh, kèm tỷ lệ chuyển đổi giữa các bước liền kề (di chuột vào ô để xem tên đầy đủ 2 bước) — mục này luôn hiện đủ chi nhánh/bước, không theo bộ lọc phía trên.</p>
+    <div id="funnelGrid" class="funnel-grid"></div>
     <div class="funnel-lost" id="funnelLost"></div>
   </div>
 
+  <details class="panel" open>
+    <summary><span class="chart-num">2</span> Lead theo tuần theo Model — từng Chi nhánh (6 tuần gần nhất)</summary>
+    <p class="desc">Số lead mới (tính theo <b>Ngày tạo</b>) mỗi tuần (Thứ 2 – Chủ nhật) của từng chi nhánh, chia theo Model đang được legend màu bên dưới — mục này luôn hiện đủ các chi nhánh, không theo bộ lọc phía trên.</p>
+    <div id="weeklyLegend" style="margin-bottom:12px;"></div>
+    <div id="weeklyChartsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;"></div>
+  </details>
+
   <div class="panel">
-    <h3><span class="chart-num">2</span> Khách Hot &amp; Veryhot cần theo dõi (<span id="hotCount">0</span>)</h3>
+    <h3><span class="chart-num">3</span> Khách Hot &amp; Veryhot cần theo dõi (<span id="hotCount">0</span>)</h3>
     <p class="desc">Danh sách khách <b>Veryhot</b> (ưu tiên trên cùng) và <b>Hot</b>, làm cơ sở cho GĐBH theo dõi sát — không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Cột "Chi nhánh" in nghiêng = chi nhánh trống ở CRM, được suy luận theo email Nhân viên.</p>
     <table>
       <thead><tr>
@@ -129,13 +131,6 @@
     </table>
     <div class="empty" id="hotEmptyMsg" style="display:none;">Không có khách Hot/Veryhot nào khớp bộ lọc.</div>
   </div>
-
-  <details class="panel" open>
-    <summary><span class="chart-num">3</span> Lead theo tuần theo Model (6 tuần gần nhất)</summary>
-    <p class="desc">Số lead mới (tính theo <b>Ngày tạo</b>) mỗi tuần (Thứ 2 – Chủ nhật), chia theo Model đang được legend màu bên dưới — trong bộ lọc đang chọn.</p>
-    <div id="weeklyLegend" style="margin-bottom:10px;"></div>
-    <div style="overflow-x:auto;"><svg id="weeklyChartSvg" style="display:block;"></svg></div>
-  </details>
 
   <div class="grid3">
     <details class="panel" open>
@@ -257,18 +252,37 @@ function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
 // Màu từng tầng phễu — cycle nếu số bước nhiều hơn số màu.
 const FUNNEL_COLORS = ['#1B4F8C','#1FA97A','#F2C14E','#8E5CB8','#E0793C','#2E9DA6','#D64545'];
 
-function renderFunnel(list){
-  const stages = buildStages(list);
-  const total = list.length;
-  const maxCount = total || 1;
-  const counts = stages.map(s=> list.filter(l=>l.tienTrinhMaxNum>=s.num).length);
+function renderFunnel(allStagesList){
+  // Luôn dùng toàn bộ dữ liệu (chỉ trừ checkbox test), không theo bộ lọc
+  // Chi nhánh/Nguồn/Nhân viên/Trạng thái — tách riêng phễu theo từng chi
+  // nhánh để so sánh, nhưng danh sách bước dùng chung (kê đủ) cho mọi chi nhánh.
+  const stages = buildStages(allStagesList);
+  const branchesPresent = new Set(allStagesList.map(l=>l.chiNhanh).filter(Boolean));
+  const branches = [...BRANCH_ORDER.filter(b=>branchesPresent.has(b)),
+                     ...[...branchesPresent].filter(b=>!BRANCH_ORDER.includes(b)).sort()];
 
-  // ── Phễu hình thang (SVG): mỗi tầng rộng theo số lead đạt được bước đó ──
-  const svg = document.getElementById('funnelSvg');
-  if(stages.length){
-    const W = 300, rowH = 44, gap = 3, minW = 60;
-    const svgH = stages.length*(rowH+gap) - gap;
-    const widthOf = c => minW + (W-minW) * (c/maxCount);
+  if(!stages.length || !branches.length){
+    document.getElementById('funnelGrid').innerHTML = '<div class="empty">Không có dữ liệu tiến trình</div>';
+    document.getElementById('funnelLost').innerHTML = '';
+    return;
+  }
+
+  const countsByBranch = {};
+  branches.forEach(b=>{
+    const branchLeads = allStagesList.filter(l=>l.chiNhanh===b);
+    countsByBranch[b] = stages.map(s=> branchLeads.filter(l=>l.tienTrinhMaxNum>=s.num).length);
+  });
+  // Dùng CHUNG 1 thang đo (globalMax) giữa các chi nhánh để chiều rộng
+  // hình thang còn phản ánh được quy mô tương đối giữa các chi nhánh.
+  const globalMax = Math.max(1, ...branches.map(b=>countsByBranch[b][0]||0));
+
+  const W = 180, rowH = 34, gap = 3, minW = 40;
+  const svgH = stages.length*(rowH+gap) - gap;
+  const widthOf = c => minW + (W-minW) * (c/globalMax);
+
+  const gridHtml = branches.map(b=>{
+    const counts = countsByBranch[b];
+    const branchTotal = counts[0] || 0;
     let shapes = '';
     stages.forEach((s,i)=>{
       const topW = widthOf(counts[i]);
@@ -276,32 +290,27 @@ function renderFunnel(list){
       const y0 = i*(rowH+gap), y1 = y0+rowH;
       const xTop0=(W-topW)/2, xTop1=(W+topW)/2, xBot0=(W-botW)/2, xBot1=(W+botW)/2;
       const color = FUNNEL_COLORS[i % FUNNEL_COLORS.length];
-      const pct = Math.round(counts[i]/maxCount*100);
+      const pct = branchTotal>0 ? Math.round(counts[i]/branchTotal*100) : 0;
       shapes += `<polygon points="${xTop0.toFixed(1)},${y0} ${xTop1.toFixed(1)},${y0} ${xBot1.toFixed(1)},${y1} ${xBot0.toFixed(1)},${y1}" fill="${color}"/>`;
-      shapes += `<text x="${W/2}" y="${y0+rowH/2-3}" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">${counts[i]}</text>`;
-      shapes += `<text x="${W/2}" y="${y0+rowH/2+13}" text-anchor="middle" font-size="10" fill="#fff" opacity=".92">${s.label} · ${pct}%</text>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2-2}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${counts[i]}</text>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2+11}" text-anchor="middle" font-size="8.5" fill="#fff" opacity=".92">${pct}%</text>`;
     });
-    svg.setAttribute('viewBox', `0 0 ${W} ${svgH}`);
-    svg.setAttribute('width', W);
-    svg.setAttribute('height', svgH);
-    svg.innerHTML = shapes;
-  } else {
-    svg.removeAttribute('viewBox');
-    svg.innerHTML = '';
-  }
-
-  // ── Bảng tỷ lệ chuyển đổi giữa từng cặp bước liền kề ──
-  const convRows = stages.slice(0,-1).map((s,i)=>{
-    const rate = counts[i]>0 ? Math.round(counts[i+1]/counts[i]*100) : 0;
-    const color = rate>=50 ? 'var(--green)' : (rate>=25 ? '#B8860B' : 'var(--red)');
-    return `<tr><td>${s.label} → ${stages[i+1].label}</td><td style="font-weight:800;color:${color};">${rate}%</td></tr>`;
+    const convRows = stages.slice(0,-1).map((s,i)=>{
+      const rate = counts[i]>0 ? Math.round(counts[i+1]/counts[i]*100) : 0;
+      const color = rate>=50 ? 'var(--green)' : (rate>=25 ? '#B8860B' : 'var(--red)');
+      return `<tr title="${s.label} → ${stages[i+1].label}"><td>Bước ${s.num}→${stages[i+1].num}</td><td style="font-weight:800;color:${color};text-align:right;">${rate}%</td></tr>`;
+    }).join('');
+    return `<div class="funnel-mini">
+      <div class="funnel-mini-title">${b} <span style="font-weight:400;color:var(--ink-soft);">(${branchTotal})</span></div>
+      <svg viewBox="0 0 ${W} ${svgH}" width="${W}" height="${svgH}" style="display:block;margin:0 auto;">${shapes}</svg>
+      <table class="funnel-conv-table"><tbody>${convRows}</tbody></table>
+    </div>`;
   }).join('');
-  document.getElementById('funnelConvTable').innerHTML = convRows || '<tr><td colspan="2" class="empty">Không đủ dữ liệu</td></tr>';
+  document.getElementById('funnelGrid').innerHTML = gridHtml;
 
-  const notStarted = list.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
-  const lost = list.filter(isLost).length;
+  const notStarted = allStagesList.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
+  const lost = allStagesList.filter(isLost).length;
   document.getElementById('funnelLost').innerHTML =
-    (stages.length ? '' : '<div class="empty">Không có dữ liệu tiến trình</div>') +
     `Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b>`;
 }
 
@@ -469,9 +478,10 @@ function resetFilters(){
 
 function render(){
   const list = baseFiltered();
+  const allStagesList = LEADS.filter(l=>state.showTest || !l.isTest); // không áp bộ lọc chi nhánh/nguồn/nhân viên — luôn kê đủ các bước
   renderKPI(list);
-  renderFunnel(list);
-  renderWeeklyChart(list);
+  renderFunnel(allStagesList);
+  renderWeeklyChart(allStagesList);
   renderSourceTable(list);
   renderBranchTable(list);
   renderStaffTable(list);
@@ -495,12 +505,15 @@ function fmtDdMm(ts){
   return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
 }
 
+const BRANCH_ORDER = ['NT','ĐL','PY','PR','BL'];
+
 function renderWeeklyChart(list){
   const withDate = list.filter(l=>l._ngayTaoTs);
   const nowStart = startOfWeekTs(Date.now());
   const weekStarts = [];
   for(let i=5;i>=0;i--) weekStarts.push(nowStart - i*7*86400000);
 
+  // ── Model -> màu, tính chung trên toàn bộ dữ liệu để màu đồng nhất giữa các chi nhánh ──
   const totalByModel = {};
   withDate.forEach(l=>{
     const m = l.model || '(Chưa nhập Model)';
@@ -513,50 +526,63 @@ function renderWeeklyChart(list){
   const colorOf = {};
   legendKeys.forEach((m,i)=>{ colorOf[m] = m==='Khác' ? '#9AA5B1' : MODEL_COLORS[i % MODEL_COLORS.length]; });
 
-  const weeks = weekStarts.map(ws=>{
-    const we = ws + 7*86400000;
-    const counts = {};
-    withDate.forEach(l=>{
-      if(l._ngayTaoTs<ws || l._ngayTaoTs>=we) return;
-      let m = l.model || '(Chưa nhập Model)';
-      if(hasOther && !showModels.includes(m)) m = 'Khác';
-      counts[m] = (counts[m]||0)+1;
-    });
-    const total = Object.values(counts).reduce((s,v)=>s+v,0);
-    return { label: fmtDdMm(ws), counts, total };
-  });
-
   const legendHtml = legendKeys.length ? legendKeys.map(m=>
     `<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-right:14px;">
       <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorOf[m]};"></span>${m}
     </span>`).join('') : '<span class="dash">Chưa có dữ liệu</span>';
   document.getElementById('weeklyLegend').innerHTML = legendHtml;
 
-  const maxTotal = Math.max(...weeks.map(w=>w.total), 1);
-  const chartH = 200, barW = 46, gap = 34, padL = 16, padT = 14, padB = 26;
-  const svgW = padL*2 + weeks.length*(barW+gap) - gap;
+  // ── Danh sách chi nhánh cần vẽ (bỏ qua lead chưa gán chi nhánh) ──
+  const branchesPresent = new Set(withDate.map(l=>l.chiNhanh).filter(Boolean));
+  const branches = [...BRANCH_ORDER.filter(b=>branchesPresent.has(b)),
+                     ...[...branchesPresent].filter(b=>!BRANCH_ORDER.includes(b)).sort()];
+
+  // ── Tính theo tuần cho từng chi nhánh, dùng CHUNG 1 thang đo (maxTotal)
+  // để chiều cao cột so sánh công bằng được giữa các chi nhánh ──
+  const perBranchWeeks = {};
+  branches.forEach(b=>{
+    const branchLeads = withDate.filter(l=>l.chiNhanh===b);
+    perBranchWeeks[b] = weekStarts.map(ws=>{
+      const we = ws + 7*86400000;
+      const counts = {};
+      branchLeads.forEach(l=>{
+        if(l._ngayTaoTs<ws || l._ngayTaoTs>=we) return;
+        let m = l.model || '(Chưa nhập Model)';
+        if(hasOther && !showModels.includes(m)) m = 'Khác';
+        counts[m] = (counts[m]||0)+1;
+      });
+      const total = Object.values(counts).reduce((s,v)=>s+v,0);
+      return { label: fmtDdMm(ws), counts, total };
+    });
+  });
+  const maxTotal = Math.max(1, ...branches.flatMap(b=>perBranchWeeks[b].map(w=>w.total)));
+
+  const chartH = 130, barW = 22, gap = 10, padL = 8, padT = 12, padB = 24;
+  const svgW = padL*2 + weekStarts.length*(barW+gap) - gap;
   const svgH = padT + chartH + padB;
 
-  let bars = '';
-  weeks.forEach((w,i)=>{
-    const x = padL + i*(barW+gap);
-    let y = padT+chartH;
-    legendKeys.forEach(m=>{
-      const c = w.counts[m]||0;
-      if(c<=0) return;
-      const h = (c/maxTotal)*chartH;
-      y -= h;
-      bars += `<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" fill="${colorOf[m]}" rx="2"/>`;
+  const gridHtml = branches.length ? branches.map(b=>{
+    let bars = '';
+    perBranchWeeks[b].forEach((w,i)=>{
+      const x = padL + i*(barW+gap);
+      let y = padT+chartH;
+      legendKeys.forEach(m=>{
+        const c = w.counts[m]||0;
+        if(c<=0) return;
+        const h = (c/maxTotal)*chartH;
+        y -= h;
+        bars += `<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" fill="${colorOf[m]}" rx="2"/>`;
+      });
+      if(w.total>0) bars += `<text x="${x+barW/2}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="var(--ink)">${w.total}</text>`;
+      bars += `<text x="${x+barW/2}" y="${svgH-6}" text-anchor="middle" font-size="9.5" fill="var(--ink-soft)">${w.label}</text>`;
     });
-    if(w.total>0) bars += `<text x="${x+barW/2}" y="${(y-6).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--ink)">${w.total}</text>`;
-    bars += `<text x="${x+barW/2}" y="${svgH-8}" text-anchor="middle" font-size="11" fill="var(--ink-soft)">${w.label}</text>`;
-  });
+    return `<div style="background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:8px 6px 4px;">
+      <div style="font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:4px;">${b}</div>
+      <svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" style="display:block;margin:0 auto;">${bars}</svg>
+    </div>`;
+  }).join('') : '<div class="empty">Không có dữ liệu chi nhánh</div>';
 
-  const svg = document.getElementById('weeklyChartSvg');
-  svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
-  svg.setAttribute('width', svgW);
-  svg.setAttribute('height', svgH);
-  svg.innerHTML = bars;
+  document.getElementById('weeklyChartsGrid').innerHTML = gridHtml;
 }
 
 // ── Mục 7: Dữ liệu thiếu (Tiến trình/Model) theo Chi nhánh + Nhân viên ──
