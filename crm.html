@@ -113,7 +113,7 @@
     <p class="desc">Danh sách khách <b>Veryhot</b> (ưu tiên trên cùng) và <b>Hot</b>, làm cơ sở cho GĐBH theo dõi sát — không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Cột "Chi nhánh" in nghiêng = chi nhánh trống ở CRM, được suy luận theo email Nhân viên.</p>
     <table>
       <thead><tr>
-        <th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
+        <th>#</th><th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
         <th>Tiến trình hiện tại</th><th>Trạng thái</th><th>Cập nhật gần nhất</th>
       </tr></thead>
       <tbody id="hotTable"></tbody>
@@ -132,7 +132,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">4</span> Lead theo Nhóm nguồn</summary>
       <table>
-        <thead><tr><th>Nhóm nguồn</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <thead><tr><th>#</th><th>Nhóm nguồn</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
         <tbody id="sourceTable"></tbody>
       </table>
     </details>
@@ -140,7 +140,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">5</span> Lead theo Chi nhánh</summary>
       <table>
-        <thead><tr><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <thead><tr><th>#</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
         <tbody id="branchTable"></tbody>
       </table>
     </details>
@@ -149,7 +149,7 @@
   <details class="panel">
     <summary><span class="chart-num">6</span> Lead theo Nhân viên phụ trách</summary>
     <table>
-      <thead><tr><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+      <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
       <tbody id="staffTable"></tbody>
     </table>
   </details>
@@ -158,7 +158,7 @@
     <summary><span class="chart-num">7</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
     <p class="desc">Lead thiếu Tiến trình và/hoặc Model theo từng nhân viên, dùng để GĐBH mỗi chi nhánh chấn chỉnh trong giai đoạn mới triển khai CRM — chỉ áp dụng tạm thời, sẽ bỏ khi dữ liệu nhập đã ổn định.</p>
     <table>
-      <thead><tr><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
+      <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
       <tbody id="missingTable"></tbody>
     </table>
   </details>
@@ -166,7 +166,7 @@
   <details class="panel">
     <summary><span class="chart-num">8</span> Model quan tâm nhiều nhất</summary>
     <table>
-      <thead><tr><th>Model</th><th>Số lead</th><th>Đã ký HĐ</th></tr></thead>
+      <thead><tr><th>#</th><th>Model</th><th>Số lead</th><th>Đã ký HĐ</th></tr></thead>
       <tbody id="modelTable"></tbody>
     </table>
   </details>
@@ -278,24 +278,26 @@ function groupCount(list, keyFn){
 
 function renderSourceTable(list){
   const rows = groupCount(list, l=>l.nhomNguon);
-  document.getElementById('sourceTable').innerHTML = rows.length ? rows.map(r=>`
+  document.getElementById('sourceTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td style="font-weight:700;">${r.key}</td>
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.won}</td>
       <td>${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderBranchTable(list){
   const rows = groupCount(list, l=>l.chiNhanh);
-  document.getElementById('branchTable').innerHTML = rows.length ? rows.map(r=>`
+  document.getElementById('branchTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td style="font-weight:700;color:var(--navy);">${r.key}</td>
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.won}</td>
       <td>${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function staffLabel(l){
@@ -311,24 +313,26 @@ function renderStaffTable(list){
     if(isWon(l)) map[k].won++;
   });
   const rows = Object.keys(map).map(k=>({key:k, ...map[k]})).sort((a,b)=>b.total-a.total);
-  document.getElementById('staffTable').innerHTML = rows.length ? rows.map(r=>`
+  document.getElementById('staffTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td style="font-weight:700;">${r.label}</td>
       <td>${r.chinhanh||'<span class="dash">—</span>'}</td>
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.won}</td>
       <td>${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="6" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderModelTable(list){
   const rows = groupCount(list, l=>l.model);
-  document.getElementById('modelTable').innerHTML = rows.length ? rows.map(r=>`
+  document.getElementById('modelTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td style="font-weight:700;">${r.key}</td>
       <td>${r.total}</td>
       <td style="color:var(--green);font-weight:700;">${r.won}</td>
-    </tr>`).join('') : `<tr><td colspan="3" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // Thứ tự ưu tiên trạng thái — Veryhot lên đầu bảng chi tiết để GĐBH
@@ -358,8 +362,9 @@ function renderHotList(list){
   });
   document.getElementById('hotCount').textContent = sorted.length;
   document.getElementById('hotEmptyMsg').style.display = sorted.length ? 'none' : 'block';
-  document.getElementById('hotTable').innerHTML = sorted.map(l=>`
+  document.getElementById('hotTable').innerHTML = sorted.map((l,i)=>`
     <tr${trangThaiPriority(l.trangThai)===0?' class="veryhot-row"':''}>
+      <td>${i+1}</td>
       <td style="font-weight:700;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge test">test</span>':''}</td>
       <td>${l.sdtHienThi||'<span class="dash">—</span>'}</td>
       <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
@@ -534,15 +539,16 @@ function renderMissingDataTable(list){
     .filter(r=>r.thieuAny>0)
     .sort((a,b)=> a.chiNhanh.localeCompare(b.chiNhanh) || b.thieuAny-a.thieuAny);
   document.getElementById('missingCount').textContent = totalMissing;
-  document.getElementById('missingTable').innerHTML = rows.length ? rows.map(r=>`
+  document.getElementById('missingTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td style="font-weight:700;color:var(--navy);">${r.chiNhanh}</td>
       <td>${r.label}</td>
       <td>${r.total}</td>
       <td style="${r.thieuTT>0?'color:var(--red);font-weight:700;':''}">${r.thieuTT}</td>
       <td style="${r.thieuModel>0?'color:var(--red);font-weight:700;':''}">${r.thieuModel}</td>
       <td>${fmtPct(r.thieuAny,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="6" class="empty">Không có lead thiếu dữ liệu 🎉</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="7" class="empty">Không có lead thiếu dữ liệu 🎉</td></tr>`;
 }
 
 // Parse "HH:mm:ss dd/MM/yyyy" (chuỗi ngày giờ crm.json trả về) -> timestamp
