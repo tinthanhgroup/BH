@@ -68,13 +68,15 @@
   .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
 
-  .funnel{display:flex;flex-direction:column;gap:8px;}
-  .funnel-row{display:grid;grid-template-columns:220px 1fr 70px;align-items:center;gap:10px;}
-  .funnel-label{font-size:12.5px;font-weight:600;color:var(--ink);}
-  .funnel-bar-wrap{height:22px;background:var(--line);border-radius:6px;overflow:hidden;}
-  .funnel-bar{height:100%;background:var(--navy);border-radius:6px;transition:width .25s ease;}
-  .funnel-count{font-size:12.5px;font-weight:800;color:var(--navy);text-align:right;}
-  .funnel-lost{margin-top:6px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
+  .funnel-flex{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;}
+  .funnel-svg-wrap{flex:1 1 300px;min-width:240px;}
+  .funnel-conv-table{flex:1 1 260px;min-width:220px;border-collapse:collapse;font-size:12.5px;align-self:center;}
+  .funnel-conv-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);}
+  .funnel-conv-table td{padding:9px 10px;border-bottom:1px solid var(--line);}
+  .funnel-lost{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
+  .grid3 .panel{margin-bottom:0;}
+  @media(max-width:980px){.grid3{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -105,7 +107,14 @@
   <div class="panel">
     <h3><span class="chart-num">1</span> Phễu chuyển đổi theo Tiến trình</h3>
     <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại — tránh sai lệch khi CRM ghi lùi bước) trong bộ lọc đang chọn.</p>
-    <div class="funnel" id="funnelWrap"></div>
+    <div class="funnel-flex">
+      <div class="funnel-svg-wrap"><svg id="funnelSvg" style="display:block;margin:0 auto;"></svg></div>
+      <table class="funnel-conv-table">
+        <thead><tr><th>Chuyển đổi</th><th>Tỷ lệ</th></tr></thead>
+        <tbody id="funnelConvTable"></tbody>
+      </table>
+    </div>
+    <div class="funnel-lost" id="funnelLost"></div>
   </div>
 
   <div class="panel">
@@ -128,26 +137,34 @@
     <div style="overflow-x:auto;"><svg id="weeklyChartSvg" style="display:block;"></svg></div>
   </details>
 
-  <div class="grid2">
+  <div class="grid3">
     <details class="panel" open>
-      <summary><span class="chart-num">4</span> Lead theo Nhóm nguồn</summary>
+      <summary><span class="chart-num">4</span> Theo Nhóm nguồn</summary>
       <table>
-        <thead><tr><th>#</th><th>Nhóm nguồn</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <thead><tr><th>#</th><th>Nhóm nguồn</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
         <tbody id="sourceTable"></tbody>
       </table>
     </details>
 
     <details class="panel" open>
-      <summary><span class="chart-num">5</span> Lead theo Chi nhánh</summary>
+      <summary><span class="chart-num">5</span> Theo Chi nhánh</summary>
       <table>
-        <thead><tr><th>#</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <thead><tr><th>#</th><th>Chi nhánh</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
         <tbody id="branchTable"></tbody>
+      </table>
+    </details>
+
+    <details class="panel" open>
+      <summary><span class="chart-num">6</span> Model quan tâm nhất</summary>
+      <table>
+        <thead><tr><th>#</th><th>Model</th><th>Lead</th><th>Ký HĐ</th></tr></thead>
+        <tbody id="modelTable"></tbody>
       </table>
     </details>
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">6</span> Lead theo Nhân viên phụ trách</summary>
+    <summary><span class="chart-num">7</span> Lead theo Nhân viên phụ trách</summary>
     <table>
       <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
       <tbody id="staffTable"></tbody>
@@ -155,19 +172,11 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">7</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
+    <summary><span class="chart-num">8</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
     <p class="desc">Lead thiếu Tiến trình và/hoặc Model theo từng nhân viên, dùng để GĐBH mỗi chi nhánh chấn chỉnh trong giai đoạn mới triển khai CRM — chỉ áp dụng tạm thời, sẽ bỏ khi dữ liệu nhập đã ổn định.</p>
     <table>
       <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
       <tbody id="missingTable"></tbody>
-    </table>
-  </details>
-
-  <details class="panel">
-    <summary><span class="chart-num">8</span> Model quan tâm nhiều nhất</summary>
-    <table>
-      <thead><tr><th>#</th><th>Model</th><th>Số lead</th><th>Đã ký HĐ</th></tr></thead>
-      <tbody id="modelTable"></tbody>
     </table>
   </details>
 
@@ -245,24 +254,55 @@ function renderKPI(list){
 
 function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
 
+// Màu từng tầng phễu — cycle nếu số bước nhiều hơn số màu.
+const FUNNEL_COLORS = ['#1B4F8C','#1FA97A','#F2C14E','#8E5CB8','#E0793C','#2E9DA6','#D64545'];
+
 function renderFunnel(list){
   const stages = buildStages(list);
   const total = list.length;
   const maxCount = total || 1;
-  const rows = stages.map(s=>{
-    const count = list.filter(l=>l.tienTrinhMaxNum>=s.num).length;
-    const pct = Math.round(count/maxCount*100);
-    return `<div class="funnel-row">
-      <div class="funnel-label">${s.label}</div>
-      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${pct}%"></div></div>
-      <div class="funnel-count">${count}</div>
-    </div>`;
+  const counts = stages.map(s=> list.filter(l=>l.tienTrinhMaxNum>=s.num).length);
+
+  // ── Phễu hình thang (SVG): mỗi tầng rộng theo số lead đạt được bước đó ──
+  const svg = document.getElementById('funnelSvg');
+  if(stages.length){
+    const W = 300, rowH = 44, gap = 3, minW = 60;
+    const svgH = stages.length*(rowH+gap) - gap;
+    const widthOf = c => minW + (W-minW) * (c/maxCount);
+    let shapes = '';
+    stages.forEach((s,i)=>{
+      const topW = widthOf(counts[i]);
+      const botW = i<stages.length-1 ? widthOf(counts[i+1]) : widthOf(counts[i]);
+      const y0 = i*(rowH+gap), y1 = y0+rowH;
+      const xTop0=(W-topW)/2, xTop1=(W+topW)/2, xBot0=(W-botW)/2, xBot1=(W+botW)/2;
+      const color = FUNNEL_COLORS[i % FUNNEL_COLORS.length];
+      const pct = Math.round(counts[i]/maxCount*100);
+      shapes += `<polygon points="${xTop0.toFixed(1)},${y0} ${xTop1.toFixed(1)},${y0} ${xBot1.toFixed(1)},${y1} ${xBot0.toFixed(1)},${y1}" fill="${color}"/>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2-3}" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">${counts[i]}</text>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2+13}" text-anchor="middle" font-size="10" fill="#fff" opacity=".92">${s.label} · ${pct}%</text>`;
+    });
+    svg.setAttribute('viewBox', `0 0 ${W} ${svgH}`);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', svgH);
+    svg.innerHTML = shapes;
+  } else {
+    svg.removeAttribute('viewBox');
+    svg.innerHTML = '';
+  }
+
+  // ── Bảng tỷ lệ chuyển đổi giữa từng cặp bước liền kề ──
+  const convRows = stages.slice(0,-1).map((s,i)=>{
+    const rate = counts[i]>0 ? Math.round(counts[i+1]/counts[i]*100) : 0;
+    const color = rate>=50 ? 'var(--green)' : (rate>=25 ? '#B8860B' : 'var(--red)');
+    return `<tr><td>${s.label} → ${stages[i+1].label}</td><td style="font-weight:800;color:${color};">${rate}%</td></tr>`;
   }).join('');
+  document.getElementById('funnelConvTable').innerHTML = convRows || '<tr><td colspan="2" class="empty">Không đủ dữ liệu</td></tr>';
+
   const notStarted = list.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
   const lost = list.filter(isLost).length;
-  document.getElementById('funnelWrap').innerHTML =
-    (rows || '<div class="empty">Không có dữ liệu tiến trình</div>') +
-    `<div class="funnel-lost">Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b></div>`;
+  document.getElementById('funnelLost').innerHTML =
+    (stages.length ? '' : '<div class="empty">Không có dữ liệu tiến trình</div>') +
+    `Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b>`;
 }
 
 function groupCount(list, keyFn){
