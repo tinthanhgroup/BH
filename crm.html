@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Tín Thanh Group</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#7385A0; --line:#E4EAF3;
+    --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
+    --shadow:0 2px 10px rgba(31,95,153,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
+  .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
+  .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
+  .kpi.green::before{background:var(--green);} .kpi.red::before{background:var(--red);} .kpi.gold::before{background:var(--gold);}
+  .kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .kpi-num{font-size:26px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
+  .kpi.green .kpi-num{color:var(--green);} .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:#B8860B;}
+  .kpi-sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+
+  .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
+  .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
+  .panel summary{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;cursor:pointer;}
+  .chart-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;
+    font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
+  }
+  .panel[open] summary{margin-bottom:4px;}
+  .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  select,input[type=text]{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
+  input[type=text]{cursor:text;font-weight:500;min-width:200px;}
+  .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .chk-label{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;user-select:none;}
+  .chk-label input{cursor:pointer;}
+  .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:7px 15px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
+  .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .grid2 .panel{margin-bottom:0;}
+  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;}}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tbody tr:hover{background:#F7F9FC;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge.veryhot{background:var(--red);color:#fff;}
+  .badge.hot{background:#FBE5E5;color:var(--red);}
+  .badge.warm{background:#FFF3E0;color:#B8860B;}
+  .badge.test{background:#EDEFF3;color:var(--ink-soft);}
+  tbody tr.veryhot-row{background:#FDF1F1;}
+  tbody tr.veryhot-row:hover{background:#FBE5E5;}
+  .dash{color:var(--ink-soft);}
+  .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
+  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
+
+  .funnel{display:flex;flex-direction:column;gap:8px;}
+  .funnel-row{display:grid;grid-template-columns:220px 1fr 70px;align-items:center;gap:10px;}
+  .funnel-label{font-size:12.5px;font-weight:600;color:var(--ink);}
+  .funnel-bar-wrap{height:22px;background:var(--line);border-radius:6px;overflow:hidden;}
+  .funnel-bar{height:100%;background:var(--navy);border-radius:6px;transition:width .25s ease;}
+  .funnel-count{font-size:12.5px;font-weight:800;color:var(--navy);text-align:right;}
+  .funnel-lost{margin-top:6px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <h1>CRM — Tổng hợp Lead (Bizfly)</h1>
+      <div class="sub" id="updatedText">Đang tải dữ liệu…</div>
+    </div>
+  </div>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="panel">
+    <h3>Bộ lọc</h3>
+    <div class="filter-btns" id="fChiNhanhBtns" style="margin-bottom:10px;"></div>
+    <div class="filters">
+      <select id="fNguon" onchange="onFilterChange()"><option value="">Tất cả nhóm nguồn</option></select>
+      <select id="fNhanVien" onchange="onFilterChange()"><option value="">Tất cả nhân viên</option></select>
+      <select id="fTrangThai" onchange="onFilterChange()"><option value="">Tất cả trạng thái</option></select>
+      <input type="text" id="fSearch" placeholder="Tìm tên/SĐT/model…" oninput="onFilterChange()">
+      <label class="chk-label"><input type="checkbox" id="fShowTest" onchange="onFilterChange()"> Hiện cả dữ liệu test</label>
+      <button class="reset-btn" onclick="resetFilters()">✕ Xóa lọc</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">1</span> Phễu chuyển đổi theo Tiến trình</h3>
+    <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại — tránh sai lệch khi CRM ghi lùi bước) trong bộ lọc đang chọn.</p>
+    <div class="funnel" id="funnelWrap"></div>
+  </div>
+
+  <div class="grid2">
+    <details class="panel" open>
+      <summary><span class="chart-num">2</span> Lead theo Nhóm nguồn</summary>
+      <table>
+        <thead><tr><th>Nhóm nguồn</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <tbody id="sourceTable"></tbody>
+      </table>
+    </details>
+
+    <details class="panel" open>
+      <summary><span class="chart-num">3</span> Lead theo Chi nhánh</summary>
+      <table>
+        <thead><tr><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+        <tbody id="branchTable"></tbody>
+      </table>
+    </details>
+  </div>
+
+  <details class="panel">
+    <summary><span class="chart-num">4</span> Lead theo Nhân viên phụ trách</summary>
+    <table>
+      <thead><tr><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+      <tbody id="staffTable"></tbody>
+    </table>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">5</span> Model quan tâm nhiều nhất</summary>
+    <table>
+      <thead><tr><th>Model</th><th>Số lead</th><th>Đã ký HĐ</th></tr></thead>
+      <tbody id="modelTable"></tbody>
+    </table>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">6</span> Danh sách chi tiết lead (<span id="detailCount">0</span>)</summary>
+    <p class="desc">Mỗi dòng là 1 khách hàng đã gộp trùng theo SĐT, hiển thị trạng thái mới nhất. Cột "Chi nhánh" in nghiêng = chi nhánh trống ở CRM, được suy luận theo email Nhân viên.</p>
+    <table>
+      <thead><tr>
+        <th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
+        <th>Tiến trình hiện tại</th><th>Cao nhất từng đạt</th><th>Trạng thái</th><th>Nhóm nguồn</th><th>Ngày tạo</th><th>Cập nhật gần nhất</th>
+      </tr></thead>
+      <tbody id="detailTable"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none;">Không có lead nào khớp bộ lọc.</div>
+  </details>
+
+  <div class="footnote" id="footnoteText"></div>
+</div>
+
+<script>
+const CRM_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/crm.json';
+let LEADS = [];
+let STAGES = []; // [{num, label}] suy ra từ dữ liệu thực tế, sắp theo num tăng dần
+const WIN_STAGE_LABEL_HINT = 'ký hợp đồng'; // dùng để nhận diện bước "thắng" khi tô đậm phễu
+
+let state = { chinhanh:'', nguon:'', nhanvien:'', trangthai:'', q:'', showTest:false };
+
+function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+
+function stripDiacritics(s){
+  return (s||'').toString().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase().trim();
+}
+
+function baseFiltered(){
+  // Áp toàn bộ bộ lọc TRỪ checkbox test — dùng cho các bảng chính.
+  const q = stripDiacritics(state.q);
+  return LEADS.filter(l=>{
+    if(!state.showTest && l.isTest) return false;
+    if(state.chinhanh && l.chiNhanh!==state.chinhanh) return false;
+    if(state.nguon && l.nhomNguon!==state.nguon) return false;
+    if(state.nhanvien && l.nhanVien!==state.nhanvien) return false;
+    if(state.trangthai && l.trangThai!==state.trangthai) return false;
+    if(q){
+      const hay = stripDiacritics([l.ten,l.sdtHienThi,l.model].join(' '));
+      if(hay.indexOf(q)<0) return false;
+    }
+    return true;
+  });
+}
+
+function isWon(l){
+  return stripDiacritics(l.tienTrinhMaxLabel||'').indexOf(stripDiacritics(WIN_STAGE_LABEL_HINT))>=0;
+}
+function isLost(l){
+  return (l.tienTrinhMaxNum||0)>=7;
+}
+
+function buildStages(list){
+  const map = {};
+  list.forEach(l=>{
+    if(l.tienTrinhMaxNum>0 && l.tienTrinhMaxNum<7 && l.tienTrinhMaxLabel){
+      map[l.tienTrinhMaxNum] = l.tienTrinhMaxLabel;
+    }
+  });
+  return Object.keys(map).map(n=>({num:+n, label:map[n]})).sort((a,b)=>a.num-b.num);
+}
+
+function renderKPI(list){
+  const total = list.length;
+  const won = list.filter(isWon).length;
+  const lost = list.filter(isLost).length;
+  const active = total - won - lost;
+  const pct = total>0 ? Math.round(won/total*100) : 0;
+  const kpis = [
+    {label:'Tổng lead', num:total, sub:'trong bộ lọc hiện tại', cls:''},
+    {label:'Đang xử lý', num:active, sub:'chưa ký HĐ / chưa dừng', cls:'gold'},
+    {label:'Đã ký hợp đồng', num:won, sub:fmtPct(won,total)+' tổng số', cls:'green'},
+    {label:'Đã dừng / không mua', num:lost, sub:'mua xe khác hoặc từ chối', cls:'red'},
+    {label:'Tỷ lệ chuyển đổi', num:pct+'%', sub:'đã ký HĐ / tổng lead', cls: pct>=20?'green':(pct>=8?'gold':'red')},
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-num">${k.num}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
+
+function renderFunnel(list){
+  const stages = buildStages(list);
+  const total = list.length;
+  const maxCount = total || 1;
+  const rows = stages.map(s=>{
+    const count = list.filter(l=>l.tienTrinhMaxNum>=s.num).length;
+    const pct = Math.round(count/maxCount*100);
+    return `<div class="funnel-row">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${pct}%"></div></div>
+      <div class="funnel-count">${count}</div>
+    </div>`;
+  }).join('');
+  const notStarted = list.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
+  const lost = list.filter(isLost).length;
+  document.getElementById('funnelWrap').innerHTML =
+    (rows || '<div class="empty">Không có dữ liệu tiến trình</div>') +
+    `<div class="funnel-lost">Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b></div>`;
+}
+
+function groupCount(list, keyFn){
+  const map = {};
+  list.forEach(l=>{
+    const k = keyFn(l) || '(Chưa gán)';
+    if(!map[k]) map[k] = {total:0, won:0};
+    map[k].total++;
+    if(isWon(l)) map[k].won++;
+  });
+  return Object.keys(map).map(k=>({key:k, total:map[k].total, won:map[k].won})).sort((a,b)=>b.total-a.total);
+}
+
+function renderSourceTable(list){
+  const rows = groupCount(list, l=>l.nhomNguon);
+  document.getElementById('sourceTable').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-weight:700;">${r.key}</td>
+      <td>${r.total}</td>
+      <td style="color:var(--green);font-weight:700;">${r.won}</td>
+      <td>${fmtPct(r.won,r.total)}</td>
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+function renderBranchTable(list){
+  const rows = groupCount(list, l=>l.chiNhanh);
+  document.getElementById('branchTable').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-weight:700;color:var(--navy);">${r.key}</td>
+      <td>${r.total}</td>
+      <td style="color:var(--green);font-weight:700;">${r.won}</td>
+      <td>${fmtPct(r.won,r.total)}</td>
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+function renderStaffTable(list){
+  const map = {};
+  list.forEach(l=>{
+    const k = l.nhanVien || '(Chưa gán)';
+    if(!map[k]) map[k] = {total:0, won:0, chinhanh:l.chiNhanh};
+    map[k].total++;
+    if(isWon(l)) map[k].won++;
+  });
+  const rows = Object.keys(map).map(k=>({key:k, ...map[k]})).sort((a,b)=>b.total-a.total);
+  document.getElementById('staffTable').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-weight:700;">${r.key}</td>
+      <td>${r.chinhanh||'<span class="dash">—</span>'}</td>
+      <td>${r.total}</td>
+      <td style="color:var(--green);font-weight:700;">${r.won}</td>
+      <td>${fmtPct(r.won,r.total)}</td>
+    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+function renderModelTable(list){
+  const rows = groupCount(list, l=>l.model);
+  document.getElementById('modelTable').innerHTML = rows.length ? rows.map(r=>`
+    <tr>
+      <td style="font-weight:700;">${r.key}</td>
+      <td>${r.total}</td>
+      <td style="color:var(--green);font-weight:700;">${r.won}</td>
+    </tr>`).join('') : `<tr><td colspan="3" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+// Thứ tự ưu tiên trạng thái — Veryhot lên đầu bảng chi tiết để GĐBH
+// theo dõi ngay không cần lọc, số càng nhỏ càng ưu tiên hiện trước.
+function trangThaiPriority(t){
+  const n = stripDiacritics(t);
+  if(n==='veryhot') return 0;
+  if(n==='hot') return 1;
+  if(n==='warm') return 2;
+  return 3;
+}
+
+function trangThaiBadge(t){
+  const n = stripDiacritics(t);
+  if(n==='veryhot') return '<span class="badge veryhot">Veryhot</span>';
+  if(n==='hot') return '<span class="badge hot">Hot</span>';
+  if(n==='warm') return '<span class="badge warm">Warm</span>';
+  return t ? t : '<span class="dash">—</span>';
+}
+
+function renderDetail(list){
+  const sorted = [...list].sort((a,b)=>{
+    const p = trangThaiPriority(a.trangThai) - trangThaiPriority(b.trangThai);
+    if(p!==0) return p;
+    return (b._ngayCapNhatTs||0) - (a._ngayCapNhatTs||0);
+  });
+  document.getElementById('detailCount').textContent = sorted.length;
+  document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
+  document.getElementById('detailTable').innerHTML = sorted.map(l=>`
+    <tr${trangThaiPriority(l.trangThai)===0?' class="veryhot-row"':''}>
+      <td style="font-weight:700;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge test">test</span>':''}</td>
+      <td>${l.sdtHienThi||'<span class="dash">—</span>'}</td>
+      <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
+      <td>${l.nhanVien||'<span class="dash">—</span>'}</td>
+      <td>${l.model||'<span class="dash">—</span>'}</td>
+      <td>${l.tienTrinh||'<span class="dash">—</span>'}</td>
+      <td>${l.tienTrinhMaxLabel||'<span class="dash">—</span>'}</td>
+      <td>${trangThaiBadge(l.trangThai)}</td>
+      <td>${l.nhomNguon||'<span class="dash">—</span>'}</td>
+      <td>${l.ngayTao||'—'}</td>
+      <td>${l.ngayCapNhat||'—'}</td>
+    </tr>`).join('');
+}
+
+function renderChiNhanhButtons(){
+  const base = LEADS.filter(l=>state.showTest || !l.isTest);
+  const branches = uniqSorted(base.map(l=>l.chiNhanh));
+  const opts = ['', ...branches];
+  document.getElementById('fChiNhanhBtns').innerHTML = opts.map(b=>{
+    const label = b === '' ? 'Tất cả chi nhánh' : b;
+    const isOn = state.chinhanh === b;
+    return `<button class="filter-btn${isOn?' active':''}" onclick="setChiNhanh('${b.replace(/'/g,"\\'")}')">${label}</button>`;
+  }).join('');
+}
+
+function setChiNhanh(b){
+  state.chinhanh = b;
+  render();
+  renderChiNhanhButtons();
+}
+
+function populateFilterOptions(){
+  const base = LEADS.filter(l=>state.showTest || !l.isTest);
+  const nguons = uniqSorted(base.map(l=>l.nhomNguon));
+  const staffs = uniqSorted(base.map(l=>l.nhanVien));
+  const trangthais = uniqSorted(base.map(l=>l.trangThai));
+  renderChiNhanhButtons();
+  document.getElementById('fNguon').innerHTML = '<option value="">Tất cả nhóm nguồn</option>' + nguons.map(c=>`<option value="${c}">${c}</option>`).join('');
+  document.getElementById('fNhanVien').innerHTML = '<option value="">Tất cả nhân viên</option>' + staffs.map(c=>`<option value="${c}">${c}</option>`).join('');
+  document.getElementById('fTrangThai').innerHTML = '<option value="">Tất cả trạng thái</option>' + trangthais.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function onFilterChange(){
+  state.nguon = document.getElementById('fNguon').value;
+  state.nhanvien = document.getElementById('fNhanVien').value;
+  state.trangthai = document.getElementById('fTrangThai').value;
+  state.q = document.getElementById('fSearch').value;
+  state.showTest = document.getElementById('fShowTest').checked;
+  populateFilterOptions();
+  render();
+}
+
+function resetFilters(){
+  state = {chinhanh:'',nguon:'',nhanvien:'',trangthai:'',q:'',showTest:false};
+  document.getElementById('fNguon').value='';
+  document.getElementById('fNhanVien').value='';
+  document.getElementById('fTrangThai').value='';
+  document.getElementById('fSearch').value='';
+  document.getElementById('fShowTest').checked=false;
+  populateFilterOptions();
+  render();
+}
+
+function render(){
+  const list = baseFiltered();
+  renderKPI(list);
+  renderFunnel(list);
+  renderSourceTable(list);
+  renderBranchTable(list);
+  renderStaffTable(list);
+  renderModelTable(list);
+  renderDetail(list);
+}
+
+// Parse "HH:mm:ss dd/MM/yyyy" (chuỗi ngày giờ crm.json trả về) -> timestamp
+// để sort đúng thứ tự thời gian, không dùng localeCompare trên chuỗi.
+function parseVNDateTime(s){
+  if(!s) return 0;
+  const m = s.match(/^(\d{1,2}):(\d{2}):(\d{2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m) return 0;
+  return new Date(+m[6], +m[5]-1, +m[4], +m[1], +m[2], +m[3]).getTime();
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(CRM_JSON_URL+'?t='+Date.now());
+    if(!res.ok) throw new Error('crm.json: HTTP '+res.status);
+    const json = await res.json();
+    LEADS = ((json.records && json.records.leads) || []).map(l=>({...l, _ngayCapNhatTs: parseVNDateTime(l.ngayCapNhat)}));
+    document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LEADS.length + ' khách hàng (đã gộp trùng theo SĐT)';
+    document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ CRM Bizfly, đồng bộ tự động mỗi 30 phút. Mỗi khách hàng chỉ tính 1 lần theo SĐT, lấy trạng thái mới nhất.';
+    populateFilterOptions();
+    render();
+  }catch(e){
+    console.error('Lỗi tải crm.json:', e);
+    document.getElementById('updatedText').textContent = 'Không tải được dữ liệu — vui lòng thử lại sau.';
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>

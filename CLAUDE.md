@@ -16,17 +16,18 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.Nhân sự & Chấm công (2 sub-tab trong cùng 1 tab) · 5.MKT Thương hiệu · 6.Chính sách HTV (mở tự do) · 7.Quy định nội bộ (mở tự do) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 8 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.Nhân sự & Chấm công (2 sub-tab trong cùng 1 tab) · 5.MKT Thương hiệu · 6.Chính sách HTV (mở tự do) · 7.Quy định nội bộ (mở tự do) · 8.CRM + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia** | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
 | `mkt.html` | Báo cáo tổng hợp MKT Thương hiệu (Nhật ký đăng bài Fanpage), nhúng iframe trong tab 5 | Không tự có auth (như trên) | [docs/module-mkt.md](docs/module-mkt.md) |
 | `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 6 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
 | `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong tab 7 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-quydinh.md](docs/module-quydinh.md) |
+| `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 8 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
 
 Tab 4 "Nhân sự & Chấm công" gộp 2 báo cáo vào 1 tab (từ 09/2026, trước đó là 2 tab riêng) vì cả 2 giờ dùng chung đúng 1 tập quyền xem (Admin/Ban GĐ/HCNS) — không còn lý do tách riêng. Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), chuyển qua hàm `switchNsSub('ns'|'cc')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab). Toàn bộ việc kiểm tra quyền chỉ còn gate ở cấp tab `ns` (bằng `_allowedTabs.has('ns')`) — không còn permission riêng cho `cc`.
 
-Các trang nhúng iframe (`chamcong/nhansu/mkt/theo_doi_chinh_sach/quy_dinh_noi_bo.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
+Các trang nhúng iframe (`chamcong/nhansu/mkt/theo_doi_chinh_sach/quy_dinh_noi_bo/crm.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
 
 **Mở file `docs/module-*.md` tương ứng khi thực sự đang sửa module đó** — các file này không tự động nạp vào context, chỉ đọc khi cần để đỡ tốn context cho các module không liên quan.
 
@@ -41,6 +42,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 | `TinThanh_NhanSu_Sync.gs` | Đọc Sheet Nhân sự (2 tab: đang làm / đã nghỉ) → `nhansu.json` — chi tiết [docs/module-nhansu.md](docs/module-nhansu.md) | 12h hàng ngày | `nhansu.json` |
 | `TinThanh_MKT_Sync.gs` | Đọc Sheet "Nhật ký đăng bài" Fanpage → `mkt.json` — chi tiết [docs/module-mkt.md](docs/module-mkt.md) | `mktSync`: 1 trigger `everyHours(4)` (~6 lần/ngày) | `mkt.json` |
 | `TinThanh_Auth.gs` | `checkPassword()` xác thực mật khẩu + phân quyền, deploy riêng thành **Web App** (`AUTH_URL` gọi từ `index.html`) | — (gọi qua HTTP, không có trigger) | — |
+| `TinThanh_CRM_Sync.gs` | Đọc Sheet CRM Bizfly (log sự kiện, dedup theo SĐT lấy dòng mới nhất) → `crm.json` — chi tiết [docs/module-crm.md](docs/module-crm.md) | `crmSync`: 1 trigger `everyMinutes(30)` (24/7) | `crm.json` |
 
 ### ⚠️ Bẫy quan trọng khi sửa `.gs`
 
@@ -52,7 +54,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 ## Quy ước giao diện chung giữa các trang module
 
-`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html`, `quy_dinh_noi_bo.html` là 5 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
+`chamcong.html`, `nhansu.html`, `mkt.html`, `theo_doi_chinh_sach.html`, `quy_dinh_noi_bo.html`, `crm.html` là 6 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
 - Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
 - Tiêu đề `<h1>` đầu trang: cỡ chữ `24px`, `font-weight:800`.
 - Container chính `.wrap`: `max-width:1280px`.
@@ -68,12 +70,14 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
   | Nhóm (chứa từ khoá) | Xem được tab |
   |---|---|
-  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT) |
-  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT |
+  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM) |
+  | `gd` / `giam doc` | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM |
   | `hcns` / `nhan su` | Chỉ Nhân sự & Chấm công |
-  | `ban hang` / `mkt` / `marketing` | Bán hàng, MKT |
+  | `ban hang` / `mkt` / `marketing` | Bán hàng, MKT, CRM |
   | `dich vu` | Chỉ Dịch vụ |
   | Không khớp gì | Không xem được tab khoá nào (an toàn theo mặc định) |
+
+  CRM dùng chung đúng tập quyền với Bán hàng (không có nhóm riêng) — quyết định có chủ đích vì CRM cũng là dữ liệu lead/khách hàng bán xe.
 
   Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
 
