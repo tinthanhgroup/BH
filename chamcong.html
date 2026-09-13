@@ -52,7 +52,6 @@
   }
 
   .branch-grid{display:grid;grid-template-columns:170px repeat(4,1fr);align-items:stretch;column-gap:0;row-gap:0;padding:16px 16px 10px;}
-  .bg-blank{}
   .branch-pill{background:transparent;border-radius:12px;padding:12px 10px;margin:0 6px 14px;cursor:pointer;border:2px solid transparent;transition:border-color .15s, transform .1s;text-align:center;background:var(--bg);}
   .branch-pill:hover{transform:translateY(-1px);}
   .branch-pill.active{border-color:var(--navy);background:var(--panel);box-shadow:var(--shadow);}
@@ -333,18 +332,17 @@ const KHONG_CAN_CHAMCONG = {
   'Nha Trang': { chucvu: ['TVBH', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc NT'] },
   'Phú Yên': { chucvu: ['Kế toán trưởng', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc PY'] },
 };
-// Ưu tiên cá nhân, không theo chức vụ/phòng (VD: trường hợp đặc thù được quản lý duyệt riêng,
-// hoặc thực tế làm việc khác với dữ liệu Tổ/Nhóm đang ghi trong sheet Nhân sự)
-const NHANVIEN_KHONG_CAN_CHAMCONG = ['Phạm Ngọc Phan Huy', 'Lê Văn Thanh', 'Nguyễn Thị Thúy Sương'];
+// Ưu tiên cá nhân, không theo chức vụ/phòng (VD: trường hợp đặc thù được quản lý duyệt riêng)
+const NHANVIEN_KHONG_CAN_CHAMCONG = ['Phạm Ngọc Phan Huy', 'Lê Văn Thanh'];
 
 function ghiChuKhongCanChamCong(e){
   // Địa điểm làm việc Phan Rang: mặc định không bắt buộc chấm công, không xét thêm điều kiện nào khác
-  if(e.diadiem === 'Phan Rang') return 'Không bắt buộc chấm công (địa điểm làm việc Phan Rang)';
-  if(NHANVIEN_KHONG_CAN_CHAMCONG.includes(e.ten)) return 'Không bắt buộc chấm công (ưu tiên cá nhân)';
+  if(e.diadiem === 'Phan Rang') return 'Miễn — Phan Rang';
+  if(NHANVIEN_KHONG_CAN_CHAMCONG.includes(e.ten)) return 'Miễn — ưu tiên cá nhân';
   const rule = KHONG_CAN_CHAMCONG[e.chinhanh];
   if(!rule) return '';
-  if(rule.chucvu && rule.chucvu.includes(e.chucvu)) return 'Không bắt buộc chấm công (chức vụ)';
-  if(rule.phong && rule.phong.includes(e.phong)) return 'Không bắt buộc chấm công (Ban Giám đốc)';
+  if(rule.chucvu && rule.chucvu.includes(e.chucvu)) return 'Miễn — chức vụ';
+  if(rule.phong && rule.phong.includes(e.phong)) return 'Miễn — Ban Giám đốc';
   return '';
 }
 
