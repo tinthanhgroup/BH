@@ -93,6 +93,7 @@
   td{padding:7px 8px;border-bottom:1px solid var(--line);}
   tr:hover td{background:#F7F9FC;}
   td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  tr.row-muted td{color:var(--ink-soft);font-style:italic;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
   .badge.bad{background:#FBE4DD;color:var(--bad);}
   .badge.warn{background:#FBF1DC;color:#C79A3E;}
@@ -304,6 +305,7 @@
         <th>Phòng</th>
         <th>Tổ/Nhóm</th>
         <th>Chức vụ</th>
+        <th>Ghi chú</th>
       </tr></thead>
       <tbody id="thieuChamCongTbody"></tbody>
     </table>
@@ -323,6 +325,25 @@ const NHANSU_JSON_URL_CHECK = 'https://raw.githubusercontent.com/tinthanhgroup/B
 const PERSON_EXCEPTIONS = {
   'Nguyễn Thị Yến Thư': { extraPhut: 60, lyDo: 'Thai sản' },
 };
+
+// Chức vụ/phòng ban không bắt buộc chấm công máy, theo từng chi nhánh (quyết định
+// của quản lý, không phải lỗi thiếu dữ liệu) — chỉ dùng để chú thích trong mục
+// "chưa có dữ liệu chấm công", KHÔNG loại các nhân sự này khỏi danh sách.
+const KHONG_CAN_CHAMCONG = {
+  'Nha Trang': { chucvu: ['TVBH', 'TVBH Phan Rang', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc NT'] },
+  'Phú Yên': { chucvu: ['Kế toán trưởng', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc PY'] },
+};
+// Ưu tiên cá nhân, không theo chức vụ/phòng (VD: trường hợp đặc thù được quản lý duyệt riêng)
+const NHANVIEN_KHONG_CAN_CHAMCONG = ['Phạm Ngọc Phan Huy'];
+
+function ghiChuKhongCanChamCong(e){
+  if(NHANVIEN_KHONG_CAN_CHAMCONG.includes(e.ten)) return 'Không bắt buộc chấm công (ưu tiên cá nhân)';
+  const rule = KHONG_CAN_CHAMCONG[e.chinhanh];
+  if(!rule) return '';
+  if(rule.chucvu && rule.chucvu.includes(e.chucvu)) return 'Không bắt buộc chấm công (chức vụ)';
+  if(rule.phong && rule.phong.includes(e.phong)) return 'Không bắt buộc chấm công (Ban Giám đốc)';
+  return '';
+}
 
 let sortState = { phong: {key:'sotre', dir:-1}, nv: {key:'sotre', dir:-1}, phongFull: {key:'phong', dir:1} };
 let selectedDate = null;
@@ -485,22 +506,28 @@ function renderThieuChamCong(rows, chinhanh){
   const coChamCong = new Set(rows.map(r=>(r.ten_hr||r.ten||'').trim().toLowerCase()));
 
   const activeHR = NHANSU_ACTIVE.filter(e=>e.chinhanh===chinhanh);
-  const missing = activeHR.filter(e=>!coChamCong.has((e.ten||'').trim().toLowerCase()));
+  const missing = activeHR
+    .filter(e=>!coChamCong.has((e.ten||'').trim().toLowerCase()))
+    .map(e=>Object.assign({}, e, {ghiChu: ghiChuKhongCanChamCong(e)}));
   missing.sort((a,b)=>(a.ten||'').localeCompare(b.ten||''));
+  const canChuY = missing.filter(e=>!e.ghiChu).length;
 
   const summaryEl = document.getElementById('thieuChamCongSummary');
   const panelEl = document.getElementById('thieuChamCongPanel');
-  summaryEl.textContent = missing.length
-    ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công (${missing.length} người)`
-    : 'Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, mọi người đã có dữ liệu ✓';
+  summaryEl.textContent = canChuY
+    ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công (${canChuY} người)`
+    : missing.length
+      ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, ${missing.length} người còn lại thuộc diện không bắt buộc chấm công ✓`
+      : 'Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, mọi người đã có dữ liệu ✓';
   panelEl.style.display = missing.length ? '' : 'none';
 
   document.getElementById('thieuChamCongTbody').innerHTML = missing.length ? missing.map(e=>`
-    <tr>
+    <tr${e.ghiChu ? ' class="row-muted"' : ''}>
       <td>${e.ten||''}</td>
       <td>${e.phong||''}</td>
       <td>${e.to||''}</td>
       <td>${e.chucvu||''}</td>
+      <td>${e.ghiChu||''}</td>
     </tr>`).join('') : '';
 }
 

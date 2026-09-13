@@ -17,4 +17,7 @@
 **3 bảng chẩn đoán cuối `chamcong.html`** (đều dropdown, mặc định đóng khi không có gì bất thường):
 - **"⚠ Nhân sự chưa khớp với dữ liệu Nhân sự"** — có chấm công nhưng không khớp được cả Mã NV lẫn Tên với sheet Nhân sự.
 - **"🔁 Cần kiểm tra thủ công"** — nghi trùng vân tay nhưng lớp client không tự tin gộp (xem heuristic ở trên).
-- **"👤 Nhân sự đang làm nhưng chưa có dữ liệu chấm công"** — có trong Nhân sự (đang làm) nhưng không thấy trong `chamcong.json`.
+- **"👤 Nhân sự đang làm nhưng chưa có dữ liệu chấm công"** — có trong Nhân sự (đang làm) nhưng không thấy trong `chamcong.json`. Từ 09/2026 có thêm cột **Ghi chú**: nếu khớp `KHONG_CAN_CHAMCONG` hoặc `NHANVIEN_KHONG_CAN_CHAMCONG` (2 hằng số khai báo đầu `<script>` trong `chamcong.html`) thì ghi rõ lý do và dòng hiển thị mờ đi — người này **vẫn nằm trong danh sách** (không bị ẩn/loại), chỉ khác là không tính vào số đếm cảnh báo trên tiêu đề panel (biến `canChuY`). Đây là quyết định của quản lý (nhóm này không bắt buộc chấm công máy), không phải lỗi thiếu dữ liệu.
+  - `KHONG_CAN_CHAMCONG`: theo Chi nhánh, xét cả **Chức vụ** lẫn **Phòng** (Phòng dùng riêng cho khối Ban Giám đốc vì các chức danh trong đó không cố định). Hiện tại: Nha Trang (chức vụ TVBH/TVBH Phan Rang/Giám đốc bán hàng/Giám đốc dịch vụ; phòng "Ban Giám đốc NT"), Phú Yên (chức vụ Kế toán trưởng/Giám đốc bán hàng/Giám đốc dịch vụ; phòng "Ban Giám đốc PY").
+  - `NHANVIEN_KHONG_CAN_CHAMCONG`: danh sách tên cá nhân được ưu tiên riêng, không theo chức vụ/phòng ban (hiện tại: Phạm Ngọc Phan Huy).
+  - Muốn đổi danh sách thì sửa thẳng 2 object này.
