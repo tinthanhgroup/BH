@@ -330,13 +330,16 @@ const PERSON_EXCEPTIONS = {
 // của quản lý, không phải lỗi thiếu dữ liệu) — chỉ dùng để chú thích trong mục
 // "chưa có dữ liệu chấm công", KHÔNG loại các nhân sự này khỏi danh sách.
 const KHONG_CAN_CHAMCONG = {
-  'Nha Trang': { chucvu: ['TVBH', 'TVBH Phan Rang', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc NT'] },
+  'Nha Trang': { chucvu: ['TVBH', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc NT'] },
   'Phú Yên': { chucvu: ['Kế toán trưởng', 'Giám đốc bán hàng', 'Giám đốc dịch vụ'], phong: ['Ban Giám đốc PY'] },
 };
-// Ưu tiên cá nhân, không theo chức vụ/phòng (VD: trường hợp đặc thù được quản lý duyệt riêng)
-const NHANVIEN_KHONG_CAN_CHAMCONG = ['Phạm Ngọc Phan Huy'];
+// Ưu tiên cá nhân, không theo chức vụ/phòng (VD: trường hợp đặc thù được quản lý duyệt riêng,
+// hoặc thực tế làm việc khác với dữ liệu Tổ/Nhóm đang ghi trong sheet Nhân sự)
+const NHANVIEN_KHONG_CAN_CHAMCONG = ['Phạm Ngọc Phan Huy', 'Lê Văn Thanh', 'Nguyễn Thị Thúy Sương'];
 
 function ghiChuKhongCanChamCong(e){
+  // Địa điểm làm việc Phan Rang: mặc định không bắt buộc chấm công, không xét thêm điều kiện nào khác
+  if(e.diadiem === 'Phan Rang') return 'Không bắt buộc chấm công (địa điểm làm việc Phan Rang)';
   if(NHANVIEN_KHONG_CAN_CHAMCONG.includes(e.ten)) return 'Không bắt buộc chấm công (ưu tiên cá nhân)';
   const rule = KHONG_CAN_CHAMCONG[e.chinhanh];
   if(!rule) return '';
