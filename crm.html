@@ -112,15 +112,22 @@
     <div class="funnel-lost" id="funnelLost"></div>
   </div>
 
+  <div class="panel">
+    <h3><span class="chart-num">2</span> Trạng thái khách hàng — từng Chi nhánh</h3>
+    <p class="desc">Tỷ lệ khách theo Trạng thái (Veryhot/Hot/Warm...) của từng chi nhánh — mục này luôn hiện đủ chi nhánh, không theo bộ lọc phía trên (trừ checkbox ẩn dữ liệu test).</p>
+    <div id="statusLegend" style="margin-bottom:12px;"></div>
+    <div id="statusChartsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;"></div>
+  </div>
+
   <details class="panel" open>
-    <summary><span class="chart-num">2</span> Lead theo tuần theo Model — từng Chi nhánh (6 tuần gần nhất)</summary>
+    <summary><span class="chart-num">3</span> Lead theo tuần theo Model — từng Chi nhánh (6 tuần gần nhất)</summary>
     <p class="desc">Số lead mới (tính theo <b>Ngày tạo</b>) mỗi tuần (Thứ 2 – Chủ nhật) của từng chi nhánh, chia theo Model đang được legend màu bên dưới — mục này luôn hiện đủ các chi nhánh, không theo bộ lọc phía trên.</p>
     <div id="weeklyLegend" style="margin-bottom:12px;"></div>
     <div id="weeklyChartsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;"></div>
   </details>
 
   <div class="panel">
-    <h3><span class="chart-num">3</span> Khách Hot &amp; Veryhot cần theo dõi (<span id="hotCount">0</span>)</h3>
+    <h3><span class="chart-num">4</span> Khách Hot &amp; Veryhot cần theo dõi (<span id="hotCount">0</span>)</h3>
     <p class="desc">Danh sách khách <b>Veryhot</b> (ưu tiên trên cùng) và <b>Hot</b>, làm cơ sở cho GĐBH theo dõi sát — không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Cột "Chi nhánh" in nghiêng = chi nhánh trống ở CRM, được suy luận theo email Nhân viên.</p>
     <table>
       <thead><tr>
@@ -134,7 +141,7 @@
 
   <div class="grid3">
     <details class="panel" open>
-      <summary><span class="chart-num">4</span> Theo Nhóm nguồn</summary>
+      <summary><span class="chart-num">5</span> Theo Nhóm nguồn</summary>
       <table>
         <thead><tr><th>#</th><th>Nhóm nguồn</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
         <tbody id="sourceTable"></tbody>
@@ -142,7 +149,7 @@
     </details>
 
     <details class="panel" open>
-      <summary><span class="chart-num">5</span> Theo Chi nhánh</summary>
+      <summary><span class="chart-num">6</span> Theo Chi nhánh</summary>
       <table>
         <thead><tr><th>#</th><th>Chi nhánh</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
         <tbody id="branchTable"></tbody>
@@ -150,7 +157,7 @@
     </details>
 
     <details class="panel" open>
-      <summary><span class="chart-num">6</span> Model quan tâm nhất</summary>
+      <summary><span class="chart-num">7</span> Model quan tâm nhất</summary>
       <table>
         <thead><tr><th>#</th><th>Model</th><th>Lead</th><th>Ký HĐ</th></tr></thead>
         <tbody id="modelTable"></tbody>
@@ -159,7 +166,7 @@
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">7</span> Lead theo Nhân viên phụ trách</summary>
+    <summary><span class="chart-num">8</span> Lead theo Nhân viên phụ trách</summary>
     <table>
       <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
       <tbody id="staffTable"></tbody>
@@ -167,7 +174,7 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">8</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
+    <summary><span class="chart-num">9</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
     <p class="desc">Lead thiếu Tiến trình và/hoặc Model theo từng nhân viên, dùng để GĐBH mỗi chi nhánh chấn chỉnh trong giai đoạn mới triển khai CRM — chỉ áp dụng tạm thời, sẽ bỏ khi dữ liệu nhập đã ổn định.</p>
     <table>
       <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
@@ -314,6 +321,80 @@ function renderFunnel(allStagesList){
     `Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b>`;
 }
 
+// ── Mục 2: Trạng thái khách hàng theo Chi nhánh ──
+const STATUS_FIXED_COLORS = { 'Veryhot':'#D64545', 'Hot':'#E0793C', 'Warm':'#F2C14E' };
+const STATUS_OTHER_COLORS = ['#7A5CA3','#2E9DA6','#9C6644','#1FA97A','#8E5CB8','#5C8A9E'];
+
+function statusLabel(t){
+  const raw = (t||'').toString().trim();
+  if(!raw) return '(Chưa xác định)';
+  const n = stripDiacritics(raw);
+  if(n==='veryhot') return 'Veryhot';
+  if(n==='hot') return 'Hot';
+  if(n==='warm') return 'Warm';
+  return raw;
+}
+
+function renderStatusChart(allStagesList){
+  // Luôn dùng toàn bộ dữ liệu (chỉ trừ checkbox test), giống mục 1 (Phễu) —
+  // không theo bộ lọc Chi nhánh/Nguồn/Nhân viên/Trạng thái phía trên.
+  const branchesPresent = new Set(allStagesList.map(l=>l.chiNhanh).filter(Boolean));
+  const branches = [...BRANCH_ORDER.filter(b=>branchesPresent.has(b)),
+                     ...[...branchesPresent].filter(b=>!BRANCH_ORDER.includes(b)).sort()];
+
+  if(!allStagesList.length || !branches.length){
+    document.getElementById('statusLegend').innerHTML = '';
+    document.getElementById('statusChartsGrid').innerHTML = '<div class="empty">Không có dữ liệu</div>';
+    return;
+  }
+
+  // ── Trạng thái -> màu, tính chung trên toàn bộ dữ liệu để đồng nhất màu
+  // giữa các chi nhánh (giống cách làm màu Model ở mục Lead theo tuần).
+  // Veryhot/Hot/Warm luôn đứng đầu theo đúng thứ tự ưu tiên; trạng thái khác
+  // (kể cả rỗng) xếp theo tần suất giảm dần, màu lấy từ bảng màu phụ.
+  const totalByStatus = {};
+  allStagesList.forEach(l=>{
+    const k = statusLabel(l.trangThai);
+    totalByStatus[k] = (totalByStatus[k]||0)+1;
+  });
+  const knownOrder = ['Veryhot','Hot','Warm'].filter(k=>totalByStatus[k]);
+  const otherKeys = Object.keys(totalByStatus).filter(k=>!knownOrder.includes(k))
+    .sort((a,b)=>totalByStatus[b]-totalByStatus[a]);
+  const legendKeys = [...knownOrder, ...otherKeys];
+  const colorOf = {};
+  let otherIdx = 0;
+  legendKeys.forEach(k=>{
+    colorOf[k] = STATUS_FIXED_COLORS[k] || STATUS_OTHER_COLORS[otherIdx++ % STATUS_OTHER_COLORS.length];
+  });
+
+  document.getElementById('statusLegend').innerHTML = legendKeys.map(k=>
+    `<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-right:14px;">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorOf[k]};"></span>${k}
+    </span>`).join('');
+
+  // ── Mỗi chi nhánh 1 thanh ngang chia theo tỷ lệ trạng thái (100% stacked) ──
+  const barW = 200, barH = 26;
+  const gridHtml = branches.map(b=>{
+    const branchLeads = allStagesList.filter(l=>l.chiNhanh===b);
+    const total = branchLeads.length;
+    const counts = {};
+    branchLeads.forEach(l=>{ const k = statusLabel(l.trangThai); counts[k] = (counts[k]||0)+1; });
+    let x = 0, segs = '';
+    legendKeys.forEach(k=>{
+      const c = counts[k]||0;
+      if(c<=0) return;
+      const w = (c/total)*barW;
+      segs += `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${barH}" fill="${colorOf[k]}"/>`;
+      x += w;
+    });
+    return `<div style="background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 10px 8px;">
+      <div style="font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px;">${b} <span style="font-weight:400;color:var(--ink-soft);">(${total})</span></div>
+      <svg viewBox="0 0 ${barW} ${barH}" width="100%" height="${barH}" style="display:block;border-radius:4px;overflow:hidden;">${total>0 ? segs : `<rect x="0" y="0" width="${barW}" height="${barH}" fill="#EDEFF3"/>`}</svg>
+    </div>`;
+  }).join('');
+  document.getElementById('statusChartsGrid').innerHTML = gridHtml;
+}
+
 function groupCount(list, keyFn){
   const map = {};
   list.forEach(l=>{
@@ -394,6 +475,13 @@ function trangThaiPriority(t){
   return 3;
 }
 
+// Ẩn 3 số cuối SĐT ở bảng Hot/Veryhot (dữ liệu nhạy cảm, nhiều người xem chung báo cáo)
+function maskPhone(sdt){
+  if(!sdt) return sdt;
+  const s = sdt.toString();
+  return s.length <= 3 ? '•'.repeat(s.length) : s.slice(0, -3) + '•••';
+}
+
 function trangThaiBadge(t){
   const n = stripDiacritics(t);
   if(n==='veryhot') return '<span class="badge veryhot">Veryhot</span>';
@@ -415,7 +503,7 @@ function renderHotList(list){
     <tr${trangThaiPriority(l.trangThai)===0?' class="veryhot-row"':''}>
       <td>${i+1}</td>
       <td style="font-weight:700;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge test">test</span>':''}</td>
-      <td>${l.sdtHienThi||'<span class="dash">—</span>'}</td>
+      <td>${maskPhone(l.sdtHienThi)||'<span class="dash">—</span>'}</td>
       <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
       <td>${staffLabel(l)}</td>
       <td>${l.model||'<span class="dash">—</span>'}</td>
@@ -481,6 +569,7 @@ function render(){
   const allStagesList = LEADS.filter(l=>state.showTest || !l.isTest); // không áp bộ lọc chi nhánh/nguồn/nhân viên — luôn kê đủ các bước
   renderKPI(list);
   renderFunnel(allStagesList);
+  renderStatusChart(allStagesList);
   renderWeeklyChart(allStagesList);
   renderSourceTable(list);
   renderBranchTable(list);
