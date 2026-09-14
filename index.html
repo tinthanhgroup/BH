@@ -324,8 +324,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. HCNS 🔒</div>
     <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT Thương hiệu 🔒</div>
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
-    <div class="tab" id="tab-noiquy-btn" onclick="switchTab('noiquy')">7. Quy định nội bộ</div>
-    <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">8. CRM 🔒</div>
+    <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -392,6 +391,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
       <div class="subtab active" id="subtab-ns-btn" onclick="switchNsSub('ns')">1. Báo cáo Nhân sự</div>
       <div class="subtab" id="subtab-cc-btn" onclick="switchNsSub('cc')">2. Chấm công</div>
       <div class="subtab" id="subtab-ncc-btn" onclick="switchNsSub('ncc')">3. Nhà cung cấp CSVC</div>
+      <div class="subtab" id="subtab-noiquy-btn" onclick="switchNsSub('noiquy')">4. Quy định nội bộ</div>
     </div>
     <div id="subpanel-ns" class="subtab-panel active">
       <iframe id="ns-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
@@ -402,6 +402,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div id="subpanel-ncc" class="subtab-panel">
       <iframe id="ncc-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
     </div>
+    <div id="subpanel-noiquy" class="subtab-panel">
+      <iframe id="noiquy-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
   </div>
   <div id="tab-dv" class="tab-panel" style="padding:0;overflow:hidden;">
     <iframe id="dv-iframe" src="" style="width:125%;height:125%;border:none;display:block;transform:scale(0.8);transform-origin:top left;" allowfullscreen></iframe>
@@ -411,9 +414,6 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-policy" class="tab-panel" style="padding:0;">
     <iframe id="policy-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
-  </div>
-  <div id="tab-noiquy" class="tab-panel" style="padding:0;">
-    <iframe id="noiquy-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
   <div id="tab-crm" class="tab-panel" style="padding:0;">
     <iframe id="crm-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
@@ -1048,9 +1048,11 @@ function _unlockTabUI(t){
 
 function switchTab(t){
   // Tab 'ns' (HCNS) không khoá ở cấp tab nữa — sub-tab "3. Nhà cung cấp CSVC"
-  // mở tự do, còn sub 1/2 (Nhân sự/Chấm công) khoá riêng bên trong
-  // switchNsSub() khi thực sự bấm vào. Xem CLAUDE.md phần phân quyền.
-  if(t==='hh' || t==='admin' || t==='policy' || t==='noiquy' || t==='ns'){
+  // và "4. Quy định nội bộ" mở tự do, còn sub 1/2 (Nhân sự/Chấm công) khoá
+  // riêng bên trong switchNsSub() khi thực sự bấm vào. "Quy định nội bộ"
+  // không còn là tab riêng ở cấp cao nhất nữa (đã chuyển hẳn vào đây 09/2026,
+  // xem CLAUDE.md phần phân quyền) — không còn key top-level 'noiquy'.
+  if(t==='hh' || t==='admin' || t==='policy' || t==='ns'){
     _doSwitchTab(t);
     return;
   }
@@ -1072,13 +1074,11 @@ function _fixEmbedPanelHeights(){
   var dv=document.getElementById('tab-dv');
   var mkt=document.getElementById('tab-mkt');
   var policy=document.getElementById('tab-policy');
-  var noiquy=document.getElementById('tab-noiquy');
   var crm=document.getElementById('tab-crm');
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
   if(mkt) mkt.style.height=h;
   if(policy) policy.style.height=h;
-  if(noiquy) noiquy.style.height=h;
   if(crm) crm.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
@@ -1088,7 +1088,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','mkt','policy','noiquy','crm','admin'];
+  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1123,14 +1123,6 @@ function _doSwitchTab(t){
     if(!policyIframe.getAttribute('data-loaded')){
       policyIframe.src='https://tinthanhgroup.github.io/BH/theo_doi_chinh_sach.html';
       policyIframe.setAttribute('data-loaded','1');
-    }
-  }
-  // Lazy load iframe Quy định nội bộ
-  if(t==='noiquy'){
-    var noiquyIframe=document.getElementById('noiquy-iframe');
-    if(!noiquyIframe.getAttribute('data-loaded')){
-      noiquyIframe.src='https://tinthanhgroup.github.io/BH/quy_dinh_noi_bo.html';
-      noiquyIframe.setAttribute('data-loaded','1');
     }
   }
   // Lazy load iframe CRM
@@ -1179,9 +1171,11 @@ function switchNsSub(sub, silent){
   document.getElementById('subtab-ns-btn').classList.toggle('active', sub==='ns');
   document.getElementById('subtab-cc-btn').classList.toggle('active', sub==='cc');
   document.getElementById('subtab-ncc-btn').classList.toggle('active', sub==='ncc');
+  document.getElementById('subtab-noiquy-btn').classList.toggle('active', sub==='noiquy');
   document.getElementById('subpanel-ns').classList.toggle('active', sub==='ns');
   document.getElementById('subpanel-cc').classList.toggle('active', sub==='cc');
   document.getElementById('subpanel-ncc').classList.toggle('active', sub==='ncc');
+  document.getElementById('subpanel-noiquy').classList.toggle('active', sub==='noiquy');
   if(sub==='ns'){
     var iframe=document.getElementById('ns-iframe');
     if(!iframe.getAttribute('data-loaded')){
@@ -1199,6 +1193,12 @@ function switchNsSub(sub, silent){
     if(!nccIframe.getAttribute('data-loaded')){
       nccIframe.src='https://tinthanhgroup.github.io/BH/nhacungcap.html';
       nccIframe.setAttribute('data-loaded','1');
+    }
+  } else if(sub==='noiquy'){
+    var noiquyIframe=document.getElementById('noiquy-iframe');
+    if(!noiquyIframe.getAttribute('data-loaded')){
+      noiquyIframe.src='https://tinthanhgroup.github.io/BH/quy_dinh_noi_bo.html';
+      noiquyIframe.setAttribute('data-loaded','1');
     }
   }
 }
