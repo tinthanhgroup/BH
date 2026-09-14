@@ -321,7 +321,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab active" onclick="switchTab('hh')">1. Hàng hóa</div>
     <div class="tab" id="tab-bh-btn" onclick="switchTab('bh')">2. BC Bán hàng 🔒</div>
     <div class="tab" id="tab-dv-btn" onclick="switchTab('dv')">3. BC Dịch vụ 🔒</div>
-    <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. HCNS 🔒</div>
+    <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. HCNS</div>
     <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT Thương hiệu 🔒</div>
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
@@ -388,10 +388,10 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   <div id="tab-admin" class="tab-panel" style="padding:24px;max-width:1100px;margin:0 auto;"></div>
   <div id="tab-ns" class="tab-panel" style="padding:0;">
     <div class="subtabs">
-      <div class="subtab active" id="subtab-ns-btn" onclick="switchNsSub('ns')">1. Báo cáo Nhân sự</div>
-      <div class="subtab" id="subtab-cc-btn" onclick="switchNsSub('cc')">2. Chấm công</div>
-      <div class="subtab" id="subtab-ncc-btn" onclick="switchNsSub('ncc')">3. Nhà cung cấp CSVC</div>
-      <div class="subtab" id="subtab-noiquy-btn" onclick="switchNsSub('noiquy')">4. Quy định nội bộ</div>
+      <div class="subtab active" id="subtab-ns-btn" onclick="switchNsSub('ns')">4.1. Báo cáo Nhân sự 🔒</div>
+      <div class="subtab" id="subtab-cc-btn" onclick="switchNsSub('cc')">4.2. Chấm công 🔒</div>
+      <div class="subtab" id="subtab-ncc-btn" onclick="switchNsSub('ncc')">4.3. Nhà cung cấp CSVC</div>
+      <div class="subtab" id="subtab-noiquy-btn" onclick="switchNsSub('noiquy')">4.4. Quy định nội bộ</div>
     </div>
     <div id="subpanel-ns" class="subtab-panel active">
       <iframe id="ns-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
@@ -1044,6 +1044,14 @@ function _pwModalTitle(t){
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
   if(el) el.textContent = el.textContent.replace(' 🔒','');
+  // Tab 'ns' (HCNS) không còn icon khoá ở cấp tab — khoá nằm riêng ở sub-tab
+  // 4.1/4.2, nên khi unlock 'ns' cũng cần bỏ icon khoá ở đúng 2 sub-tab đó.
+  if(t==='ns'){
+    var nsSub = document.getElementById('subtab-ns-btn');
+    var ccSub = document.getElementById('subtab-cc-btn');
+    if(nsSub) nsSub.textContent = nsSub.textContent.replace(' 🔒','');
+    if(ccSub) ccSub.textContent = ccSub.textContent.replace(' 🔒','');
+  }
 }
 
 function switchTab(t){
