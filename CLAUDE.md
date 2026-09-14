@@ -16,8 +16,8 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 8 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.Nhân sự & Chấm công (3 sub-tab trong cùng 1 tab) · 5.MKT Thương hiệu · 6.Chính sách HTV (mở tự do) · 7.Quy định nội bộ (mở tự do) · 8.CRM + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
-| `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (Nhân sự & Chấm công) | — | — |
+| `index.html` | Trang chính, desktop. 8 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 3 sub-tab đánh số trong cùng 1 tab) · 5.MKT Thương hiệu · 6.Chính sách HTV (mở tự do) · 7.Quy định nội bộ (mở tự do) · 8.CRM + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (HCNS) | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
 | `nhacungcap.html` | Danh bạ đầu mối Nhà cung cấp sửa chữa/bảo trì CSVC, nhúng iframe trong sub-tab "Nhà cung cấp CSVC" của tab 4 | Không tự có auth (như trên) | [docs/module-nhacungcap.md](docs/module-nhacungcap.md) |
@@ -26,7 +26,7 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 | `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong tab 7 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-quydinh.md](docs/module-quydinh.md) |
 | `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 8 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
 
-Tab 4 "Nhân sự & Chấm công" gộp 3 báo cáo vào 1 tab (từ 09/2026, ban đầu 2 tab riêng, thêm sub-tab "Nhà cung cấp CSVC" sau đó) vì cả 3 giờ dùng chung đúng 1 tập quyền xem (Admin/Ban GĐ/HCNS) — không còn lý do tách riêng. Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), chuyển qua hàm `switchNsSub('ns'|'cc'|'ncc')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab). Toàn bộ việc kiểm tra quyền chỉ còn gate ở cấp tab `ns` (bằng `_allowedTabs.has('ns')`) — không còn permission riêng cho `cc`/`ncc`.
+Tab 4 **nhãn hiển thị là "HCNS"** (đổi tên từ "Nhân sự & Chấm công" 09/2026, xem `_tabLabel()`/`_pwModalTitle()` — nội bộ code vẫn dùng key `ns`, không đổi) — gộp 3 báo cáo vào 1 tab (ban đầu 2 tab riêng, thêm sub-tab "Nhà cung cấp CSVC" sau đó) vì cả 3 giờ dùng chung đúng 1 tập quyền xem (Admin/Ban GĐ/HCNS) — không còn lý do tách riêng. Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), **đánh số 1/2/3** ngay trong nhãn sub-tab ("1. Báo cáo Nhân sự", "2. Chấm công", "3. Nhà cung cấp CSVC"), chuyển qua hàm `switchNsSub('ns'|'cc'|'ncc')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab). Toàn bộ việc kiểm tra quyền chỉ còn gate ở cấp tab `ns` (bằng `_allowedTabs.has('ns')`) — không còn permission riêng cho `cc`/`ncc`.
 
 Các trang nhúng iframe (`chamcong/nhansu/nhacungcap/mkt/theo_doi_chinh_sach/quy_dinh_noi_bo/crm.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab đó lần đầu (xem `_doSwitchTab()` trong `index.html`), tránh tải dữ liệu thừa.
 
@@ -72,10 +72,10 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
   | Nhóm (chứa từ khoá) | Xem được tab |
   |---|---|
-  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM) |
-  | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT, CRM |
-  | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, Nhân sự & Chấm công, MKT |
-  | `hcns` / `nhan su` | Chỉ Nhân sự & Chấm công |
+  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM) |
+  | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM |
+  | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT |
+  | `hcns` / `nhan su` | Chỉ HCNS |
   | `mkt` / `marketing` | Bán hàng, MKT, CRM |
   | `ban hang` (không khớp `mkt`/`marketing`) | Bán hàng, MKT, CRM |
   | `dich vu` | Chỉ Dịch vụ |

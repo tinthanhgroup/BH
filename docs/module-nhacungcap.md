@@ -2,7 +2,7 @@
 
 `TinThanh_NhaCungCap_Sync.gs` → `nhacungcap.json` → `nhacungcap.html`
 
-Danh bạ đầu mối liên hệ nhà cung cấp/thợ sửa chữa cho việc bảo trì cơ sở vật chất (CSVC) — điện, nước, xây dựng, sắt/nhôm kính, phòng cháy chữa cháy... Nhúng iframe trong sub-tab thứ 3 "Nhà cung cấp CSVC" của tab 4 "Nhân sự & Chấm công" trong `index.html` (thêm 09/2026, xem [CLAUDE.md](../CLAUDE.md)).
+Danh bạ đầu mối liên hệ nhà cung cấp/thợ sửa chữa cho việc bảo trì cơ sở vật chất (CSVC) — điện, nước, xây dựng, sắt/nhôm kính, phòng cháy chữa cháy... Nhúng iframe trong sub-tab thứ 3 "3. Nhà cung cấp CSVC" của tab 4 "HCNS" (tên nội bộ vẫn là Nhân sự & Chấm công, đổi nhãn hiển thị 09/2026) trong `index.html`, xem [CLAUDE.md](../CLAUDE.md).
 
 ## Nguồn dữ liệu
 
