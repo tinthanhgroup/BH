@@ -99,7 +99,6 @@
   </div>
 
   <div class="filter-bar" id="chinhanhBar"></div>
-  <div class="filter-bar" id="nhomBar"></div>
   <div class="search-row">
     <input type="text" id="searchBox" placeholder="Tìm theo hạng mục, người liên hệ, SĐT, công ty…" oninput="render()">
   </div>
@@ -120,7 +119,7 @@
 <script>
 const NCC_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/nhacungcap.json';
 let NCC = [];
-let state = { chinhanh: '', nhom: '' };
+let state = { chinhanh: '' };
 
 function stripDiacritics(s){
   return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase();
@@ -141,22 +140,10 @@ function renderChinhanhBar(){
 }
 function setChinhanh(c){ state.chinhanh = c; renderChinhanhBar(); render(); }
 
-function renderNhomBar(){
-  const list = [...new Set(NCC.map(r=>r.nhom).filter(Boolean))];
-  const bar = document.getElementById('nhomBar');
-  bar.innerHTML = ['', ...list].map(n=>{
-    const label = n === '' ? 'Tất cả nhóm' : n;
-    const isOn = state.nhom === n;
-    return `<button class="filter-btn${isOn?' active':''}" onclick="setNhom('${n.replace(/'/g,"\\'")}')">${label}</button>`;
-  }).join('');
-}
-function setNhom(n){ state.nhom = n; renderNhomBar(); render(); }
-
 function render(){
   const q = stripDiacritics(document.getElementById('searchBox').value.trim());
   const rows = NCC.filter(r=>{
     if(state.chinhanh && r.chiNhanh !== state.chinhanh) return false;
-    if(state.nhom && r.nhom !== state.nhom) return false;
     if(q){
       const hay = stripDiacritics([r.hangMuc,r.lienHe,r.sdt,r.congTy,r.ghiChu].join(' '));
       if(!hay.includes(q)) return false;
@@ -212,7 +199,6 @@ async function loadData(){
     document.getElementById('emptyMsg').style.display = 'block';
   }
   renderChinhanhBar();
-  renderNhomBar();
   render();
 }
 loadData();
