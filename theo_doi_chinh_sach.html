@@ -120,6 +120,20 @@
     background:#dbe9fb;
     color:var(--blue-deep);
   }
+  /* Badge "Mới" — chỉ hiện trong 3 ngày kể từ ngày `updated`, tự ẩn sau đó
+     (tính theo TODAY, xem hàm isNewPolicy()) */
+  .new-badge{
+    display:inline-block;
+    margin-left:6px;
+    padding:1px 7px;
+    border-radius:8px;
+    font-size:var(--fs-xs);
+    font-weight:700;
+    vertical-align:middle;
+    border:1px solid #f3b8a3;
+    background:#fdeae3;
+    color:#c0421f;
+  }
   .col-code{
     letter-spacing:.02em;
     color:var(--ink-soft);
@@ -510,6 +524,62 @@ const policies = [
       ],
       note: "Chỉ áp dụng trong tháng 9/2026 (01/09–30/09/2026) — ngắn hơn nhiều so với chu kỳ 6 tháng của CV 51/2026/CV-HTV, tự hết hiệu lực đúng hạn; CV 51/2026 vẫn còn hiệu lực song song cho các model không nằm trong bảng trên."
     }
+  },
+  {
+    pdfUrl: "https://drive.google.com/file/d/1_jvq3nMIX7wq21ycJSYcmR5RIDvAstpm/view?usp=drive_link",
+    category: "Dịch vụ - Phụ tùng",
+    code: "Số CV017/2026/DV-HTV · Ký ngày 15/01/2026",
+    name: "Chính sách thúc đẩy hoạt động Phụ kiện năm 2026",
+    updated: "15/01/2026",
+    from: new Date(2026,0,1),
+    to: new Date(2026,11,31),
+    toLabel: "31/12/2026",
+    fromLabel: "01/01/2026",
+    summary: {
+      quyLabel: "THƯỞNG QUÝ",
+      thangLabel: "THƯỞNG NĂM",
+      quy: [
+        "Điều kiện cần: A = Doanh số mua phụ kiện thực tế / Chỉ tiêu quý ×100%. A&lt;100%: không thưởng.",
+        "<b>T = X% × DSTT</b> (DSTT = doanh số tính thưởng, X theo mức hoàn thành ở bảng dưới)",
+        "Điều kiện đủ: đạt Hạng mục 43 (chất lượng hoạt động Phụ kiện) trong bộ tiêu chuẩn DRP QTDV-PT, kết quả ≥80%"
+      ],
+      quyTable: {head:["Mức hoàn thành chỉ tiêu","100–&lt;120%","120–&lt;150%","≥150%"], row:["Thưởng (%DSTT)","3%","5%","7%"]},
+      thang: [
+        "<b>Top 3 Đại lý có mức hoàn thành chỉ tiêu cao nhất</b>: 30 / 20 / 10 triệu đồng",
+        "<b>Top 3 Đại lý có tỷ lệ dán phim cách nhiệt cao nhất</b> (số xe đăng ký bảo hành phim / số PDI hợp lệ): 30 / 20 / 10 triệu đồng",
+        "Xét thưởng Năm: ngày 15/01, giải ngân ngày 30/01 năm sau"
+      ],
+      note: "Xét thưởng Quý: ngày 15 tháng liền kề quý sau, giải ngân ngày 30 cùng tháng. Thưởng không bao gồm VAT, nhận 100% tiền mặt. Áp dụng cho tất cả Đại lý ủy quyền đã đăng ký chỉ tiêu Dịch vụ - Phụ tùng năm 2026 trước 01/01/2026. HTV có thể điều chỉnh chính sách mà không cần báo trước."
+    }
+  },
+  {
+    pdfUrl: "https://drive.google.com/file/d/1zyv1KW76VpddUeClCToB1mFR8_X752Kq/view?usp=drive_link",
+    category: "Dịch vụ - Phụ tùng",
+    code: "Số 95/2026/CV-HTV · Ký ngày 14/09/2026",
+    name: "Chính sách thúc đẩy hoạt động Dịch vụ - Phụ tùng 6 tháng cuối năm 2026",
+    important: true,
+    updated: "14/09/2026",
+    from: new Date(2026,6,1),
+    to: new Date(2026,11,31),
+    toLabel: "31/12/2026",
+    fromLabel: "01/07/2026",
+    summary: {
+      quyLabel: "ĐIỀU KIỆN XÉT THƯỞNG",
+      thangLabel: "GIẢI NGÂN & CHẾ TÀI",
+      quy: [
+        "Đại lý/Chi nhánh phải đạt <b>đồng thời cả 4 điều kiện</b>: (1) chỉ tiêu DS Phụ tùng/Dầu nhớt/Hóa chất ≥100%, (2) chỉ tiêu xe hết bảo hành vào làm dịch vụ ≥100%, (3) CSI≥945 hoặc NPS dịch vụ≥91% (đạt 1 trong 2), (4) điểm DRP Quy trình dịch vụ &amp; phụ tùng (không gồm Phụ kiện) ≥80%",
+        "<b>Tổng thưởng Quý = Thưởng hoàn thành chỉ tiêu + Thưởng vượt chỉ tiêu</b>",
+        "Thưởng hoàn thành chỉ tiêu = 2% × MIN(Doanh số tính thưởng, Chỉ tiêu) — cố định ở cả 3 mức",
+        "Thưởng vượt chỉ tiêu = tỷ lệ × MAX(Doanh số tính thưởng − Chỉ tiêu, 0), tỷ lệ tăng theo mức vượt (bảng dưới)"
+      ],
+      quyTable: {head:["Mức hoàn thành","100–&lt;105%","105–&lt;110%","≥110%"], row:["Thưởng vượt chỉ tiêu","0,6%","0,8%","1,0%"]},
+      thang: [
+        "<b>50% giá trị thưởng quý</b>: tạm ứng tiền mặt trong 30 ngày sau biên bản xác nhận, chia 4 nhóm nhân sự — Quản lý dịch vụ 20%, Cố vấn dịch vụ 20%, Kho-Phụ tùng 30%, Nhân sự dịch vụ còn lại (Quản đốc, Tổ trưởng, KTV, Kế toán DV...) 30%. Đại lý phải nộp chứng từ chuyển khoản + danh sách xác nhận trong 15 ngày.",
+        "<b>50% còn lại</b>: dùng tái đầu tư cải thiện xưởng dịch vụ (dưới giám sát HTV), tổng hợp cuối năm, giải ngân vào Quý I năm sau.",
+        "<b>Chế tài:</b> cố ý làm sai lệch dữ liệu DMS → hoàn trả toàn bộ tiền thưởng đã nhận + có thể bị tạm dừng xét thưởng kỳ sau. Phân bổ tiền thưởng cho nhân sự sai quy định → có thể bị tạm dừng xét thưởng kỳ sau."
+      ],
+      note: "Thay thế hoàn toàn Chính sách số CV013.2026.DV-HTV (ban hành 09/01/2026). Hiệu lực từ ngày ký (14/09/2026), áp dụng cho kỳ 01/07/2026–31/12/2026. HTV có quyền sửa đổi, thông báo bằng văn bản."
+    }
   }
 ];
 
@@ -524,6 +594,16 @@ function parseVNDate(s){
   var parts = s.split('/');
   if(parts.length!==3) return null;
   return new Date(+parts[2], +parts[1]-1, +parts[0]);
+}
+
+// Badge "Mới": hiện đúng 3 ngày kể từ ngày `updated`, tự ẩn sau đó — so theo TODAY,
+// không hardcode ngày hết hạn badge ở đâu khác.
+const NEW_BADGE_DAYS = 3;
+function isNewPolicy(p){
+  const d = parseVNDate(p.updated);
+  if(!d) return false;
+  const diffDays = (TODAY - d) / (24*60*60*1000);
+  return diffDays >= 0 && diffDays <= NEW_BADGE_DAYS;
 }
 
 function renderTable(t){
@@ -572,7 +652,7 @@ function render(){
       <td class="col-stt">${stt}</td>
       <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
       <td class="col-title">
-        <div class="name">${p.name}${p.important ? ' <span class="important-badge">⭐ Nổi bật</span>' : ''}</div>
+        <div class="name">${p.name}${p.important ? ' <span class="important-badge">⭐ Nổi bật</span>' : ''}${isNewPolicy(p) ? ' <span class="new-badge">🆕 Mới</span>' : ''}</div>
       </td>
       <td class="col-code">${(p.code || '').split(' · ')[0]}</td>
       <td class="col-updated">${p.updated}</td>

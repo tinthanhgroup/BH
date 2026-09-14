@@ -64,6 +64,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .tab.active{color:var(--accent);background:var(--card);border-color:var(--border);box-shadow:0 -2px 8px rgba(0,0,0,.05);transform:translateY(1px);}
 .tab.active::after{display:none;}
 .tab:hover:not(.active){color:var(--text);background:rgba(37,99,235,.06);}
+.tab-new-badge{display:inline-block;margin-left:4px;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;vertical-align:middle;background:#fdeae3;color:#c0421f;border:1px solid #f3b8a3;}
 
 /* ── SUB-TABS (dùng bên trong 1 tab gộp nhiều báo cáo, ví dụ Nhân sự & Chấm công) ── */
 .subtabs{background:var(--card);border-bottom:1px solid var(--border);display:flex;padding:8px 20px 0;gap:2px;flex-shrink:0;}
@@ -327,6 +328,21 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
+
+  <script>
+  (function(){
+    // Badge "Mới" trên tab 6 khi có chính sách HTV cập nhật trong 3 ngày gần nhất.
+    // Tab 6 lazy-load iframe theo_doi_chinh_sach.html nên không đọc được policies[] từ đây —
+    // POLICY_LATEST_UPDATE là bản sao chép tay ngày `updated` mới nhất trong mảng đó (giống
+    // cơ chế trùng lặp có chủ đích của KCK_DATE). Nhớ cập nhật hằng số này mỗi khi thêm
+    // chính sách mới có ngày `updated` mới hơn ngày đang lưu.
+    var POLICY_LATEST_UPDATE = new Date(2026,8,14);
+    var diffDays = (new Date() - POLICY_LATEST_UPDATE) / 86400000;
+    if(diffDays >= 0 && diffDays <= 3){
+      document.getElementById('tab-policy-btn').innerHTML += ' <span class="tab-new-badge">🆕 Mới</span>';
+    }
+  })();
+  </script>
 
   <!-- TAB BÁN HÀNG -->
   <div id="tab-bh" class="tab-panel">
