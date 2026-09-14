@@ -75,6 +75,12 @@
   .funnel-conv-table th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink-soft);font-weight:700;padding:4px;border-bottom:1.5px solid var(--line);}
   .funnel-conv-table td{padding:4px;border-bottom:1px solid var(--line);}
   .funnel-lost{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
+  .funnel-period-title{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px;}
+  details.funnel-period-details{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);}
+  details.funnel-period-details summary{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;cursor:pointer;list-style:none;margin-bottom:10px;}
+  details.funnel-period-details summary::-webkit-details-marker{display:none;}
+  details.funnel-period-details summary::before{content:'▸ ';}
+  details.funnel-period-details[open] summary::before{content:'▾ ';}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
   .grid3 .panel{margin-bottom:0;}
   @media(max-width:980px){.grid3{grid-template-columns:1fr;}}
@@ -107,9 +113,23 @@
 
   <div class="panel">
     <h3><span class="chart-num">1</span> Phễu chuyển đổi theo Tiến trình — từng Chi nhánh</h3>
-    <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại) của từng chi nhánh, kèm tỷ lệ chuyển đổi giữa các bước liền kề (di chuột vào ô để xem tên đầy đủ 2 bước) — mục này luôn hiện đủ chi nhánh/bước, không theo bộ lọc phía trên.</p>
-    <div id="funnelGrid" class="funnel-grid"></div>
-    <div class="funnel-lost" id="funnelLost"></div>
+    <p class="desc">Số khách hàng đã đạt tới mỗi bước (tính theo <b>tiến trình cao nhất từng đạt</b>, không phải tiến trình hiện tại) của từng chi nhánh, lọc theo <b>Ngày tạo</b> lead — mục này luôn hiện đủ chi nhánh/bước, không theo bộ lọc phía trên.</p>
+
+    <div class="funnel-period-title">7 ngày gần nhất</div>
+    <div id="funnelGrid7" class="funnel-grid"></div>
+    <div class="funnel-lost" id="funnelLost7"></div>
+
+    <details class="funnel-period-details">
+      <summary>1 tháng gần nhất</summary>
+      <div id="funnelGrid30" class="funnel-grid"></div>
+      <div class="funnel-lost" id="funnelLost30"></div>
+    </details>
+
+    <details class="funnel-period-details">
+      <summary>Toàn bộ (all-time)</summary>
+      <div id="funnelGridAll" class="funnel-grid"></div>
+      <div class="funnel-lost" id="funnelLostAll"></div>
+    </details>
   </div>
 
   <div class="panel">
@@ -259,24 +279,24 @@ function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
 // Màu từng tầng phễu — cycle nếu số bước nhiều hơn số màu.
 const FUNNEL_COLORS = ['#1B4F8C','#1FA97A','#F2C14E','#8E5CB8','#E0793C','#2E9DA6','#D64545'];
 
-function renderFunnel(allStagesList){
+function renderFunnel(list, gridId, lostId){
   // Luôn dùng toàn bộ dữ liệu (chỉ trừ checkbox test), không theo bộ lọc
   // Chi nhánh/Nguồn/Nhân viên/Trạng thái — tách riêng phễu theo từng chi
   // nhánh để so sánh, nhưng danh sách bước dùng chung (kê đủ) cho mọi chi nhánh.
-  const stages = buildStages(allStagesList);
-  const branchesPresent = new Set(allStagesList.map(l=>l.chiNhanh).filter(Boolean));
+  const stages = buildStages(list);
+  const branchesPresent = new Set(list.map(l=>l.chiNhanh).filter(Boolean));
   const branches = [...BRANCH_ORDER.filter(b=>branchesPresent.has(b)),
                      ...[...branchesPresent].filter(b=>!BRANCH_ORDER.includes(b)).sort()];
 
   if(!stages.length || !branches.length){
-    document.getElementById('funnelGrid').innerHTML = '<div class="empty">Không có dữ liệu tiến trình</div>';
-    document.getElementById('funnelLost').innerHTML = '';
+    document.getElementById(gridId).innerHTML = '<div class="empty">Không có dữ liệu tiến trình</div>';
+    document.getElementById(lostId).innerHTML = '';
     return;
   }
 
   const countsByBranch = {};
   branches.forEach(b=>{
-    const branchLeads = allStagesList.filter(l=>l.chiNhanh===b);
+    const branchLeads = list.filter(l=>l.chiNhanh===b);
     countsByBranch[b] = stages.map(s=> branchLeads.filter(l=>l.tienTrinhMaxNum>=s.num).length);
   });
   // Dùng CHUNG 1 thang đo (globalMax) giữa các chi nhánh để chiều rộng
@@ -302,10 +322,12 @@ function renderFunnel(allStagesList){
       shapes += `<text x="${W/2}" y="${y0+rowH/2-2}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${counts[i]}</text>`;
       shapes += `<text x="${W/2}" y="${y0+rowH/2+11}" text-anchor="middle" font-size="8.5" fill="#fff" opacity=".92">${pct}%</text>`;
     });
+    // Ghi rõ tên đầy đủ của cả 2 bước (không rút gọn thành "Bước N→M" nữa)
+    // để không cần di chuột mới biết tên bước.
     const convRows = stages.slice(0,-1).map((s,i)=>{
       const rate = counts[i]>0 ? Math.round(counts[i+1]/counts[i]*100) : 0;
       const color = rate>=50 ? 'var(--green)' : (rate>=25 ? '#B8860B' : 'var(--red)');
-      return `<tr title="${s.label} → ${stages[i+1].label}"><td>Bước ${s.num}→${stages[i+1].num}</td><td style="font-weight:800;color:${color};text-align:right;">${rate}%</td></tr>`;
+      return `<tr><td>${s.label} → ${stages[i+1].label}</td><td style="font-weight:800;color:${color};text-align:right;white-space:nowrap;">${rate}%</td></tr>`;
     }).join('');
     return `<div class="funnel-mini">
       <div class="funnel-mini-title">${b} <span style="font-weight:400;color:var(--ink-soft);">(${branchTotal})</span></div>
@@ -313,12 +335,23 @@ function renderFunnel(allStagesList){
       <table class="funnel-conv-table"><tbody>${convRows}</tbody></table>
     </div>`;
   }).join('');
-  document.getElementById('funnelGrid').innerHTML = gridHtml;
+  document.getElementById(gridId).innerHTML = gridHtml;
 
-  const notStarted = allStagesList.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
-  const lost = allStagesList.filter(isLost).length;
-  document.getElementById('funnelLost').innerHTML =
+  const notStarted = list.filter(l=>(l.tienTrinhMaxNum||0)===0).length;
+  const lost = list.filter(isLost).length;
+  document.getElementById(lostId).innerHTML =
     `Chưa có tiến trình: <b>${notStarted}</b> &nbsp;·&nbsp; Đã dừng/không mua (bước 7): <b>${lost}</b>`;
+}
+
+// 3 phễu theo Ngày tạo lead: 7 ngày / 1 tháng (30 ngày) / toàn bộ (all-time).
+// Đều dùng chung renderFunnel(), chỉ khác tập dữ liệu đầu vào và id khung vẽ.
+function renderFunnelPeriods(allStagesList){
+  const now = Date.now();
+  const in7d = allStagesList.filter(l=>l._ngayTaoTs && l._ngayTaoTs>=now-7*86400000);
+  const in30d = allStagesList.filter(l=>l._ngayTaoTs && l._ngayTaoTs>=now-30*86400000);
+  renderFunnel(in7d, 'funnelGrid7', 'funnelLost7');
+  renderFunnel(in30d, 'funnelGrid30', 'funnelLost30');
+  renderFunnel(allStagesList, 'funnelGridAll', 'funnelLostAll');
 }
 
 // ── Mục 2: Trạng thái khách hàng theo Chi nhánh ──
@@ -568,7 +601,7 @@ function render(){
   const list = baseFiltered();
   const allStagesList = LEADS.filter(l=>state.showTest || !l.isTest); // không áp bộ lọc chi nhánh/nguồn/nhân viên — luôn kê đủ các bước
   renderKPI(list);
-  renderFunnel(allStagesList);
+  renderFunnelPeriods(allStagesList);
   renderStatusChart(allStagesList);
   renderWeeklyChart(allStagesList);
   renderSourceTable(list);
