@@ -391,12 +391,16 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="subtabs">
       <div class="subtab active" id="subtab-ns-btn" onclick="switchNsSub('ns')">Báo cáo Nhân sự</div>
       <div class="subtab" id="subtab-cc-btn" onclick="switchNsSub('cc')">Chấm công</div>
+      <div class="subtab" id="subtab-ncc-btn" onclick="switchNsSub('ncc')">Nhà cung cấp CSVC</div>
     </div>
     <div id="subpanel-ns" class="subtab-panel active">
       <iframe id="ns-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
     </div>
     <div id="subpanel-cc" class="subtab-panel">
       <iframe id="cc-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
+    <div id="subpanel-ncc" class="subtab-panel">
+      <iframe id="ncc-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
     </div>
   </div>
   <div id="tab-dv" class="tab-panel" style="padding:0;overflow:hidden;">
@@ -1148,8 +1152,10 @@ function switchNsSub(sub){
   _nsActiveSub = sub;
   document.getElementById('subtab-ns-btn').classList.toggle('active', sub==='ns');
   document.getElementById('subtab-cc-btn').classList.toggle('active', sub==='cc');
+  document.getElementById('subtab-ncc-btn').classList.toggle('active', sub==='ncc');
   document.getElementById('subpanel-ns').classList.toggle('active', sub==='ns');
   document.getElementById('subpanel-cc').classList.toggle('active', sub==='cc');
+  document.getElementById('subpanel-ncc').classList.toggle('active', sub==='ncc');
   if(sub==='ns'){
     var iframe=document.getElementById('ns-iframe');
     if(!iframe.getAttribute('data-loaded')){
@@ -1161,6 +1167,12 @@ function switchNsSub(sub){
     if(!ccIframe.getAttribute('data-loaded')){
       ccIframe.src='https://tinthanhgroup.github.io/BH/chamcong.html';
       ccIframe.setAttribute('data-loaded','1');
+    }
+  } else if(sub==='ncc'){
+    var nccIframe=document.getElementById('ncc-iframe');
+    if(!nccIframe.getAttribute('data-loaded')){
+      nccIframe.src='https://tinthanhgroup.github.io/BH/nhacungcap.html';
+      nccIframe.setAttribute('data-loaded','1');
     }
   }
 }

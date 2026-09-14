@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đầu mối Nhà cung cấp CSVC</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --ink:#1c2430;
+    --ink-soft:#5b6472;
+    --line:#dfe3e8;
+    --bg:#EEF3F9;
+    --card:#ffffff;
+    --navy:#1B4F8C;
+    --blue-deep:#0a3866;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter','Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
+
+  .masthead{
+    padding-bottom:18px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .masthead h1{font-size:24px;margin:0 0 6px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);}
+  .masthead p{margin:0;color:var(--ink-soft);font-size:13px;}
+  .updated-tag{
+    font-size:12px;color:var(--blue-deep);background:#eaf1fa;
+    border:1px solid #cddcef;padding:5px 12px;border-radius:20px;white-space:nowrap;
+  }
+
+  .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .filter-btn{
+    font-family:inherit;font-size:12px;font-weight:600;padding:6px 14px;
+    border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--blue-deep);cursor:pointer;
+  }
+  .filter-btn.active{background:var(--blue-deep);color:#fff;border-color:var(--blue-deep);}
+
+  .search-row{margin-bottom:18px;}
+  .search-row input{
+    width:100%;max-width:360px;font-family:inherit;font-size:13px;font-weight:500;
+    padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:#fff;color:var(--ink);
+  }
+
+  .panel{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(20,30,50,.08);padding:18px 20px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;
+    color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tbody tr:hover{background:#F7F9FC;}
+  .nhom-badge{display:inline-block;padding:2px 9px;border-radius:10px;border:1px solid #bfe3c8;
+    background:#eaf6ee;color:#1c7a3e;font-size:11.5px;font-weight:600;white-space:nowrap;}
+  td.col-sdt a{color:var(--blue-deep);text-decoration:none;font-weight:600;}
+  td.col-sdt a:hover{text-decoration:underline;}
+  td.col-ghichu{color:var(--ink-soft);font-style:italic;}
+  .dash{color:var(--ink-soft);}
+  .empty{text-align:center;color:var(--ink-soft);padding:34px;font-size:13px;}
+  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:14px;text-align:center;}
+
+  @media (max-width:640px){
+    table, tbody, tbody td{display:block;width:auto!important;}
+    thead{display:none;}
+    tbody tr{display:flex;flex-direction:column;padding:12px 4px;border-bottom:1px solid var(--line);}
+    tbody td{border-bottom:none;padding:2px 0;}
+    td.col-nhom{order:0;margin-bottom:4px;}
+    td.col-hangmuc{order:1;font-weight:700;}
+    td.col-lienhe{order:2;}
+    td.col-sdt{order:3;}
+    td.col-congty{order:4;}
+    td.col-ghichu{order:5;}
+    td.col-lienhe::before{content:"Liên hệ: ";font-weight:600;color:var(--ink-soft);font-style:normal;}
+    td.col-congty::before{content:"Công ty: ";font-weight:600;color:var(--ink-soft);font-style:normal;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <h1>Đầu mối Nhà cung cấp — Sửa chữa / Bảo trì CSVC</h1>
+      <p>Danh bạ liên hệ nhà cung cấp/đầu mối sửa chữa, bảo trì cơ sở vật chất theo từng nhóm hạng mục.</p>
+    </div>
+    <div class="updated-tag" id="updatedTag"></div>
+  </div>
+
+  <div class="filter-bar" id="chinhanhBar"></div>
+  <div class="filter-bar" id="nhomBar"></div>
+  <div class="search-row">
+    <input type="text" id="searchBox" placeholder="Tìm theo hạng mục, người liên hệ, SĐT, công ty…" oninput="render()">
+  </div>
+
+  <div class="panel">
+    <table>
+      <thead><tr>
+        <th>Nhóm</th><th>Hạng mục</th><th>Liên hệ</th><th>SĐT</th><th>Công ty</th><th>Ghi chú</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none;">Không có đầu mối nào khớp bộ lọc.</div>
+  </div>
+
+  <div class="footnote" id="footnoteText"></div>
+</div>
+
+<script>
+const NCC_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/nhacungcap.json';
+let NCC = [];
+let state = { chinhanh: '', nhom: '' };
+
+function stripDiacritics(s){
+  return (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d').toLowerCase();
+}
+
+function renderChinhanhBar(){
+  const list = [...new Set(NCC.map(r=>r.chiNhanh).filter(Boolean))].sort();
+  const bar = document.getElementById('chinhanhBar');
+  if(list.length <= 1){ bar.innerHTML=''; return; } // chỉ 1 chi nhánh thì không cần hiện bộ lọc
+  bar.innerHTML = ['', ...list].map(c=>{
+    const label = c === '' ? 'Tất cả chi nhánh' : c;
+    const isOn = state.chinhanh === c;
+    return `<button class="filter-btn${isOn?' active':''}" onclick="setChinhanh('${c.replace(/'/g,"\\'")}')">${label}</button>`;
+  }).join('');
+}
+function setChinhanh(c){ state.chinhanh = c; renderChinhanhBar(); render(); }
+
+function renderNhomBar(){
+  const list = [...new Set(NCC.map(r=>r.nhom).filter(Boolean))];
+  const bar = document.getElementById('nhomBar');
+  bar.innerHTML = ['', ...list].map(n=>{
+    const label = n === '' ? 'Tất cả nhóm' : n;
+    const isOn = state.nhom === n;
+    return `<button class="filter-btn${isOn?' active':''}" onclick="setNhom('${n.replace(/'/g,"\\'")}')">${label}</button>`;
+  }).join('');
+}
+function setNhom(n){ state.nhom = n; renderNhomBar(); render(); }
+
+function render(){
+  const q = stripDiacritics(document.getElementById('searchBox').value.trim());
+  const rows = NCC.filter(r=>{
+    if(state.chinhanh && r.chiNhanh !== state.chinhanh) return false;
+    if(state.nhom && r.nhom !== state.nhom) return false;
+    if(q){
+      const hay = stripDiacritics([r.hangMuc,r.lienHe,r.sdt,r.congTy,r.ghiChu].join(' '));
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('emptyMsg').style.display = rows.length ? 'none' : 'block';
+  document.getElementById('tbody').innerHTML = rows.map(r=>`
+    <tr>
+      <td class="col-nhom">${r.nhom ? `<span class="nhom-badge">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
+      <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
+      <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
+      <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
+      <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
+      <td class="col-ghichu">${r.ghiChu || ''}</td>
+    </tr>`).join('');
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(NCC_JSON_URL+'?t='+Date.now());
+    if(!res.ok) throw new Error('nhacungcap.json: HTTP '+res.status);
+    const payload = await res.json();
+    NCC = (payload.records && payload.records.nhaCungCap) || [];
+    document.getElementById('updatedTag').textContent = payload.updated_vn ? 'Cập nhật lúc '+payload.updated_vn : '';
+    document.getElementById('footnoteText').textContent = 'Tổng '+NCC.length+' đầu mối. Nguồn: Sheet do HCNS/quản lý chi nhánh tự cập nhật.';
+  }catch(e){
+    console.error('Lỗi tải nhacungcap.json:', e);
+    document.getElementById('emptyMsg').textContent = 'Không tải được dữ liệu. Vui lòng thử lại sau.';
+    document.getElementById('emptyMsg').style.display = 'block';
+  }
+  renderChinhanhBar();
+  renderNhomBar();
+  render();
+}
+loadData();
+</script>
+</body>
+</html>
