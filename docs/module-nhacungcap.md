@@ -29,7 +29,7 @@ Trang lookup đơn giản (không phải dashboard nhiều panel như nhansu/cha
 
 ## Trigger
 
-**Không bắt buộc trigger tự động** — quyết định có chủ đích vì dữ liệu gần như không đổi (chỉ khi thêm/sửa 1 đầu mối NCC), khác các module khác trong dự án. Khuyến nghị: chạy tay `nhaCungCapSync()` (bấm ▶ trong Apps Script editor) ngay sau khi ai đó sửa Sheet. Nếu muốn tự động hoá, tự tạo 1 trigger hàng ngày qua trang ⏰ Triggers (không cần viết `setupXxxTrigger()` riêng như CRM/AutoSync vì tần suất quá thấp không đáng — xem cách làm tương tự ở `TinThanh_NhanSu_Sync.gs`, cũng không có helper trigger riêng).
+`nhaCungCapSync`: **1 trigger duy nhất `everyDays(7)` (1 lần/tuần, khoảng 6h sáng)** — dùng hàm có sẵn `setupNhaCungCapTrigger()`/`removeNhaCungCapTrigger()`, không tự viết `ScriptApp.newTrigger()` tay (giống pattern CRM/AutoSync). Có thể bấm ▶ `nhaCungCapSync()` bất cứ lúc nào để đồng bộ ngay (VD ngay sau khi vừa sửa Sheet), không cần đợi lịch tuần. Nhắc kiểm tra trang ⏰ Triggers trước khi cài (hạn mức ~20 trigger/project tính chung với các file `.gs` khác).
 
 ## Bootstrap dữ liệu ban đầu
 

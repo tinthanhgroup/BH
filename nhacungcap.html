@@ -63,6 +63,7 @@
   tbody tr:hover{background:#F7F9FC;}
   .nhom-badge{display:inline-block;padding:2px 9px;border-radius:10px;border:1px solid #bfe3c8;
     background:#eaf6ee;color:#1c7a3e;font-size:11.5px;font-weight:600;white-space:nowrap;}
+  td.col-nhom{text-align:center;vertical-align:middle;background:#FAFBFD;border-right:1px solid var(--line);}
   td.col-sdt a{color:var(--blue-deep);text-decoration:none;font-weight:600;}
   td.col-sdt a:hover{text-decoration:underline;}
   td.col-ghichu{color:var(--ink-soft);font-style:italic;}
@@ -128,11 +129,14 @@ function stripDiacritics(s){
 function renderChinhanhBar(){
   const list = [...new Set(NCC.map(r=>r.chiNhanh).filter(Boolean))].sort();
   const bar = document.getElementById('chinhanhBar');
+  // Không còn tuỳ chọn "Tất cả chi nhánh" — luôn phải chọn đúng 1 chi nhánh.
+  // Mặc định chọn chi nhánh đầu tiên nếu chưa chọn gì (hoặc chi nhánh đang
+  // chọn không còn tồn tại trong dữ liệu mới).
+  if(!state.chinhanh || !list.includes(state.chinhanh)) state.chinhanh = list[0] || '';
   if(list.length <= 1){ bar.innerHTML=''; return; } // chỉ 1 chi nhánh thì không cần hiện bộ lọc
-  bar.innerHTML = ['', ...list].map(c=>{
-    const label = c === '' ? 'Tất cả chi nhánh' : c;
+  bar.innerHTML = list.map(c=>{
     const isOn = state.chinhanh === c;
-    return `<button class="filter-btn${isOn?' active':''}" onclick="setChinhanh('${c.replace(/'/g,"\\'")}')">${label}</button>`;
+    return `<button class="filter-btn${isOn?' active':''}" onclick="setChinhanh('${c.replace(/'/g,"\\'")}')">${c}</button>`;
   }).join('');
 }
 function setChinhanh(c){ state.chinhanh = c; renderChinhanhBar(); render(); }
@@ -161,15 +165,37 @@ function render(){
   });
 
   document.getElementById('emptyMsg').style.display = rows.length ? 'none' : 'block';
-  document.getElementById('tbody').innerHTML = rows.map(r=>`
-    <tr>
-      <td class="col-nhom">${r.nhom ? `<span class="nhom-badge">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
+
+  // Gộp ô "Nhóm" theo các dòng liền kề cùng Chi nhánh+Nhóm (rowspan), giống
+  // merge cell trên Sheet gốc — tránh lặp lại cùng 1 badge ở mọi dòng liên tiếp.
+  // Khoá gộp gồm cả Chi nhánh để không gộp nhầm 2 nhóm trùng tên nhưng khác chi nhánh.
+  let html = '';
+  for(let i=0;i<rows.length;i++){
+    const r = rows[i];
+    const groupKey = r.chiNhanh+'|'+r.nhom;
+    const isNewGroup = i===0 || (rows[i-1].chiNhanh+'|'+rows[i-1].nhom) !== groupKey;
+    if(!isNewGroup){
+      html += `<tr>
+        <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
+        <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
+        <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
+        <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
+        <td class="col-ghichu">${r.ghiChu || ''}</td>
+      </tr>`;
+      continue;
+    }
+    let span = 1;
+    while(i+span<rows.length && (rows[i+span].chiNhanh+'|'+rows[i+span].nhom)===groupKey) span++;
+    html += `<tr>
+      <td class="col-nhom" rowspan="${span}">${r.nhom ? `<span class="nhom-badge">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
       <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
       <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
       <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
       <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
       <td class="col-ghichu">${r.ghiChu || ''}</td>
-    </tr>`).join('');
+    </tr>`;
+  }
+  document.getElementById('tbody').innerHTML = html;
 }
 
 async function loadData(){
