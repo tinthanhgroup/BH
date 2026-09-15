@@ -129,7 +129,7 @@
 // và tổng hợp lại thành mảng này, người dùng duyệt rồi mới commit/push. Định kỳ ~6 tháng/lần.
 // NCC_UPDATED: ngày tổng hợp gần nhất (dd/MM/yyyy, không cần giờ) — SỬA TAY mỗi đợt cập nhật mới,
 // dùng để tính cảnh báo "quá NCC_STALE_MONTHS tháng chưa cập nhật" bên dưới.
-const NCC_UPDATED = "14/09/2026";
+const NCC_UPDATED = "15/09/2026";
 const NCC_STALE_MONTHS = 6;
 const NCC_DATA = [
   {chiNhanh:'Nha Trang',nhom:'Xây dựng & hoàn thiện',hangMuc:'Cửa cuốn',lienHe:'Anh Hoàng',sdt:'0906 506 189',congTy:'',ghiChu:''},
@@ -172,9 +172,8 @@ const NCC_DATA = [
   {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'Điện thoại bàn',lienHe:'Anh Đức',sdt:'0902 442 946',congTy:'',ghiChu:''},
   {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'Vi tính',lienHe:'Anh Lộc',sdt:'0947 812 181',congTy:'Vi tính Bảo An',ghiChu:''},
   {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'Đồ dùng vệ sinh',lienHe:'',sdt:'0367 955 478',congTy:'Huy Tập',ghiChu:''},
-  {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'',lienHe:'',sdt:'0257 381 8988',congTy:'Cửa hàng An Phước Phú Yên',ghiChu:'Quần áo'},
-  {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'',lienHe:'Ngân',sdt:'0934 316 733',congTy:'MT Nha Trang',ghiChu:'Cần bổ sung hạng mục'},
-  {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'VPP',lienHe:'chị Hà',sdt:'0257.3825 438',congTy:'VPP AL PHA',ghiChu:''}
+  {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'',lienHe:'',sdt:'0257 381 8988',congTy:'Cửa hàng An Phước Phú Yên',ghiChu:'Cần bổ sung hạng mục'},
+  {chiNhanh:'Phú Yên',nhom:'Dịch vụ khác',hangMuc:'',lienHe:'Ngân',sdt:'0934 316 733',congTy:'MT Nha Trang',ghiChu:'Cần bổ sung hạng mục'}
 ];
 let NCC = NCC_DATA;
 let state = { chinhanh: '' };
