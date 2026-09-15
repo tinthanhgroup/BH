@@ -289,6 +289,25 @@ var KCK_DATA = [
   ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
   ['Staria','CỨU THƯƠNG DẦU MỚI',{'TRẮNG':{'n':'2026','r':0}}]
 ];
+// Tóm tắt thay đổi màu so với đợt cập nhật KCK trước — trùng nội dung với index.html
+// (xem giải thích ở đó). Chỉ hiện khi `date` khớp đúng KCK_DATE hiện tại.
+var KCK_CHANGE_NOTE = {
+  date: '11/09/2026',
+  removed: ['Elantra 1.6 AT: mất màu Đen','Tucson 2.0 Xăng Đặc Biệt 2024: mất màu Trắng','Creta 1.5 N Line Facelift: mất màu "Đỏ nóc đen" (2 tông màu)'],
+  added: ['Creta 1.5 Cao Cấp Facelift: thêm Đỏ và Trắng']
+};
+function _kckChangeNoteHTML(){
+  if(!KCK_CHANGE_NOTE || KCK_CHANGE_NOTE.date !== KCK_DATE) return '';
+  var parts=[];
+  if(KCK_CHANGE_NOTE.removed && KCK_CHANGE_NOTE.removed.length){
+    parts.push('<b>Màu bị xoá (hết hàng):</b><ul style="margin:2px 0 4px 16px;padding:0">'+KCK_CHANGE_NOTE.removed.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>');
+  }
+  if(KCK_CHANGE_NOTE.added && KCK_CHANGE_NOTE.added.length){
+    parts.push('<b>Màu mới có hàng:</b><ul style="margin:2px 0 0 16px;padding:0">'+KCK_CHANGE_NOTE.added.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>');
+  }
+  if(!parts.length) return '';
+  return '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:10px;color:#1e3a5f;line-height:1.5">'+parts.join('')+'</div>';
+}
 
 var KCK_COLOR_LABEL={'ĐEN':'Đen','ĐỎ_GRP':'Đỏ/Đỏ đô','TRẮNG':'Trắng','BẠC':'Bạc','XÁM_GRP':'Xám/XTitan','VÀNG CÁT':'Vàng cát'};
 var KCK_COLOR_DOT={'ĐEN':'#1e1e1e','ĐỎ_GRP':'#dc2626','TRẮNG':'#d1d5db','BẠC':'#9ca3af','XÁM_GRP':'#6b7280','VÀNG CÁT':'#d97706'};
@@ -308,7 +327,9 @@ function renderKCKMobile(){
     +'<div style="display:flex;align-items:center;gap:3px"><div style="width:8px;height:8px;border-radius:2px;background:#dbeafe"></div><span style="color:#64748b">2026</span></div>'
     +'<div style="display:flex;align-items:center;gap:3px"><div style="width:8px;height:8px;border-radius:2px;background:#fef3c7"></div><span style="color:#64748b">2025</span></div>'
     +'<div style="display:flex;align-items:center;gap:3px"><span class="kck-blink kck-red" style="font-size:10px">●</span><span style="color:#64748b">Sắp hết</span></div>'
-    +'</div></div>';
+    +'</div>'
+    +_kckChangeNoteHTML()
+    +'</div>';
 
   // Group by model
   var models={};

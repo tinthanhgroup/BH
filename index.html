@@ -1332,6 +1332,26 @@ var KCK_DATA = [
   ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
   ['Staria','CỨU THƯƠNG DẦU MỚI',{'TRẮNG':{'n':'2026','r':0}}]
 ];
+// Tóm tắt thay đổi màu so với đợt cập nhật KCK trước — chỉ hiện khi `date` khớp
+// đúng KCK_DATE hiện tại (tự ẩn nếu quên xoá/cập nhật ở đợt sau, tránh hiện nhầm
+// thông tin cũ). Ghi đè nội dung này mỗi lần cập nhật KCK mới có gì đáng chú ý.
+var KCK_CHANGE_NOTE = {
+  date: '11/09/2026',
+  removed: ['Elantra 1.6 AT: mất màu Đen','Tucson 2.0 Xăng Đặc Biệt 2024: mất màu Trắng','Creta 1.5 N Line Facelift: mất màu "Đỏ nóc đen" (2 tông màu)'],
+  added: ['Creta 1.5 Cao Cấp Facelift: thêm Đỏ và Trắng']
+};
+function _kckChangeNoteHTML(){
+  if(!KCK_CHANGE_NOTE || KCK_CHANGE_NOTE.date !== KCK_DATE) return '';
+  var parts=[];
+  if(KCK_CHANGE_NOTE.removed && KCK_CHANGE_NOTE.removed.length){
+    parts.push('<b>Màu bị xoá (hết hàng):</b><ul style="margin:2px 0 6px 18px;padding:0">'+KCK_CHANGE_NOTE.removed.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>');
+  }
+  if(KCK_CHANGE_NOTE.added && KCK_CHANGE_NOTE.added.length){
+    parts.push('<b>Màu mới có hàng:</b><ul style="margin:2px 0 0 18px;padding:0">'+KCK_CHANGE_NOTE.added.map(function(x){return '<li>'+x+'</li>';}).join('')+'</ul>');
+  }
+  if(!parts.length) return '';
+  return '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:11.5px;color:#1e3a5f;line-height:1.5">'+parts.join('')+'</div>';
+}
 function setCGKho(k){window._chuaGiaoKho=k;renderHH();}
 function renderChuaGiao(){
   var KHO_LIST=[{k:'NT',label:'Nha Trang'},{k:'ĐL',label:'Đà Lạt'},{k:'PY',label:'Phú Yên'}];
@@ -1499,6 +1519,7 @@ function renderKCK(){
     +'</style>'
     +'<div class="sec-title" style="color:#7c3aed">Xe giao ngay — KCK cập nhật '+KCK_DATE+'</div>'
     +legend
+    +_kckChangeNoteHTML()
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:fixed;width:100%"><thead><tr>'+ths+'</tr></thead><tbody>'+tbody+'</tbody></table></div></div>';
 }
 var USERS_SHEET_ID = "1eYlQoR5kJJs5bOVXm85x0YpBGpxfMH7DBSUKQ2hwvr4";
