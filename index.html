@@ -1463,6 +1463,102 @@ function renderChuaGiao(){
   return '<div class="sec-title" style="color:#b45309">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY</div>'
     +filterHtml+tableHtml;
 }
+// ═══════════════════════════════════════════════════════════
+// "GIẢ ĐỊNH ĐẶT HÀNG" — bảng tạm cho 1 đợt đặt hàng cụ thể (thêm 09/2026)
+// ═══════════════════════════════════════════════════════════
+// Chỉ liệt kê các Model+Phiên bản đang đặt thêm trong đợt này — KHÔNG phải toàn
+// bộ danh mục. `model`/`phienBan` PHẢI khớp đúng chuỗi thật trong dữ liệu DMS
+// (allData.stock/bo/lxx, xem parseJsonRecords()) để renderDatHang() tính đúng
+// Tồn/BO/LXX hiện tại — không phải nhãn rút gọn hiển thị (đó là field `label`).
+// `orders` là số liệu CỐ ĐỊNH của đợt đặt hàng này — sửa tay khi có đợt đặt mới,
+// không tự suy ra từ đâu khác.
+var DAT_HANG_ORDERS = [
+  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}]}},
+  {model:'Grand I10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Bạc',sl:1}]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:2}]}}
+];
+// 5 tuần ISO gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng chung
+// cách tính tuần (wKey/isoWeek) với biểu đồ "Chốt cọc 5 tuần gần nhất" (tab Bán hàng)
+// để nhất quán. Luôn đủ 5 tuần kể cả tuần nào 0 xe (không bỏ qua tuần trống).
+function _last5WeekKeys(){
+  var ref=fileLastModified instanceof Date?fileLastModified:new Date();
+  var keys=[];
+  for(var i=4;i>=0;i--) keys.push(wKey(new Date(ref.getTime()-i*7*86400000)));
+  return keys;
+}
+function renderDatHang(){
+  var branches=['NT','PY','ĐL'];
+  var branchLabel={NT:'Nha Trang',PY:'Phú Yên','ĐL':'Đà Lạt'};
+  function fmtOrder(list){
+    if(!list||!list.length) return '<span class="dash" style="color:#bbb">–</span>';
+    return list.map(function(o){return o.sl+' '+o.mau;}).join(', ');
+  }
+  var weekKeys=_last5WeekKeys();
+  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:nowrap;text-align:center;padding:6px 10px';
+  var thead='<th style="'+thBase+';text-align:left">Loại xe</th>'
+    +branches.map(function(b){return '<th style="'+thBase+'">'+branchLabel[b]+'</th>';}).join('')
+    +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
+    +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
+    +'<th style="'+thBase+';color:var(--c-lxx)">LXX</th>'
+    +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
+    +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
+    +'<th style="'+thBase+';color:#111">Tổng</th>'
+    +'<th style="'+thBase+';color:#0d7c66" title="Tổng số xe chốt cọc trong 5 tuần gần nhất (đến '+weekKeys[4]+')">Tốc độ bán<br>(5 tuần gần nhất)</th>';
+  var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
+  var rows='';
+  var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumCoc5w=0;
+  DAT_HANG_ORDERS.forEach(function(o){
+    var ton=allData.stock.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
+    var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
+    var lxx=allData.lxx.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
+    var debt=allData.debt.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
+    var coc5w=allCoc.filter(function(r){
+      return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&weekKeys.indexOf(wKey(r.ngayCoc))>=0;
+    }).length;
+    var datHang=0;
+    branches.forEach(function(b){(o.orders[b]||[]).forEach(function(x){datHang+=x.sl;});});
+    var tong=ton+bo+lxx+datHang;
+    sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumCoc5w+=coc5w;
+    rows+='<tr>'
+      +'<td style="'+tdBase+';text-align:left;font-weight:600">'+o.label+'</td>'
+      +branches.map(function(b){return '<td style="'+tdBase+'">'+fmtOrder(o.orders[b])+'</td>';}).join('')
+      +'<td style="'+tdBase+'">'+(ton||'')+'</td>'
+      +'<td style="'+tdBase+'">'+(bo||'')+'</td>'
+      +'<td style="'+tdBase+'">'+(lxx||'')+'</td>'
+      +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
+      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
+      +'<td style="'+tdBase+';font-weight:800">'+tong+'</td>'
+      +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+coc5w+'</td>'
+      +'</tr>';
+  });
+  rows+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
+    +'<td style="'+tdBase+';text-align:left">Tổng</td>'
+    +branches.map(function(){return '<td style="'+tdBase+'"></td>';}).join('')
+    +'<td style="'+tdBase+'">'+sumTon+'</td>'
+    +'<td style="'+tdBase+'">'+sumBO+'</td>'
+    +'<td style="'+tdBase+'">'+sumLXX+'</td>'
+    +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
+    +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
+    +'<td style="'+tdBase+'">'+sumTong+'</td>'
+    +'<td style="'+tdBase+';color:#0d7c66">'+sumCoc5w+'</td>'
+    +'</tr>';
+  return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
+    +'<div style="font-size:11px;color:#f59e0b;font-style:italic;margin-bottom:8px">⚠️ Cột Tồn/BO/LXX/Nợ/Tốc độ bán lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.</div>'
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
   var COLOR_DOT={'ĐEN':'#1e1e1e','ĐỎ_GRP':'#dc2626','TRẮNG':'#d1d5db','BẠC':'#9ca3af','XÁM_GRP':'#6b7280','VÀNG CÁT':'#d97706'};
@@ -2838,6 +2934,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'<div class="stat-sep"></div>'
     +`<div class="stat clickable${typeFilter==='chuaXN'?' active-filter':''}" onclick="toggleType('chuaXN')" style="border-left:3px solid ${typeFilter==='chuaXN'?'#0d7c66':'transparent'};background:${typeFilter==='chuaXN'?'#e6faf5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px;color:#0d7c66">Chờ XN${typeFilter==='chuaXN'?'<span class="pulse-dot" style="background:#0d7c66"></span>':''}</div><div class="stat-num" style="color:#0d7c66">${totCXN}</div>${totCXN_LX3>0?`<div style="font-size:10px;font-weight:600;opacity:.75;color:#0d7c66">(${totCXN_LX3} LX3)</div>`:''}</div>`
     +'<div class="stat clickable'+(typeFilter==='kck'?' active-filter':'')+'" onclick="toggleType(\'kck\')" style="border-left:3px solid '+(typeFilter==='kck'?'#7c3aed':'transparent')+';background:'+(typeFilter==='kck'?'#f5f3ff':'#fff')+';position:relative">'+(showNew?'<div style="position:absolute;top:-7px;right:-4px;background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;letter-spacing:.3px;animation:kckblink 1s step-start infinite">NEW</div>':'')+'<div class="stat-label" style="color:#7c3aed">KCK</div><div class="stat-num" style="font-size:13px;color:#7c3aed;font-weight:600">'+kckShort+'</div></div>'
+    +'<div class="stat clickable'+(typeFilter==='dathang'?' active-filter':'')+'" onclick="toggleType(\'dathang\')" style="border-left:3px solid '+(typeFilter==='dathang'?'#4f46e5':'transparent')+';background:'+(typeFilter==='dathang'?'#eef2ff':'#fff')+'"><div class="stat-label" style="color:#4f46e5">📦 Đặt hàng</div><div class="stat-num" style="font-size:13px;color:#4f46e5;font-weight:600">Giả định</div></div>'
     +'<div class="stat-sep"></div>'
     +statEl('debt','Xe nợ',totD,'red','var(--c-debt)',undefined,totD_LX3)
     +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03')
@@ -3284,6 +3381,12 @@ function renderHH(){
   var bodyContent;
   if(typeFilter==='kck'){
     bodyContent=renderKCK();
+    document.getElementById('hh-content').innerHTML=mkStats(totS,totB,totL,totD,totDaPhan)+mkHHFilters()+bodyContent;
+    setTimeout(initResizers,0);
+    return;
+  }
+  if(typeFilter==='dathang'){
+    bodyContent=renderDatHang();
     document.getElementById('hh-content').innerHTML=mkStats(totS,totB,totL,totD,totDaPhan)+mkHHFilters()+bodyContent;
     setTimeout(initResizers,0);
     return;
