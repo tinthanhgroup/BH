@@ -847,6 +847,10 @@ function toggleType(t){
     }
     return;
   }
+  // "Giả định đặt hàng" chỉ dành riêng cho Admin — không hiện nút cho ai khác (xem
+  // mkStats()), và chặn luôn ở đây phòng trường hợp typeFilter còn sót lại từ
+  // trước khi đăng xuất/hết hạn session — không báo lỗi gì để không lộ có mục này.
+  if(t==='dathang' && !_isAdmin) return;
   typeFilter=(typeFilter===t?null:t);drillModel=null;drillVersion=null;renderHH();
 }
 function setDrill(model,version){
@@ -2934,7 +2938,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'<div class="stat-sep"></div>'
     +`<div class="stat clickable${typeFilter==='chuaXN'?' active-filter':''}" onclick="toggleType('chuaXN')" style="border-left:3px solid ${typeFilter==='chuaXN'?'#0d7c66':'transparent'};background:${typeFilter==='chuaXN'?'#e6faf5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px;color:#0d7c66">Chờ XN${typeFilter==='chuaXN'?'<span class="pulse-dot" style="background:#0d7c66"></span>':''}</div><div class="stat-num" style="color:#0d7c66">${totCXN}</div>${totCXN_LX3>0?`<div style="font-size:10px;font-weight:600;opacity:.75;color:#0d7c66">(${totCXN_LX3} LX3)</div>`:''}</div>`
     +'<div class="stat clickable'+(typeFilter==='kck'?' active-filter':'')+'" onclick="toggleType(\'kck\')" style="border-left:3px solid '+(typeFilter==='kck'?'#7c3aed':'transparent')+';background:'+(typeFilter==='kck'?'#f5f3ff':'#fff')+';position:relative">'+(showNew?'<div style="position:absolute;top:-7px;right:-4px;background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;letter-spacing:.3px;animation:kckblink 1s step-start infinite">NEW</div>':'')+'<div class="stat-label" style="color:#7c3aed">KCK</div><div class="stat-num" style="font-size:13px;color:#7c3aed;font-weight:600">'+kckShort+'</div></div>'
-    +'<div class="stat clickable'+(typeFilter==='dathang'?' active-filter':'')+'" onclick="toggleType(\'dathang\')" style="border-left:3px solid '+(typeFilter==='dathang'?'#4f46e5':'transparent')+';background:'+(typeFilter==='dathang'?'#eef2ff':'#fff')+'"><div class="stat-label" style="color:#4f46e5">📦 Đặt hàng</div><div class="stat-num" style="font-size:13px;color:#4f46e5;font-weight:600">Giả định</div></div>'
+    +(_isAdmin?'<div class="stat clickable'+(typeFilter==='dathang'?' active-filter':'')+'" onclick="toggleType(\'dathang\')" style="border-left:3px solid '+(typeFilter==='dathang'?'#4f46e5':'transparent')+';background:'+(typeFilter==='dathang'?'#eef2ff':'#fff')+'"><div class="stat-label" style="color:#4f46e5">📦 Đặt hàng</div><div class="stat-num" style="font-size:13px;color:#4f46e5;font-weight:600">Giả định</div></div>':'')
     +'<div class="stat-sep"></div>'
     +statEl('debt','Xe nợ',totD,'red','var(--c-debt)',undefined,totD_LX3)
     +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03')
@@ -3385,6 +3389,7 @@ function renderHH(){
     setTimeout(initResizers,0);
     return;
   }
+  if(typeFilter==='dathang' && !_isAdmin) typeFilter=null; // phòng session hết hạn/đăng xuất mà vẫn còn kẹt ở view này
   if(typeFilter==='dathang'){
     bodyContent=renderDatHang();
     document.getElementById('hh-content').innerHTML=mkStats(totS,totB,totL,totD,totDaPhan)+mkHHFilters()+bodyContent;
