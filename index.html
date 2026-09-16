@@ -1480,19 +1480,19 @@ var DAT_HANG_ORDERS = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}]}},
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Bạc',sl:1}]}},
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:2}]}}
+    orders:{NT:[], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:3}]}}
 ];
 // Mốc 30 ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
 // cột "Số lượng xe ký 30 ngày gần nhất" trong renderDatHang().
@@ -1515,6 +1515,12 @@ function _kckColorsFor(model,phienBan){
   var entry=KCK_DATA.find(function(k){return k[0]===model&&k[1]===phienBan;});
   return entry?entry[2]:null;
 }
+// Màu đang đặt (mau) có đang sẵn ở Nhà máy (KCK) cho đúng Model+Phiên bản không —
+// dùng chung ở cả fmtOrder() (tô khung vàng) lẫn phần đếm tổng "xe KCK"/"xe không có sẵn"
+// để không bị lệch logic giữa 2 chỗ.
+function _isKckAvailable(kckColors,mau){
+  return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
+}
 function renderDatHang(){
   var branches=['NT','PY','ĐL'];
   var branchLabel={NT:'Nha Trang',PY:'Phú Yên','ĐL':'Đà Lạt'};
@@ -1524,31 +1530,33 @@ function renderDatHang(){
     if(!list||!list.length) return '<span class="dash" style="color:#bbb">–</span>';
     return list.map(function(x){
       var text=x.sl+' '+x.mau;
-      var coKCK=kckColors&&kckColors[_mauToKckKey(x.mau)];
-      if(!coKCK) return text;
+      if(!_isKckAvailable(kckColors,x.mau)) return text;
       return '<span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600" title="Nhà máy đang có sẵn màu này trong KCK — có thể lấy KCK thay vì đặt hàng mới">'+text+'</span>';
     }).join(', ');
   }
   var cutoff30=_last30DaysCutoff();
-  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:nowrap;text-align:center;padding:6px 10px';
+  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:normal;text-align:center;padding:6px 6px;word-break:break-word';
   var numBase='font-size:10px;font-weight:700;color:#aaa;background:#fff;border-bottom:1px solid var(--border);text-align:center;padding:2px 10px';
   var numCols=13; // Loại xe(1) + 3 chi nhánh + Tồn/BO/LXX/Đặt hàng/Tổng/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(9) — nhớ sửa nếu thêm/bớt cột
   var numRow='';
   for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th style="'+numBase+'">'+_ni+'</th>';
+  var subFormula='<br><span style="font-weight:400;text-transform:none;font-size:9px;letter-spacing:0;color:#888">';
   var thead='<th style="'+thBase+';text-align:left">Loại xe</th>'
     +branches.map(function(b){return '<th style="'+thBase+'">'+branchLabel[b]+'</th>';}).join('')
+    +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
     +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
     +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
     +'<th style="'+thBase+';color:var(--c-lxx)">LXX</th>'
-    +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
-    +'<th style="'+thBase+';color:#111">Tổng</th>'
+    +'<th style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(9=5+6+7+8)</span></th>'
     +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
-    +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ</th>'
+    +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(11=9−10)</span></th>'
     +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">Số lượng xe ký<br>(30 ngày gần nhất)</th>'
-    +'<th style="'+thBase+';color:#b45309" title="Cột 11 ÷ Cột 12 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ</th>';
+    +'<th style="'+thBase+';color:#b45309" title="Cột 11 ÷ Cột 12 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(13=11/12)</span></th>';
   var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var rows='';
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
+  var sumByBranch={NT:0,PY:0,'ĐL':0};
+  var sumKckQty=0,sumNoKckQty=0;
   DAT_HANG_ORDERS.forEach(function(o){
     var ton=allData.stock.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
@@ -1557,20 +1565,26 @@ function renderDatHang(){
     var ky30=allCoc.filter(function(r){
       return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&r.ngayCoc>=cutoff30;
     }).length;
+    var kckColors=_kckColorsFor(o.model,o.phienBan);
     var datHang=0;
-    branches.forEach(function(b){(o.orders[b]||[]).forEach(function(x){datHang+=x.sl;});});
+    branches.forEach(function(b){
+      (o.orders[b]||[]).forEach(function(x){
+        datHang+=x.sl;
+        sumByBranch[b]+=x.sl;
+        if(_isKckAvailable(kckColors,x.mau)) sumKckQty+=x.sl; else sumNoKckQty+=x.sl;
+      });
+    });
     var tong=ton+bo+lxx+datHang;
     var tongTruNo=tong-debt;
     var tyLe=ky30>0?(tongTruNo/ky30).toFixed(1):(tongTruNo>0?'∞':'–');
     sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
-    var kckColors=_kckColorsFor(o.model,o.phienBan);
     rows+='<tr>'
       +'<td style="'+tdBase+';text-align:left;font-weight:600">'+o.label+'</td>'
       +branches.map(function(b){return '<td style="'+tdBase+'">'+fmtOrder(o.orders[b],kckColors)+'</td>';}).join('')
+      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
       +'<td style="'+tdBase+'">'+(ton||'')+'</td>'
       +'<td style="'+tdBase+'">'+(bo||'')+'</td>'
       +'<td style="'+tdBase+'">'+(lxx||'')+'</td>'
-      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
       +'<td style="'+tdBase+';font-weight:800">'+tong+'</td>'
       +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
       +'<td style="'+tdBase+';font-weight:700">'+tongTruNo+'</td>'
@@ -1582,20 +1596,30 @@ function renderDatHang(){
   var sumTyLe=sumKy30>0?(sumTongTruNo/sumKy30).toFixed(1):(sumTongTruNo>0?'∞':'–');
   rows+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
     +'<td style="'+tdBase+';text-align:left">Tổng</td>'
-    +branches.map(function(){return '<td style="'+tdBase+'"></td>';}).join('')
+    +branches.map(function(b){return '<td style="'+tdBase+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
+    +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTon+'</td>'
     +'<td style="'+tdBase+'">'+sumBO+'</td>'
     +'<td style="'+tdBase+'">'+sumLXX+'</td>'
-    +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTong+'</td>'
     +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+'">'+sumTongTruNo+'</td>'
     +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
     +'<td style="'+tdBase+';color:#b45309">'+sumTyLe+'</td>'
     +'</tr>';
+  var noteHtml='<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:10px;line-height:1.6">'
+    +'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.<br>'
+    +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>'
+    +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).'
+    +'</div>';
+  // table-layout:fixed + colgroup để cột 1-4 (Loại xe/NT/PY/ĐL) chỉ chiếm vừa đủ,
+  // không bị dãn rộng theo nội dung dài nhất — 9 cột số liệu còn lại (5-13) tự chia
+  // đều phần còn trống.
+  var colgroup='<colgroup><col style="width:150px"><col style="width:110px"><col style="width:110px"><col style="width:110px">'
+    +'<col><col><col><col><col><col><col><col><col></colgroup>';
   return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
-    +'<div style="font-size:11px;color:#f59e0b;font-style:italic;margin-bottom:8px">⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi. Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.</div>'
-    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:fixed;width:100%;border-collapse:collapse">'+colgroup+'<thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+    +noteHtml;
 }
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
