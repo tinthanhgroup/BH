@@ -1118,10 +1118,11 @@ function _tabLabel(t){
 // "Giả định đặt hàng" (dathang) — mở cho Admin + đúng nhóm được xem CRM (PGĐ, Bán
 // hàng thường, MKT — 3 nhóm này dùng chung 1 bộ quyền ['bh','mkt','crm'] nên không
 // tách riêng được "chỉ Bán hàng, không MKT" nếu không thêm cờ mới; tái dùng quyền
-// CRM sẵn có là gần đúng nhất với yêu cầu "mở cho Bán hàng và PGĐ"). GĐ thường
-// KHÔNG có 'crm' trong _allowedTabs (xem _classifyGroup) nên vẫn bị chặn như cũ.
+// CRM sẵn có là gần đúng nhất với yêu cầu "mở cho Bán hàng và PGĐ") + GĐ thường
+// (_isGD — mở thêm theo yêu cầu sau, khác CRM: GĐ thường vẫn CHƯA có 'crm' nên
+// phải cộng thêm _isGD riêng, không dùng chung điều kiện được).
 function _canSeeDatHang(){
-  return _isAdmin || _allowedTabs.has('crm');
+  return _isAdmin || _allowedTabs.has('crm') || _isGD;
 }
 function _pwModalTitle(t){
   return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT Thương hiệu', crm:'CRM'}[t]||'Khu vực bảo mật';
