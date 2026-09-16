@@ -1564,15 +1564,18 @@ function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
 function renderDatHang(){
-  // Bảng "Thực tế thao tác" gói trong <details> — ẩn mặc định, bấm vào tiêu đề (dạng
-  // dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem hơn bảng gốc.
-  return _datHangTableHtml(DAT_HANG_ORDERS,'<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>')
-    +'<details style="margin-top:22px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer">📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+  // Đánh số 1/2/3 + giãn cách margin-top 40px giữa các bảng cho đỡ rối mắt (trước
+  // đây chỉ 22px, các bảng dính sát nhau). Bảng "Tốc độ bán hàng" đưa lên đầu tiên
+  // theo yêu cầu người dùng. Bảng "Thực tế thao tác" gói trong <details> — ẩn mặc
+  // định, bấm vào tiêu đề (dạng dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem
+  // hơn 2 bảng kia.
+  return renderTocDoBanHang()
+    +_datHangTableHtml(DAT_HANG_ORDERS,'<div class="sec-title" style="color:#4f46e5;margin-top:40px">2. 📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>')
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer">3. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)
     +'</details>'
-    +renderTocDoBanHang()
-    // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng Tốc độ bán hàng lên giữa
-    // màn hình xem cho dễ — trước đây bảng này luôn bị dính khít đáy trang.
+    // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
+    // dễ — trước đây bảng cuối luôn bị dính khít đáy trang.
     +'<div style="height:50vh"></div>';
 }
 // Bảng "Giả định đặt hàng" dùng chung cho cả bản gốc (DAT_HANG_ORDERS) và bản
@@ -1692,11 +1695,16 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
 var SPD_BRANCHES=BRANCHES_BH.filter(function(b){return b!=='ĐN';});
 var SPD_ALL='__ALL__'; // sentinel cho lựa chọn "Tất cả phiên bản"/"Tất cả màu"
 var _spdSel={model:null,ver:null,mau:null};
+// Toàn bộ công cụ "Tốc độ bán hàng" chỉ tính BÁN LẺ — loại "Bán ngang" (bán cho đại
+// lý khác, nhận diện qua Nguồn khách==='Khác', xem CLAUDE.md) ra khỏi mọi tính toán
+// (option tree, số đếm cạnh mỗi lựa chọn, bảng kết quả) theo yêu cầu người dùng.
+function _spdIsRetail(r){ return (r.branch||'').toString().trim().toUpperCase()!=='KHÁC'; }
 // Dựng cây Model -> Phiên bản -> {Màu:true} từ allCoc (mọi xe đã từng đặt cọc) để
 // đổ vào 3 bảng chọn lồng nhau — chỉ hiện đúng lựa chọn thực sự có dữ liệu.
 function _spdOptionTree(){
   var map={};
   allCoc.forEach(function(r){
+    if(!_spdIsRetail(r)) return;
     if(!r.model) return;
     var pb=r.phienBan||'—';
     if(!map[r.model]) map[r.model]={};
@@ -1746,6 +1754,7 @@ function _spdCountYTD(pred){
   var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
   var c=0;
   allCoc.forEach(function(r){
+    if(!_spdIsRetail(r)) return;
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year||r.ngayCoc.getMonth()+1>curMonth) return;
     if(pred(r)) c++;
   });
@@ -1800,7 +1809,7 @@ function _spdMauBoxHtml(model,ver,selected){
 function renderTocDoBanHang(){
   var defModel=_spdOptionTree()['Accent']?'Accent':null;
   _spdSel=defModel?{model:defModel,ver:SPD_ALL,mau:SPD_ALL}:{model:null,ver:null,mau:null};
-  return '<div class="sec-title" style="color:#0d7c66;margin-top:22px">⚡ Tốc độ bán hàng — chọn Model để xem số lượng ký theo từng tháng (mặc định gộp tất cả phiên bản/màu)</div>'
+  return '<div class="sec-title" style="color:#0d7c66">1. ⚡ Tốc độ bán hàng (chỉ bán lẻ) — chọn Model để xem số lượng ký theo từng tháng (mặc định gộp tất cả phiên bản/màu)</div>'
     +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
     +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdModelBoxHtml(defModel)+'</div>'
     +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,SPD_ALL):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
@@ -1835,43 +1844,56 @@ function _spdPickMau(mau){
 function _spdRenderResult(model,ver,mau){
   var ref=fileLastModified instanceof Date?fileLastModified:new Date();
   var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
+  var KHAC='Khác';
+  // Cột phụ "Khác" gom các bản ghi có Nguồn khách trống hoặc không khớp đúng 5 chi
+  // nhánh SPD_BRANCHES (ví dụ dòng bị bỏ trống cột Nguồn khách trong DATA TỔNG, hoặc
+  // thuộc ĐN đã dừng bán) — nếu không, số ở đây vẫn cộng vào Tổng nhưng KHÔNG cộng
+  // vào cột chi nhánh nào cả, khiến Tổng > tổng các cột hiển thị mà không rõ vì sao
+  // (đã bị người dùng phát hiện là bug — báo cáo cho model Grand i10 T3/2026).
   var byMonthBranch={},monthTotals={};
-  for(var m=1;m<=curMonth;m++){byMonthBranch[m]={};SPD_BRANCHES.forEach(function(b){byMonthBranch[m][b]=0;});monthTotals[m]=0;}
-  var grandByBranch={};SPD_BRANCHES.forEach(function(b){grandByBranch[b]=0;});
+  for(var m=1;m<=curMonth;m++){byMonthBranch[m]={};SPD_BRANCHES.concat([KHAC]).forEach(function(b){byMonthBranch[m][b]=0;});monthTotals[m]=0;}
+  var grandByBranch={};SPD_BRANCHES.concat([KHAC]).forEach(function(b){grandByBranch[b]=0;});
   var grandTotal=0;
   allCoc.forEach(function(r){
+    if(!_spdIsRetail(r)) return;
     if(r.model!==model) return;
     if(ver!==SPD_ALL && r.phienBan!==ver) return;
     if(mau!==SPD_ALL && r.mau!==mau) return;
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
     var m=r.ngayCoc.getMonth()+1;
     if(m>curMonth) return;
+    var b=SPD_BRANCHES.indexOf(r.branch)>=0?r.branch:KHAC;
     monthTotals[m]++;grandTotal++;
-    if(byMonthBranch[m].hasOwnProperty(r.branch)){byMonthBranch[m][r.branch]++;grandByBranch[r.branch]++;}
+    byMonthBranch[m][b]++;grandByBranch[b]++;
   });
+  // Chỉ hiện cột "Khác" khi thực sự có dữ liệu rơi vào đó — đa số model sẽ không
+  // cần cột này, tránh rác bảng.
+  var cols=grandByBranch[KHAC]>0?SPD_BRANCHES.concat([KHAC]):SPD_BRANCHES;
+  var colLabel={};SPD_BRANCHES.forEach(function(b){colLabel[b]=BRANCH_NAMES[b]||b;});colLabel[KHAC]='Khác*';
   var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;text-align:center;padding:6px 10px';
   var tdBase='padding:6px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var thead='<th style="'+thBase+';text-align:left">Tháng</th>'
-    +SPD_BRANCHES.map(function(b){return '<th style="'+thBase+'">'+(BRANCH_NAMES[b]||b)+'</th>';}).join('')
+    +cols.map(function(b){return '<th style="'+thBase+(b===KHAC?';color:#b45309':'')+'">'+colLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:#0d7c66">Tổng</th>';
   var rowsHtml='';
   for(var mi=1;mi<=curMonth;mi++){
     rowsHtml+='<tr>'
       +'<td style="'+tdBase+';text-align:left;font-weight:600">T'+mi+'/'+year+'</td>'
-      +SPD_BRANCHES.map(function(b){return '<td style="'+tdBase+'">'+(byMonthBranch[mi][b]||'')+'</td>';}).join('')
+      +cols.map(function(b){return '<td style="'+tdBase+'">'+(byMonthBranch[mi][b]||'')+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700">'+(monthTotals[mi]||'')+'</td>'
       +'</tr>';
   }
   rowsHtml+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
     +'<td style="'+tdBase+';text-align:left">Tổng</td>'
-    +SPD_BRANCHES.map(function(b){return '<td style="'+tdBase+'">'+(grandByBranch[b]||'')+'</td>';}).join('')
+    +cols.map(function(b){return '<td style="'+tdBase+'">'+(grandByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#0d7c66">'+grandTotal+'</td>'
     +'</tr>';
   var verLabel=ver===SPD_ALL?'Tất cả phiên bản':ver;
   var mauLabel=mau===SPD_ALL?'Tất cả màu':mau;
+  var khacNote=grandByBranch[KHAC]>0?'<br>* Cột "Khác" = xe có ô Nguồn khách trống hoặc không thuộc 5 chi nhánh NT/PR/PY/ĐL/BL trong DATA TỔNG (ví dụ thiếu dữ liệu) — nên kiểm tra lại Sheet gốc nếu cần biết đúng chi nhánh.':'';
   return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+model+' — '+verLabel+' — '+mauLabel+'</div>'
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>'
-    +'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:8px">Số lượng ký theo ngày đặt cọc, nhóm theo chi nhánh Nguồn khách, từ T1/'+year+' đến hiện tại.</div>';
+    +'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:8px">Số lượng ký theo ngày đặt cọc, nhóm theo chi nhánh Nguồn khách, từ T1/'+year+' đến hiện tại — đã loại "Bán ngang" (bán cho đại lý khác, Nguồn khách="Khác"), chỉ tính bán lẻ.'+khacNote+'</div>';
 }
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
