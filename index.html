@@ -1491,9 +1491,9 @@ var DAT_HANG_ORDERS = [
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:2},{mau:'Đen',sl:1}], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
-    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
@@ -1513,15 +1513,17 @@ var DAT_HANG_ORDERS = [
 // - Tucson 2.0 Xăng ĐB: NT đặt hộ PY 2 xe Trắng (dời PY→NT) VÀ ĐL đặt hộ NT 2 xe Đen
 //   (dời NT→ĐL) — cùng 1 model nhưng 2 chiều đặt hộ khác nhau, 2 màu khác nhau.
 // - Stargazer Đặc Biệt FL 2026: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
+// - Grand i10 1.2AT: NT đặt hộ ĐL thêm 1 xe Trắng (cộng thêm, không dời — ĐL vẫn giữ
+//   nguyên 1 xe tự đặt trước đó).
 var DAT_HANG_ORDERS_THUCTE = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2},{mau:'Trắng',sl:3,note:'cho NT'}], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[{mau:'Trắng',sl:2},{mau:'Trắng',sl:3,note:'cho NT'},{mau:'Đen',sl:1}], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
-    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Trắng',sl:1,note:'cho ĐL'}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
