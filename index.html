@@ -1509,6 +1509,10 @@ function renderDatHang(){
   }
   var cutoff30=_last30DaysCutoff();
   var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:nowrap;text-align:center;padding:6px 10px';
+  var numBase='font-size:10px;font-weight:700;color:#aaa;background:#fff;border-bottom:1px solid var(--border);text-align:center;padding:2px 10px';
+  var numCols=12; // Loại xe(1) + 3 chi nhánh + Tồn/BO/LXX/Đặt hàng/Tổng/Nợ/Tổng-Nợ/SL ký(8) — nhớ sửa nếu thêm/bớt cột
+  var numRow='';
+  for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th style="'+numBase+'">'+_ni+'</th>';
   var thead='<th style="'+thBase+';text-align:left">Loại xe</th>'
     +branches.map(function(b){return '<th style="'+thBase+'">'+branchLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
@@ -1517,6 +1521,7 @@ function renderDatHang(){
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
     +'<th style="'+thBase+';color:#111">Tổng</th>'
     +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
+    +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ</th>'
     +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">Số lượng xe ký<br>(30 ngày gần nhất)</th>';
   var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var rows='';
@@ -1542,6 +1547,7 @@ function renderDatHang(){
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
       +'<td style="'+tdBase+';font-weight:800">'+tong+'</td>'
       +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
+      +'<td style="'+tdBase+';font-weight:700">'+(tong-debt)+'</td>'
       +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+ky30+'</td>'
       +'</tr>';
   });
@@ -1554,11 +1560,12 @@ function renderDatHang(){
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTong+'</td>'
     +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
+    +'<td style="'+tdBase+'">'+(sumTong-sumDebt)+'</td>'
     +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
     +'</tr>';
   return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
     +'<div style="font-size:11px;color:#f59e0b;font-style:italic;margin-bottom:8px">⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.</div>'
-    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
