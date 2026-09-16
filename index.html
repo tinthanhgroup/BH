@@ -1483,7 +1483,7 @@ var DAT_HANG_ORDERS = [
     orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}]}},
-  {model:'Grand I10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
+  {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Bạc',sl:1}]}},
@@ -1514,9 +1514,9 @@ function renderDatHang(){
     +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
     +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
     +'<th style="'+thBase+';color:var(--c-lxx)">LXX</th>'
-    +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
     +'<th style="'+thBase+';color:#111">Tổng</th>'
+    +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">Số lượng xe ký<br>(30 ngày gần nhất)</th>';
   var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var rows='';
@@ -1539,9 +1539,9 @@ function renderDatHang(){
       +'<td style="'+tdBase+'">'+(ton||'')+'</td>'
       +'<td style="'+tdBase+'">'+(bo||'')+'</td>'
       +'<td style="'+tdBase+'">'+(lxx||'')+'</td>'
-      +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
       +'<td style="'+tdBase+';font-weight:800">'+tong+'</td>'
+      +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
       +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+ky30+'</td>'
       +'</tr>';
   });
@@ -1551,9 +1551,9 @@ function renderDatHang(){
     +'<td style="'+tdBase+'">'+sumTon+'</td>'
     +'<td style="'+tdBase+'">'+sumBO+'</td>'
     +'<td style="'+tdBase+'">'+sumLXX+'</td>'
-    +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTong+'</td>'
+    +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
     +'</tr>';
   return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
