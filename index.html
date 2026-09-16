@@ -1492,6 +1492,29 @@ var DAT_HANG_ORDERS = [
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:2}], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:3}]}}
 ];
+// Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
+// khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
+// thực tế vận hành, ví dụ hạn ngạch/đầu mối nhà máy). Field "note" ghi rõ đặt hộ ai:
+// - Creta N Line FL: PY đặt hộ NT 3 xe Trắng (dời từ cột NT sang PY).
+// - Accent 1.5 AT: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
+// - Tucson 2.0 Xăng ĐB: NT đặt hộ PY 2 xe Trắng (dời PY→NT) VÀ ĐL đặt hộ NT 2 xe Đen
+//   (dời NT→ĐL) — cùng 1 model nhưng 2 chiều đặt hộ khác nhau, 2 màu khác nhau.
+var DAT_HANG_ORDERS_THUCTE = [
+  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
+    orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2},{mau:'Trắng',sl:3,note:'cho NT'}], 'ĐL':[]}},
+  {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
+    orders:{NT:[{mau:'Trắng',sl:2,note:'cho PY'}], PY:[], 'ĐL':[{mau:'Trắng',sl:3},{mau:'Đen',sl:2,note:'cho NT'}]}}
+];
 // Mốc 30 ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
 // cột "Số lượng xe ký 30 ngày gần nhất" trong renderDatHang().
 function _last30DaysCutoff(){
@@ -1520,14 +1543,26 @@ function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
 function renderDatHang(){
+  return _datHangTableHtml(DAT_HANG_ORDERS,'<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>')
+    +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'<div class="sec-title" style="color:#4f46e5;margin-top:22px">📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</div>',true)
+    +renderTocDoBanHang();
+}
+// Bảng "Giả định đặt hàng" dùng chung cho cả bản gốc (DAT_HANG_ORDERS) và bản
+// "Thực tế thao tác" (DAT_HANG_ORDERS_THUCTE, có 1 số dòng đặt hộ chi nhánh khác —
+// xem field note trong từng order item) — tách riêng để không lặp code, chỉ khác
+// data nguồn + tiêu đề. hideKckNote=true để không lặp lại đoạn giải thích khung vàng
+// ở bảng thứ 2 (đã giải thích ở bảng đầu ngay phía trên).
+function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   var branches=['NT','PY','ĐL'];
   var branchLabel={NT:'Nha Trang',PY:'Phú Yên','ĐL':'Đà Lạt'};
   // kckColors truyền vào để tô khung vàng đúng màu Nhà máy đang có sẵn (KCK) —
   // giúp thấy ngay màu nào có thể lấy KCK thay vì phải đặt hàng mới/chờ sản xuất.
+  // note (nếu có, ví dụ "hộ NT") = chi nhánh này đặt hàng giúp chi nhánh khác — chỉ
+  // dùng ở bảng "Thực tế thao tác".
   function fmtOrder(list,kckColors){
     if(!list||!list.length) return '<span class="dash" style="color:#bbb">–</span>';
     return list.map(function(x){
-      var text=x.sl+' '+x.mau;
+      var text=x.sl+' '+x.mau+(x.note?' <i style="opacity:.65;font-style:italic">('+x.note+')</i>':'');
       if(!_isKckAvailable(kckColors,x.mau)) return text;
       return '<span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600" title="Nhà máy đang có sẵn màu này trong KCK — có thể lấy KCK thay vì đặt hàng mới">'+text+'</span>';
     }).join(', ');
@@ -1562,7 +1597,7 @@ function renderDatHang(){
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
   var sumByBranch={NT:0,PY:0,'ĐL':0};
   var sumKckQty=0,sumNoKckQty=0;
-  DAT_HANG_ORDERS.forEach(function(o){
+  ordersData.forEach(function(o){
     var ton=allData.stock.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var lxx=allData.lxx.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
@@ -1613,15 +1648,182 @@ function renderDatHang(){
     +'<td style="'+tdBase+';color:#b45309">'+sumTyLe+'</td>'
     +'</tr>';
   var noteHtml='<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:10px;line-height:1.6">'
-    +'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.<br>'
-    +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>'
+    +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.<br>'
+      +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>')
+    +(hideKckNote?'"(...)" sau tên màu = chi nhánh đó đặt hàng <b>giúp</b> chi nhánh khác, xe vẫn tính vào nhu cầu của chi nhánh được giúp.<br>':'')
     +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).'
     +'</div>';
   // table-layout:auto (KHÔNG fixed) để cột co giãn theo nội dung, giới hạn trong khoảng
   // min/max-width đã gắn trên từng ô (wCol1/wBranch/mặc định của thBase/tdBase ở trên).
-  return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
+  return titleHtml
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
     +noteHtml;
+}
+// Chi nhánh dùng cho bảng Tốc độ bán hàng — theo đúng nhóm bán hàng (BRANCHES_BH),
+// ẩn ĐN vì đã dừng bán (giống quy ước BR_SHOW ở các biểu đồ khác).
+var SPD_BRANCHES=BRANCHES_BH.filter(function(b){return b!=='ĐN';});
+var SPD_ALL='__ALL__'; // sentinel cho lựa chọn "Tất cả phiên bản"/"Tất cả màu"
+var _spdSel={model:null,ver:null,mau:null};
+// Dựng cây Model -> Phiên bản -> {Màu:true} từ allCoc (mọi xe đã từng đặt cọc) để
+// đổ vào 3 bảng chọn lồng nhau — chỉ hiện đúng lựa chọn thực sự có dữ liệu.
+function _spdOptionTree(){
+  var map={};
+  allCoc.forEach(function(r){
+    if(!r.model) return;
+    var pb=r.phienBan||'—';
+    if(!map[r.model]) map[r.model]={};
+    if(!map[r.model][pb]) map[r.model][pb]={};
+    if(r.mau) map[r.model][pb][r.mau]=true;
+  });
+  return map;
+}
+// Màu có sẵn cho model đã chọn — hợp nhất tất cả phiên bản nếu ver===SPD_ALL,
+// ngược lại chỉ lấy đúng phiên bản đó.
+function _spdMauOptions(tree,model,ver){
+  var set={};
+  if(!model||!tree[model]) return [];
+  if(ver===SPD_ALL){
+    Object.keys(tree[model]).forEach(function(v){Object.keys(tree[model][v]).forEach(function(c){set[c]=true;});});
+  } else if(tree[model][ver]){
+    Object.keys(tree[model][ver]).forEach(function(c){set[c]=true;});
+  }
+  return Object.keys(set).sort();
+}
+// Render 1 bảng chọn (Model/Phiên bản/Màu) dạng bảng thay vì dropdown — mỗi dòng là 1
+// lựa chọn có thể bấm, dòng đang chọn tô nền xanh. allLabel (nếu có) là dòng "Tất cả..."
+// luôn nằm đầu bảng, giá trị SPD_ALL. counts (nếu có) là map giá trị -> số lượng ký,
+// hiện thêm "(n)" sau mỗi lựa chọn.
+function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts){
+  counts=counts||{};
+  var rowsHtml='';
+  function esc(v){return v.replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
+  function cnt(key){var n=counts[key];return typeof n==='number'?' <span style="opacity:.65;font-weight:400">('+n+')</span>':'';}
+  if(allLabel){
+    var isSel=selected===SPD_ALL;
+    rowsHtml+='<tr onclick="'+onclickFn+'(\''+SPD_ALL+'\')" style="cursor:pointer;'+(isSel?'background:#0d7c66;color:#fff':'')+'"><td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #f0f0f0;font-style:italic;font-weight:'+(isSel?'700':'500')+'">'+allLabel+cnt(SPD_ALL)+'</td></tr>';
+  }
+  options.forEach(function(v){
+    var isSel=selected===v;
+    rowsHtml+='<tr onclick="'+onclickFn+'(\''+esc(v).replace(/'/g,"\\'")+'\')" style="cursor:pointer;'+(isSel?'background:#0d7c66;color:#fff;font-weight:700':'')+'"><td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #f0f0f0">'+esc(v)+cnt(v)+'</td></tr>';
+  });
+  if(!rowsHtml) rowsHtml='<tr><td style="padding:6px 10px;font-size:12px;color:#bbb">–</td></tr>';
+  return '<div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">'+title+'</div>'
+    +'<div style="border:1px solid #e5e7eb;border-radius:8px;max-height:220px;overflow-y:auto;min-width:170px"><table style="width:100%;border-collapse:collapse">'+rowsHtml+'</table></div>';
+}
+// Đếm số hợp đồng đã ký (ngayCoc) trong năm hiện tại tới tháng hiện tại khớp điều
+// kiện pred — cùng phạm vi thời gian với bảng kết quả, dùng để hiện số lượng cạnh
+// mỗi lựa chọn trong 3 bảng điều khiển.
+function _spdCountYTD(pred){
+  var ref=fileLastModified instanceof Date?fileLastModified:new Date();
+  var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
+  var c=0;
+  allCoc.forEach(function(r){
+    if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year||r.ngayCoc.getMonth()+1>curMonth) return;
+    if(pred(r)) c++;
+  });
+  return c;
+}
+function _spdModelCounts(models){
+  var m={};models.forEach(function(mo){m[mo]=_spdCountYTD(function(r){return r.model===mo;});});
+  return m;
+}
+function _spdVerCounts(model,vers){
+  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return r.model===model;});
+  vers.forEach(function(v){m[v]=_spdCountYTD(function(r){return r.model===model&&r.phienBan===v;});});
+  return m;
+}
+function _spdMauCounts(model,ver,mauOpts){
+  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver);});
+  mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver)&&r.mau===c;});});
+  return m;
+}
+// Layout: 4 bảng cạnh nhau theo hàng ngang — Model / Phiên bản / Màu (3 bảng chọn,
+// độ rộng cố định) rồi bảng Kết quả chiếm phần còn lại — bọc flex-wrap để tự xuống
+// dòng trên màn hình hẹp.
+function renderTocDoBanHang(){
+  _spdSel={model:null,ver:null,mau:null};
+  var models=Object.keys(_spdOptionTree()).sort();
+  return '<div class="sec-title" style="color:#0d7c66;margin-top:22px">⚡ Tốc độ bán hàng — chọn Model để xem số lượng ký theo từng tháng (mặc định gộp tất cả phiên bản/màu)</div>'
+    +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
+    +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdPickTableHtml('Model',models,null,'_spdPickModel',null,_spdModelCounts(models))+'</div>'
+    +'<div id="spd-ver-box" style="flex:0 0 190px">'+_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null)+'</div>'
+    +'<div id="spd-mau-box" style="flex:0 0 150px">'+_spdPickTableHtml('Màu',[],null,'_spdPickMau',null)+'</div>'
+    +'<div id="spd-result" style="flex:1;min-width:320px"></div>'
+    +'</div>';
+}
+// Chọn Model xong tự mặc định "Tất cả phiên bản" + "Tất cả màu" và render luôn kết quả —
+// không bắt phải bấm tiếp 2 bảng còn lại mới ra số liệu.
+function _spdPickModel(model){
+  _spdSel={model:model,ver:SPD_ALL,mau:SPD_ALL};
+  var tree=_spdOptionTree();
+  var models=Object.keys(tree).sort();
+  document.getElementById('spd-model-box').innerHTML=_spdPickTableHtml('Model',models,model,'_spdPickModel',null,_spdModelCounts(models));
+  var vers=tree[model]?Object.keys(tree[model]).sort():[];
+  document.getElementById('spd-ver-box').innerHTML=_spdPickTableHtml('Phiên bản',vers,SPD_ALL,'_spdPickVer','Tất cả phiên bản',_spdVerCounts(model,vers));
+  var mauOpts=_spdMauOptions(tree,model,SPD_ALL);
+  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,SPD_ALL,'_spdPickMau','Tất cả màu',_spdMauCounts(model,SPD_ALL,mauOpts));
+  document.getElementById('spd-result').innerHTML=_spdRenderResult(model,SPD_ALL,SPD_ALL);
+}
+function _spdPickVer(ver){
+  _spdSel.ver=ver;_spdSel.mau=SPD_ALL;
+  var tree=_spdOptionTree();
+  var model=_spdSel.model;
+  var vers=tree[model]?Object.keys(tree[model]).sort():[];
+  document.getElementById('spd-ver-box').innerHTML=_spdPickTableHtml('Phiên bản',vers,ver,'_spdPickVer','Tất cả phiên bản',_spdVerCounts(model,vers));
+  var mauOpts=_spdMauOptions(tree,model,ver);
+  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,SPD_ALL,'_spdPickMau','Tất cả màu',_spdMauCounts(model,ver,mauOpts));
+  document.getElementById('spd-result').innerHTML=_spdRenderResult(model,ver,SPD_ALL);
+}
+function _spdPickMau(mau){
+  _spdSel.mau=mau;
+  var tree=_spdOptionTree();
+  var mauOpts=_spdMauOptions(tree,_spdSel.model,_spdSel.ver);
+  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,mau,'_spdPickMau','Tất cả màu',_spdMauCounts(_spdSel.model,_spdSel.ver,mauOpts));
+  document.getElementById('spd-result').innerHTML=_spdRenderResult(_spdSel.model,_spdSel.ver,mau);
+}
+// Đếm số hợp đồng đã ký (theo ngày đặt cọc) từng tháng trong năm hiện tại (dựa theo
+// fileLastModified, giống _last30DaysCutoff), từ T1 tới tháng hiện tại — theo đúng
+// Model (+Phiên bản/Màu cụ thể hoặc SPD_ALL để gộp hết) — nhóm theo chi nhánh Nguồn khách.
+function _spdRenderResult(model,ver,mau){
+  var ref=fileLastModified instanceof Date?fileLastModified:new Date();
+  var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
+  var byMonthBranch={},monthTotals={};
+  for(var m=1;m<=curMonth;m++){byMonthBranch[m]={};SPD_BRANCHES.forEach(function(b){byMonthBranch[m][b]=0;});monthTotals[m]=0;}
+  var grandByBranch={};SPD_BRANCHES.forEach(function(b){grandByBranch[b]=0;});
+  var grandTotal=0;
+  allCoc.forEach(function(r){
+    if(r.model!==model) return;
+    if(ver!==SPD_ALL && r.phienBan!==ver) return;
+    if(mau!==SPD_ALL && r.mau!==mau) return;
+    if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
+    var m=r.ngayCoc.getMonth()+1;
+    if(m>curMonth) return;
+    monthTotals[m]++;grandTotal++;
+    if(byMonthBranch[m].hasOwnProperty(r.branch)){byMonthBranch[m][r.branch]++;grandByBranch[r.branch]++;}
+  });
+  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;text-align:center;padding:6px 10px';
+  var tdBase='padding:6px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
+  var thead='<th style="'+thBase+';text-align:left">Tháng</th>'
+    +SPD_BRANCHES.map(function(b){return '<th style="'+thBase+'">'+(BRANCH_NAMES[b]||b)+'</th>';}).join('')
+    +'<th style="'+thBase+';color:#0d7c66">Tổng</th>';
+  var rowsHtml='';
+  for(var mi=1;mi<=curMonth;mi++){
+    rowsHtml+='<tr>'
+      +'<td style="'+tdBase+';text-align:left;font-weight:600">T'+mi+'/'+year+'</td>'
+      +SPD_BRANCHES.map(function(b){return '<td style="'+tdBase+'">'+(byMonthBranch[mi][b]||'')+'</td>';}).join('')
+      +'<td style="'+tdBase+';font-weight:700">'+(monthTotals[mi]||'')+'</td>'
+      +'</tr>';
+  }
+  rowsHtml+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
+    +'<td style="'+tdBase+';text-align:left">Tổng</td>'
+    +SPD_BRANCHES.map(function(b){return '<td style="'+tdBase+'">'+(grandByBranch[b]||'')+'</td>';}).join('')
+    +'<td style="'+tdBase+';color:#0d7c66">'+grandTotal+'</td>'
+    +'</tr>';
+  var verLabel=ver===SPD_ALL?'Tất cả phiên bản':ver;
+  var mauLabel=mau===SPD_ALL?'Tất cả màu':mau;
+  return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+model+' — '+verLabel+' — '+mauLabel+'</div>'
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>'
+    +'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:8px">Số lượng ký theo ngày đặt cọc, nhóm theo chi nhánh Nguồn khách, từ T1/'+year+' đến hiện tại.</div>';
 }
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
