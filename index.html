@@ -1535,14 +1535,22 @@ function renderDatHang(){
     }).join(', ');
   }
   var cutoff30=_last30DaysCutoff();
-  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:normal;text-align:center;padding:6px 6px;word-break:break-word';
+  // Độ rộng linh hoạt theo nội dung nhưng giới hạn min/max theo từng nhóm cột (yêu cầu
+  // người dùng) — dùng table-layout:auto (KHÔNG fixed, vì fixed bỏ qua nội dung hoàn
+  // toàn) + min-width/max-width trên từng ô, đặt SAU thBase/tdBase trong cùng chuỗi
+  // style để override đúng theo cascade CSS (khai báo sau thắng khai báo trước).
+  // Cột 1 (Loại xe): 180-200px. Cột 2-4 (chi nhánh): 120-150px. Cột 5-13 (số liệu): 80-100px (mặc định).
+  var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:normal;text-align:center;padding:6px 6px;word-break:break-word;min-width:80px;max-width:100px';
+  var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0;min-width:80px;max-width:100px';
+  var wCol1=';min-width:180px;max-width:200px';
+  var wBranch=';min-width:120px;max-width:150px';
   var numBase='font-size:10px;font-weight:700;color:#aaa;background:#fff;border-bottom:1px solid var(--border);text-align:center;padding:2px 10px';
   var numCols=13; // Loại xe(1) + 3 chi nhánh + Tồn/BO/LXX/Đặt hàng/Tổng/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(9) — nhớ sửa nếu thêm/bớt cột
   var numRow='';
   for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th style="'+numBase+'">'+_ni+'</th>';
   var subFormula='<br><span style="font-weight:400;text-transform:none;font-size:9px;letter-spacing:0;color:#888">';
-  var thead='<th style="'+thBase+';text-align:left">Loại xe</th>'
-    +branches.map(function(b){return '<th style="'+thBase+'">'+branchLabel[b]+'</th>';}).join('')
+  var thead='<th style="'+thBase+wCol1+';text-align:left">Loại xe</th>'
+    +branches.map(function(b){return '<th style="'+thBase+wBranch+'">'+branchLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
     +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
     +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
@@ -1550,9 +1558,8 @@ function renderDatHang(){
     +'<th style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(9=5+6+7+8)</span></th>'
     +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(11=9−10)</span></th>'
-    +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">Số lượng xe ký<br>(30 ngày gần nhất)</th>'
+    +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>(30 ngày)</th>'
     +'<th style="'+thBase+';color:#b45309" title="Cột 11 ÷ Cột 12 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(13=11/12)</span></th>';
-  var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var rows='';
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
   var sumByBranch={NT:0,PY:0,'ĐL':0};
@@ -1579,8 +1586,8 @@ function renderDatHang(){
     var tyLe=ky30>0?(tongTruNo/ky30).toFixed(1):(tongTruNo>0?'∞':'–');
     sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
     rows+='<tr>'
-      +'<td style="'+tdBase+';text-align:left;font-weight:600">'+o.label+'</td>'
-      +branches.map(function(b){return '<td style="'+tdBase+'">'+fmtOrder(o.orders[b],kckColors)+'</td>';}).join('')
+      +'<td style="'+tdBase+wCol1+';text-align:left;font-weight:600">'+o.label+'</td>'
+      +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],kckColors)+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
       +'<td style="'+tdBase+'">'+(ton||'')+'</td>'
       +'<td style="'+tdBase+'">'+(bo||'')+'</td>'
@@ -1595,8 +1602,8 @@ function renderDatHang(){
   var sumTongTruNo=sumTong-sumDebt;
   var sumTyLe=sumKy30>0?(sumTongTruNo/sumKy30).toFixed(1):(sumTongTruNo>0?'∞':'–');
   rows+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
-    +'<td style="'+tdBase+';text-align:left">Tổng</td>'
-    +branches.map(function(b){return '<td style="'+tdBase+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
+    +'<td style="'+tdBase+wCol1+';text-align:left">Tổng</td>'
+    +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTon+'</td>'
     +'<td style="'+tdBase+'">'+sumBO+'</td>'
@@ -1612,13 +1619,10 @@ function renderDatHang(){
     +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>'
     +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).'
     +'</div>';
-  // table-layout:fixed + colgroup để cột 1-4 (Loại xe/NT/PY/ĐL) chỉ chiếm vừa đủ,
-  // không bị dãn rộng theo nội dung dài nhất — 9 cột số liệu còn lại (5-13) tự chia
-  // đều phần còn trống.
-  var colgroup='<colgroup><col style="width:150px"><col style="width:110px"><col style="width:110px"><col style="width:110px">'
-    +'<col><col><col><col><col><col><col><col><col></colgroup>';
+  // table-layout:auto (KHÔNG fixed) để cột co giãn theo nội dung, giới hạn trong khoảng
+  // min/max-width đã gắn trên từng ô (wCol1/wBranch/mặc định của thBase/tdBase ở trên).
   return '<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>'
-    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:fixed;width:100%;border-collapse:collapse">'+colgroup+'<thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
     +noteHtml;
 }
 function renderKCK(){
