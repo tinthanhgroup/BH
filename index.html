@@ -1480,17 +1480,21 @@ var DAT_HANG_ORDERS = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
     orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:2}], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:3}]}}
+    orders:{NT:[{mau:'Đen',sl:2}], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:2}]}}
 ];
 // Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
 // khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
@@ -1499,21 +1503,26 @@ var DAT_HANG_ORDERS = [
 // - Accent 1.5 AT: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
 // - Tucson 2.0 Xăng ĐB: NT đặt hộ PY 2 xe Trắng (dời PY→NT) VÀ ĐL đặt hộ NT 2 xe Đen
 //   (dời NT→ĐL) — cùng 1 model nhưng 2 chiều đặt hộ khác nhau, 2 màu khác nhau.
+// - Stargazer Đặc Biệt FL 2026: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
 var DAT_HANG_ORDERS_THUCTE = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2},{mau:'Trắng',sl:3,note:'cho NT'}], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
     orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Trắng',sl:2,note:'cho PY'}], PY:[], 'ĐL':[{mau:'Trắng',sl:3},{mau:'Đen',sl:2,note:'cho NT'}]}}
+    orders:{NT:[{mau:'Trắng',sl:2,note:'cho PY'}], PY:[], 'ĐL':[{mau:'Trắng',sl:2},{mau:'Đen',sl:2,note:'cho NT'}]}}
 ];
 // Mốc 30 ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
 // cột "Số lượng xe ký 30 ngày gần nhất" trong renderDatHang().
@@ -1715,7 +1724,7 @@ function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts){
   });
   if(!rowsHtml) rowsHtml='<tr><td style="padding:6px 10px;font-size:12px;color:#bbb">–</td></tr>';
   return '<div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">'+title+'</div>'
-    +'<div style="border:1px solid #e5e7eb;border-radius:8px;max-height:220px;overflow-y:auto;min-width:170px"><table style="width:100%;border-collapse:collapse">'+rowsHtml+'</table></div>';
+    +'<div style="border:1px solid #e5e7eb;border-radius:8px;min-width:170px"><table style="width:100%;border-collapse:collapse">'+rowsHtml+'</table></div>';
 }
 // Đếm số hợp đồng đã ký (ngayCoc) trong năm hiện tại tới tháng hiện tại khớp điều
 // kiện pred — cùng phạm vi thời gian với bảng kết quả, dùng để hiện số lượng cạnh
