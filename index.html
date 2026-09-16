@@ -1543,9 +1543,16 @@ function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
 function renderDatHang(){
+  // Bảng "Thực tế thao tác" gói trong <details> — ẩn mặc định, bấm vào tiêu đề (dạng
+  // dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem hơn bảng gốc.
   return _datHangTableHtml(DAT_HANG_ORDERS,'<div class="sec-title" style="color:#4f46e5">📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>')
-    +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'<div class="sec-title" style="color:#4f46e5;margin-top:22px">📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</div>',true)
-    +renderTocDoBanHang();
+    +'<details style="margin-top:22px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer">📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)
+    +'</details>'
+    +renderTocDoBanHang()
+    // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng Tốc độ bán hàng lên giữa
+    // màn hình xem cho dễ — trước đây bảng này luôn bị dính khít đáy trang.
+    +'<div style="height:50vh"></div>';
 }
 // Bảng "Giả định đặt hàng" dùng chung cho cả bản gốc (DAT_HANG_ORDERS) và bản
 // "Thực tế thao tác" (DAT_HANG_ORDERS_THUCTE, có 1 số dòng đặt hộ chi nhánh khác —
@@ -1737,48 +1744,68 @@ function _spdMauCounts(model,ver,mauOpts){
   mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver)&&r.mau===c;});});
   return m;
 }
+function _spdTonFor(model,ver){
+  return allData.stock.filter(function(r){return r.model===model&&r.phienBan===ver;}).length;
+}
+// Bỏ khỏi danh sách phiên bản những phiên bản đã hết hoạt động: 0 hợp đồng ký từ
+// đầu năm (count YTD, verCounts) VÀ 0 xe tồn (Tồn) — tránh rác danh sách bởi phiên
+// bản cũ đã ngừng bán/hết hàng lâu mà vẫn còn trong lịch sử allCoc.
+function _spdFilterActiveVers(model,vers,verCounts){
+  return vers.filter(function(v){return (verCounts[v]||0)>0||_spdTonFor(model,v)>0;});
+}
+// 3 hàm dựng HTML cho từng bảng chọn — dùng chung cho cả lần render đầu tiên
+// (renderTocDoBanHang, có Model mặc định) lẫn mỗi lần bấm chọn lại (_spdPickModel/
+// Ver/Mau), tránh lặp code tính list+counts.
+function _spdModelBoxHtml(selected){
+  var models=Object.keys(_spdOptionTree()).sort();
+  return _spdPickTableHtml('Model',models,selected,'_spdPickModel',null,_spdModelCounts(models));
+}
+function _spdVerBoxHtml(model,selected){
+  var tree=_spdOptionTree();
+  var vers=tree[model]?Object.keys(tree[model]).sort():[];
+  var verCounts=_spdVerCounts(model,vers);
+  vers=_spdFilterActiveVers(model,vers,verCounts);
+  return _spdPickTableHtml('Phiên bản',vers,selected,'_spdPickVer','Tất cả phiên bản',verCounts);
+}
+function _spdMauBoxHtml(model,ver,selected){
+  var tree=_spdOptionTree();
+  var mauOpts=_spdMauOptions(tree,model,ver);
+  return _spdPickTableHtml('Màu',mauOpts,selected,'_spdPickMau','Tất cả màu',_spdMauCounts(model,ver,mauOpts));
+}
 // Layout: 4 bảng cạnh nhau theo hàng ngang — Model / Phiên bản / Màu (3 bảng chọn,
 // độ rộng cố định) rồi bảng Kết quả chiếm phần còn lại — bọc flex-wrap để tự xuống
-// dòng trên màn hình hẹp.
+// dòng trên màn hình hẹp. Model mặc định "Accent" (nếu có dữ liệu) để vừa vào là
+// thấy luôn kết quả, không cần bấm chọn từ đầu.
 function renderTocDoBanHang(){
-  _spdSel={model:null,ver:null,mau:null};
-  var models=Object.keys(_spdOptionTree()).sort();
+  var defModel=_spdOptionTree()['Accent']?'Accent':null;
+  _spdSel=defModel?{model:defModel,ver:SPD_ALL,mau:SPD_ALL}:{model:null,ver:null,mau:null};
   return '<div class="sec-title" style="color:#0d7c66;margin-top:22px">⚡ Tốc độ bán hàng — chọn Model để xem số lượng ký theo từng tháng (mặc định gộp tất cả phiên bản/màu)</div>'
     +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
-    +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdPickTableHtml('Model',models,null,'_spdPickModel',null,_spdModelCounts(models))+'</div>'
-    +'<div id="spd-ver-box" style="flex:0 0 190px">'+_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null)+'</div>'
-    +'<div id="spd-mau-box" style="flex:0 0 150px">'+_spdPickTableHtml('Màu',[],null,'_spdPickMau',null)+'</div>'
-    +'<div id="spd-result" style="flex:1;min-width:320px"></div>'
+    +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdModelBoxHtml(defModel)+'</div>'
+    +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,SPD_ALL):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
+    +'<div id="spd-mau-box" style="flex:0 0 150px">'+(defModel?_spdMauBoxHtml(defModel,SPD_ALL,SPD_ALL):_spdPickTableHtml('Màu',[],null,'_spdPickMau',null))+'</div>'
+    +'<div id="spd-result" style="flex:1;min-width:320px">'+(defModel?_spdRenderResult(defModel,SPD_ALL,SPD_ALL):'')+'</div>'
     +'</div>';
 }
 // Chọn Model xong tự mặc định "Tất cả phiên bản" + "Tất cả màu" và render luôn kết quả —
 // không bắt phải bấm tiếp 2 bảng còn lại mới ra số liệu.
 function _spdPickModel(model){
   _spdSel={model:model,ver:SPD_ALL,mau:SPD_ALL};
-  var tree=_spdOptionTree();
-  var models=Object.keys(tree).sort();
-  document.getElementById('spd-model-box').innerHTML=_spdPickTableHtml('Model',models,model,'_spdPickModel',null,_spdModelCounts(models));
-  var vers=tree[model]?Object.keys(tree[model]).sort():[];
-  document.getElementById('spd-ver-box').innerHTML=_spdPickTableHtml('Phiên bản',vers,SPD_ALL,'_spdPickVer','Tất cả phiên bản',_spdVerCounts(model,vers));
-  var mauOpts=_spdMauOptions(tree,model,SPD_ALL);
-  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,SPD_ALL,'_spdPickMau','Tất cả màu',_spdMauCounts(model,SPD_ALL,mauOpts));
+  document.getElementById('spd-model-box').innerHTML=_spdModelBoxHtml(model);
+  document.getElementById('spd-ver-box').innerHTML=_spdVerBoxHtml(model,SPD_ALL);
+  document.getElementById('spd-mau-box').innerHTML=_spdMauBoxHtml(model,SPD_ALL,SPD_ALL);
   document.getElementById('spd-result').innerHTML=_spdRenderResult(model,SPD_ALL,SPD_ALL);
 }
 function _spdPickVer(ver){
   _spdSel.ver=ver;_spdSel.mau=SPD_ALL;
-  var tree=_spdOptionTree();
   var model=_spdSel.model;
-  var vers=tree[model]?Object.keys(tree[model]).sort():[];
-  document.getElementById('spd-ver-box').innerHTML=_spdPickTableHtml('Phiên bản',vers,ver,'_spdPickVer','Tất cả phiên bản',_spdVerCounts(model,vers));
-  var mauOpts=_spdMauOptions(tree,model,ver);
-  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,SPD_ALL,'_spdPickMau','Tất cả màu',_spdMauCounts(model,ver,mauOpts));
+  document.getElementById('spd-ver-box').innerHTML=_spdVerBoxHtml(model,ver);
+  document.getElementById('spd-mau-box').innerHTML=_spdMauBoxHtml(model,ver,SPD_ALL);
   document.getElementById('spd-result').innerHTML=_spdRenderResult(model,ver,SPD_ALL);
 }
 function _spdPickMau(mau){
   _spdSel.mau=mau;
-  var tree=_spdOptionTree();
-  var mauOpts=_spdMauOptions(tree,_spdSel.model,_spdSel.ver);
-  document.getElementById('spd-mau-box').innerHTML=_spdPickTableHtml('Màu',mauOpts,mau,'_spdPickMau','Tất cả màu',_spdMauCounts(_spdSel.model,_spdSel.ver,mauOpts));
+  document.getElementById('spd-mau-box').innerHTML=_spdMauBoxHtml(_spdSel.model,_spdSel.ver,mau);
   document.getElementById('spd-result').innerHTML=_spdRenderResult(_spdSel.model,_spdSel.ver,mau);
 }
 // Đếm số hợp đồng đã ký (theo ngày đặt cọc) từng tháng trong năm hiện tại (dựa theo
