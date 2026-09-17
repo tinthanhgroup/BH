@@ -516,6 +516,7 @@ var fileLastModified = null;
 var currentTab = 'hh';
 var _nsActiveSub = 'ns'; // sub-tab đang chọn trong tab gộp "Nhân sự & Chấm công": 'ns' hoặc 'cc'
 var hhFilters = {q:'',kho:[],nam:''};
+var boDateFilter=null; // lọc theo "Ngày xác nhận đơn hàng" trong KPI BO — xem mkStats()/toggleType()/renderHH()
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
 function khoMatch(k){return !khoActive()||hhFilters.kho.indexOf(k)!==-1;}
 var typeFilter = null;
@@ -852,8 +853,10 @@ function toggleType(t){
   // typeFilter còn sót lại từ trước khi đăng xuất/hết hạn session — không báo lỗi
   // gì để không lộ có mục này.
   if(t==='dathang' && !_canSeeDatHang()) return;
+  if(t!=='bo') boDateFilter=null;
   typeFilter=(typeFilter===t?null:t);drillModel=null;drillVersion=null;renderHH();
 }
+function setBoDateFilter(dk){boDateFilter=(boDateFilter===dk?null:dk);renderHH();}
 function setDrill(model,version){
   drillModel=model;
   if(version){
@@ -3234,7 +3237,7 @@ function hhSetKho(k,evt){
   drillModel=null;drillVersion=null;renderHH();
 }
 function hhSetNam(y){hhFilters.nam=(hhFilters.nam===y?'':y);renderHH();}
-function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;drillModel=null;drillVersion=null;renderHH();}
+function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;boDateFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
   var totCXN=allData.chuaXN?allData.chuaXN.length:0;
   var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(isPalisadeLX3).length:0;
@@ -3758,6 +3761,26 @@ function renderHH(){
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
       return true;
     });
+    var boDateBtns='';
+    if(typeFilter==='bo'){
+      var boDateCount={};
+      dRows.forEach(function(r){var dk=fmtDateHH(r.ngayXN);boDateCount[dk]=(boDateCount[dk]||0)+1;});
+      var boDateKeys=Object.keys(boDateCount).filter(function(k){return k!=='—';}).sort(function(a,b){
+        var pa=a.split('/'),pb=b.split('/');
+        return new Date(+pb[2],+pb[1]-1,+pb[0])-new Date(+pa[2],+pa[1]-1,+pa[0]);
+      });
+      var boTotalAll=dRows.length;
+      if(boDateKeys.length) boDateBtns='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px">'
+        +'<span class="filter-group-label">Ngày xác nhận đơn hàng</span>'
+        +boDateKeys.map(function(dk){
+          var isAct=boDateFilter===dk;
+          return '<button class="fbtn'+(isAct?' active-kho':'')+'" onclick="setBoDateFilter(\''+dk+'\')"><span class="fbtn-dot" style="background:#0369a1;'+(isAct?'':'opacity:.35')+'"></span>'+dk+' <span style="font-weight:700;opacity:.85">('+boDateCount[dk]+')</span></button>';
+        }).join('')
+        +(boDateFilter?'<button class="btn-clear" onclick="setBoDateFilter(null)">✕ Xóa lọc ngày</button>':'')
+        +'<span style="font-size:11px;color:#888;margin-left:4px">Tổng (tất cả ngày): <b>'+boTotalAll+'</b></span>'
+        +'</div>';
+      if(boDateFilter) dRows=dRows.filter(function(r){return fmtDateHH(r.ngayXN)===boDateFilter;});
+    }
     if(typeFilter==='old60') dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||(daysSince(b.ngayNhap)||0)-(daysSince(a.ngayNhap)||0);});
     else dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||a.phienBan.localeCompare(b.phienBan);});
     var isDebt=typeFilter==='debt',isDaPhan=typeFilter==='daphan',isLxx=typeFilter==='lxx',is2025t=typeFilter==='yr2025',isInvT=typeFilter==='inventory',isOld60=typeFilter==='old60',isNM=typeFilter==='nhamay',isCXN=typeFilter==='chuaXN';
@@ -3844,7 +3867,7 @@ function renderHH(){
     });
     var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
-    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div><div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>';
+    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>';
   }
   } else {
     bodyContent='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--muted);align-items:center;"><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-stock);border-radius:2px"></div>Tồn kho</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-bo);border-radius:2px"></div>BO</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-lxx);border-radius:2px"></div>Có LXX</div><span style="color:#bbb;font-size:11px;margin-left:6px">+N = xe nợ (không tính tổng)</span></div>'
