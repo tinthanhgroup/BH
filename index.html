@@ -3786,7 +3786,6 @@ function renderHH(){
     var isDebt=typeFilter==='debt',isDaPhan=typeFilter==='daphan',isLxx=typeFilter==='lxx',is2025t=typeFilter==='yr2025',isInvT=typeFilter==='inventory',isOld60=typeFilter==='old60',isNM=typeFilter==='nhamay',isCXN=typeFilter==='chuaXN';
     var tdNW='white-space:nowrap';
     var ths='<th style="width:30px">#</th><th style="'+tdNW+'">Model</th>';
-    if(isCXN) ths+='<th style="text-align:center;width:80px;'+tdNW+'">SL model</th>';
     ths+='<th>Phiên bản</th><th style="'+tdNW+'">Màu sắc</th><th style="'+tdNW+'">Năm SX</th><th style="'+tdNW+'">Chi nhánh</th>';
     if(isDebt) ths+='<th>Khách hàng</th><th style="'+tdNW+'">TVBH</th><th style="'+tdNW+'">Ngày đặt cọc</th><th style="'+tdNW+'">Số ngày chờ</th>';
     else if(isDaPhan) ths+='<th style="'+tdNW+'">Số khung</th><th>Khách hàng</th><th style="'+tdNW+'">TVBH</th><th style="'+tdNW+'">Ngày phân xe</th><th style="'+tdNW+'">Số ngày đã phân</th>';
@@ -3821,14 +3820,13 @@ function renderHH(){
       var cxnModelTotal={};
       cxnRows.forEach(function(r){cxnModelTotal[r.model]=(cxnModelTotal[r.model]||0)+r.sl;});
       var prevModelCXN='';
-      if(!cxnRows.length) dtbody='<tr class="empty-row"><td colspan="8">Không có dữ liệu</td></tr>';
+      if(!cxnRows.length) dtbody='<tr class="empty-row"><td colspan="7">Không có dữ liệu</td></tr>';
       else cxnRows.forEach(function(r,i){
         var modelTd='';
         if(r.model!==prevModelCXN){
           var span=cxnModelSpan[r.model];
           var totalSL=cxnModelTotal[r.model];
-          modelTd='<td class="model" rowspan="'+span+'" style="vertical-align:middle;border-right:1px solid #e8e8e8">'+r.model+'</td>'
-            +'<td rowspan="'+span+'" style="text-align:center;vertical-align:middle;border-right:1px solid #e8e8e8;font-family:\'JetBrains Mono\',monospace;font-weight:800;font-size:16px;color:#1a4fa0">'+totalSL+'</td>';
+          modelTd='<td class="model" rowspan="'+span+'" style="vertical-align:middle;border-right:1px solid #e8e8e8">'+r.model+' <span style="font-weight:700;color:#1a4fa0">('+totalSL+')</span></td>';
           prevModelCXN=r.model;
         }
         dtbody+='<tr>'
@@ -3848,10 +3846,11 @@ function renderHH(){
     } else {
 
     if(doMerge) dRows.forEach(function(r){modelSpanMap[r.model]=(modelSpanMap[r.model]||0)+1;});
+    var showModelCount=typeFilter==='bo'||isLxx||isInvT||isOld60||is2025t;
     if(!dRows.length) dtbody='<tr class="empty-row"><td colspan="10">Không có dữ liệu</td></tr>';
     else dRows.forEach(function(r,i){
       var modelTd='';
-      if(doMerge){if(r.model!==prevModel){var span=modelSpanMap[r.model];modelTd='<td class="model" rowspan="'+span+'" style="vertical-align:middle;border-right:1px solid #e8e8e8">'+r.model+'</td>';prevModel=r.model;}}
+      if(doMerge){if(r.model!==prevModel){var span=modelSpanMap[r.model];var modelLabel=r.model+(showModelCount?' <span style="font-weight:700;color:#666">('+span+')</span>':'');modelTd='<td class="model" rowspan="'+span+'" style="vertical-align:middle;border-right:1px solid #e8e8e8">'+modelLabel+'</td>';prevModel=r.model;}}
       else modelTd='<td class="model">'+r.model+'</td>';
       var nmBadge=r.isNhaMay?'<span style=\"font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;margin-left:4px;white-space:nowrap\">Nhà máy</span>':'';
       dtbody+='<tr><td style="color:#aaa;font-size:11px;white-space:nowrap">'+(i+1)+'</td>'+modelTd+'<td>'+(r.phienBan||'—')+nmBadge+'</td><td style="white-space:nowrap"><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+(r.mau||'—')+'</td>'+yrCell(r.namSX)+'<td style="white-space:nowrap">'+khoLabel(r.kho)+'</td>';
