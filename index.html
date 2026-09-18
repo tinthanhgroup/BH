@@ -3846,7 +3846,7 @@ function renderHH(){
     } else {
 
     if(doMerge) dRows.forEach(function(r){modelSpanMap[r.model]=(modelSpanMap[r.model]||0)+1;});
-    var showModelCount=typeFilter==='bo'||isLxx||isInvT||isOld60||is2025t;
+    var showModelCount=typeFilter==='bo'||isLxx||isInvT||isOld60||is2025t||isDebt||isDaPhan;
     if(!dRows.length) dtbody='<tr class="empty-row"><td colspan="10">Không có dữ liệu</td></tr>';
     else dRows.forEach(function(r,i){
       var modelTd='';
