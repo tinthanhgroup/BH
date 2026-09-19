@@ -247,7 +247,7 @@ var KHO_LABEL = {NT:'Nha Trang','ĐL':'Đà Lạt',PY:'Phú Yên',PR:'Phan Rang'
 // Mức thưởng TVBH theo Công văn số 51/2026/CV-HTV: Nhóm D1 (2tr/xe), Nhóm D2 (2,5tr/xe)
 var BONUS_MAP = {'Grand i10':2,'Custin':2,'Venue':2,'Elantra':2,'Staria':2,'Santafe':2.5,'Palisade':2.5,'Creta':2.5,'Accent':2.5,'Tucson':2.5,'Stargazer':2.5,'Ioniq':2.5};
 
-var KCK_DATE = "11/09/2026";
+var KCK_DATE = "16/09/2026";
 var KCK_DATA = [
   ['Grand i10','1.2AT',{'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Grand i10','SEDAN 1.2AT',{'TRẮNG':{'n':'2025','r':1}}],
@@ -278,23 +278,22 @@ var KCK_DATA = [
   ['Ioniq','5 PRESTIGE',{'ĐEN':{'n':'2022','r':0},'TRẮNG':{'n':'2022','r':0},'ĐỎ_GRP':{'n':'2022','r':0},'XÁM_GRP':{'n':'2022','r':0},'XANH':{'n':'2022','r':0}}],
   ['Ioniq','5 EXCLUSIVE (24MY)',{'BẠC':{'n':'2023','r':0},'ĐEN':{'n':'2023','r':0},'TRẮNG':{'n':'2023','r':0}}],
   ['Tucson','1.6 TURBO 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Tucson','2.0 XĂNG ĐẶC BIỆT 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0}}],
   ['Tucson','2.0 XĂNG TIÊU CHUẨN 2024',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Tucson','N LINE',{'ĐEN':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Creta','1.5 CAO CẤP FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
   ['Creta','1.5 ĐẶC BIỆT FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
   ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
   ['Staria','CỨU THƯƠNG DẦU MỚI',{'TRẮNG':{'n':'2026','r':0}}]
 ];
 // Tóm tắt thay đổi màu so với đợt cập nhật KCK trước — trùng nội dung với index.html
 // (xem giải thích ở đó). Chỉ hiện khi `date` khớp đúng KCK_DATE hiện tại.
 var KCK_CHANGE_NOTE = {
-  date: '11/09/2026',
-  removed: ['Elantra 1.6 AT: mất màu Đen','Tucson 2.0 Xăng Đặc Biệt 2024: mất màu Trắng','Creta 1.5 N Line Facelift: mất màu "Đỏ nóc đen" (2 tông màu)'],
-  added: ['Creta 1.5 Cao Cấp Facelift: thêm Đỏ và Trắng']
+  date: '16/09/2026',
+  removed: ['Tucson 2.0 Xăng Đặc Biệt 2024: hết hàng KCK (không còn màu nào)'],
+  added: []
 };
 function _kckChangeNoteHTML(){
   if(!KCK_CHANGE_NOTE || KCK_CHANGE_NOTE.date !== KCK_DATE) return '';
