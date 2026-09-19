@@ -3108,7 +3108,7 @@ function buildHierarchy(){
   var mMap={};
   function add(arr){
     arr.forEach(function(r){
-      if(typeFilter&&r.type!==typeFilter) return;
+      if(typeFilter&&typeFilter!=='tong'&&r.type!==typeFilter) return; // 'tong' không phải type thật (xem hhClickTong) — không lọc theo type
       if(!khoMatch(r.kho)) return;
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return;
       var m=r.model;
@@ -3149,15 +3149,33 @@ function getYears(){
   for(var i=0;i<all.length;i++){if(all[i].namSX) s.add(all[i].namSX);}
   return Array.from(s).sort();
 }
+// Nguồn dữ liệu để đếm số xe theo từng chi nhánh trong dòng lọc "Kho" — đổi
+// theo KPI đang chọn (typeFilter) để số đếm khớp với KPI đang xem (BO/LXX/
+// Xe nợ/Đã phân xe/...) thay vì luôn cố định theo Tồn kho.
+function khoBreakdownSrc(){
+  switch(typeFilter){
+    case 'stock': case 'inventory': return {rows:allData.stock,field:'kho'};
+    case 'bo': return {rows:allData.bo,field:'kho'};
+    case 'lxx': return {rows:allData.lxx,field:'kho'};
+    case 'debt': return {rows:allData.debt,field:'kho'};
+    case 'chuaXN': return {rows:allData.chuaXN||[],field:'kho'};
+    case 'daphan': return {rows:allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;}),field:'daly'};
+    case 'yr2025': return {rows:allData.stock.concat(allData.bo).filter(function(r){return parseInt(r.namSX)===2025;}),field:'kho'};
+    case 'old60': return {rows:allData.stock.filter(function(r){return daysSince(r.ngayNhap)>60;}),field:'kho'};
+    case 'nhamay': return {rows:allData.stock.filter(function(r){return !!r.isNhaMay;}),field:'kho'};
+    default: return {rows:allData.stock.concat(allData.bo,allData.lxx),field:'kho'}; // mặc định lúc chưa bấm gì, hoặc bấm "Tổng" ('tong')
+  }
+}
 function mkHHFilters(){
   var years=getYears();
   var KHO_LIST=[['NT','Nha Trang'],['ĐL','Đà Lạt'],['PY','Phú Yên'],['PR','Phan Rang'],['BL','Bảo Lộc']];
   var khoBtns='';
+  var cntSrc=khoBreakdownSrc();
   KHO_LIST.forEach(function(pair){
     var k=pair[0], label=pair[1], isAct=hhFilters.kho.indexOf(k)!==-1;
-    // Đếm tồn kho của từng chi nhánh (theo filter năm nếu có)
-    var cnt=allData.stock.filter(function(r){
-      if(r.kho!==k) return false;
+    // Đếm theo chi nhánh, nguồn dữ liệu đổi theo KPI đang chọn (xem khoBreakdownSrc)
+    var cnt=cntSrc.rows.filter(function(r){
+      if(r[cntSrc.field]!==k) return false;
       if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
       return true;
     }).length;
@@ -3201,6 +3219,11 @@ function hhSetKho(k,evt){
 }
 function hhSetNam(y){hhFilters.nam=(hhFilters.nam===y?'':y);renderHH();}
 function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;boDateFilter=null;drillModel=null;drillVersion=null;renderHH();}
+// Nút "Tổng": vẫn xoá lọc Kho/Năm SX như trước, nhưng đặt typeFilter riêng
+// ('tong') thay vì null để phân biệt với trạng thái mặc định lúc mới vào tab
+// — nhờ đó dòng đếm theo chi nhánh gộp cả Tồn kho+BO+LXX khi bấm "Tổng",
+// còn mặc định (chưa bấm gì) vẫn đếm theo Tồn kho (xem khoBreakdownSrc()).
+function hhClickTong(){hhFilters={q:'',kho:[],nam:''};typeFilter=(typeFilter==='tong'?null:'tong');boDateFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
   var totCXN=allData.chuaXN?allData.chuaXN.length:0;
   var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(isPalisadeLX3).length:0;
@@ -3209,6 +3232,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
   allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)===2025&&khoMatch(r.kho)) tot2025++;});
   var tot120=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return daysSince(r.ngayNhap)>60;}).length;
   var totNM=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return !!r.isNhaMay;}).length;
+  var totS_kho=allData.stock.filter(function(r){return khoMatch(r.kho);}).length; // "Chi tiết TK": số theo chi nhánh đang chọn (nếu có)
   var fmtMod=fileLastModified?fileLastModified.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
   function statEl(type,label,val,colorCls,accentColor,extraStyle,lx3Count){
     var isActive=typeFilter===type;
@@ -3232,7 +3256,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'<div style="width:1px;background:var(--border)"></div>'
     +statEl('lxx','LXX',totL,'amber','var(--c-lxx)','border-radius:0;border:none')
     +'</div>'
-    +'<div class="stat clickable" onclick="hhClearFilters()" title="Bỏ toàn bộ lọc" style="cursor:pointer;min-width:96px"><div class="stat-label">Tổng</div><div class="stat-num gray">'+(totS+totB+totL)+'</div></div>'
+    +`<div class="stat clickable${typeFilter==='tong'?' active-filter':''}" onclick="hhClickTong()" title="Tổng Tồn kho+BO+LXX — bấm để xem đếm theo chi nhánh gộp cả 3, bấm lại để về Tồn kho" style="cursor:pointer;min-width:96px;border-left:3px solid ${typeFilter==='tong'?'var(--c-stock)':'transparent'};background:${typeFilter==='tong'?'#f0f5ff':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">Tổng${typeFilter==='tong'?'<span class="pulse-dot"></span>':''}</div><div class="stat-num gray">${totS+totB+totL}</div></div>`
     +'<div class="stat-sep"></div>'
     +`<div class="stat clickable${typeFilter==='chuaXN'?' active-filter':''}" onclick="toggleType('chuaXN')" style="border-left:3px solid ${typeFilter==='chuaXN'?'#0d7c66':'transparent'};background:${typeFilter==='chuaXN'?'#e6faf5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px;color:#0d7c66">Chờ XN${typeFilter==='chuaXN'?'<span class="pulse-dot" style="background:#0d7c66"></span>':''}</div><div class="stat-num" style="color:#0d7c66">${totCXN}</div>${totCXN_LX3>0?`<div style="font-size:10px;font-weight:600;opacity:.75;color:#0d7c66">(${totCXN_LX3} LX3)</div>`:''}</div>`
     +'<div class="stat clickable'+(typeFilter==='kck'?' active-filter':'')+'" onclick="toggleType(\'kck\')" style="border-left:3px solid '+(typeFilter==='kck'?'#7c3aed':'transparent')+';background:'+(typeFilter==='kck'?'#f5f3ff':'#fff')+';position:relative">'+(showNew?'<div style="position:absolute;top:-7px;right:-4px;background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:8px;letter-spacing:.3px;animation:kckblink 1s step-start infinite">NEW</div>':'')+'<div class="stat-label" style="color:#7c3aed">KCK</div><div class="stat-num" style="font-size:13px;color:#7c3aed;font-weight:600">'+kckShort+'</div></div>'
@@ -3242,7 +3266,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03')
     +'<div class="stat-sep"></div>'
     +'<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">'
-    +`<div class="stat clickable${isInv?' active-filter':''}" onclick="toggleType('inventory')" style="border-radius:0;border:none;border-left:3px solid ${isInv?'var(--blue)':'transparent'};background:${isInv?'#f0f5ff':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">Chi tiết TK${isInv?'<span class="pulse-dot"></span>':''}</div><div class="stat-num blue">${totS}</div></div>`
+    +`<div class="stat clickable${isInv?' active-filter':''}" onclick="toggleType('inventory')" style="border-radius:0;border:none;border-left:3px solid ${isInv?'var(--blue)':'transparent'};background:${isInv?'#f0f5ff':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">Chi tiết TK${isInv?'<span class="pulse-dot"></span>':''}</div><div class="stat-num blue">${totS_kho}</div></div>`
     +'<div style="width:1px;background:var(--border)"></div>'
     +`<div class="stat clickable${is2025?' active-filter':''}" onclick="toggleType('yr2025')" style="border-radius:0;border:none;border-left:3px solid ${is2025?'#c0392b':'transparent'};background:${is2025?'#fff5f5':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">SX 2025${is2025?'<span class="pulse-dot" style="background:#c0392b"></span>':''}</div><div class="stat-num" style="color:#c0392b">${tot2025}</div></div>`
     +'<div style="width:1px;background:var(--border)"></div>'
