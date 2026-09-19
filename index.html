@@ -1536,8 +1536,10 @@ function renderDatHang(){
   // định, bấm vào tiêu đề (dạng dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem
   // hơn 2 bảng kia.
   return renderTocDoBanHang()
-    +_datHangTableHtml(DAT_HANG_ORDERS,'<div class="sec-title" style="color:#4f46e5;margin-top:40px">2. 📦 Giả định đặt hàng — chỉ model đang đặt thêm</div>')
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer">3. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">2. 📦 Giả định đặt hàng — chỉ model đang đặt thêm</summary>'
+    +_datHangTableHtml(DAT_HANG_ORDERS,'')
+    +'</details>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
@@ -1569,31 +1571,41 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   // người dùng) — dùng table-layout:auto (KHÔNG fixed, vì fixed bỏ qua nội dung hoàn
   // toàn) + min-width/max-width trên từng ô, đặt SAU thBase/tdBase trong cùng chuỗi
   // style để override đúng theo cascade CSS (khai báo sau thắng khai báo trước).
-  // Cột 1 (Loại xe): 180-200px. Cột 2-4 (chi nhánh): 120-150px. Cột 5-13 (số liệu): 80-100px (mặc định).
+  // Cột 1 (Model) + 2 (Phiên bản): 140-200px. Cột 3-5 (chi nhánh): 120-150px. Cột 6-15 (số liệu): 80-100px (mặc định).
   var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;white-space:normal;text-align:center;padding:6px 6px;word-break:break-word;min-width:80px;max-width:100px';
   var tdBase='padding:7px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0;min-width:80px;max-width:100px';
-  var wCol1=';min-width:180px;max-width:200px';
+  var wCol1=';min-width:120px;max-width:150px';
+  var wCol2=';min-width:140px;max-width:180px';
   var wBranch=';min-width:120px;max-width:150px';
   var numBase='font-size:10px;font-weight:700;color:#aaa;background:#fff;border-bottom:1px solid var(--border);text-align:center;padding:2px 10px';
-  var numCols=13; // Loại xe(1) + 3 chi nhánh + Tồn/BO/LXX/Đặt hàng/Tổng/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(9) — nhớ sửa nếu thêm/bớt cột
+  var numCols=15; // Model(1) + Phiên bản(2) + 3 chi nhánh + Đặt hàng/Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(10) — nhớ sửa nếu thêm/bớt cột
   var numRow='';
   for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th style="'+numBase+'">'+_ni+'</th>';
   var subFormula='<br><span style="font-weight:400;text-transform:none;font-size:9px;letter-spacing:0;color:#888">';
-  var thead='<th style="'+thBase+wCol1+';text-align:left">Loại xe</th>'
+  var thead='<th style="'+thBase+wCol1+';text-align:left">Model</th>'
+    +'<th style="'+thBase+wCol2+';text-align:left">Phiên bản</th>'
     +branches.map(function(b){return '<th style="'+thBase+wBranch+'">'+branchLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
     +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
     +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
     +'<th style="'+thBase+';color:var(--c-lxx)">LXX</th>'
-    +'<th style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(9=5+6+7+8)</span></th>'
+    +'<th style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(10=6+7+8+9)</span></th>'
+    +'<th style="'+thBase+';color:#6d28d9" title="Tổng cột 10 của tất cả phiên bản cùng Model">Tổng theo Model</th>'
     +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
-    +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(11=9−10)</span></th>'
+    +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(13=10−12)</span></th>'
     +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>(30 ngày)</th>'
-    +'<th style="'+thBase+';color:#b45309" title="Cột 11 ÷ Cột 12 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(13=11/12)</span></th>';
+    +'<th style="'+thBase+';color:#b45309" title="Cột 13 ÷ Cột 14 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(15=13/14)</span></th>';
   var rows='';
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
   var sumByBranch={NT:0,PY:0,'ĐL':0};
   var sumKckQty=0,sumNoKckQty=0;
+  // Pass 1: tính từng dòng + gom sẵn tổng cột 9 (Tổng) theo Model để hiện ở cột
+  // "Tổng theo Model" (pass 2) — cần biết tổng cả nhóm trước khi render dòng đầu
+  // tiên của nhóm đó nên phải tách 2 pass, không gộp chung vòng lặp render.
+  var calcRows=[];
+  var modelTongMap={};
+  var modelDatHangMap={};
+  var modelRowCount={};
   ordersData.forEach(function(o){
     var ton=allData.stock.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
@@ -1615,30 +1627,46 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var tongTruNo=tong-debt;
     var tyLe=ky30>0?(tongTruNo/ky30).toFixed(1):(tongTruNo>0?'∞':'–');
     sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
+    modelTongMap[o.model]=(modelTongMap[o.model]||0)+tong;
+    modelDatHangMap[o.model]=(modelDatHangMap[o.model]||0)+datHang;
+    modelRowCount[o.model]=(modelRowCount[o.model]||0)+1;
+    calcRows.push({o:o,ton:ton,bo:bo,lxx:lxx,debt:debt,ky30:ky30,kckColors:kckColors,datHang:datHang,tong:tong,tongTruNo:tongTruNo,tyLe:tyLe});
+  });
+  // Pass 2: render — gộp ô "Model" và "Tổng theo Model" bằng rowspan cho các dòng
+  // liên tiếp cùng Model (dữ liệu DAT_HANG_ORDERS vốn đã nhóm liền nhau theo Model).
+  var seenModel={};
+  calcRows.forEach(function(c){
+    var o=c.o;
+    var isFirstOfModel=!seenModel[o.model];
+    seenModel[o.model]=true;
+    var verOnly=o.label.indexOf(o.model)===0?o.label.slice(o.model.length).trim():o.label;
     rows+='<tr>'
-      +'<td style="'+tdBase+wCol1+';text-align:left;font-weight:600">'+o.label+'</td>'
-      +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],kckColors)+'</td>';}).join('')
-      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+datHang+'</td>'
-      +'<td style="'+tdBase+'">'+(ton||'')+'</td>'
-      +'<td style="'+tdBase+'">'+(bo||'')+'</td>'
-      +'<td style="'+tdBase+'">'+(lxx||'')+'</td>'
-      +'<td style="'+tdBase+';font-weight:800">'+tong+'</td>'
-      +'<td style="'+tdBase+';color:var(--c-debt)">'+(debt?'+'+debt:'')+'</td>'
-      +'<td style="'+tdBase+';font-weight:700">'+tongTruNo+'</td>'
-      +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+ky30+'</td>'
-      +'<td style="'+tdBase+';color:#b45309;font-weight:600">'+tyLe+'</td>'
+      +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
+      +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:600">'+verOnly+'</td>'
+      +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
+      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+c.datHang+'</td>'
+      +'<td style="'+tdBase+'">'+(c.ton||'')+'</td>'
+      +'<td style="'+tdBase+'">'+(c.bo||'')+'</td>'
+      +'<td style="'+tdBase+'">'+(c.lxx||'')+'</td>'
+      +'<td style="'+tdBase+';font-weight:800">'+c.tong+'</td>'
+      +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
+      +'<td style="'+tdBase+';color:var(--c-debt)">'+(c.debt?'+'+c.debt:'')+'</td>'
+      +'<td style="'+tdBase+';font-weight:700">'+c.tongTruNo+'</td>'
+      +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+c.ky30+'</td>'
+      +'<td style="'+tdBase+';color:#b45309;font-weight:600">'+c.tyLe+'</td>'
       +'</tr>';
   });
   var sumTongTruNo=sumTong-sumDebt;
   var sumTyLe=sumKy30>0?(sumTongTruNo/sumKy30).toFixed(1):(sumTongTruNo>0?'∞':'–');
   rows+='<tr style="border-top:2px solid #ddd;background:#f7f7f7;font-weight:700">'
-    +'<td style="'+tdBase+wCol1+';text-align:left">Tổng</td>'
+    +'<td colspan="2" style="'+tdBase+';text-align:left">Tổng</td>'
     +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
     +'<td style="'+tdBase+'">'+sumTon+'</td>'
     +'<td style="'+tdBase+'">'+sumBO+'</td>'
     +'<td style="'+tdBase+'">'+sumLXX+'</td>'
     +'<td style="'+tdBase+'">'+sumTong+'</td>'
+    +'<td style="'+tdBase+'"></td>'
     +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+'">'+sumTongTruNo+'</td>'
     +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
@@ -1752,30 +1780,41 @@ function _spdFilterActiveVers(model,vers,verCounts){
 // 3 hàm dựng HTML cho từng bảng chọn — dùng chung cho cả lần render đầu tiên
 // (renderTocDoBanHang, có Model mặc định) lẫn mỗi lần bấm chọn lại (_spdPickModel/
 // Ver/Mau), tránh lặp code tính list+counts.
+// Sắp xếp giảm dần theo số lượng ký (counts[v]), bằng nhau thì xếp theo bảng chữ cái
+// cho ổn định — áp dụng chung cho cả 3 bảng chọn Model/Phiên bản/Màu.
+function _spdSortByCount(list,counts){
+  return list.slice().sort(function(a,b){return (counts[b]||0)-(counts[a]||0)||a.localeCompare(b);});
+}
 function _spdModelBoxHtml(selected){
-  var models=Object.keys(_spdOptionTree()).sort();
-  return _spdPickTableHtml('Model',models,selected,'_spdPickModel',null,_spdModelCounts(models));
+  var models=Object.keys(_spdOptionTree());
+  var counts=_spdModelCounts(models);
+  return _spdPickTableHtml('Model',_spdSortByCount(models,counts),selected,'_spdPickModel',null,counts);
 }
 function _spdVerBoxHtml(model,selected){
   var tree=_spdOptionTree();
-  var vers=tree[model]?Object.keys(tree[model]).sort():[];
+  var vers=tree[model]?Object.keys(tree[model]):[];
   var verCounts=_spdVerCounts(model,vers);
   vers=_spdFilterActiveVers(model,vers,verCounts);
-  return _spdPickTableHtml('Phiên bản',vers,selected,'_spdPickVer','Tất cả phiên bản',verCounts);
+  return _spdPickTableHtml('Phiên bản',_spdSortByCount(vers,verCounts),selected,'_spdPickVer','Tất cả phiên bản',verCounts);
 }
 function _spdMauBoxHtml(model,ver,selected){
   var tree=_spdOptionTree();
   var mauOpts=_spdMauOptions(tree,model,ver);
-  return _spdPickTableHtml('Màu',mauOpts,selected,'_spdPickMau','Tất cả màu',_spdMauCounts(model,ver,mauOpts));
+  var mauCounts=_spdMauCounts(model,ver,mauOpts);
+  return _spdPickTableHtml('Màu',_spdSortByCount(mauOpts,mauCounts),selected,'_spdPickMau','Tất cả màu',mauCounts);
 }
 // Layout: 4 bảng cạnh nhau theo hàng ngang — Model / Phiên bản / Màu (3 bảng chọn,
 // độ rộng cố định) rồi bảng Kết quả chiếm phần còn lại — bọc flex-wrap để tự xuống
-// dòng trên màn hình hẹp. Model mặc định "Accent" (nếu có dữ liệu) để vừa vào là
-// thấy luôn kết quả, không cần bấm chọn từ đầu.
+// dòng trên màn hình hẹp. Model mặc định = model đứng đầu danh sách đã sắp xếp theo
+// số lượng ký (_spdSortByCount) — tức model bán chạy nhất — để vừa vào là thấy luôn
+// kết quả đáng chú ý nhất, không cần bấm chọn từ đầu. Tự động đổi theo dữ liệu, không
+// cố định tên model.
 function renderTocDoBanHang(){
-  var defModel=_spdOptionTree()['Accent']?'Accent':null;
+  var _spdModels=Object.keys(_spdOptionTree());
+  var _spdModelsSorted=_spdSortByCount(_spdModels,_spdModelCounts(_spdModels));
+  var defModel=_spdModelsSorted.length?_spdModelsSorted[0]:null;
   _spdSel=defModel?{model:defModel,ver:SPD_ALL,mau:SPD_ALL}:{model:null,ver:null,mau:null};
-  return '<div class="sec-title" style="color:#0d7c66">1. ⚡ Tốc độ bán hàng (chỉ bán lẻ) — chọn Model để xem số lượng ký theo từng tháng (mặc định gộp tất cả phiên bản/màu)</div>'
+  return '<div class="sec-title" style="color:#0d7c66;border-bottom:none">1. Tốc độ bán hàng (Bán lẻ)</div>'
     +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
     +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdModelBoxHtml(defModel)+'</div>'
     +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,SPD_ALL):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
@@ -1856,10 +1895,8 @@ function _spdRenderResult(model,ver,mau){
     +'</tr>';
   var verLabel=ver===SPD_ALL?'Tất cả phiên bản':ver;
   var mauLabel=mau===SPD_ALL?'Tất cả màu':mau;
-  var khacNote=grandByBranch[KHAC]>0?'<br>* Cột "Khác" = xe có ô Nguồn khách trống hoặc không thuộc 5 chi nhánh NT/PR/PY/ĐL/BL trong DATA TỔNG (ví dụ thiếu dữ liệu) — nên kiểm tra lại Sheet gốc nếu cần biết đúng chi nhánh.':'';
   return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+model+' — '+verLabel+' — '+mauLabel+'</div>'
-    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>'
-    +'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:8px">Số lượng ký theo ngày đặt cọc, nhóm theo chi nhánh Nguồn khách, từ T1/'+year+' đến hiện tại — đã loại "Bán ngang" (bán cho đại lý khác, Nguồn khách="Khác"), chỉ tính bán lẻ.'+khacNote+'</div>';
+    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>';
 }
 function renderKCK(){
   var COLS=['ĐEN','ĐỎ_GRP','TRẮNG','BẠC','XÁM_GRP','VÀNG CÁT'];
