@@ -50,10 +50,6 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .header-brand{font-size:15px;font-weight:800;}
 .header-brand span{color:var(--accent);}
 .header-right{display:flex;align-items:center;gap:8px;}
-.file-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;}
-.file-badge .dot{width:6px;height:6px;border-radius:50%;background:#34d399;}
-.btn-reload{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:5px;}
-.btn-reload:hover{border-color:var(--accent);color:var(--accent);}
 .btn-export{background:linear-gradient(135deg,#1e8449,#27ae60);border:none;border-radius:8px;padding:6px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:5px;transition:opacity .2s;}
 .btn-export:hover{opacity:.85;}
 
@@ -247,19 +243,6 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   .row-4-5{grid-template-columns:1fr;}
 }
 
-/* ── PRINT / PDF ── */
-@media print {
-  body { background: #fff !important; }
-  .tabs, .header .btn-reload, .header .btn-export, #btn-pdf,
-  #pw-modal, #target-modal, #upload-screen { display: none !important; }
-  .header { position: static; box-shadow: none; border-bottom: 1px solid #dce3f0; }
-  .tab-panel { display: none !important; }
-  #tab-bh { display: block !important; }
-  .bh-layout { padding: 8px 12px; gap: 10px; }
-  .card, .commentary-box { break-inside: avoid; box-shadow: none; }
-  #monthly-svg { height: 220px !important; }
-  .kpi-row { grid-template-columns: repeat(4,1fr) !important; }
-}
 @keyframes barRise{from{transform:scaleY(0);transform-origin:bottom}to{transform:scaleY(1);transform-origin:bottom}}
 @keyframes barFade{from{opacity:0}to{opacity:1}}
 .bar-anim{animation:barRise .45s cubic-bezier(.4,0,.2,1) both}
@@ -310,12 +293,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="header-right">
     <div id="user-badge" style="display:none;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:600;"></div>
     <button id="btn-logout" onclick="_logout()" title="Đăng xuất" style="display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:4px 9px;font-size:11px;color:var(--muted);cursor:pointer;font-family:inherit;">Đăng xuất</button>
-      <div class="file-badge"><span class="dot"></span><span id="file-name-badge">—</span></div>
-      <button class="btn-reload" onclick="reloadFile()">↺ Tải file khác</button>
-      <button id="btn-pdf" onclick="exportPDF()" style="display:none;background:linear-gradient(135deg,#c0392b,#e74c3c);border:none;border-radius:8px;padding:6px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;display:none;align-items:center;gap:5px;">🖨 Xuất PDF</button>
-      <button id="btn-order-excel" onclick="exportOrderExcel()" title="Xuất chi tiết xe tồn + xe nợ ra 1 file Excel (2 sheet) để tính toán đặt hàng" style="background:linear-gradient(135deg,#0f7a3d,#16a34a);border:none;border-radius:8px;padding:6px 14px;font-size:12px;color:#fff;cursor:pointer;font-family:inherit;font-weight:600;display:flex;align-items:center;gap:5px;">📊 Xuất đặt hàng</button>
-      <button class="btn-export" onclick="exportHTML()">⬇ Xuất file</button>
-      
+
     </div>
   </div>
 
@@ -486,8 +464,6 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 // ═══════════════════════════════════════════════════════════
 // SHARED CONSTANTS & STATE
 // ═══════════════════════════════════════════════════════════
-var __originalSrc = document.documentElement.outerHTML;
-
 const BRANCHES_BH = ['NT','PR','PY','ĐL','BL','ĐN'];
 const GROUPS_BH = {NT:['NT','PR'],DL:['ĐL','BL','ĐN'],PY:['PY']};
 const BC = {BL:'#7e5ea8',ĐL:'#d4693a',ĐN:'#f1948a',NT:'#4a90d9',PR:'#d4ac0d',PY:'#82c9a0'};
@@ -889,11 +865,6 @@ fi.addEventListener('change',()=>{if(fi.files[0])processFile(fi.files[0]);});
 document.addEventListener('dragover',e=>{e.preventDefault();});
 document.addEventListener('drop',e=>{e.preventDefault();var f=e.dataTransfer.files[0];if(f) processFile(f);});
 
-function reloadFile(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('upload-screen').style.display='flex';
-  fi.value='';
-}
 function prog(v){
   const pb=document.getElementById('progress-bar');
   if(!pb) return;
@@ -904,7 +875,6 @@ function prog(v){
 }
 
 function processFile(file){
-  document.getElementById('file-name-badge').textContent=file.name;
   prog(20);
   const fileDate=file.lastModified?new Date(file.lastModified):new Date();
   fileLastModified=fileDate;
@@ -1230,8 +1200,6 @@ function _doSwitchTab(t){
       crmIframe.setAttribute('data-loaded','1');
     }
   }
-  const pdfBtn=document.getElementById('btn-pdf');
-  if(pdfBtn) pdfBtn.style.display=(t==='bh'?'flex':'none');
   if(t==='hh') renderHH();
   else if(t==='bh'){
     renderBH(_bhData);
@@ -1298,11 +1266,6 @@ function switchNsSub(sub, silent){
       noiquyIframe.setAttribute('data-loaded','1');
     }
   }
-}
-
-function exportPDF(){
-  if(currentTab!=='bh') return;
-  window.print();
 }
 
 // ── AUTH WEB APP URL (điền sau khi deploy) ──────────────────
@@ -4093,126 +4056,6 @@ function renderChiTiet(){
 // ═══════════════════════════════════════════════════════════
 // XUẤT EXCEL ĐẶT HÀNG (Chi tiết xe tồn + Chi tiết xe nợ, 2 sheet)
 // ═══════════════════════════════════════════════════════════
-function exportOrderExcel(){
-  if(typeof XLSX==='undefined'){
-    alert('Thư viện xuất Excel chưa tải xong, vui lòng đợi vài giây rồi thử lại.');
-    return;
-  }
-  if((!allData.stock||!allData.stock.length)&&(!allData.debt||!allData.debt.length)){
-    alert('Chưa có dữ liệu tồn kho / xe nợ để xuất.');
-    return;
-  }
-
-  // ── Sheet 1: Chi tiết xe tồn (đúng dữ liệu bảng "Chi tiết tồn kho", tôn trọng bộ lọc Kho/Năm SX đang chọn) ──
-  var stockRows=(allData.stock||[]).filter(function(r){
-    if(!khoMatch(r.kho)) return false;
-    if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
-    return true;
-  });
-  stockRows.sort(function(a,b){
-    var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);
-    if(ia<0)ia=999;if(ib<0)ib=999;
-    return ia-ib||a.phienBan.localeCompare(b.phienBan)||a.mau.localeCompare(b.mau);
-  });
-  var stockData=stockRows.map(function(r,i){
-    var days=daysSince(r.ngayNhap);
-    return {
-      '#':i+1,
-      'Model':r.model||'',
-      'Phiên bản':r.phienBan||'',
-      'Màu sắc':r.mau||'',
-      'Năm SX':r.namSX||'',
-      'Chi nhánh':khoLabel(r.kho)||r.kho||'',
-      'Số khung':r.soKhung||'',
-      'Ngày nhập kho':r.ngayNhap?fmtDateHH(r.ngayNhap):'',
-      'Số ngày tồn':days!==null?days:'',
-      'Hiệu lực LC':getLCBaoLanh(r.model,r.phienBan)||''
-    };
-  });
-
-  // ── Sheet 2: Chi tiết xe nợ (đúng dữ liệu bảng "Xe nợ khách – chưa phân xe", tôn trọng cùng bộ lọc) ──
-  var debtRows=(allData.debt||[]).filter(function(r){
-    if(!khoMatch(r.kho)) return false;
-    if(hhFilters.nam&&String(r.namSX)!==hhFilters.nam) return false;
-    return true;
-  });
-  debtRows.sort(function(a,b){
-    var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);
-    if(ia<0)ia=999;if(ib<0)ib=999;
-    return ia-ib||a.phienBan.localeCompare(b.phienBan);
-  });
-  var debtData=debtRows.map(function(r,i){
-    var dd=daysSince(r.ngayCoc);
-    return {
-      '#':i+1,
-      'Model':r.model||'',
-      'Phiên bản':r.phienBan||'',
-      'Màu sắc':r.mau||'',
-      'Năm SX':r.namSX||'',
-      'Chi nhánh':khoLabel(r.kho)||r.kho||'',
-      'Khách hàng':r.khach||'',
-      'TVBH':r.tvbh||'',
-      'Ngày đặt cọc':r.ngayCoc?fmtDateHH(r.ngayCoc):'',
-      'Số ngày chờ':dd!==null?dd:''
-    };
-  });
-
-  var wb=XLSX.utils.book_new();
-  var ws1=XLSX.utils.json_to_sheet(stockData);
-  ws1['!cols']=[{wch:4},{wch:14},{wch:24},{wch:12},{wch:8},{wch:12},{wch:20},{wch:14},{wch:12},{wch:10}];
-  XLSX.utils.book_append_sheet(wb,ws1,'Chi tiết xe tồn');
-
-  var ws2=XLSX.utils.json_to_sheet(debtData);
-  ws2['!cols']=[{wch:4},{wch:14},{wch:24},{wch:12},{wch:8},{wch:12},{wch:20},{wch:14},{wch:14},{wch:12}];
-  XLSX.utils.book_append_sheet(wb,ws2,'Chi tiết xe nợ');
-
-  var stamp=new Date().toLocaleDateString('vi-VN').split('/').join('-');
-  XLSX.writeFile(wb,'DatHang_'+stamp+'.xlsx');
-}
-
-// ═══════════════════════════════════════════════════════════
-// EXPORT
-// ═══════════════════════════════════════════════════════════
-function exportHTML(){
-  if(!allData.stock.length&&!allData.bo.length&&!allCoc.length){alert('Chưa có dữ liệu để xuất.');return;}
-  var d=fileLastModified||new Date();
-  var pad=n=>String(n).padStart(2,'0');
-
-  var payload=JSON.stringify({
-    allData:allData, allSales:allSales, allCoc:allCoc,
-    ts:fileLastModified?fileLastModified.getTime():null,
-    isExport:true
-  });
-
-  var src=__originalSrc;
-
-  // Nhúng data vào đầu body
-  var dataTag='<scr'+'ipt id="__exp_data__">window.__injected='+payload+';<\/scr'+'ipt>';
-  src=src.replace('<body>','<body>'+dataTag);
-
-  // Ẩn upload, hiện app
-  src=src.replace('id="upload-screen"','id="upload-screen" style="display:none"');
-  src=src.replace('id="app" style="display:none"','id="app" style="display:block"');
-
-  // Ẩn nút không cần
-  src=src.replace('class="btn-reload"','class="btn-reload" style="display:none"');
-  src=src.replace('class="btn-export"','class="btn-export" style="display:none"');
-
-  // Footer
-  var stamp=pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
-  var footer='<div style="text-align:center;padding:12px;font-size:11px;color:#9aa5c0;border-top:1px solid #dce3f0;margin-top:8px;">Xuất lúc '+(new Date().toLocaleString('vi-VN'))+' · Dữ liệu: '+stamp+'</div>';
-  src=src.replace('</body>',footer+'</body>');
-
-  var blob=new Blob([src],{type:'text/html;charset=utf-8'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  a.href=url;
-  a.download='BCTongHop-'+pad(d.getDate())+'.'+pad(d.getMonth()+1)+'-'+d.getHours()+'h.html';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),3000);
-}
-
-
 // ═══════════════════════════════════════════════════════════
 // BUILD BH DATA FROM EXPORT (re-parse từ allCoc/allData)
 // ═══════════════════════════════════════════════════════════
