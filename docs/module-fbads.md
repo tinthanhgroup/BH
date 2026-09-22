@@ -23,6 +23,14 @@
 
 Nếu sau này viết thêm script tương tự đọc 1 nguồn "chỉ có hôm nay", **copy đúng cơ chế GET-merge-PUT này**, không copy kiểu "ghi đè thẳng" của `TinThanh_MKT_Sync.gs`/`TinThanh_NhanSu_Sync.gs` (2 script đó nguồn đã có đủ lịch sử nên ghi đè thẳng là đúng).
 
+## Backfill lịch sử (nạp lại dữ liệu các ngày trong quá khứ)
+
+Vì tính năng tự gọi Graph API mới bật 22/09/2026, `fbads.json` ban đầu **chỉ có dữ liệu từ ngày bật tính năng trở đi** — các ngày trước đó (kể cả cùng tháng) không tự có. Muốn xem "từ đầu tháng tới giờ" hay nạp lại khoảng ngày bất kỳ trong quá khứ, chạy tay 1 lần trong Apps Script editor:
+- `backfillFbAdsThisMonth()` — nạp từ ngày 1 tháng hiện tại tới hôm qua (không đụng "hôm nay", để `fbAdsSync()` tự lo).
+- `backfillFbAds('yyyy-MM-dd')` hoặc `backfillFbAds('yyyy-MM-dd', 'yyyy-MM-dd')` — nạp khoảng ngày tuỳ chọn (vd dò lại vài ngày bị thiếu do trigger lỗi).
+
+Cả 2 hàm dùng `time_increment=1` khi gọi Graph API để tách kết quả theo từng ngày, rồi upsert thẳng vào `fbads.json` qua đúng cơ chế GET-merge-PUT như `fbAdsSync()` — **không ghi vào Sheet** (Sheet chỉ giữ vai trò snapshot "hôm nay"). An toàn khi chạy lại nhiều lần / chồng ngày đã có sẵn (upsert theo khoá `ngày+tên chiến dịch`, không tạo trùng dòng). Sau khi backfill xong, bộ lọc "30 ngày"/"toàn bộ lịch sử" có sẵn trong `fbads.html` sẽ tự hiển thị đúng dữ liệu mới nạp, không cần sửa gì ở `fbads.html`.
+
 ## Cấu trúc Sheet
 
 Sheet chỉ có 1 tab (script tự lấy sheet **đầu tiên**, để trống `FBADS_CONFIG.SHEET_NAME` — điền tên tab nếu Sheet có nhiều tab). Header do `writeFbAdsSnapshotToSheet_()` tự dựng lại mỗi lần chạy, là tên field thô của Facebook Graph API (không phải tên tiếng Việt), script đọc lại dò cột theo đúng tên trong `FBADS_COLUMN_MAP`, không phụ thuộc thứ tự cột.
