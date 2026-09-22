@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quảng cáo Facebook — Tín Thanh Group</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#7385A0; --line:#E4EAF3;
+    --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
+    --shadow:0 2px 10px rgba(31,95,153,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
+  .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
+  .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
+  .kpi.green::before{background:var(--green);} .kpi.red::before{background:var(--red);} .kpi.gold::before{background:var(--gold);}
+  .kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
+  .kpi-num{font-size:26px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
+  .kpi.green .kpi-num{color:var(--green);} .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:#B8860B;}
+  .kpi-sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
+
+  .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
+  .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
+  .panel summary{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;cursor:pointer;}
+  .chart-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;
+    font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
+  }
+  .panel[open] summary{margin-bottom:4px;}
+  .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  select{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
+  .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
+  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
+  .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tbody tr:hover{background:#F7F9FC;}
+  tbody tr.xau{background:#FDF1F1;}
+  tbody tr.xau:hover{background:#FBE5E5;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+  .badge.tot{background:#E1F5EC;color:var(--green);}
+  .badge.canhbao{background:#FFF3E0;color:#B8860B;}
+  .badge.xau{background:#FBE5E5;color:var(--red);}
+  .badge.na{background:#EDEFF3;color:var(--ink-soft);}
+  .dash{color:var(--ink-soft);}
+  .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
+  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
+
+  /* ── Biểu đồ xu hướng chi phí — cột CSS thuần, không dùng thư viện chart (đúng chủ trương "không build step" của repo) ── */
+  .trend-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
+  .trend-bar-wrap{flex:1;min-width:4px;height:100%;display:flex;align-items:flex-end;position:relative;}
+  .trend-bar{width:100%;background:var(--navy);border-radius:4px 4px 0 0;transition:opacity .15s;cursor:default;}
+  .trend-bar:hover{opacity:.75;}
+  .trend-bar-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--navy);white-space:nowrap;}
+  .trend-labels{display:flex;gap:3px;margin-top:4px;}
+  .trend-tick{flex:1;min-width:4px;text-align:center;font-size:9.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div>
+      <h1>MKT Thương hiệu — Quảng cáo Facebook</h1>
+      <div class="sub" id="updatedText">Đang tải dữ liệu…</div>
+    </div>
+  </div>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="panel">
+    <h3>Bộ lọc</h3>
+    <div class="filters">
+      <div class="filter-btns" id="rangeBtns">
+        <button class="filter-btn" data-range="7" onclick="setRange(7)">7 ngày gần nhất</button>
+        <button class="filter-btn" data-range="30" onclick="setRange(30)">30 ngày gần nhất</button>
+        <button class="filter-btn active" data-range="0" onclick="setRange(0)">Toàn bộ lịch sử</button>
+      </div>
+      <select id="fChienDich" onchange="onFilterChange()"><option value="">Tất cả chiến dịch</option></select>
+      <button class="reset-btn" onclick="resetFilters()">✕ Xóa lọc</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">1</span> Xu hướng Chi phí theo ngày</h3>
+    <p class="desc">Tổng chi phí tất cả chiến dịch mỗi ngày, theo khoảng thời gian đang chọn. Di chuột vào từng cột để xem đúng ngày và số tiền.</p>
+    <div class="trend-chart" id="trendChart"></div>
+    <div class="trend-labels" id="trendLabels"></div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">2</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
+    <p class="desc" id="warnDesc"></p>
+    <table>
+      <thead><tr><th>Chiến dịch</th><th>Chi phí</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả</th><th>Trạng thái</th></tr></thead>
+      <tbody id="warnTable"></tbody>
+    </table>
+  </div>
+
+  <details class="panel">
+    <summary><span class="chart-num">3</span> Chi tiết chỉ số theo Chiến dịch</summary>
+    <p class="desc">Toàn bộ chỉ số tương tác, cộng dồn theo khoảng thời gian đang chọn ở trên.</p>
+    <table>
+      <thead><tr>
+        <th>Chiến dịch</th><th>Chi phí</th><th>Lượt click Link</th><th>Xem Video</th>
+        <th>Tương tác bài viết</th><th>Reaction</th><th>Like</th><th>Comment</th>
+        <th>Messenger bắt đầu</th><th>Messenger trả lời</th><th>Tổng kết nối Messenger</th>
+      </tr></thead>
+      <tbody id="detailTable"></tbody>
+    </table>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">4</span> Nhật ký theo ngày (<span id="logCount">0</span>)</summary>
+    <p class="desc">Từng dòng = 1 chiến dịch trong 1 ngày, mới nhất lên đầu.</p>
+    <table>
+      <thead><tr><th>Ngày</th><th>Chiến dịch</th><th>Chi phí</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
+      <tbody id="logTable"></tbody>
+    </table>
+    <div class="empty" id="emptyMsg" style="display:none;">Không có dữ liệu khớp bộ lọc.</div>
+  </details>
+
+  <div class="footnote" id="footnoteText"></div>
+</div>
+
+<script>
+const FBADS_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/fbads.json';
+
+// ── Ngưỡng cảnh báo hiệu quả — chỉnh trực tiếp 3 hằng số này nếu cần đổi độ nhạy cảnh báo ──
+const FBADS_CHI_TOI_THIEU_DANH_GIA = 50000;   // chi phí dưới mức này: chưa đủ dữ liệu để đánh giá (badge xám)
+const FBADS_NGUONG_KHONG_KQ = 200000;         // chi vượt mức này mà 0 kết quả Messenger: cảnh báo đỏ
+const FBADS_HE_SO_CANH_BAO = 1.5;             // chi phí/kết quả cao hơn X lần trung bình các chiến dịch có kết quả: cảnh báo vàng
+
+let LICHSU = [];
+let state = { range: 0, chienDich: '' }; // range: số ngày gần nhất, 0 = toàn bộ
+
+function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
+function fmtNgayVN(iso){
+  const m = (iso||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'—');
+}
+function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+
+function filtered(){
+  let list = LICHSU;
+  if(state.range > 0){
+    const nguong = new Date();
+    nguong.setDate(nguong.getDate() - state.range);
+    const nguongIso = nguong.toISOString().slice(0,10);
+    list = list.filter(x => x.ngay >= nguongIso);
+  }
+  if(state.chienDich) list = list.filter(x => x.chienDich === state.chienDich);
+  return list;
+}
+
+// ── Cộng dồn theo chiến dịch (dùng cho panel 2 + 3) ──
+function aggregateByCampaign(list){
+  const map = {};
+  list.forEach(x=>{
+    if(!map[x.chienDich]) map[x.chienDich] = {
+      chienDich:x.chienDich, chiPhi:0, linkClick:0, videoView:0, postEngagement:0,
+      postReaction:0, like:0, comment:0, messengerBatDau:0, messengerTraLoi:0, messengerTongKetNoi:0
+    };
+    const a = map[x.chienDich];
+    a.chiPhi += x.chiPhi||0; a.linkClick += x.linkClick||0; a.videoView += x.videoView||0;
+    a.postEngagement += x.postEngagement||0; a.postReaction += x.postReaction||0;
+    a.like += x.like||0; a.comment += x.comment||0;
+    a.messengerBatDau += x.messengerBatDau||0; a.messengerTraLoi += x.messengerTraLoi||0;
+    a.messengerTongKetNoi += x.messengerTongKetNoi||0;
+  });
+  return Object.values(map).sort((a,b)=> b.chiPhi - a.chiPhi);
+}
+
+// ── Phân loại hiệu quả: 'na' chưa đủ dữ liệu, 'xau' chi nhiều không kết quả, 'canhbao' cao hơn TB, 'tot' còn lại ──
+function xepLoaiHieuQua(camps){
+  const coKetQua = camps.filter(c=>c.messengerBatDau>0 && c.chiPhi>=FBADS_CHI_TOI_THIEU_DANH_GIA);
+  const tbChiPhiMoiKQ = coKetQua.length
+    ? coKetQua.reduce((s,c)=>s+c.chiPhi/c.messengerBatDau,0) / coKetQua.length
+    : null;
+  return camps.map(c=>{
+    const chiPhiMoiKQ = c.messengerBatDau>0 ? c.chiPhi/c.messengerBatDau : null;
+    let loai, nhan;
+    if(c.chiPhi < FBADS_CHI_TOI_THIEU_DANH_GIA){
+      loai='na'; nhan='Chưa đủ dữ liệu';
+    } else if(c.messengerBatDau===0 && c.chiPhi>FBADS_NGUONG_KHONG_KQ){
+      loai='xau'; nhan='Chi nhiều, chưa có kết quả';
+    } else if(tbChiPhiMoiKQ && chiPhiMoiKQ && chiPhiMoiKQ > tbChiPhiMoiKQ*FBADS_HE_SO_CANH_BAO){
+      loai='canhbao'; nhan='Cao hơn trung bình';
+    } else {
+      loai='tot'; nhan='Tốt';
+    }
+    return {...c, chiPhiMoiKQ, loai, nhan};
+  }).sort((a,b)=>{
+    const rank = {xau:0, canhbao:1, tot:2, na:3};
+    if(rank[a.loai] !== rank[b.loai]) return rank[a.loai]-rank[b.loai];
+    return b.chiPhi - a.chiPhi;
+  });
+}
+
+function renderKPI(list){
+  const totalChiPhi = list.reduce((s,x)=>s+(x.chiPhi||0),0);
+  const totalKQ = list.reduce((s,x)=>s+(x.messengerBatDau||0),0);
+  const totalEngage = list.reduce((s,x)=>s+(x.postEngagement||0),0);
+  const chiPhiMoiKQ = totalKQ>0 ? totalChiPhi/totalKQ : null;
+  const camps = xepLoaiHieuQua(aggregateByCampaign(list));
+  const soCanhBao = camps.filter(c=>c.loai==='xau' || c.loai==='canhbao').length;
+  const kpis = [
+    {label:'Tổng chi phí', num:fmtVND(totalChiPhi), sub:'trong khoảng đang chọn', cls:''},
+    {label:'Kết quả Messenger', num:totalKQ, sub:'cuộc trò chuyện bắt đầu', cls:'green'},
+    {label:'Chi phí / Kết quả TB', num: chiPhiMoiKQ!=null ? fmtVND(chiPhiMoiKQ) : '—', sub:'trung bình toàn bộ', cls:''},
+    {label:'Chiến dịch cần chú ý', num:soCanhBao, sub:'trên tổng '+camps.length+' chiến dịch', cls: soCanhBao>0?'red':'green'},
+    {label:'Tổng tương tác bài viết', num:totalEngage, sub:'like + comment + click...', cls:'gold'},
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.cls}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-num">${k.num}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+// ── Panel 1: xu hướng chi phí theo ngày (cột CSS, nhãn chọn lọc: đầu/cuối/đỉnh — không ghi số lên mọi cột) ──
+function renderTrend(list){
+  const byDay = {};
+  list.forEach(x=>{ byDay[x.ngay] = (byDay[x.ngay]||0) + (x.chiPhi||0); });
+  const days = Object.keys(byDay).sort();
+  const chartEl = document.getElementById('trendChart');
+  const labelsEl = document.getElementById('trendLabels');
+  if(!days.length){
+    chartEl.innerHTML = '<div class="empty" style="width:100%;">Không có dữ liệu khớp bộ lọc.</div>';
+    labelsEl.innerHTML = '';
+    return;
+  }
+  const max = Math.max(...days.map(d=>byDay[d]));
+  const maxIdx = days.findIndex(d=>byDay[d]===max);
+  chartEl.innerHTML = days.map((d,i)=>{
+    const v = byDay[d];
+    const h = max>0 ? Math.max(2, Math.round(v/max*100)) : 0;
+    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtVND(v)}</div>` : '';
+    return `<div class="trend-bar-wrap" title="${fmtNgayVN(d)}: ${fmtVND(v)}">${label}<div class="trend-bar" style="height:${h}%;"></div></div>`;
+  }).join('');
+  labelsEl.innerHTML = days.map((d,i)=>{
+    const show = i===0 || i===days.length-1 || i===maxIdx;
+    return `<div class="trend-tick">${show ? fmtNgayVN(d) : ''}</div>`;
+  }).join('');
+}
+
+// ── Panel 2: cảnh báo hiệu quả theo chiến dịch ──
+function renderWarnTable(list){
+  document.getElementById('warnDesc').innerHTML =
+    `"Kết quả" = số cuộc trò chuyện Messenger bắt đầu. Cảnh báo <b style="color:var(--red)">đỏ</b> = đã chi trên ${fmtVND(FBADS_NGUONG_KHONG_KQ)} mà chưa có kết quả nào; ` +
+    `<b style="color:#B8860B">vàng</b> = chi phí/kết quả cao hơn ${FBADS_HE_SO_CANH_BAO}× trung bình các chiến dịch còn lại; dưới ${fmtVND(FBADS_CHI_TOI_THIEU_DANH_GIA)} coi là chưa đủ dữ liệu.`;
+
+  const camps = xepLoaiHieuQua(aggregateByCampaign(list));
+  const badgeMap = {tot:'tot', canhbao:'canhbao', xau:'xau', na:'na'};
+  document.getElementById('warnTable').innerHTML = camps.length ? camps.map(c=>`
+    <tr class="${c.loai==='xau'?'xau':''}">
+      <td style="font-weight:700;color:var(--navy);">${c.chienDich}</td>
+      <td>${fmtVND(c.chiPhi)}</td>
+      <td>${c.messengerBatDau}</td>
+      <td>${c.chiPhiMoiKQ!=null ? fmtVND(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
+      <td><span class="badge ${badgeMap[c.loai]}">${c.nhan}</span></td>
+    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+// ── Panel 3: chi tiết chỉ số theo chiến dịch ──
+function renderDetailTable(list){
+  const camps = aggregateByCampaign(list);
+  document.getElementById('detailTable').innerHTML = camps.length ? camps.map(c=>`
+    <tr>
+      <td style="font-weight:700;color:var(--navy);">${c.chienDich}</td>
+      <td>${fmtVND(c.chiPhi)}</td>
+      <td>${c.linkClick}</td>
+      <td>${c.videoView}</td>
+      <td>${c.postEngagement}</td>
+      <td>${c.postReaction}</td>
+      <td>${c.like}</td>
+      <td>${c.comment}</td>
+      <td>${c.messengerBatDau}</td>
+      <td>${c.messengerTraLoi}</td>
+      <td>${c.messengerTongKetNoi}</td>
+    </tr>`).join('') : `<tr><td colspan="10" class="empty">Không có dữ liệu</td></tr>`;
+}
+
+// ── Panel 4: nhật ký theo ngày (thô, mới nhất lên đầu) ──
+function renderLogTable(list){
+  const sorted = [...list].sort((a,b)=>{
+    if(a.ngay !== b.ngay) return a.ngay < b.ngay ? 1 : -1;
+    return (a.chienDich||'').localeCompare(b.chienDich||'');
+  });
+  document.getElementById('logCount').textContent = sorted.length;
+  document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
+  document.getElementById('logTable').innerHTML = sorted.map(x=>`
+    <tr>
+      <td>${fmtNgayVN(x.ngay)}</td>
+      <td style="font-weight:700;">${x.chienDich}</td>
+      <td>${fmtVND(x.chiPhi)}</td>
+      <td>${x.messengerBatDau||0}</td>
+      <td>${x.linkClick||0}</td>
+      <td>${x.videoView||0}</td>
+    </tr>`).join('');
+}
+
+function populateFilterOptions(){
+  const chienDichs = uniqSorted(LICHSU.map(x=>x.chienDich));
+  document.getElementById('fChienDich').innerHTML = '<option value="">Tất cả chiến dịch</option>' + chienDichs.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function setRange(days){
+  state.range = days;
+  document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.range,10)===days));
+  render();
+}
+
+function onFilterChange(){
+  state.chienDich = document.getElementById('fChienDich').value;
+  render();
+}
+
+function resetFilters(){
+  state = { range:0, chienDich:'' };
+  document.getElementById('fChienDich').value = '';
+  document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.range==='0'));
+  render();
+}
+
+function render(){
+  const list = filtered();
+  renderKPI(list);
+  renderTrend(list);
+  renderWarnTable(list);
+  renderDetailTable(list);
+  renderLogTable(list);
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(FBADS_JSON_URL+'?t='+Date.now());
+    if(!res.ok) throw new Error('fbads.json: HTTP '+res.status);
+    const json = await res.json();
+    LICHSU = (json.records && json.records.lichSu) || [];
+    document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LICHSU.length + ' dòng lịch sử';
+    document.getElementById('footnoteText').textContent = 'Dữ liệu chi phí & kết quả quảng cáo Facebook, đồng bộ tự động mỗi giờ từ tài khoản quảng cáo qua Google Sheet trung gian.';
+    populateFilterOptions();
+    render();
+  }catch(e){
+    console.error('Lỗi tải fbads.json:', e);
+    document.getElementById('updatedText').textContent = 'Không tải được dữ liệu — vui lòng thử lại sau.';
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>

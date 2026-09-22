@@ -70,6 +70,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .subtab-panel{display:none;flex:1;min-height:0;}
 .subtab-panel.active{display:block;}
 #tab-ns.tab-panel.active{display:flex;flex-direction:column;}
+#tab-mkt.tab-panel.active{display:flex;flex-direction:column;}
 
 /* ── CONTENT AREAS ── */
 .tab-panel{display:none;}
@@ -405,7 +406,16 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <iframe id="dv-iframe" src="" style="width:125%;height:125%;border:none;display:block;transform:scale(0.8);transform-origin:top left;" allowfullscreen></iframe>
   </div>
   <div id="tab-mkt" class="tab-panel" style="padding:0;">
-    <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    <div class="subtabs">
+      <div class="subtab active" id="subtab-mkt-btn" onclick="switchMktSub('mkt')">5.1. Nhật ký đăng bài</div>
+      <div class="subtab" id="subtab-fbads-btn" onclick="switchMktSub('fbads')">5.2. Quảng cáo Facebook</div>
+    </div>
+    <div id="subpanel-mkt" class="subtab-panel active">
+      <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
+    <div id="subpanel-fbads" class="subtab-panel">
+      <iframe id="fbads-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
   </div>
   <div id="tab-policy" class="tab-panel" style="padding:0;">
     <iframe id="policy-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
@@ -491,6 +501,7 @@ var fileLastModified = null;
 // HH UI state
 var currentTab = 'hh';
 var _nsActiveSub = 'ns'; // sub-tab đang chọn trong tab gộp "Nhân sự & Chấm công": 'ns' hoặc 'cc'
+var _mktActiveSub = 'mkt'; // sub-tab đang chọn trong tab "MKT Thương hiệu": 'mkt' (Nhật ký đăng bài) hoặc 'fbads' (Quảng cáo Facebook) — cả 2 dùng chung quyền xem tab 'mkt', không khoá riêng như tab 4
 var hhFilters = {q:'',kho:[],nam:''};
 var boDateFilter=null; // lọc theo "Ngày xác nhận đơn hàng" trong KPI BO — xem mkStats()/toggleType()/renderHH()
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
@@ -1176,13 +1187,12 @@ function _doSwitchTab(t){
       dvIframe.setAttribute('data-loaded','1');
     }
   }
-  // Lazy load iframe MKT Thương hiệu
+  // Tab "mkt" (MKT Thương hiệu) gộp 2 sub-tab — mở đúng sub-tab đang chọn, lazy-load
+  // iframe riêng khi mở lần đầu. Không cần kiểm tra quyền riêng ở đây (khác tab "ns")
+  // vì cả 2 sub-tab dùng chung đúng 1 quyền xem tab 'mkt' — đã được switchTab('mkt') gác
+  // cổng từ trước khi vào tới _doSwitchTab().
   if(t==='mkt'){
-    var mktIframe=document.getElementById('mkt-iframe');
-    if(!mktIframe.getAttribute('data-loaded')){
-      mktIframe.src='https://tinthanhgroup.github.io/BH/mkt.html';
-      mktIframe.setAttribute('data-loaded','1');
-    }
+    switchMktSub(_mktActiveSub);
   }
   // Lazy load iframe Theo dõi Chính sách
   if(t==='policy'){
@@ -1264,6 +1274,31 @@ function switchNsSub(sub, silent){
     if(!noiquyIframe.getAttribute('data-loaded')){
       noiquyIframe.src='https://tinthanhgroup.github.io/BH/quy_dinh_noi_bo.html';
       noiquyIframe.setAttribute('data-loaded','1');
+    }
+  }
+}
+
+// Chuyển sub-tab bên trong tab "MKT Thương hiệu" (5.1 Nhật ký đăng bài / 5.2 Quảng
+// cáo Facebook), lazy-load iframe riêng khi mở lần đầu. Khác switchNsSub(): không cần
+// kiểm tra quyền riêng từng sub vì cả 2 dùng chung 1 quyền tab 'mkt' — đã được
+// switchTab('mkt') gác cổng trước khi tới được đây.
+function switchMktSub(sub){
+  _mktActiveSub = sub;
+  document.getElementById('subtab-mkt-btn').classList.toggle('active', sub==='mkt');
+  document.getElementById('subtab-fbads-btn').classList.toggle('active', sub==='fbads');
+  document.getElementById('subpanel-mkt').classList.toggle('active', sub==='mkt');
+  document.getElementById('subpanel-fbads').classList.toggle('active', sub==='fbads');
+  if(sub==='mkt'){
+    var mktIframe=document.getElementById('mkt-iframe');
+    if(!mktIframe.getAttribute('data-loaded')){
+      mktIframe.src='https://tinthanhgroup.github.io/BH/mkt.html';
+      mktIframe.setAttribute('data-loaded','1');
+    }
+  } else if(sub==='fbads'){
+    var fbadsIframe=document.getElementById('fbads-iframe');
+    if(!fbadsIframe.getAttribute('data-loaded')){
+      fbadsIframe.src='https://tinthanhgroup.github.io/BH/fbads.html';
+      fbadsIframe.setAttribute('data-loaded','1');
     }
   }
 }
