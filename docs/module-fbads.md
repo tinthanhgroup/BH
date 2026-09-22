@@ -70,4 +70,4 @@ Bộ lọc: khoảng thời gian (7 ngày / 30 ngày / toàn bộ lịch sử �
 
 ## Trigger
 
-`fbAdsSync`: 1 trigger `everyHours(1)` (24 lần/ngày, 24/7 — chi phí quảng cáo phát sinh liên tục cả ngoài giờ hành chính, khác Nhân sự/Chấm công chỉ cần đồng bộ giờ hành chính).
+`fbAdsSync`: 1 trigger `everyHours(6)` (4 lần/ngày, 24/7 — chi phí quảng cáo phát sinh liên tục cả ngoài giờ hành chính, khác Nhân sự/Chấm công chỉ cần đồng bộ giờ hành chính).
