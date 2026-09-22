@@ -255,8 +255,16 @@ function xepLoaiHieuQua(camps){
     }
     return {...c, chiPhiMoiKQ, loai, nhan};
   }).sort((a,b)=>{
+    // Ưu tiên 1: Đang chạy lên trước Tạm dừng (theo yêu cầu người dùng 22/09/2026,
+    // để luôn nhìn thấy ngay các chiến dịch đang chạy) — chiến dịch chưa rõ trạng thái
+    // (không có trong TRANGTHAI, xem trangThaiBadge()) coi như Tạm dừng, xếp sau.
+    const dangChayA = TRANGTHAI[a.chienDich]==='ACTIVE' ? 0 : 1;
+    const dangChayB = TRANGTHAI[b.chienDich]==='ACTIVE' ? 0 : 1;
+    if(dangChayA !== dangChayB) return dangChayA - dangChayB;
+    // Ưu tiên 2 (trong cùng nhóm Đang chạy/Tạm dừng): mức độ cần chú ý xau→canhbao→tot→na
     const rank = {xau:0, canhbao:1, tot:2, na:3};
     if(rank[a.loai] !== rank[b.loai]) return rank[a.loai]-rank[b.loai];
+    // Ưu tiên 3: chi phí giảm dần
     return b.chiPhi - a.chiPhi;
   });
 }
