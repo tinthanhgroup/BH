@@ -58,8 +58,20 @@
   .badge.xau{background:#FBE5E5;color:var(--red);}
   .badge.na{background:#EDEFF3;color:var(--ink-soft);}
   .dash{color:var(--ink-soft);}
+  .run-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:middle;}
+  .run-badge.active{color:var(--green);}
+  .run-badge.paused{color:var(--ink-soft);}
+  .run-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .run-dot.active{background:var(--green);}
+  .run-dot.paused{background:var(--ink-soft);}
   .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
+
+  /* ── Chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý) ── */
+  .budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .budget-group-title{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .budget-group-title .period-tag{font-weight:600;color:var(--ink-soft);text-transform:none;letter-spacing:0;}
+  @media (max-width:900px){ .budget-grid{grid-template-columns:1fr;} }
 
   /* ── Biểu đồ xu hướng chi phí — cột CSS thuần, không dùng thư viện chart (đúng chủ trương "không build step" của repo) ── */
   .trend-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
@@ -104,7 +116,35 @@
   </div>
 
   <div class="panel">
-    <h3><span class="chart-num">2</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
+    <h3><span class="chart-num">2</span> Chi phí theo Nhóm & Kỳ</h3>
+    <p class="desc">Phân nhóm theo tên chiến dịch: chứa "CSC" → gộp theo <b>tháng</b>; chứa "CDR" → gộp theo <b>quý</b>; còn lại → "Khác", gộp theo tháng. Luôn hiển thị toàn bộ lịch sử hiện có (không theo bộ lọc phía trên), mới nhất lên đầu.</p>
+    <div class="budget-grid">
+      <div>
+        <div class="budget-group-title">CSC <span class="period-tag">— theo tháng</span></div>
+        <table>
+          <thead><tr><th>Tháng</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
+          <tbody id="budgetCSC"></tbody>
+        </table>
+      </div>
+      <div>
+        <div class="budget-group-title">CDR <span class="period-tag">— theo quý</span></div>
+        <table>
+          <thead><tr><th>Quý</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
+          <tbody id="budgetCDR"></tbody>
+        </table>
+      </div>
+      <div>
+        <div class="budget-group-title">Khác <span class="period-tag">— theo tháng</span></div>
+        <table>
+          <thead><tr><th>Tháng</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
+          <tbody id="budgetKhac"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">3</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
     <p class="desc" id="warnDesc"></p>
     <table>
       <thead><tr><th>Chiến dịch</th><th>Chi phí</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả</th><th>Trạng thái</th></tr></thead>
@@ -113,7 +153,7 @@
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">3</span> Chi tiết chỉ số theo Chiến dịch</summary>
+    <summary><span class="chart-num">4</span> Chi tiết chỉ số theo Chiến dịch</summary>
     <p class="desc">Toàn bộ chỉ số tương tác, cộng dồn theo khoảng thời gian đang chọn ở trên.</p>
     <table>
       <thead><tr>
@@ -126,7 +166,7 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">4</span> Nhật ký theo ngày (<span id="logCount">0</span>)</summary>
+    <summary><span class="chart-num">5</span> Nhật ký theo ngày (<span id="logCount">0</span>)</summary>
     <p class="desc">Từng dòng = 1 chiến dịch trong 1 ngày, mới nhất lên đầu.</p>
     <table>
       <thead><tr><th>Ngày</th><th>Chiến dịch</th><th>Chi phí</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
@@ -147,9 +187,18 @@ const FBADS_NGUONG_KHONG_KQ = 200000;         // chi vượt mức này mà 0 k�
 const FBADS_HE_SO_CANH_BAO = 1.5;             // chi phí/kết quả cao hơn X lần trung bình các chiến dịch có kết quả: cảnh báo vàng
 
 let LICHSU = [];
+let TRANGTHAI = {}; // { "Tên chiến dịch": "ACTIVE" | "PAUSED" } — trạng thái thật lấy từ Facebook, không suy luận qua chi phí
 let state = { range: 0, chienDich: '' }; // range: số ngày gần nhất, 0 = toàn bộ
 
 function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
+// Badge "Đang chạy"/"Tạm dừng" cạnh tên chiến dịch — rỗng nếu không rõ trạng thái
+// (chiến dịch cũ chưa từng lấy trạng thái, hoặc lần sync gần nhất lỗi lấy trạng thái).
+function trangThaiBadge(chienDich){
+  const st = TRANGTHAI[chienDich];
+  if(!st) return '';
+  const active = st === 'ACTIVE';
+  return `<span class="run-badge ${active?'active':'paused'}"><span class="run-dot ${active?'active':'paused'}"></span>${active?'Đang chạy':'Tạm dừng'}</span>`;
+}
 function fmtNgayVN(iso){
   const m = (iso||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
   return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'—');
@@ -260,7 +309,55 @@ function renderTrend(list){
   }).join('');
 }
 
-// ── Panel 2: cảnh báo hiệu quả theo chiến dịch ──
+// ── Panel 2: chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý) — luôn dùng TOÀN BỘ LICHSU, không theo bộ lọc phía trên ──
+// Phân nhóm theo tên chiến dịch: chứa "CSC" (không phân biệt hoa/thường) → nhóm CSC, gộp theo tháng;
+// chứa "CDR" → nhóm CDR, gộp theo quý; không khớp gì → nhóm "Khác", gộp theo tháng (theo yêu cầu người dùng 22/09/2026).
+function phanLoaiChienDich(ten){
+  const t = (ten||'').toUpperCase();
+  if(t.includes('CSC')) return 'CSC';
+  if(t.includes('CDR')) return 'CDR';
+  return 'Khac';
+}
+function thangCuaNgay(iso){ return (iso||'').slice(0,7); } // "yyyy-MM"
+function quyCuaNgay(iso){
+  const m = (iso||'').match(/^(\d{4})-(\d{2})/);
+  if(!m) return '';
+  const q = Math.floor((parseInt(m[2],10)-1)/3) + 1;
+  return `${m[1]}-Q${q}`;
+}
+function fmtThangVN(ym){
+  const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
+  return m ? `Tháng ${parseInt(m[2],10)}/${m[1]}` : (ym||'—');
+}
+function fmtQuyVN(yq){
+  const m = (yq||'').match(/^(\d{4})-Q(\d)$/);
+  return m ? `Quý ${m[2]}/${m[1]}` : (yq||'—');
+}
+function renderBudgetGroups(){
+  const byGroup = { CSC:{}, CDR:{}, Khac:{} };
+  LICHSU.forEach(x=>{
+    const nhom = phanLoaiChienDich(x.chienDich);
+    const key = nhom==='CDR' ? quyCuaNgay(x.ngay) : thangCuaNgay(x.ngay);
+    if(!key) return;
+    if(!byGroup[nhom][key]) byGroup[nhom][key] = { chiPhi:0, messengerBatDau:0 };
+    byGroup[nhom][key].chiPhi += x.chiPhi||0;
+    byGroup[nhom][key].messengerBatDau += x.messengerBatDau||0;
+  });
+  renderBudgetTable('budgetCSC', byGroup.CSC, fmtThangVN);
+  renderBudgetTable('budgetCDR', byGroup.CDR, fmtQuyVN);
+  renderBudgetTable('budgetKhac', byGroup.Khac, fmtThangVN);
+}
+function renderBudgetTable(elId, data, fmtKy){
+  const keys = Object.keys(data).sort().reverse(); // mới nhất lên đầu
+  document.getElementById(elId).innerHTML = keys.length ? keys.map(k=>`
+    <tr>
+      <td style="font-weight:700;color:var(--navy);">${fmtKy(k)}</td>
+      <td>${fmtVND(data[k].chiPhi)}</td>
+      <td>${data[k].messengerBatDau}</td>
+    </tr>`).join('') : `<tr><td colspan="3" class="empty">Chưa có dữ liệu</td></tr>`;
+}
+
+// ── Panel 3: cảnh báo hiệu quả theo chiến dịch ──
 function renderWarnTable(list){
   document.getElementById('warnDesc').innerHTML =
     `"Kết quả" = số cuộc trò chuyện Messenger bắt đầu. Cảnh báo <b style="color:var(--red)">đỏ</b> = đã chi trên ${fmtVND(FBADS_NGUONG_KHONG_KQ)} mà chưa có kết quả nào; ` +
@@ -270,7 +367,7 @@ function renderWarnTable(list){
   const badgeMap = {tot:'tot', canhbao:'canhbao', xau:'xau', na:'na'};
   document.getElementById('warnTable').innerHTML = camps.length ? camps.map(c=>`
     <tr class="${c.loai==='xau'?'xau':''}">
-      <td style="font-weight:700;color:var(--navy);">${c.chienDich}</td>
+      <td style="font-weight:700;color:var(--navy);">${c.chienDich}${trangThaiBadge(c.chienDich)}</td>
       <td>${fmtVND(c.chiPhi)}</td>
       <td>${c.messengerBatDau}</td>
       <td>${c.chiPhiMoiKQ!=null ? fmtVND(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
@@ -278,12 +375,12 @@ function renderWarnTable(list){
     </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
-// ── Panel 3: chi tiết chỉ số theo chiến dịch ──
+// ── Panel 4: chi tiết chỉ số theo chiến dịch ──
 function renderDetailTable(list){
   const camps = aggregateByCampaign(list);
   document.getElementById('detailTable').innerHTML = camps.length ? camps.map(c=>`
     <tr>
-      <td style="font-weight:700;color:var(--navy);">${c.chienDich}</td>
+      <td style="font-weight:700;color:var(--navy);">${c.chienDich}${trangThaiBadge(c.chienDich)}</td>
       <td>${fmtVND(c.chiPhi)}</td>
       <td>${c.linkClick}</td>
       <td>${c.videoView}</td>
@@ -297,7 +394,7 @@ function renderDetailTable(list){
     </tr>`).join('') : `<tr><td colspan="10" class="empty">Không có dữ liệu</td></tr>`;
 }
 
-// ── Panel 4: nhật ký theo ngày (thô, mới nhất lên đầu) ──
+// ── Panel 5: nhật ký theo ngày (thô, mới nhất lên đầu) ──
 function renderLogTable(list){
   const sorted = [...list].sort((a,b)=>{
     if(a.ngay !== b.ngay) return a.ngay < b.ngay ? 1 : -1;
@@ -354,9 +451,11 @@ async function loadData(){
     if(!res.ok) throw new Error('fbads.json: HTTP '+res.status);
     const json = await res.json();
     LICHSU = (json.records && json.records.lichSu) || [];
+    TRANGTHAI = json.trangThai || {};
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LICHSU.length + ' dòng lịch sử';
     document.getElementById('footnoteText').textContent = 'Dữ liệu chi phí & kết quả quảng cáo Facebook, đồng bộ tự động mỗi giờ từ tài khoản quảng cáo qua Google Sheet trung gian.';
     populateFilterOptions();
+    renderBudgetGroups(); // độc lập với bộ lọc — chỉ cần render lại khi có dữ liệu mới, không cần gọi trong render()
     render();
   }catch(e){
     console.error('Lỗi tải fbads.json:', e);

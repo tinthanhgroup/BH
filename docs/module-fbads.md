@@ -29,7 +29,9 @@ Vì tính năng tự gọi Graph API mới bật 22/09/2026, `fbads.json` ban đ
 - `backfillFbAdsThisMonth()` — nạp từ ngày 1 tháng hiện tại tới hôm qua (không đụng "hôm nay", để `fbAdsSync()` tự lo).
 - `backfillFbAds('yyyy-MM-dd')` hoặc `backfillFbAds('yyyy-MM-dd', 'yyyy-MM-dd')` — nạp khoảng ngày tuỳ chọn (vd dò lại vài ngày bị thiếu do trigger lỗi).
 
-Cả 2 hàm dùng `time_increment=1` khi gọi Graph API để tách kết quả theo từng ngày, rồi upsert thẳng vào `fbads.json` qua đúng cơ chế GET-merge-PUT như `fbAdsSync()` — **không ghi vào Sheet** (Sheet chỉ giữ vai trò snapshot "hôm nay"). An toàn khi chạy lại nhiều lần / chồng ngày đã có sẵn (upsert theo khoá `ngày+tên chiến dịch`, không tạo trùng dòng). Sau khi backfill xong, bộ lọc "30 ngày"/"toàn bộ lịch sử" có sẵn trong `fbads.html` sẽ tự hiển thị đúng dữ liệu mới nạp, không cần sửa gì ở `fbads.html`.
+- `backfillFbAdsFromJuly()` — nạp từ 01/07 năm hiện tại tới hôm qua (thêm 22/09/2026, theo yêu cầu xem lại dữ liệu xa hơn 1 tháng). Muốn mốc khác/năm khác thì gọi thẳng `backfillFbAds('yyyy-MM-dd')` thay vì sửa hàm này.
+
+Cả 3 hàm dùng `time_increment=1` khi gọi Graph API để tách kết quả theo từng ngày, rồi upsert thẳng vào `fbads.json` qua đúng cơ chế GET-merge-PUT như `fbAdsSync()` — **không ghi vào Sheet** (Sheet chỉ giữ vai trò snapshot "hôm nay"). An toàn khi chạy lại nhiều lần / chồng ngày đã có sẵn (upsert theo khoá `ngày+tên chiến dịch`, không tạo trùng dòng). Sau khi backfill xong, bộ lọc "30 ngày"/"toàn bộ lịch sử" có sẵn trong `fbads.html` sẽ tự hiển thị đúng dữ liệu mới nạp, không cần sửa gì ở `fbads.html`. Lưu ý `FBADS_CONFIG.GIU_LICH_SU_NGAY` (mặc định 180 ngày) vẫn áp dụng — backfill quá xa quá ngưỡng này sẽ bị lọc bỏ ngay sau khi nạp.
 
 ## Cấu trúc Sheet
 
@@ -51,10 +53,13 @@ Sheet chỉ có 1 tab (script tự lấy sheet **đầu tiên**, để trống `
       "messengerBatDau": 1, "messengerTraLoi": 0, "messengerTongKetNoi": 1,
       "messengerXemChaoMung": 2, "messengerTraLoiDauTien": 1, "messengerNhanTin2Cap": 0
     }
-  ]}
+  ]},
+  "trangThai": { "Creta CSC T9": "ACTIVE", "TUCSON CSC": "PAUSED" }
 }
 ```
-Mỗi object = 1 chiến dịch trong 1 ngày. Mới nhất lên đầu (`ngay` desc, cùng ngày thì theo tên chiến dịch).
+Mỗi object trong `records.lichSu` = 1 chiến dịch trong 1 ngày. Mới nhất lên đầu (`ngay` desc, cùng ngày thì theo tên chiến dịch).
+
+**`trangThai`** (thêm 22/09/2026): trạng thái **ACTIVE/PAUSED thật** của từng chiến dịch tại thời điểm sync gần nhất — lấy riêng từ endpoint `/campaigns` (field `effective_status`, không suy luận qua có/không chi tiêu hôm nay), do `fetchFbAdsCampaignStatus_()` cập nhật mỗi giờ trong `fbAdsSync()`. Khác `records.lichSu` (tích luỹ theo ngày), `trangThai` là **snapshot hiện tại**, bị ghi đè hoàn toàn mỗi lần `fbAdsSync()` chạy thành công; nếu lần gọi API lấy trạng thái bị lỗi thì **giữ nguyên** giá trị cũ (không xoá trắng) — `backfillFbAds()`/`backfillFbAdsThisMonth()` cũng giữ nguyên field này khi ghi lại file (chỉ đụng vào `records.lichSu`), tránh vô tình xoá mất trạng thái khi backfill. `fbads.html` dùng để gắn badge "● Đang chạy"/"Tạm dừng" cạnh tên chiến dịch ở panel 2 + panel 3 — chiến dịch nào chưa có trong `trangThai` (chưa từng sync qua bản code mới) thì không hiện badge, không suy đoán bừa.
 
 ## "Kết quả chính" dùng để đánh giá hiệu quả
 
@@ -76,11 +81,14 @@ Nếu sau này có thêm chiến dịch với mục tiêu khác (vd đưa traffi
 
 Theo đúng quy ước giao diện chung (xem CLAUDE.md gốc — `--navy`, `.wrap` 1280px, `chart-num`, Inter font...). Không dùng thư viện chart (đúng chủ trương "không build step" của repo) — biểu đồ xu hướng chi phí (panel 1) dựng bằng cột `<div>` CSS thuần (`.trend-bar`), có `title` tooltip hiện đúng ngày + số tiền khi hover, chỉ gắn nhãn trực tiếp (số tiền) lên cột cao nhất — không ghi số lên mọi cột.
 
-4 panel đánh số:
+5 panel đánh số:
 1. **Xu hướng Chi phí theo ngày** (luôn hiện) — tổng chi phí tất cả chiến dịch mỗi ngày, theo bộ lọc khoảng thời gian.
-2. **Cảnh báo hiệu quả theo Chiến dịch** (luôn hiện) — mục đích chính của dashboard, bảng xếp hạng theo mức độ cần chú ý (`xau` → `canhbao` → `tot` → `na`).
-3. **Chi tiết chỉ số theo Chiến dịch** (thu gọn) — toàn bộ chỉ số tương tác cộng dồn theo chiến dịch.
-4. **Nhật ký theo ngày** (thu gọn) — bảng thô từng dòng ngày × chiến dịch, mới nhất lên đầu.
+2. **Chi phí theo Nhóm & Kỳ** (luôn hiện, thêm 22/09/2026) — 3 bảng cạnh nhau: **CSC** (gộp theo **tháng**), **CDR** (gộp theo **quý**), **Khác** (chiến dịch không khớp CSC/CDR, gộp theo tháng). Phân nhóm bằng `phanLoaiChienDich()` — kiểm tra chuỗi con "CSC"/"CDR" trong tên chiến dịch (không phân biệt hoa/thường), không khớp cả 2 thì xếp vào "Khác". **Chỉ hiển thị số đã chi thực tế + kết quả Messenger, KHÔNG so sánh với ngân sách/mục tiêu** (quyết định có chủ đích theo yêu cầu người dùng 22/09/2026 — hệ thống chưa có nơi lưu số ngân sách, và người dùng xác nhận chỉ cần xem kết quả đã chi, không cần % sử dụng ngân sách). Panel này **luôn dùng toàn bộ `LICHSU`**, không theo bộ lọc khoảng thời gian/chiến dịch ở trên — vì mục đích là xem theo kỳ ngân sách cố định (tháng/quý dương lịch), không phải theo khoảng ngày tuỳ chọn.
+3. **Cảnh báo hiệu quả theo Chiến dịch** (luôn hiện) — mục đích chính của dashboard, bảng xếp hạng theo mức độ cần chú ý (`xau` → `canhbao` → `tot` → `na`). Tên chiến dịch ở panel 3 + panel 4 có kèm badge "● Đang chạy"/"Tạm dừng" (thêm 22/09/2026, hàm `trangThaiBadge()`, dữ liệu từ `json.trangThai` — xem mục `fbads.json` ở trên) — badge này là trạng thái **thật** của chiến dịch trên Facebook, khác hẳn việc chiến dịch có/không xuất hiện trong `records.lichSu` của khoảng ngày đang lọc.
+4. **Chi tiết chỉ số theo Chiến dịch** (thu gọn) — toàn bộ chỉ số tương tác cộng dồn theo chiến dịch.
+5. **Nhật ký theo ngày** (thu gọn) — bảng thô từng dòng ngày × chiến dịch, mới nhất lên đầu.
+
+Nếu sau này công ty muốn quay lại so sánh với ngân sách thật (số tiền dự kiến chi mỗi tháng/quý), cần thêm cơ chế lưu số ngân sách — gợi ý theo đúng khuôn mẫu `DEFAULT_TARGETS` ở `index.html` (hằng số mặc định trong code + nút "✏️ Chỉnh sửa" ghi đè vào `localStorage` riêng từng máy), không phải việc Claude tự bịa số.
 
 Bộ lọc: khoảng thời gian (7 ngày / 30 ngày / toàn bộ lịch sử — nút bấm kiểu `.filter-btn` giống `crm.html`) + chọn chiến dịch.
 
