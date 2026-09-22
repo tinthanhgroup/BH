@@ -4,22 +4,30 @@
 
 ## Nguồn dữ liệu — điểm khác biệt quan trọng
 
-**Sheet nguồn:** https://docs.google.com/spreadsheets/d/1bxsPkbKQ6XlDbf4H7oceolB_2IjuNWExWCJZeJE1m24 (được 1 tool bên ngoài đã kết nối sẵn tự đồng bộ dữ liệu quảng cáo từ Facebook Ads vào — không phải Apps Script của repo này ghi vào Sheet, chỉ đọc ra).
+**(Đổi kiến trúc 22/09/2026)** Trước đây 1 tool ngoài (Zapier/Make) tự đồng bộ dữ liệu Facebook Ads vào Sheet, `TinThanh_FBAds_Sync.gs` chỉ đọc ra. **Từ 22/09/2026, script tự gọi thẳng Facebook Graph API** (hàm `fetchFbAdsFromGraphApi_()`) — không còn phụ thuộc tool ngoài nào. Luồng đầy đủ mỗi lần `fbAdsSync()` chạy:
+1. **Gọi Facebook Graph API** (`GET /{AD_ACCOUNT_ID}/insights?level=campaign&date_preset=today`) lấy snapshot chi phí/kết quả từng chiến dịch của "hôm nay".
+2. **Ghi đè kết quả vào Google Sheet** (`writeFbAdsSnapshotToSheet_()`) — Sheet **vẫn được giữ lại** làm nơi lưu vết/audit thủ công (đọc bằng mắt khi cần), dù không còn là nguồn dữ liệu gốc nữa. Script tự dựng lại header (tên field thô kiểu Facebook, vd `data.campaign_name`) mỗi lần ghi, nên cột `paging.cursors.*` (rác phân trang từ tool cũ) không còn xuất hiện nữa.
+3. Đọc lại chính Sheet vừa ghi (bước này giữ nguyên logic cũ, không đổi).
+4. **GET** `fbads.json` hiện có trên GitHub (lấy cả `sha` lẫn nội dung).
+5. **Upsert** theo khoá `ngày + "|" + tên chiến dịch` — dòng mới của "hôm nay" ghi đè đúng dòng cùng ngày/cùng chiến dịch trong lịch sử cũ, các ngày khác giữ nguyên.
+6. Dọn bớt dòng cũ hơn `FBADS_CONFIG.GIU_LICH_SU_NGAY` (mặc định 180 ngày) để `fbads.json` không phình to vô hạn.
+7. **PUT** lại lên GitHub.
 
-⚠️ **Sheet này chỉ chứa snapshot chi phí/kết quả của "HÔM NAY" tại mọi thời điểm** (`data.date_start` = `data.date_stop` = ngày hiện tại cho mọi dòng, bị tool nguồn ghi đè lại mỗi lần nó chạy) — **không tự cộng dồn lịch sử** như các sheet khác trong repo (Nhân sự, MKT Fanpage...). Vì vậy `TinThanh_FBAds_Sync.gs` phải tự lo việc cộng dồn:
-1. Đọc snapshot "hôm nay" từ Sheet.
-2. **GET** `fbads.json` hiện có trên GitHub (lấy cả `sha` lẫn nội dung).
-3. **Upsert** theo khoá `ngày + "|" + tên chiến dịch` — dòng mới của "hôm nay" ghi đè đúng dòng cùng ngày/cùng chiến dịch trong lịch sử cũ, các ngày khác giữ nguyên.
-4. Dọn bớt dòng cũ hơn `FBADS_CONFIG.GIU_LICH_SU_NGAY` (mặc định 180 ngày) để `fbads.json` không phình to vô hạn.
-5. **PUT** lại lên GitHub.
+**Sheet:** https://docs.google.com/spreadsheets/d/12Sl-Eus7-Y7va6pO_yXoV9mYyLfWBYQC3ARmY2KOlvg (sheet cũ trước 22/09/2026: `1bxsPkbKQ6XlDbf4H7oceolB_2IjuNWExWCJZeJE1m24`).
 
-Nếu sau này viết thêm script tương tự đọc 1 Sheet "chỉ có hôm nay", **copy đúng cơ chế GET-merge-PUT này**, không copy kiểu "ghi đè thẳng" của `TinThanh_MKT_Sync.gs`/`TinThanh_NhanSu_Sync.gs` (2 script đó Sheet nguồn đã có đủ lịch sử nên ghi đè thẳng là đúng).
+**Ad Account:** `act_1469329274856353` ("Hyundai Phú Yên 2" trên Meta Business) — đây là account đang chạy 2 chiến dịch tên có "CSC" (`TUCSON CSC - T9`, `Creta CSC T9`, xác nhận qua Graph API lúc thêm code 22/09/2026). Nếu công ty đổi sang chạy ads từ account khác, phải tự sửa `FB_GRAPH_API_CONFIG.AD_ACCOUNT_ID`.
+
+`ACCESS_TOKEN` trong `FB_GRAPH_API_CONFIG` là **System User token thật** (app "BC ADS", `type: SYSTEM_USER`, `expires_at: 0` — không tự hết hạn, xác nhận qua `/debug_token` ngày 22/09/2026). **Tuyệt đối không thay bằng token cá nhân (type `USER`)** lấy nhanh từ Graph API Explorer — loại đó thường hết hạn trong vài giờ đến vài tuần, trigger sẽ âm thầm ngừng chạy mà không ai biết cho tới khi dữ liệu ngừng cập nhật (từng xảy ra với token thử nghiệm đầu tiên lúc thêm tính năng này, hết hạn cùng ngày). Nếu cần tạo token mới sau này (token bị thu hồi, app "BC ADS" bị gỡ khỏi Business...): Meta Business Settings → Users → System Users → Generate New Token, quyền `ads_read`, Token Expiration = "Never". Kiểm tra loại/hạn token bất cứ lúc nào bằng: `GET https://graph.facebook.com/v21.0/debug_token?input_token={TOKEN}&access_token={TOKEN}` — xem field `type` (phải là `SYSTEM_USER`) và `expires_at` (phải là `0`).
+
+⚠️ **Sheet chỉ chứa snapshot chi phí/kết quả của "HÔM NAY" tại mọi thời điểm** (`data.date_start` cho mọi dòng luôn là ngày hiện tại, bị ghi đè mỗi lần `fbAdsSync()` chạy) — **không tự cộng dồn lịch sử** như các sheet khác trong repo (Nhân sự, MKT Fanpage...), kể cả sau khi đổi sang tự gọi API (Facebook Insights API bản chất cũng có thể tự điều chỉnh số liệu "hôm nay" trong ngày do độ trễ ghi nhận conversion, nên vẫn cần coi là "snapshot tạm" chứ không tổng hợp sẵn theo ngày như 1 API lịch sử đầy đủ). Vì vậy bước GET-merge-PUT (bước 4-7 ở trên) **vẫn bắt buộc giữ nguyên**, không được bỏ dù đã đổi nguồn ghi Sheet.
+
+Nếu sau này viết thêm script tương tự đọc 1 nguồn "chỉ có hôm nay", **copy đúng cơ chế GET-merge-PUT này**, không copy kiểu "ghi đè thẳng" của `TinThanh_MKT_Sync.gs`/`TinThanh_NhanSu_Sync.gs` (2 script đó nguồn đã có đủ lịch sử nên ghi đè thẳng là đúng).
 
 ## Cấu trúc Sheet
 
-Sheet chỉ có 1 tab (script tự lấy sheet **đầu tiên**, để trống `FBADS_CONFIG.SHEET_NAME` — điền tên tab nếu Sheet có nhiều tab). Header là tên field thô của Facebook Graph API (không phải tên tiếng Việt), script dò cột theo đúng tên trong `FBADS_COLUMN_MAP`, không phụ thuộc thứ tự cột. Cột `paging.cursors.*` là rác phân trang còn sót từ tool export, bỏ qua.
+Sheet chỉ có 1 tab (script tự lấy sheet **đầu tiên**, để trống `FBADS_CONFIG.SHEET_NAME` — điền tên tab nếu Sheet có nhiều tab). Header do `writeFbAdsSnapshotToSheet_()` tự dựng lại mỗi lần chạy, là tên field thô của Facebook Graph API (không phải tên tiếng Việt), script đọc lại dò cột theo đúng tên trong `FBADS_COLUMN_MAP`, không phụ thuộc thứ tự cột.
 
-**Cột `data.spend` định dạng số không đồng nhất** trong Sheet nguồn — có dòng hiện dấu chấm phân cách nghìn kiểu Việt (vd `"43.332"`), có dòng không (vd `"42529"`), nhưng đều là số nguyên VNĐ (không phải số thập phân). Script strip hết ký tự không phải chữ số trước khi `parseInt` (`parseSoFBADS_()`) — **không được** parse dấu `.` như phần thập phân.
+**Cột `data.spend`**: giá trị lấy trực tiếp từ field `spend` của Graph API (số nguyên VNĐ dạng chuỗi thuần, không có dấu phân cách nghìn). Script vẫn strip hết ký tự không phải chữ số trước khi `parseInt` (`parseSoFBADS_()`) để phòng hờ — giữ nguyên hàm này dù nguồn Sheet cũ (trước 22/09/2026, do tool ngoài ghi) mới là nơi từng có định dạng số không đồng nhất (có dòng hiện dấu chấm phân cách nghìn kiểu Việt, có dòng không).
 
 ## `fbads.json`
 
@@ -70,4 +78,4 @@ Bộ lọc: khoảng thời gian (7 ngày / 30 ngày / toàn bộ lịch sử �
 
 ## Trigger
 
-`fbAdsSync`: 1 trigger `everyHours(6)` (4 lần/ngày, 24/7 — chi phí quảng cáo phát sinh liên tục cả ngoài giờ hành chính, khác Nhân sự/Chấm công chỉ cần đồng bộ giờ hành chính).
+`fbAdsSync`: 1 trigger `everyHours(1)` (24 lần/ngày, 24/7 — đổi từ `everyHours(6)` ngày 22/09/2026 khi chuyển sang tự gọi Facebook Graph API thay vì đợi tool ngoài; chi phí quảng cáo phát sinh liên tục cả ngoài giờ hành chính, khác Nhân sự/Chấm công chỉ cần đồng bộ giờ hành chính). Vẫn chỉ 1 trigger duy nhất (đổi tần suất lặp, không tạo thêm trigger) nên không ảnh hưởng hạn mức ~20 trigger/project.
