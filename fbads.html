@@ -47,7 +47,14 @@
   .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
   table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
+  /* Panel 3 (Cảnh báo hiệu quả): cố định độ rộng cột qua colgroup — Chi nhánh đủ
+     rộng để không xuống dòng, 3 cột Chi phí/Kết quả/Chi phí-Kết quả gọn & bằng
+     nhau (đổi 23/09/2026, theo yêu cầu người dùng). Chỉ áp dụng cho bảng này —
+     các bảng khác vẫn auto layout như cũ. */
+  table.warn-table{table-layout:fixed;}
+  table.warn-table th, table.warn-table td{overflow-wrap:break-word;}
+  /* Header dài tự xuống dòng cho bảng gọn hơn (đổi 23/09/2026, bỏ nowrap theo yêu cầu người dùng) */
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);}
   tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
   tbody tr:hover{background:#F7F9FC;}
   tbody tr.xau{background:#FDF1F1;}
@@ -67,20 +74,37 @@
   .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
 
-  /* ── Chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý) ── */
+  /* ── Chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý), ưu tiên theo Chi nhánh (đổi 23/09/2026) ── */
   .budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .budget-group-title{font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:8px;}
-  .budget-group-title .period-tag{font-weight:600;color:var(--ink-soft);text-transform:none;letter-spacing:0;}
+  .budget-group-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:8px;text-align:center;}
+  tbody tr.budget-total{background:#F7F9FC;font-weight:700;}
+  tbody tr.budget-total td{border-top:2px solid var(--line);}
   @media (max-width:900px){ .budget-grid{grid-template-columns:1fr;} }
 
   /* ── Biểu đồ xu hướng chi phí — cột CSS thuần, không dùng thư viện chart (đúng chủ trương "không build step" của repo) ── */
+  /* Mỗi cột xếp chồng theo chi nhánh (thêm 23/09/2026) — .trend-bar là flex column-reverse
+     chứa các .trend-seg (1 đoạn màu/chi nhánh), xếp từ dưới lên theo CHI_NHANH_ORDER. */
+  .trend-chart-wrap{position:relative;}
   .trend-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
+  /* Tooltip tuỳ chỉnh khi hover (đổi 23/09/2026 từ title mặc định trình duyệt —
+     hiện ngay lập tức, không cần chờ delay của tooltip OS). */
+  .trend-tooltip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:11px;
+    font-weight:600;line-height:1.6;padding:7px 10px;border-radius:7px;white-space:pre-line;
+    transform:translate(-50%,-100%);margin-top:-8px;opacity:0;transition:opacity .08s;z-index:10;
+    box-shadow:var(--shadow);}
+  .trend-tooltip.show{opacity:1;}
   .trend-bar-wrap{flex:1;min-width:4px;height:100%;display:flex;align-items:flex-end;position:relative;}
-  .trend-bar{width:100%;background:var(--navy);border-radius:4px 4px 0 0;transition:opacity .15s;cursor:default;}
-  .trend-bar:hover{opacity:.75;}
+  .trend-bar-wrap.month-start{margin-left:7px;}
+  .trend-bar-wrap.month-start::before{content:'';position:absolute;left:-4px;top:-20px;bottom:0;width:1px;background:#D8E1EE;}
+  .trend-bar{width:100%;display:flex;flex-direction:column-reverse;border-radius:4px 4px 0 0;overflow:hidden;transition:opacity .15s;cursor:default;}
+  .trend-bar:hover{opacity:.8;}
+  .trend-seg{width:100%;}
   .trend-bar-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--navy);white-space:nowrap;}
   .trend-labels{display:flex;gap:3px;margin-top:4px;}
   .trend-tick{flex:1;min-width:4px;text-align:center;font-size:9.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;}
+  .trend-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+  .trend-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
+  .trend-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -99,10 +123,10 @@
     <h3>Bộ lọc</h3>
     <div class="filters">
       <div class="filter-btns" id="rangeBtns">
-        <button class="filter-btn" data-range="7" onclick="setRange(7)">7 ngày gần nhất</button>
         <button class="filter-btn" data-range="30" onclick="setRange(30)">30 ngày gần nhất</button>
         <button class="filter-btn active" data-range="0" onclick="setRange(0)">Toàn bộ lịch sử</button>
       </div>
+      <div class="filter-btns" id="chiNhanhBtns"></div>
       <select id="fChienDich" onchange="onFilterChange()"><option value="">Tất cả chiến dịch</option></select>
       <button class="reset-btn" onclick="resetFilters()">✕ Xóa lọc</button>
     </div>
@@ -110,44 +134,30 @@
 
   <div class="panel">
     <h3><span class="chart-num">1</span> Xu hướng Chi phí theo ngày</h3>
-    <p class="desc">Tổng chi phí tất cả chiến dịch mỗi ngày, theo khoảng thời gian đang chọn. Di chuột vào từng cột để xem đúng ngày và số tiền.</p>
-    <div class="trend-chart" id="trendChart"></div>
+    <p class="desc">Chi phí tất cả chiến dịch mỗi ngày, xếp chồng theo chi nhánh (đơn vị triệu đồng), theo khoảng thời gian đang chọn. Di chuột vào từng cột để xem chi tiết số tiền theo từng chi nhánh. Vạch mờ đánh dấu ranh giới giữa các tháng.</p>
+    <div class="trend-chart-wrap" id="trendChartWrap">
+      <div class="trend-chart" id="trendChart"></div>
+      <div class="trend-tooltip" id="trendTooltip"></div>
+    </div>
     <div class="trend-labels" id="trendLabels"></div>
+    <div class="trend-legend" id="trendLegend"></div>
   </div>
 
   <div class="panel">
     <h3><span class="chart-num">2</span> Chi phí theo Nhóm & Kỳ</h3>
-    <p class="desc">Phân nhóm theo tên chiến dịch: chứa "CSC" → gộp theo <b>tháng</b>; chứa "CDR" → gộp theo <b>quý</b>; còn lại → "Khác", gộp theo tháng. Luôn hiển thị toàn bộ lịch sử hiện có (không theo bộ lọc phía trên), mới nhất lên đầu.</p>
-    <div class="budget-grid">
-      <div>
-        <div class="budget-group-title">CSC <span class="period-tag">— theo tháng</span></div>
-        <table>
-          <thead><tr><th>Tháng</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
-          <tbody id="budgetCSC"></tbody>
-        </table>
-      </div>
-      <div>
-        <div class="budget-group-title">CDR <span class="period-tag">— theo quý</span></div>
-        <table>
-          <thead><tr><th>Quý</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
-          <tbody id="budgetCDR"></tbody>
-        </table>
-      </div>
-      <div>
-        <div class="budget-group-title">Khác <span class="period-tag">— theo tháng</span></div>
-        <table>
-          <thead><tr><th>Tháng</th><th>Chi phí đã chi</th><th>Kết quả Messenger</th></tr></thead>
-          <tbody id="budgetKhac"></tbody>
-        </table>
-      </div>
-    </div>
+    <p class="desc">Mỗi chi nhánh 1 bảng riêng, xếp ngang hàng — cột theo tên chiến dịch: <b>CSC</b>, <b>Khác</b> (không khớp CSC/CDR), <b>CDR</b>; dòng theo <b>tháng</b>. Dòng "Tổng" cuối bảng cộng dồn từng cột. Ô trống = chi nhánh đó không phát sinh chi phí loại này trong tháng. Luôn hiển thị <b>toàn bộ lịch sử của cả 3 chi nhánh</b>, không theo bất kỳ bộ lọc nào phía trên (kể cả bộ lọc Chi nhánh). Mới nhất lên đầu. Đơn vị chi phí: nghìn đồng.</p>
+    <div id="budgetGroupsContainer"></div>
   </div>
 
   <div class="panel">
     <h3><span class="chart-num">3</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
     <p class="desc" id="warnDesc"></p>
-    <table>
-      <thead><tr><th>Chiến dịch</th><th>Chi phí</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả</th><th>Trạng thái</th></tr></thead>
+    <table class="warn-table">
+      <colgroup>
+        <col style="width:4%"><col style="width:11%"><col style="width:33%">
+        <col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:16%">
+      </colgroup>
+      <thead><tr><th>STT</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả (nghìn đ)</th><th>Trạng thái</th></tr></thead>
       <tbody id="warnTable"></tbody>
     </table>
   </div>
@@ -157,7 +167,7 @@
     <p class="desc">Toàn bộ chỉ số tương tác, cộng dồn theo khoảng thời gian đang chọn ở trên.</p>
     <table>
       <thead><tr>
-        <th>Chiến dịch</th><th>Chi phí</th><th>Lượt click Link</th><th>Xem Video</th>
+        <th>STT</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Lượt click Link</th><th>Xem Video</th>
         <th>Tương tác bài viết</th><th>Reaction</th><th>Like</th><th>Comment</th>
         <th>Messenger bắt đầu</th><th>Messenger trả lời</th><th>Tổng kết nối Messenger</th>
       </tr></thead>
@@ -169,7 +179,7 @@
     <summary><span class="chart-num">5</span> Nhật ký theo ngày (<span id="logCount">0</span>)</summary>
     <p class="desc">Từng dòng = 1 chiến dịch trong 1 ngày, mới nhất lên đầu.</p>
     <table>
-      <thead><tr><th>Ngày</th><th>Chiến dịch</th><th>Chi phí</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
+      <thead><tr><th>STT</th><th>Ngày</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
       <tbody id="logTable"></tbody>
     </table>
     <div class="empty" id="emptyMsg" style="display:none;">Không có dữ liệu khớp bộ lọc.</div>
@@ -187,14 +197,47 @@ const FBADS_NGUONG_KHONG_KQ = 200000;         // chi vượt mức này mà 0 k�
 const FBADS_HE_SO_CANH_BAO = 1.5;             // chi phí/kết quả cao hơn X lần trung bình các chiến dịch có kết quả: cảnh báo vàng
 
 let LICHSU = [];
-let TRANGTHAI = {}; // { "Tên chiến dịch": "ACTIVE" | "PAUSED" } — trạng thái thật lấy từ Facebook, không suy luận qua chi phí
-let state = { range: 0, chienDich: '' }; // range: số ngày gần nhất, 0 = toàn bộ
+let TRANGTHAI = {}; // { "Chi nhánh|Tên chiến dịch": "ACTIVE" | "PAUSED" } — trạng thái thật lấy từ Facebook, không suy luận qua chi phí
+let state = { range: 0, chienDich: '', chiNhanh: '' }; // range: số ngày gần nhất, 0 = toàn bộ
 
 function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
+// ── Định dạng số riêng cho từng bảng (thêm 23/09/2026, theo yêu cầu người dùng) ──
+// Bảng 1 (biểu đồ xu hướng): làm tròn TRIỆU đồng, 1 số thập phân (vd 0.5, 1.2).
+function fmtTrieu(n){ return (Math.round((n||0)/100000)/10).toFixed(1); }
+function fmtTrieuNhan(n){ return fmtTrieu(n) + ' triệu'; }
+// Các bảng còn lại (2/3/4/5): làm tròn CHỤC NGÀN đồng, hiển thị theo đơn vị nghìn
+// đồng, dùng dấu phẩy phân cách nghìn (vd 1,260) — khác fmtVND (đơn vị đồng, dấu
+// chấm kiểu Việt) vì người dùng yêu cầu rõ định dạng riêng cho các bảng chi tiết.
+function fmtNgan(n){
+  const nghin = Math.round((n||0)/10000) * 10; // làm tròn chục ngàn, quy đổi ra đơn vị nghìn đồng
+  return nghin.toLocaleString('en-US');
+}
+
+// ── Màu & thứ tự hiển thị theo chi nhánh (dùng cho biểu đồ xếp chồng + legend, thêm 23/09/2026) ──
+// Thứ tự cố định (không đổi theo alphabet) để cột nào cũng xếp chồng cùng 1 trật
+// tự, dễ so sánh giữa các ngày. Chi nhánh mới chưa có trong danh sách vẫn hiển thị
+// được (rơi xuống cuối danh sách, màu xám mặc định) — không cần sửa code khi thêm chi nhánh.
+const CHI_NHANH_ORDER = ['Phú Yên', 'Nha Trang', 'Đà Lạt'];
+const CHI_NHANH_COLORS = { 'Phú Yên': 'var(--navy)', 'Nha Trang': 'var(--green)', 'Đà Lạt': 'var(--accent)' };
+function chiNhanhColor(cn){ return CHI_NHANH_COLORS[cn] || '#9AA7BD'; }
+function sapXepChiNhanh(list){
+  return [...list].sort((a,b)=>{
+    const ia = CHI_NHANH_ORDER.indexOf(a), ib = CHI_NHANH_ORDER.indexOf(b);
+    if(ia===-1 && ib===-1) return a.localeCompare(b);
+    if(ia===-1) return 1;
+    if(ib===-1) return -1;
+    return ia-ib;
+  });
+}
 // Badge "Đang chạy"/"Tạm dừng" cạnh tên chiến dịch — rỗng nếu không rõ trạng thái
 // (chiến dịch cũ chưa từng lấy trạng thái, hoặc lần sync gần nhất lỗi lấy trạng thái).
-function trangThaiBadge(chienDich){
-  const st = TRANGTHAI[chienDich];
+// Khoá tra cứu TRANGTHAI PHẢI gồm cả chi nhánh (thêm 23/09/2026, đa chi nhánh) —
+// các chi nhánh khác nhau có thể trùng tên chiến dịch, tra riêng theo tên sẽ sai.
+function trangThaiBadge(chiNhanh, chienDich){
+  // Fallback sang khoá cũ "Tên chiến dịch" không tiền tố chi nhánh (thêm 23/09/2026)
+  // — dữ liệu ghi bởi bản Apps Script CŨ (trước khi hỗ trợ đa chi nhánh) vẫn dùng
+  // khoá này. Tự hết tác dụng sau khi script mới chạy (khoá mới luôn khớp trước).
+  const st = TRANGTHAI[chiNhanh + '|' + chienDich] || TRANGTHAI[chienDich];
   if(!st) return '';
   const active = st === 'ACTIVE';
   return `<span class="run-badge ${active?'active':'paused'}"><span class="run-dot ${active?'active':'paused'}"></span>${active?'Đang chạy':'Tạm dừng'}</span>`;
@@ -204,6 +247,13 @@ function fmtNgayVN(iso){
   return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'—');
 }
 function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+// Escape HTML — BẮT BUỘC dùng cho mọi chuỗi lấy từ dữ liệu (tên chiến dịch, chi
+// nhánh...) trước khi nội suy vào innerHTML/thuộc tính HTML. Phát hiện 23/09/2026:
+// tên chiến dịch "Bài viết: ..." của Đà Lạt chứa dấu ngoặc kép (Facebook caption
+// gốc có trích dẫn), nội suy thẳng không escape làm vỡ cấu trúc <option value="...">.
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
 
 function filtered(){
   let list = LICHSU;
@@ -213,19 +263,23 @@ function filtered(){
     const nguongIso = nguong.toISOString().slice(0,10);
     list = list.filter(x => x.ngay >= nguongIso);
   }
+  if(state.chiNhanh) list = list.filter(x => x.chiNhanh === state.chiNhanh);
   if(state.chienDich) list = list.filter(x => x.chienDich === state.chienDich);
   return list;
 }
 
-// ── Cộng dồn theo chiến dịch (dùng cho panel 2 + 3) ──
+// ── Cộng dồn theo chi nhánh + chiến dịch (dùng cho panel 3 + 4) ──
+// Khoá gộp PHẢI có cả chiNhanh (thêm 23/09/2026) — nếu chỉ gộp theo tên chiến
+// dịch, 2 chi nhánh lỡ đặt trùng tên chiến dịch sẽ bị CỘNG NHẦM vào làm 1.
 function aggregateByCampaign(list){
   const map = {};
   list.forEach(x=>{
-    if(!map[x.chienDich]) map[x.chienDich] = {
-      chienDich:x.chienDich, chiPhi:0, linkClick:0, videoView:0, postEngagement:0,
+    const key = (x.chiNhanh||'') + '|' + x.chienDich;
+    if(!map[key]) map[key] = {
+      chienDich:x.chienDich, chiNhanh:x.chiNhanh||'', chiPhi:0, linkClick:0, videoView:0, postEngagement:0,
       postReaction:0, like:0, comment:0, messengerBatDau:0, messengerTraLoi:0, messengerTongKetNoi:0
     };
-    const a = map[x.chienDich];
+    const a = map[key];
     a.chiPhi += x.chiPhi||0; a.linkClick += x.linkClick||0; a.videoView += x.videoView||0;
     a.postEngagement += x.postEngagement||0; a.postReaction += x.postReaction||0;
     a.like += x.like||0; a.comment += x.comment||0;
@@ -258,8 +312,8 @@ function xepLoaiHieuQua(camps){
     // Ưu tiên 1: Đang chạy lên trước Tạm dừng (theo yêu cầu người dùng 22/09/2026,
     // để luôn nhìn thấy ngay các chiến dịch đang chạy) — chiến dịch chưa rõ trạng thái
     // (không có trong TRANGTHAI, xem trangThaiBadge()) coi như Tạm dừng, xếp sau.
-    const dangChayA = TRANGTHAI[a.chienDich]==='ACTIVE' ? 0 : 1;
-    const dangChayB = TRANGTHAI[b.chienDich]==='ACTIVE' ? 0 : 1;
+    const dangChayA = TRANGTHAI[a.chiNhanh + '|' + a.chienDich]==='ACTIVE' ? 0 : 1;
+    const dangChayB = TRANGTHAI[b.chiNhanh + '|' + b.chienDich]==='ACTIVE' ? 0 : 1;
     if(dangChayA !== dangChayB) return dangChayA - dangChayB;
     // Ưu tiên 2 (trong cùng nhóm Đang chạy/Tạm dừng): mức độ cần chú ý xau→canhbao→tot→na
     const rank = {xau:0, canhbao:1, tot:2, na:3};
@@ -291,35 +345,61 @@ function renderKPI(list){
     </div>`).join('');
 }
 
-// ── Panel 1: xu hướng chi phí theo ngày (cột CSS, nhãn chọn lọc: đầu/cuối/đỉnh — không ghi số lên mọi cột) ──
+// ── Panel 1: xu hướng chi phí theo ngày, xếp chồng theo chi nhánh (thêm 23/09/2026) ──
+// Mỗi cột = 1 ngày, chia thành các đoạn màu theo chi nhánh (chiều cao đoạn = tỷ lệ
+// trong tổng ngày đó). Hover hiện tổng + breakdown từng chi nhánh (native title,
+// không dùng thư viện chart — đúng chủ trương "không build step" của repo). Vạch
+// mờ tách ranh giới giữa các tháng (bar đầu tiên của mỗi tháng, trừ bar đầu biểu đồ).
 function renderTrend(list){
-  const byDay = {};
-  list.forEach(x=>{ byDay[x.ngay] = (byDay[x.ngay]||0) + (x.chiPhi||0); });
+  const byDay = {}; // { ngay: { total, byChiNhanh: {chiNhanh: chiPhi} } }
+  list.forEach(x=>{
+    if(!byDay[x.ngay]) byDay[x.ngay] = { total: 0, byChiNhanh: {} };
+    const cn = x.chiNhanh || '—';
+    byDay[x.ngay].total += x.chiPhi||0;
+    byDay[x.ngay].byChiNhanh[cn] = (byDay[x.ngay].byChiNhanh[cn]||0) + (x.chiPhi||0);
+  });
   const days = Object.keys(byDay).sort();
   const chartEl = document.getElementById('trendChart');
   const labelsEl = document.getElementById('trendLabels');
+  const legendEl = document.getElementById('trendLegend');
   if(!days.length){
     chartEl.innerHTML = '<div class="empty" style="width:100%;">Không có dữ liệu khớp bộ lọc.</div>';
     labelsEl.innerHTML = '';
+    legendEl.innerHTML = '';
     return;
   }
-  const max = Math.max(...days.map(d=>byDay[d]));
-  const maxIdx = days.findIndex(d=>byDay[d]===max);
+  const max = Math.max(...days.map(d=>byDay[d].total));
+  const maxIdx = days.findIndex(d=>byDay[d].total===max);
   chartEl.innerHTML = days.map((d,i)=>{
-    const v = byDay[d];
-    const h = max>0 ? Math.max(2, Math.round(v/max*100)) : 0;
-    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtVND(v)}</div>` : '';
-    return `<div class="trend-bar-wrap" title="${fmtNgayVN(d)}: ${fmtVND(v)}">${label}<div class="trend-bar" style="height:${h}%;"></div></div>`;
+    const dayData = byDay[d];
+    const h = max>0 ? Math.max(2, Math.round(dayData.total/max*100)) : 0;
+    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtTrieuNhan(dayData.total)}</div>` : '';
+    const chiNhanhsNgay = sapXepChiNhanh(Object.keys(dayData.byChiNhanh));
+    const segs = chiNhanhsNgay.map(cn=>{
+      const segH = dayData.total>0 ? (dayData.byChiNhanh[cn]/dayData.total*100) : 0;
+      return `<div class="trend-seg" style="height:${segH}%;background:${chiNhanhColor(cn)};"></div>`;
+    }).join('');
+    // Giá trị trong tooltip chỉ cần số (vd "5.1"), không kèm chữ "triệu" — đơn vị
+    // đã ghi 1 lần trong mô tả panel (theo yêu cầu người dùng 23/09/2026).
+    const tooltip = [`${fmtNgayVN(d)}: ${fmtTrieu(dayData.total)}`]
+      .concat(chiNhanhsNgay.map(cn=>`${cn}: ${fmtTrieu(dayData.byChiNhanh[cn])}`)).join('\n');
+    const isMonthStart = i>0 && d.slice(8,10)==='01';
+    return `<div class="trend-bar-wrap${isMonthStart?' month-start':''}" data-tooltip="${esc(tooltip)}">${label}<div class="trend-bar" style="height:${h}%;">${segs}</div></div>`;
   }).join('');
   labelsEl.innerHTML = days.map((d,i)=>{
     const show = i===0 || i===days.length-1 || i===maxIdx;
     return `<div class="trend-tick">${show ? fmtNgayVN(d) : ''}</div>`;
   }).join('');
+  const chiNhanhsAll = sapXepChiNhanh(uniqSorted(list.map(x=>x.chiNhanh)));
+  legendEl.innerHTML = chiNhanhsAll.map(cn=>`
+    <span class="trend-legend-item"><span class="trend-legend-dot" style="background:${chiNhanhColor(cn)};"></span>${esc(cn)}</span>`).join('');
 }
 
-// ── Panel 2: chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý) — luôn dùng TOÀN BỘ LICHSU, không theo bộ lọc phía trên ──
-// Phân nhóm theo tên chiến dịch: chứa "CSC" (không phân biệt hoa/thường) → nhóm CSC, gộp theo tháng;
-// chứa "CDR" → nhóm CDR, gộp theo quý; không khớp gì → nhóm "Khác", gộp theo tháng (theo yêu cầu người dùng 22/09/2026).
+// ── Panel 2: chi phí theo Chi nhánh × Tháng, 3 cột CSC/Khác/CDR — luôn dùng TOÀN BỘ LICHSU, không theo bộ lọc thời gian/chiến dịch phía trên ──
+// Phân nhóm theo tên chiến dịch: chứa "CSC" (không phân biệt hoa/thường) → nhóm CSC;
+// chứa "CDR" → nhóm CDR; không khớp gì → nhóm "Khác" (theo yêu cầu người dùng 22/09/2026).
+// (đổi 23/09/2026) CDR giờ cũng gộp theo THÁNG như CSC/Khác (trước đó theo quý) —
+// để cả 3 nhóm nằm chung 1 bảng theo đúng thiết kế người dùng cung cấp (ảnh mẫu).
 function phanLoaiChienDich(ten){
   const t = (ten||'').toUpperCase();
   if(t.includes('CSC')) return 'CSC';
@@ -327,42 +407,68 @@ function phanLoaiChienDich(ten){
   return 'Khac';
 }
 function thangCuaNgay(iso){ return (iso||'').slice(0,7); } // "yyyy-MM"
-function quyCuaNgay(iso){
-  const m = (iso||'').match(/^(\d{4})-(\d{2})/);
-  if(!m) return '';
-  const q = Math.floor((parseInt(m[2],10)-1)/3) + 1;
-  return `${m[1]}-Q${q}`;
-}
 function fmtThangVN(ym){
   const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
   return m ? `Tháng ${parseInt(m[2],10)}/${m[1]}` : (ym||'—');
 }
-function fmtQuyVN(yq){
-  const m = (yq||'').match(/^(\d{4})-Q(\d)$/);
-  return m ? `Quý ${m[2]}/${m[1]}` : (yq||'—');
-}
-function renderBudgetGroups(){
-  const byGroup = { CSC:{}, CDR:{}, Khac:{} };
-  LICHSU.forEach(x=>{
+// (đổi 23/09/2026, theo thiết kế người dùng cung cấp — ảnh mẫu) Mỗi chi nhánh 1
+// bảng DUY NHẤT (không phải 3 bảng con nữa): cột = Tháng + CSC + Khác + CDR, dòng
+// cuối "Tổng" cộng dồn từng cột theo toàn bộ các tháng đang hiện. 3 bảng chi nhánh
+// xếp NGANG HÀNG (`.budget-grid`, giống layout gốc trước đây — chỉ đổi trục: cột
+// lưới giờ là chi nhánh thay vì nhóm CSC/CDR/Khác). Ô = 0 hiện trống (không ghi
+// "0") — khớp đúng ảnh mẫu, phân biệt trực quan "không chạy loại này" khỏi số liệu.
+function renderBudgetGroups(list){
+  const byChiNhanh = {}; // byChiNhanh[chiNhanh][thang] = {CSC,Khac,CDR}
+  const chiNhanhSet = new Set();
+  list.forEach(x=>{
     const nhom = phanLoaiChienDich(x.chienDich);
-    const key = nhom==='CDR' ? quyCuaNgay(x.ngay) : thangCuaNgay(x.ngay);
-    if(!key) return;
-    if(!byGroup[nhom][key]) byGroup[nhom][key] = { chiPhi:0, messengerBatDau:0 };
-    byGroup[nhom][key].chiPhi += x.chiPhi||0;
-    byGroup[nhom][key].messengerBatDau += x.messengerBatDau||0;
+    const thang = thangCuaNgay(x.ngay);
+    if(!thang) return;
+    const cn = x.chiNhanh || '—';
+    chiNhanhSet.add(cn);
+    if(!byChiNhanh[cn]) byChiNhanh[cn] = {};
+    if(!byChiNhanh[cn][thang]) byChiNhanh[cn][thang] = { CSC:0, Khac:0, CDR:0 };
+    byChiNhanh[cn][thang][nhom] += x.chiPhi||0;
   });
-  renderBudgetTable('budgetCSC', byGroup.CSC, fmtThangVN);
-  renderBudgetTable('budgetCDR', byGroup.CDR, fmtQuyVN);
-  renderBudgetTable('budgetKhac', byGroup.Khac, fmtThangVN);
-}
-function renderBudgetTable(elId, data, fmtKy){
-  const keys = Object.keys(data).sort().reverse(); // mới nhất lên đầu
-  document.getElementById(elId).innerHTML = keys.length ? keys.map(k=>`
-    <tr>
-      <td style="font-weight:700;color:var(--navy);">${fmtKy(k)}</td>
-      <td>${fmtVND(data[k].chiPhi)}</td>
-      <td>${data[k].messengerBatDau}</td>
-    </tr>`).join('') : `<tr><td colspan="3" class="empty">Chưa có dữ liệu</td></tr>`;
+  const chiNhanhList = sapXepChiNhanh([...chiNhanhSet]);
+  const container = document.getElementById('budgetGroupsContainer');
+  if(!chiNhanhList.length){
+    container.innerHTML = '<div class="empty">Chưa có dữ liệu</div>';
+    return;
+  }
+  const oTien = v => v ? fmtNgan(v) : ''; // 0/không có dữ liệu → ô trống, không ghi "0"
+  container.innerHTML = '<div class="budget-grid">' + chiNhanhList.map(cn=>{
+    const thangs = Object.keys(byChiNhanh[cn]).sort().reverse(); // mới nhất lên đầu
+    if(!thangs.length){
+      return `<div>
+        <div class="budget-group-title">${esc(cn)}</div>
+        <table><thead><tr><th>Tháng</th><th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
+          <tbody><tr><td colspan="4" class="empty">Chưa có dữ liệu</td></tr></tbody></table>
+      </div>`;
+    }
+    const tong = { CSC:0, Khac:0, CDR:0 };
+    const rows = thangs.map(t=>{
+      const v = byChiNhanh[cn][t];
+      tong.CSC += v.CSC; tong.Khac += v.Khac; tong.CDR += v.CDR;
+      return `<tr>
+        <td style="font-weight:700;color:var(--navy);">${fmtThangVN(t)}</td>
+        <td>${oTien(v.CSC)}</td>
+        <td>${oTien(v.Khac)}</td>
+        <td>${oTien(v.CDR)}</td>
+      </tr>`;
+    }).join('');
+    const tongRow = `<tr class="budget-total">
+      <td style="color:var(--navy);">Tổng</td>
+      <td>${oTien(tong.CSC)}</td>
+      <td>${oTien(tong.Khac)}</td>
+      <td>${oTien(tong.CDR)}</td>
+    </tr>`;
+    return `<div>
+      <div class="budget-group-title">${esc(cn)}</div>
+      <table><thead><tr><th>Tháng</th><th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
+        <tbody>${rows}${tongRow}</tbody></table>
+    </div>`;
+  }).join('') + '</div>';
 }
 
 // ── Panel 3: cảnh báo hiệu quả theo chiến dịch ──
@@ -373,23 +479,27 @@ function renderWarnTable(list){
 
   const camps = xepLoaiHieuQua(aggregateByCampaign(list));
   const badgeMap = {tot:'tot', canhbao:'canhbao', xau:'xau', na:'na'};
-  document.getElementById('warnTable').innerHTML = camps.length ? camps.map(c=>`
+  document.getElementById('warnTable').innerHTML = camps.length ? camps.map((c,i)=>`
     <tr class="${c.loai==='xau'?'xau':''}">
-      <td style="font-weight:700;color:var(--navy);">${c.chienDich}${trangThaiBadge(c.chienDich)}</td>
-      <td>${fmtVND(c.chiPhi)}</td>
+      <td>${i+1}</td>
+      <td>${esc(c.chiNhanh)}</td>
+      <td style="font-weight:700;color:var(--navy);">${esc(c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
+      <td>${fmtNgan(c.chiPhi)}</td>
       <td>${c.messengerBatDau}</td>
-      <td>${c.chiPhiMoiKQ!=null ? fmtVND(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
+      <td>${c.chiPhiMoiKQ!=null ? fmtNgan(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
       <td><span class="badge ${badgeMap[c.loai]}">${c.nhan}</span></td>
-    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="7" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // ── Panel 4: chi tiết chỉ số theo chiến dịch ──
 function renderDetailTable(list){
   const camps = aggregateByCampaign(list);
-  document.getElementById('detailTable').innerHTML = camps.length ? camps.map(c=>`
+  document.getElementById('detailTable').innerHTML = camps.length ? camps.map((c,i)=>`
     <tr>
-      <td style="font-weight:700;color:var(--navy);">${c.chienDich}${trangThaiBadge(c.chienDich)}</td>
-      <td>${fmtVND(c.chiPhi)}</td>
+      <td>${i+1}</td>
+      <td>${esc(c.chiNhanh)}</td>
+      <td style="font-weight:700;color:var(--navy);">${esc(c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
+      <td>${fmtNgan(c.chiPhi)}</td>
       <td>${c.linkClick}</td>
       <td>${c.videoView}</td>
       <td>${c.postEngagement}</td>
@@ -399,7 +509,7 @@ function renderDetailTable(list){
       <td>${c.messengerBatDau}</td>
       <td>${c.messengerTraLoi}</td>
       <td>${c.messengerTongKetNoi}</td>
-    </tr>`).join('') : `<tr><td colspan="10" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="12" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // ── Panel 5: nhật ký theo ngày (thô, mới nhất lên đầu) ──
@@ -410,25 +520,53 @@ function renderLogTable(list){
   });
   document.getElementById('logCount').textContent = sorted.length;
   document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
-  document.getElementById('logTable').innerHTML = sorted.map(x=>`
+  document.getElementById('logTable').innerHTML = sorted.map((x,i)=>`
     <tr>
+      <td>${i+1}</td>
       <td>${fmtNgayVN(x.ngay)}</td>
-      <td style="font-weight:700;">${x.chienDich}</td>
-      <td>${fmtVND(x.chiPhi)}</td>
+      <td>${esc(x.chiNhanh||'')}</td>
+      <td style="font-weight:700;">${esc(x.chienDich)}</td>
+      <td>${fmtNgan(x.chiPhi)}</td>
       <td>${x.messengerBatDau||0}</td>
       <td>${x.linkClick||0}</td>
       <td>${x.videoView||0}</td>
     </tr>`).join('');
 }
 
+// Bộ lọc Chi nhánh dạng nút bấm (đổi 23/09/2026 từ dropdown, theo yêu cầu người
+// dùng) — danh sách nút vẫn suy ra động từ dữ liệu (không hardcode tên chi nhánh),
+// xếp theo CHI_NHANH_ORDER để khớp thứ tự với biểu đồ/legend ở panel 1. Dùng
+// data-chinhanh + addEventListener (xem cuối file) thay vì onclick nội suy thẳng
+// giá trị — tránh phải escape 2 lớp (thuộc tính HTML + chuỗi JS) cho tên chi nhánh.
 function populateFilterOptions(){
-  const chienDichs = uniqSorted(LICHSU.map(x=>x.chienDich));
-  document.getElementById('fChienDich').innerHTML = '<option value="">Tất cả chiến dịch</option>' + chienDichs.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const chiNhanhs = sapXepChiNhanh(uniqSorted(LICHSU.map(x=>x.chiNhanh)));
+  const btns = ['<button class="filter-btn active" data-chinhanh="">Tất cả chi nhánh</button>']
+    .concat(chiNhanhs.map(c=>`<button class="filter-btn" data-chinhanh="${esc(c)}">${esc(c)}</button>`));
+  document.getElementById('chiNhanhBtns').innerHTML = btns.join('');
+  updateChienDichOptions();
+}
+// Danh sách chiến dịch trong dropdown chỉ lấy trong phạm vi chi nhánh đang chọn
+// (thêm 23/09/2026) — tránh hiện tên chiến dịch của chi nhánh khác, và tránh
+// trường hợp 2 chi nhánh trùng tên chiến dịch gây nhầm lẫn khi chọn "Tất cả".
+// esc() bắt buộc — tên chiến dịch "Bài viết: ..." (Đà Lạt) có thể chứa dấu ngoặc kép.
+function updateChienDichOptions(){
+  const scope = state.chiNhanh ? LICHSU.filter(x=>x.chiNhanh===state.chiNhanh) : LICHSU;
+  const chienDichs = uniqSorted(scope.map(x=>x.chienDich));
+  document.getElementById('fChienDich').innerHTML = '<option value="">Tất cả chiến dịch</option>' + chienDichs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
 
 function setRange(days){
   state.range = days;
   document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.range,10)===days));
+  render();
+}
+
+function setChiNhanh(cn){
+  state.chiNhanh = cn;
+  state.chienDich = ''; // đổi chi nhánh thì bỏ chọn chiến dịch cũ, tránh giữ lựa chọn không còn thuộc chi nhánh mới
+  document.querySelectorAll('#chiNhanhBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.chinhanh===cn));
+  updateChienDichOptions();
+  document.getElementById('fChienDich').value = '';
   render();
 }
 
@@ -438,7 +576,9 @@ function onFilterChange(){
 }
 
 function resetFilters(){
-  state = { range:0, chienDich:'' };
+  state = { range:0, chienDich:'', chiNhanh:'' };
+  document.querySelectorAll('#chiNhanhBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.chinhanh===''));
+  updateChienDichOptions();
   document.getElementById('fChienDich').value = '';
   document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.range==='0'));
   render();
@@ -448,6 +588,7 @@ function render(){
   const list = filtered();
   renderKPI(list);
   renderTrend(list);
+  renderBudgetGroups(LICHSU); // (đổi 23/09/2026) không áp dụng bộ lọc Chi nhánh/khoảng ngày/chiến dịch nữa — luôn hiện đủ cả 3 bảng chi nhánh
   renderWarnTable(list);
   renderDetailTable(list);
   renderLogTable(list);
@@ -463,13 +604,42 @@ async function loadData(){
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LICHSU.length + ' dòng lịch sử';
     document.getElementById('footnoteText').textContent = 'Dữ liệu chi phí & kết quả quảng cáo Facebook, đồng bộ tự động mỗi giờ từ tài khoản quảng cáo qua Google Sheet trung gian.';
     populateFilterOptions();
-    renderBudgetGroups(); // độc lập với bộ lọc — chỉ cần render lại khi có dữ liệu mới, không cần gọi trong render()
     render();
   }catch(e){
     console.error('Lỗi tải fbads.json:', e);
     document.getElementById('updatedText').textContent = 'Không tải được dữ liệu — vui lòng thử lại sau.';
   }
 }
+
+// Event delegation cho nút Chi nhánh (gắn 1 lần vào phần tử cha #chiNhanhBtns,
+// vẫn hoạt động đúng sau mỗi lần populateFilterOptions() thay innerHTML bên trong).
+document.getElementById('chiNhanhBtns').addEventListener('click', function(e){
+  const btn = e.target.closest('.filter-btn');
+  if(!btn) return;
+  setChiNhanh(btn.dataset.chinhanh);
+});
+
+// Tooltip tuỳ chỉnh cho biểu đồ panel 1 (đổi 23/09/2026 từ title mặc định trình
+// duyệt — title có độ trễ hiện ~1s, dễ bị hiểu nhầm là "chưa có" tính năng hover).
+// Event delegation trên #trendChartWrap (không đổi qua mỗi lần renderTrend() thay
+// innerHTML của #trendChart bên trong).
+(function(){
+  const wrapEl = document.getElementById('trendChartWrap');
+  const tipEl = document.getElementById('trendTooltip');
+  wrapEl.addEventListener('mouseover', function(e){
+    const bar = e.target.closest('.trend-bar-wrap');
+    if(!bar || !bar.dataset.tooltip) return;
+    tipEl.textContent = bar.dataset.tooltip; // textContent (không phải innerHTML) — an toàn tuyệt đối, không cần escape thêm
+    const wrapRect = wrapEl.getBoundingClientRect();
+    const barRect = bar.getBoundingClientRect();
+    tipEl.style.left = (barRect.left - wrapRect.left + barRect.width/2) + 'px';
+    tipEl.style.top = (barRect.top - wrapRect.top) + 'px';
+    tipEl.classList.add('show');
+  });
+  wrapEl.addEventListener('mouseleave', function(){
+    tipEl.classList.remove('show');
+  });
+})();
 
 loadData();
 </script>
