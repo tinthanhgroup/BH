@@ -85,7 +85,9 @@
   /* Mỗi cột xếp chồng theo chi nhánh (thêm 23/09/2026) — .trend-bar là flex column-reverse
      chứa các .trend-seg (1 đoạn màu/chi nhánh), xếp từ dưới lên theo CHI_NHANH_ORDER. */
   .trend-chart-wrap{position:relative;}
-  .trend-chart{display:flex;align-items:flex-end;gap:3px;height:160px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
+  /* Cao 220px (tăng từ 160px, 23/09/2026 — "kéo cao 1 chút") để có thêm không
+     gian cho nhãn tổng mỗi cột + nhãn số tiền từng đoạn chi nhánh bên trong. */
+  .trend-chart{display:flex;align-items:flex-end;gap:3px;height:220px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
   /* Tooltip tuỳ chỉnh khi hover (đổi 23/09/2026 từ title mặc định trình duyệt —
      hiện ngay lập tức, không cần chờ delay của tooltip OS). */
   .trend-tooltip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:11px;
@@ -98,8 +100,16 @@
   .trend-bar-wrap.month-start::before{content:'';position:absolute;left:-4px;top:-20px;bottom:0;width:1px;background:#D8E1EE;}
   .trend-bar{width:100%;display:flex;flex-direction:column-reverse;border-radius:4px 4px 0 0;overflow:hidden;transition:opacity .15s;cursor:default;}
   .trend-bar:hover{opacity:.8;}
-  .trend-seg{width:100%;}
-  .trend-bar-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--navy);white-space:nowrap;}
+  /* Số tiền từng chi nhánh (thêm 23/09/2026) ghi thẳng trong đoạn màu, chữ trắng
+     để đọc được trên cả 3 màu nền (navy/green/accent) — rỗng thì không chiếm
+     chỗ, không cần ẩn riêng. overflow:hidden ở .trend-bar (cha) đã tự cắt chữ
+     nếu đoạn quá mỏng so với chữ (hiếm khi xảy ra vì đã lọc theo FBADS_TREND_NGUONG_GHI_SO). */
+  .trend-seg{width:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9.5px;font-weight:700;white-space:nowrap;overflow:hidden;}
+  /* Nhãn tổng mỗi cột (thêm 23/09/2026: ghi ở MỌI cột, không chỉ cột cao nhất) —
+     "bottom" đặt qua inline style khớp đúng chiều cao cột (${h}%) nên luôn nổi
+     ngay phía trên đỉnh cột, bất kể cột cao thấp khác nhau (đổi từ "top:-18px"
+     cố định — cách cũ chỉ đúng khi gán cho ĐÚNG 1 cột cao nhất duy nhất). */
+  .trend-bar-label{position:absolute;left:50%;transform:translateX(-50%) translateY(-100%);margin-bottom:4px;font-size:10px;font-weight:700;color:var(--navy);white-space:nowrap;}
   .trend-labels{display:flex;gap:3px;margin-top:4px;}
   /* text-align:left + overflow:visible (đổi 23/09/2026) — nhãn giờ là tên tháng
      ("Tháng 9/2026"), rộng hơn nhiều so với 1 cột ngày, đặt ở đúng vị trí bắt đầu
@@ -391,6 +401,11 @@ function renderKPI(list){
 // dùng): gộp cột theo THÁNG thay vì theo ngày — tránh biểu đồ quá dày cột khi xem
 // toàn bộ lịch sử nhiều tháng. "30 ngày gần nhất"/"Quý hiện tại" vẫn gộp theo ngày
 // như cũ (khoảng thời gian ngắn hơn, xem theo ngày vẫn rõ).
+// Ngưỡng để quyết định CÓ ghi số tiền lên biểu đồ hay không (tổng mỗi cột lẫn
+// từng đoạn chi nhánh) — thêm 23/09/2026, theo yêu cầu người dùng: giá trị quá
+// nhỏ thì bỏ qua, tránh chữ đè lên nhau/tràn ra ngoài đoạn màu quá mỏng.
+const FBADS_TREND_NGUONG_GHI_SO = 2000000; // 2 triệu đồng
+
 function renderTrend(list){
   const theoThang = state.range === 0;
   const byKy = {}; // { khoáKỳ: { total, byChiNhanh: {chiNhanh: chiPhi} } } — khoá là "yyyy-MM-dd" (theo ngày) hoặc "yyyy-MM" (theo tháng)
@@ -401,7 +416,27 @@ function renderTrend(list){
     byKy[ky].total += x.chiPhi||0;
     byKy[ky].byChiNhanh[cn] = (byKy[ky].byChiNhanh[cn]||0) + (x.chiPhi||0);
   });
-  const kys = Object.keys(byKy).sort();
+
+  let kys;
+  if(theoThang){
+    // "All time - Theo tháng": để sẵn các tháng tới cuối năm hiện tại (kể cả
+    // tháng chưa có dữ liệu, hiện cột rỗng) — theo yêu cầu người dùng 23/09/2026,
+    // để thấy trước "còn bao nhiêu tháng tới cuối năm" phục vụ lên kế hoạch,
+    // không chỉ dừng ở tháng cuối cùng có dữ liệu thật.
+    const thangCoDuLieu = Object.keys(byKy).sort();
+    kys = [];
+    if(thangCoDuLieu.length){
+      let [y, m] = thangCoDuLieu[0].split('-').map(Number);
+      const namHienTai = new Date().getFullYear();
+      while(y < namHienTai || (y === namHienTai && m <= 12)){
+        kys.push(`${y}-${String(m).padStart(2,'0')}`);
+        m++; if(m > 12){ m = 1; y++; }
+      }
+    }
+  } else {
+    kys = Object.keys(byKy).sort();
+  }
+
   const chartEl = document.getElementById('trendChart');
   const labelsEl = document.getElementById('trendLabels');
   const legendEl = document.getElementById('trendLegend');
@@ -412,16 +447,22 @@ function renderTrend(list){
     return;
   }
   const fmtNhanKy = theoThang ? fmtThangVN : fmtNgayVN; // nhãn hiển thị (tooltip + trục X)
-  const max = Math.max(...kys.map(k=>byKy[k].total));
-  const maxIdx = kys.findIndex(k=>byKy[k].total===max);
+  const max = Math.max(...kys.map(k=>(byKy[k]||{total:0}).total));
   chartEl.innerHTML = kys.map((k,i)=>{
-    const kyData = byKy[k];
+    const kyData = byKy[k] || { total: 0, byChiNhanh: {} }; // tháng chưa có dữ liệu (để sẵn tới cuối năm)
     const h = max>0 ? Math.max(2, Math.round(kyData.total/max*100)) : 0;
-    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtTrieuNhan(kyData.total)}</div>` : '';
+    // Tổng mỗi cột (thêm 23/09/2026: ghi ở MỌI cột, không chỉ cột cao nhất như
+    // trước) — bỏ qua nếu tổng quá nhỏ hoặc = 0 (tháng chưa có dữ liệu).
+    const label = kyData.total >= FBADS_TREND_NGUONG_GHI_SO
+      ? `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieuNhan(kyData.total)}</div>` : '';
     const chiNhanhsKy = sapXepChiNhanh(Object.keys(kyData.byChiNhanh));
     const segs = chiNhanhsKy.map(cn=>{
-      const segH = kyData.total>0 ? (kyData.byChiNhanh[cn]/kyData.total*100) : 0;
-      return `<div class="trend-seg" style="height:${segH}%;background:${chiNhanhColor(cn)};"></div>`;
+      const gtri = kyData.byChiNhanh[cn];
+      const segH = kyData.total>0 ? (gtri/kyData.total*100) : 0;
+      // Số tiền từng chi nhánh (thêm 23/09/2026), chỉ ở chế độ theo tháng (đủ
+      // rộng cột để ghi) — bỏ qua nếu đoạn quá nhỏ, tránh chữ tràn ra ngoài.
+      const soTien = (theoThang && gtri >= FBADS_TREND_NGUONG_GHI_SO) ? fmtTrieu(gtri) : '';
+      return `<div class="trend-seg" style="height:${segH}%;background:${chiNhanhColor(cn)};">${soTien}</div>`;
     }).join('');
     // Giá trị trong tooltip chỉ cần số (vd "5.1"), không kèm chữ "triệu" — đơn vị
     // đã ghi 1 lần trong mô tả panel (theo yêu cầu người dùng 23/09/2026).
