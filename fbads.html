@@ -101,7 +101,10 @@
   .trend-seg{width:100%;}
   .trend-bar-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--navy);white-space:nowrap;}
   .trend-labels{display:flex;gap:3px;margin-top:4px;}
-  .trend-tick{flex:1;min-width:4px;text-align:center;font-size:9.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;}
+  /* text-align:left + overflow:visible (đổi 23/09/2026) — nhãn giờ là tên tháng
+     ("Tháng 9/2026"), rộng hơn nhiều so với 1 cột ngày, đặt ở đúng vị trí bắt đầu
+     tháng thay vì căn giữa; các cột trống xen giữa không có nhãn nên không bị đè. */
+  .trend-tick{flex:1;min-width:4px;text-align:left;font-size:9.5px;color:var(--ink-soft);white-space:nowrap;overflow:visible;}
   .trend-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
   .trend-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
   .trend-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
@@ -134,7 +137,6 @@
 
   <div class="panel">
     <h3><span class="chart-num">1</span> Xu hướng Chi phí theo ngày</h3>
-    <p class="desc">Chi phí tất cả chiến dịch mỗi ngày, xếp chồng theo chi nhánh (đơn vị triệu đồng), theo khoảng thời gian đang chọn. Di chuột vào từng cột để xem chi tiết số tiền theo từng chi nhánh. Vạch mờ đánh dấu ranh giới giữa các tháng.</p>
     <div class="trend-chart-wrap" id="trendChartWrap">
       <div class="trend-chart" id="trendChart"></div>
       <div class="trend-tooltip" id="trendTooltip"></div>
@@ -145,7 +147,6 @@
 
   <div class="panel">
     <h3><span class="chart-num">2</span> Chi phí theo Nhóm & Kỳ</h3>
-    <p class="desc">Mỗi chi nhánh 1 bảng riêng, xếp ngang hàng — cột theo tên chiến dịch: <b>CSC</b>, <b>Khác</b> (không khớp CSC/CDR), <b>CDR</b>; dòng theo <b>tháng</b>. Dòng "Tổng" cuối bảng cộng dồn từng cột. Ô trống = chi nhánh đó không phát sinh chi phí loại này trong tháng. Luôn hiển thị <b>toàn bộ lịch sử của cả 3 chi nhánh</b>, không theo bất kỳ bộ lọc nào phía trên (kể cả bộ lọc Chi nhánh). Mới nhất lên đầu. Đơn vị chi phí: nghìn đồng.</p>
     <div id="budgetGroupsContainer"></div>
   </div>
 
@@ -198,6 +199,7 @@ const FBADS_HE_SO_CANH_BAO = 1.5;             // chi phí/kết quả cao hơn X
 
 let LICHSU = [];
 let TRANGTHAI = {}; // { "Chi nhánh|Tên chiến dịch": "ACTIVE" | "PAUSED" } — trạng thái thật lấy từ Facebook, không suy luận qua chi phí
+let BAIVIET = {}; // { "Chi nhánh|Tên chiến dịch": "https://www.facebook.com/..." } — chỉ có với chiến dịch boost 1 bài viết cụ thể (thêm 23/09/2026)
 let state = { range: 0, chienDich: '', chiNhanh: '' }; // range: số ngày gần nhất, 0 = toàn bộ
 
 function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
@@ -241,6 +243,15 @@ function trangThaiBadge(chiNhanh, chienDich){
   if(!st) return '';
   const active = st === 'ACTIVE';
   return `<span class="run-badge ${active?'active':'paused'}"><span class="run-dot ${active?'active':'paused'}"></span>${active?'Đang chạy':'Tạm dừng'}</span>`;
+}
+// Tên chiến dịch, tự bấm được nếu có link bài viết gốc trong BAIVIET (thêm
+// 23/09/2026 — chỉ có với chiến dịch boost 1 bài cụ thể, xem docs). Không có link
+// thì vẫn hiện tên bình thường (không suy đoán/tạo link giả).
+function tenChienDichHtml(chiNhanh, chienDich){
+  const url = BAIVIET[chiNhanh + '|' + chienDich];
+  return url
+    ? `<a href="${esc(url)}" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px;">${esc(chienDich)}</a>`
+    : esc(chienDich);
 }
 function fmtNgayVN(iso){
   const m = (iso||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -386,9 +397,12 @@ function renderTrend(list){
     const isMonthStart = i>0 && d.slice(8,10)==='01';
     return `<div class="trend-bar-wrap${isMonthStart?' month-start':''}" data-tooltip="${esc(tooltip)}">${label}<div class="trend-bar" style="height:${h}%;">${segs}</div></div>`;
   }).join('');
+  // Trục X ghi tên tháng (thêm 23/09/2026, theo yêu cầu người dùng) — nhãn đặt ở
+  // đúng cột đầu tiên của mỗi tháng (khớp vị trí vạch mờ .month-start), không còn
+  // ghi ngày cụ thể (dd/mm/yyyy) như trước.
   labelsEl.innerHTML = days.map((d,i)=>{
-    const show = i===0 || i===days.length-1 || i===maxIdx;
-    return `<div class="trend-tick">${show ? fmtNgayVN(d) : ''}</div>`;
+    const isNewMonth = i===0 || d.slice(8,10)==='01';
+    return `<div class="trend-tick">${isNewMonth ? esc(fmtThangVN(d.slice(0,7))) : ''}</div>`;
   }).join('');
   const chiNhanhsAll = sapXepChiNhanh(uniqSorted(list.map(x=>x.chiNhanh)));
   legendEl.innerHTML = chiNhanhsAll.map(cn=>`
@@ -483,7 +497,7 @@ function renderWarnTable(list){
     <tr class="${c.loai==='xau'?'xau':''}">
       <td>${i+1}</td>
       <td>${esc(c.chiNhanh)}</td>
-      <td style="font-weight:700;color:var(--navy);">${esc(c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
+      <td style="font-weight:700;color:var(--navy);">${tenChienDichHtml(c.chiNhanh, c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
       <td>${fmtNgan(c.chiPhi)}</td>
       <td>${c.messengerBatDau}</td>
       <td>${c.chiPhiMoiKQ!=null ? fmtNgan(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
@@ -498,7 +512,7 @@ function renderDetailTable(list){
     <tr>
       <td>${i+1}</td>
       <td>${esc(c.chiNhanh)}</td>
-      <td style="font-weight:700;color:var(--navy);">${esc(c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
+      <td style="font-weight:700;color:var(--navy);">${tenChienDichHtml(c.chiNhanh, c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
       <td>${fmtNgan(c.chiPhi)}</td>
       <td>${c.linkClick}</td>
       <td>${c.videoView}</td>
@@ -601,6 +615,7 @@ async function loadData(){
     const json = await res.json();
     LICHSU = (json.records && json.records.lichSu) || [];
     TRANGTHAI = json.trangThai || {};
+    BAIVIET = json.baiViet || {};
     document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + LICHSU.length + ' dòng lịch sử';
     document.getElementById('footnoteText').textContent = 'Dữ liệu chi phí & kết quả quảng cáo Facebook, đồng bộ tự động mỗi giờ từ tài khoản quảng cáo qua Google Sheet trung gian.';
     populateFilterOptions();
