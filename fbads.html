@@ -446,6 +446,14 @@ function renderTrend(list){
     legendEl.innerHTML = '';
     return;
   }
+  // Khoảng cách giữa các cột (thêm 23/09/2026, theo yêu cầu người dùng) — rộng
+  // hơn hẳn ở chế độ theo tháng (chỉ 6 cột, đủ chỗ để tách rõ từng tháng); giữ
+  // nhỏ ở chế độ theo ngày (~90 cột, tăng lên sẽ tràn/cột quá hẹp). PHẢI đặt
+  // GIỐNG NHAU cho #trendChart lẫn #trendLabels — 2 hàng flex riêng biệt nhưng
+  // cần khớp gap để nhãn tháng thẳng hàng đúng dưới cột của nó.
+  const khoangCach = theoThang ? '14px' : '3px';
+  chartEl.style.gap = khoangCach;
+  labelsEl.style.gap = khoangCach;
   const fmtNhanKy = theoThang ? fmtThangVN : fmtNgayVN; // nhãn hiển thị (tooltip + trục X)
   const max = Math.max(...kys.map(k=>(byKy[k]||{total:0}).total));
   chartEl.innerHTML = kys.map((k,i)=>{
