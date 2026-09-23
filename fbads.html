@@ -127,7 +127,8 @@
     <div class="filters">
       <div class="filter-btns" id="rangeBtns">
         <button class="filter-btn" data-range="30" onclick="setRange(30)">30 ngày gần nhất</button>
-        <button class="filter-btn active" data-range="0" onclick="setRange(0)">Toàn bộ lịch sử</button>
+        <button class="filter-btn" data-range="quarter" onclick="setRange('quarter')">Quý hiện tại</button>
+        <button class="filter-btn active" data-range="0" onclick="setRange(0)">All time - Theo tháng</button>
       </div>
       <div class="filter-btns" id="chiNhanhBtns"></div>
       <select id="fChienDich" onchange="onFilterChange()"><option value="">Tất cả chiến dịch</option></select>
@@ -151,7 +152,10 @@
   </div>
 
   <div class="panel">
-    <h3><span class="chart-num">3</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+      <h3 style="margin:0;"><span class="chart-num">3</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
+      <button class="reset-btn" onclick="xuatExcelCanhBao()">⬇️ Xuất Excel</button>
+    </div>
     <p class="desc" id="warnDesc"></p>
     <table class="warn-table">
       <colgroup>
@@ -258,6 +262,15 @@ function fmtNgayVN(iso){
   return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'—');
 }
 function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+// Định dạng ngày "yyyy-MM-dd" theo GIỜ LOCAL của trình duyệt (phát hiện lỗi
+// 23/09/2026: dùng d.toISOString().slice(0,10) bị quy đổi sang UTC, lùi mất 1
+// ngày với múi giờ trước UTC như Việt Nam (UTC+7) — vd nửa đêm 01/07 giờ VN vẫn
+// còn là 30/06 giờ UTC). BẮT BUỘC dùng hàm này cho mọi chỗ cần "ngày hôm nay"/
+// "ngày N hôm trước" theo giờ người xem, không dùng toISOString() cho việc này.
+function isoLocal(d){
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
 // Escape HTML — BẮT BUỘC dùng cho mọi chuỗi lấy từ dữ liệu (tên chiến dịch, chi
 // nhánh...) trước khi nội suy vào innerHTML/thuộc tính HTML. Phát hiện 23/09/2026:
 // tên chiến dịch "Bài viết: ..." của Đà Lạt chứa dấu ngoặc kép (Facebook caption
@@ -266,14 +279,27 @@ function esc(s){
   return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 }
 
+// Khoảng ngày [đầu quý, cuối quý] của quý hiện tại theo giờ máy khách, dạng "yyyy-MM-dd".
+function quyHienTaiRange(){
+  const now = new Date();
+  const thangDauQuy = Math.floor(now.getMonth()/3) * 3; // 0, 3, 6, 9
+  const start = new Date(now.getFullYear(), thangDauQuy, 1);
+  const end = new Date(now.getFullYear(), thangDauQuy + 3, 0); // ngày cuối cùng của quý
+  return [isoLocal(start), isoLocal(end)];
+}
+
 function filtered(){
   let list = LICHSU;
-  if(state.range > 0){
+  if(state.range === 30){
     const nguong = new Date();
-    nguong.setDate(nguong.getDate() - state.range);
-    const nguongIso = nguong.toISOString().slice(0,10);
+    nguong.setDate(nguong.getDate() - 30);
+    const nguongIso = isoLocal(nguong);
     list = list.filter(x => x.ngay >= nguongIso);
+  } else if(state.range === 'quarter'){
+    const [tuNgay, denNgay] = quyHienTaiRange();
+    list = list.filter(x => x.ngay >= tuNgay && x.ngay <= denNgay);
   }
+  // state.range === 0 ("All time - Theo tháng"): không lọc theo ngày, lấy toàn bộ lịch sử
   if(state.chiNhanh) list = list.filter(x => x.chiNhanh === state.chiNhanh);
   if(state.chienDich) list = list.filter(x => x.chienDich === state.chienDich);
   return list;
@@ -361,48 +387,57 @@ function renderKPI(list){
 // trong tổng ngày đó). Hover hiện tổng + breakdown từng chi nhánh (native title,
 // không dùng thư viện chart — đúng chủ trương "không build step" của repo). Vạch
 // mờ tách ranh giới giữa các tháng (bar đầu tiên của mỗi tháng, trừ bar đầu biểu đồ).
+// "All time - Theo tháng" (state.range===0, thêm 23/09/2026, theo yêu cầu người
+// dùng): gộp cột theo THÁNG thay vì theo ngày — tránh biểu đồ quá dày cột khi xem
+// toàn bộ lịch sử nhiều tháng. "30 ngày gần nhất"/"Quý hiện tại" vẫn gộp theo ngày
+// như cũ (khoảng thời gian ngắn hơn, xem theo ngày vẫn rõ).
 function renderTrend(list){
-  const byDay = {}; // { ngay: { total, byChiNhanh: {chiNhanh: chiPhi} } }
+  const theoThang = state.range === 0;
+  const byKy = {}; // { khoáKỳ: { total, byChiNhanh: {chiNhanh: chiPhi} } } — khoá là "yyyy-MM-dd" (theo ngày) hoặc "yyyy-MM" (theo tháng)
   list.forEach(x=>{
-    if(!byDay[x.ngay]) byDay[x.ngay] = { total: 0, byChiNhanh: {} };
+    const ky = theoThang ? x.ngay.slice(0,7) : x.ngay;
+    if(!byKy[ky]) byKy[ky] = { total: 0, byChiNhanh: {} };
     const cn = x.chiNhanh || '—';
-    byDay[x.ngay].total += x.chiPhi||0;
-    byDay[x.ngay].byChiNhanh[cn] = (byDay[x.ngay].byChiNhanh[cn]||0) + (x.chiPhi||0);
+    byKy[ky].total += x.chiPhi||0;
+    byKy[ky].byChiNhanh[cn] = (byKy[ky].byChiNhanh[cn]||0) + (x.chiPhi||0);
   });
-  const days = Object.keys(byDay).sort();
+  const kys = Object.keys(byKy).sort();
   const chartEl = document.getElementById('trendChart');
   const labelsEl = document.getElementById('trendLabels');
   const legendEl = document.getElementById('trendLegend');
-  if(!days.length){
+  if(!kys.length){
     chartEl.innerHTML = '<div class="empty" style="width:100%;">Không có dữ liệu khớp bộ lọc.</div>';
     labelsEl.innerHTML = '';
     legendEl.innerHTML = '';
     return;
   }
-  const max = Math.max(...days.map(d=>byDay[d].total));
-  const maxIdx = days.findIndex(d=>byDay[d].total===max);
-  chartEl.innerHTML = days.map((d,i)=>{
-    const dayData = byDay[d];
-    const h = max>0 ? Math.max(2, Math.round(dayData.total/max*100)) : 0;
-    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtTrieuNhan(dayData.total)}</div>` : '';
-    const chiNhanhsNgay = sapXepChiNhanh(Object.keys(dayData.byChiNhanh));
-    const segs = chiNhanhsNgay.map(cn=>{
-      const segH = dayData.total>0 ? (dayData.byChiNhanh[cn]/dayData.total*100) : 0;
+  const fmtNhanKy = theoThang ? fmtThangVN : fmtNgayVN; // nhãn hiển thị (tooltip + trục X)
+  const max = Math.max(...kys.map(k=>byKy[k].total));
+  const maxIdx = kys.findIndex(k=>byKy[k].total===max);
+  chartEl.innerHTML = kys.map((k,i)=>{
+    const kyData = byKy[k];
+    const h = max>0 ? Math.max(2, Math.round(kyData.total/max*100)) : 0;
+    const label = i===maxIdx ? `<div class="trend-bar-label">${fmtTrieuNhan(kyData.total)}</div>` : '';
+    const chiNhanhsKy = sapXepChiNhanh(Object.keys(kyData.byChiNhanh));
+    const segs = chiNhanhsKy.map(cn=>{
+      const segH = kyData.total>0 ? (kyData.byChiNhanh[cn]/kyData.total*100) : 0;
       return `<div class="trend-seg" style="height:${segH}%;background:${chiNhanhColor(cn)};"></div>`;
     }).join('');
     // Giá trị trong tooltip chỉ cần số (vd "5.1"), không kèm chữ "triệu" — đơn vị
     // đã ghi 1 lần trong mô tả panel (theo yêu cầu người dùng 23/09/2026).
-    const tooltip = [`${fmtNgayVN(d)}: ${fmtTrieu(dayData.total)}`]
-      .concat(chiNhanhsNgay.map(cn=>`${cn}: ${fmtTrieu(dayData.byChiNhanh[cn])}`)).join('\n');
-    const isMonthStart = i>0 && d.slice(8,10)==='01';
+    const tooltip = [`${fmtNhanKy(k)}: ${fmtTrieu(kyData.total)}`]
+      .concat(chiNhanhsKy.map(cn=>`${cn}: ${fmtTrieu(kyData.byChiNhanh[cn])}`)).join('\n');
+    // Vạch mờ ranh giới tháng chỉ có ý nghĩa khi gộp theo NGÀY (mỗi cột đã là 1
+    // tháng khi gộp theo tháng, không cần vạch nữa).
+    const isMonthStart = !theoThang && i>0 && k.slice(8,10)==='01';
     return `<div class="trend-bar-wrap${isMonthStart?' month-start':''}" data-tooltip="${esc(tooltip)}">${label}<div class="trend-bar" style="height:${h}%;">${segs}</div></div>`;
   }).join('');
-  // Trục X ghi tên tháng (thêm 23/09/2026, theo yêu cầu người dùng) — nhãn đặt ở
-  // đúng cột đầu tiên của mỗi tháng (khớp vị trí vạch mờ .month-start), không còn
-  // ghi ngày cụ thể (dd/mm/yyyy) như trước.
-  labelsEl.innerHTML = days.map((d,i)=>{
-    const isNewMonth = i===0 || d.slice(8,10)==='01';
-    return `<div class="trend-tick">${isNewMonth ? esc(fmtThangVN(d.slice(0,7))) : ''}</div>`;
+  // Trục X: gộp theo tháng thì MỖI cột đều ghi nhãn (mỗi cột = 1 tháng); gộp theo
+  // ngày thì chỉ ghi nhãn ở cột đầu tiên của mỗi tháng (khớp vị trí vạch mờ).
+  labelsEl.innerHTML = kys.map((k,i)=>{
+    if(theoThang) return `<div class="trend-tick">${esc(fmtThangVN(k))}</div>`;
+    const isNewMonth = i===0 || k.slice(8,10)==='01';
+    return `<div class="trend-tick">${isNewMonth ? esc(fmtThangVN(k.slice(0,7))) : ''}</div>`;
   }).join('');
   const chiNhanhsAll = sapXepChiNhanh(uniqSorted(list.map(x=>x.chiNhanh)));
   legendEl.innerHTML = chiNhanhsAll.map(cn=>`
@@ -483,6 +518,41 @@ function renderBudgetGroups(list){
         <tbody>${rows}${tongRow}</tbody></table>
     </div>`;
   }).join('') + '</div>';
+}
+
+// ── Xuất Excel (CSV) cho panel 3 — dùng để đối chiếu thanh toán với công ty (thêm 23/09/2026) ──
+// Xuất đúng danh sách đang hiển thị trong bảng (theo bộ lọc khoảng ngày/Chi
+// nhánh/Chiến dịch đang chọn ở trên), 4 cột đúng theo yêu cầu người dùng: STT,
+// Chi nhánh, Tên chiến dịch, Số tiền. Số tiền lấy nguyên giá trị VNĐ (KHÔNG làm
+// tròn kiểu fmtNgan() dùng để hiển thị trên bảng) — thanh toán cần số chính xác,
+// không phải số làm tròn phục vụ xem nhanh trên dashboard.
+// Xuất CSV (không phải .xlsx) — Excel mở CSV trực tiếp không cần cài gì thêm,
+// và không cần nạp thư viện ngoài (đúng chủ trương "không build step, không thư
+// viện" đã áp dụng cho cả biểu đồ ở panel 1). Thêm BOM UTF-8 ("﻿") ở đầu
+// file để Excel nhận đúng mã hoá tiếng Việt có dấu, không bị lỗi font.
+function csvEscape(v){
+  const s = String(v==null ? '' : v);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+function xuatExcelCanhBao(){
+  const camps = xepLoaiHieuQua(aggregateByCampaign(filtered()));
+  const rows = [['STT','Chi nhánh','Tên chiến dịch','Số tiền']];
+  camps.forEach((c,i)=>{ rows.push([i+1, c.chiNhanh, c.chienDich, Math.round(c.chiPhi||0)]); });
+  const csv = rows.map(r=>r.map(csvEscape).join(',')).join('\r\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const chiNhanhPart = state.chiNhanh ? state.chiNhanh.replace(/\s+/g,'') : 'TatCaChiNhanh';
+  // state.range: 30 (số) | 'quarter' (chuỗi) | 0 — không dùng so sánh "> 0" vì
+  // 'quarter' > 0 luôn false (chuỗi bị ép kiểu NaN), phải so sánh tường minh từng giá trị.
+  const rangePart = state.range === 30 ? '30ngay' : state.range === 'quarter' ? 'QuyHienTai' : 'AllTime';
+  const ngayXuat = isoLocal(new Date());
+  a.href = url;
+  a.download = `CanhBaoHieuQua_${chiNhanhPart}_${rangePart}_${ngayXuat}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // ── Panel 3: cảnh báo hiệu quả theo chiến dịch ──
@@ -569,9 +639,9 @@ function updateChienDichOptions(){
   document.getElementById('fChienDich').innerHTML = '<option value="">Tất cả chiến dịch</option>' + chienDichs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
 
-function setRange(days){
-  state.range = days;
-  document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.range,10)===days));
+function setRange(r){
+  state.range = r; // 30 | 'quarter' | 0 — so sánh bằng String() vì data-range luôn là chuỗi (kể cả 'quarter')
+  document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.range === String(r)));
   render();
 }
 
