@@ -1,6 +1,6 @@
 # Module Quảng cáo Facebook (FB Ads)
 
-`TinThanh_FBAds_Sync.gs` → `fbads.json` → `fbads.html` (nhúng iframe trong sub-tab "5.2. Quảng cáo Facebook" của tab 5 "MKT Thương hiệu" trong `index.html`, xem `switchMktSub()`)
+`TinThanh_FBAds_Sync.gs` → `fbads.json` → `fbads.html` (nhúng iframe trong sub-tab "5.1. Quảng cáo Facebook" — mặc định mở khi vào tab — của tab 5 "MKT" trong `index.html`, xem `switchMktSub()`)
 
 ## Nguồn dữ liệu — điểm khác biệt quan trọng
 

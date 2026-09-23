@@ -1,6 +1,6 @@
-# Module MKT Thương hiệu
+# Module Bài viết thương hiệu (MKT)
 
-`TinThanh_MKT_Sync.gs` → `mkt.json` → `mkt.html`
+`TinThanh_MKT_Sync.gs` → `mkt.json` → `mkt.html` (nhúng iframe trong sub-tab "5.2. Bài viết thương hiệu" của tab 5 "MKT" trong `index.html`, xem `switchMktSub()`)
 
 **Nguồn:** 1 sheet **dùng chung** ("Nhật ký đăng bài") cho 3 chi nhánh Nha Trang/Phú Yên/Đà Lạt (⚠️ **chỉ 3 chi nhánh — KHÁC danh sách 5 kho hàng hóa** NT/ĐL/PY/PR/BL, xem "khái niệm hay nhầm" trong CLAUDE.md gốc). Mỗi dòng = 1 bài đăng ký kế hoạch, KHÔNG có sheet chỉ tiêu riêng: **chỉ tiêu = số dòng đăng ký, thực hiện = số dòng có Trạng thái chứa "đăng"** (chuẩn hoá bỏ dấu, không phân biệt hoa/thường qua `stripDiacritics_MKT_()` — ⚠️ hàm này có bug lịch sử: thiếu bước đổi `đ`→`d` khiến "đăng" không bao giờ khớp "dang", đã vá, nhớ giữ đủ bước `.replace(/đ/g,'d').replace(/Đ/g,'d')` nếu viết lại hàm tương tự ở đâu khác).
 

@@ -303,7 +303,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-bh-btn" onclick="switchTab('bh')">2. BC Bán hàng 🔒</div>
     <div class="tab" id="tab-dv-btn" onclick="switchTab('dv')">3. BC Dịch vụ 🔒</div>
     <div class="tab" id="tab-ns-btn" onclick="switchTab('ns')">4. HCNS</div>
-    <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT Thương hiệu 🔒</div>
+    <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT 🔒</div>
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
@@ -407,14 +407,14 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-mkt" class="tab-panel" style="padding:0;">
     <div class="subtabs">
-      <div class="subtab active" id="subtab-mkt-btn" onclick="switchMktSub('mkt')">5.1. Nhật ký đăng bài</div>
-      <div class="subtab" id="subtab-fbads-btn" onclick="switchMktSub('fbads')">5.2. Quảng cáo Facebook</div>
+      <div class="subtab active" id="subtab-fbads-btn" onclick="switchMktSub('fbads')">5.1. Quảng cáo Facebook</div>
+      <div class="subtab" id="subtab-mkt-btn" onclick="switchMktSub('mkt')">5.2. Bài viết thương hiệu</div>
     </div>
-    <div id="subpanel-mkt" class="subtab-panel active">
-      <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
-    </div>
-    <div id="subpanel-fbads" class="subtab-panel">
+    <div id="subpanel-fbads" class="subtab-panel active">
       <iframe id="fbads-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+    </div>
+    <div id="subpanel-mkt" class="subtab-panel">
+      <iframe id="mkt-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
     </div>
   </div>
   <div id="tab-policy" class="tab-panel" style="padding:0;">
@@ -501,7 +501,7 @@ var fileLastModified = null;
 // HH UI state
 var currentTab = 'hh';
 var _nsActiveSub = 'ns'; // sub-tab đang chọn trong tab gộp "Nhân sự & Chấm công": 'ns' hoặc 'cc'
-var _mktActiveSub = 'mkt'; // sub-tab đang chọn trong tab "MKT Thương hiệu": 'mkt' (Nhật ký đăng bài) hoặc 'fbads' (Quảng cáo Facebook) — cả 2 dùng chung quyền xem tab 'mkt', không khoá riêng như tab 4
+var _mktActiveSub = 'fbads'; // sub-tab đang chọn trong tab "MKT": 'fbads' (Quảng cáo Facebook, mặc định) hoặc 'mkt' (Bài viết thương hiệu) — cả 2 dùng chung quyền xem tab 'mkt', không khoá riêng như tab 4
 var hhFilters = {q:'',kho:[],nam:''};
 var boDateFilter=null; // lọc theo "Ngày xác nhận đơn hàng" trong KPI BO — xem mkStats()/toggleType()/renderHH()
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
@@ -1097,7 +1097,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   return new Set();
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT Thương hiệu', crm:'CRM'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM'}[t];
 }
 // "Giả định đặt hàng" (dathang) — mở cho Admin + đúng nhóm được xem CRM (PGĐ, Bán
 // hàng thường, MKT — 3 nhóm này dùng chung 1 bộ quyền ['bh','mkt','crm'] nên không
@@ -1109,7 +1109,7 @@ function _canSeeDatHang(){
   return _isAdmin || _allowedTabs.has('crm') || _isGD;
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT Thương hiệu', crm:'CRM'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1187,7 +1187,7 @@ function _doSwitchTab(t){
       dvIframe.setAttribute('data-loaded','1');
     }
   }
-  // Tab "mkt" (MKT Thương hiệu) gộp 2 sub-tab — mở đúng sub-tab đang chọn, lazy-load
+  // Tab "mkt" (MKT) gộp 2 sub-tab — mở đúng sub-tab đang chọn, lazy-load
   // iframe riêng khi mở lần đầu. Không cần kiểm tra quyền riêng ở đây (khác tab "ns")
   // vì cả 2 sub-tab dùng chung đúng 1 quyền xem tab 'mkt' — đã được switchTab('mkt') gác
   // cổng từ trước khi vào tới _doSwitchTab().
@@ -1278,8 +1278,8 @@ function switchNsSub(sub, silent){
   }
 }
 
-// Chuyển sub-tab bên trong tab "MKT Thương hiệu" (5.1 Nhật ký đăng bài / 5.2 Quảng
-// cáo Facebook), lazy-load iframe riêng khi mở lần đầu. Khác switchNsSub(): không cần
+// Chuyển sub-tab bên trong tab "MKT" (5.1 Quảng cáo Facebook / 5.2 Bài viết
+// thương hiệu), lazy-load iframe riêng khi mở lần đầu. Khác switchNsSub(): không cần
 // kiểm tra quyền riêng từng sub vì cả 2 dùng chung 1 quyền tab 'mkt' — đã được
 // switchTab('mkt') gác cổng trước khi tới được đây.
 function switchMktSub(sub){
