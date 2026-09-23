@@ -39,7 +39,6 @@
   .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
 
   .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  select{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
   .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
   .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
   .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
@@ -84,6 +83,16 @@
   /* ── Biểu đồ xu hướng chi phí — cột CSS thuần, không dùng thư viện chart (đúng chủ trương "không build step" của repo) ── */
   /* Mỗi cột xếp chồng theo chi nhánh (thêm 23/09/2026) — .trend-bar là flex column-reverse
      chứa các .trend-seg (1 đoạn màu/chi nhánh), xếp từ dưới lên theo CHI_NHANH_ORDER. */
+  /* Cố định chiều cao tối thiểu cho cả panel (thêm 23/09/2026, theo phản hồi
+     người dùng: "khi ấn vào các nút lọc thì độ cao bảng thay đổi") — phát hiện
+     nguyên nhân: khi bộ lọc không khớp dữ liệu nào, #trendLabels/#trendLegend bị
+     xoá trắng (không còn nội dung, tự co về 0px) dù #trendChart vẫn giữ nguyên
+     220px, làm panel đột ngột hụt ~25px so với lúc có đủ dữ liệu (đo thực tế:
+     322px → 297px). min-height (không phải height cứng) để vẫn co giãn tự nhiên
+     nếu sau này legend cần xuống 2 dòng (thêm chi nhánh mới), chỉ chặn CHIỀU
+     THẤP HƠN mức bình thường — đúng nguồn gây khó chịu khi xem báo cáo.
+     Giá trị 322px đo trực tiếp bằng getBoundingClientRect() lúc đủ dữ liệu. */
+  .panel-trend{min-height:322px;}
   .trend-chart-wrap{position:relative;}
   /* Cao 220px (tăng từ 160px, 23/09/2026 — "kéo cao 1 chút") để có thêm không
      gian cho nhãn tổng mỗi cột + nhãn số tiền từng đoạn chi nhánh bên trong. */
@@ -141,12 +150,11 @@
         <button class="filter-btn active" data-range="0" onclick="setRange(0)">All time - Theo tháng</button>
       </div>
       <div class="filter-btns" id="chiNhanhBtns"></div>
-      <select id="fChienDich" onchange="onFilterChange()"><option value="">Tất cả chiến dịch</option></select>
       <button class="reset-btn" onclick="resetFilters()">✕ Xóa lọc</button>
     </div>
   </div>
 
-  <div class="panel">
+  <div class="panel panel-trend">
     <h3><span class="chart-num">1</span> Xu hướng Chi phí theo ngày</h3>
     <div class="trend-chart-wrap" id="trendChartWrap">
       <div class="trend-chart" id="trendChart"></div>
@@ -214,7 +222,7 @@ const FBADS_HE_SO_CANH_BAO = 1.5;             // chi phí/kết quả cao hơn X
 let LICHSU = [];
 let TRANGTHAI = {}; // { "Chi nhánh|Tên chiến dịch": "ACTIVE" | "PAUSED" } — trạng thái thật lấy từ Facebook, không suy luận qua chi phí
 let BAIVIET = {}; // { "Chi nhánh|Tên chiến dịch": "https://www.facebook.com/..." } — chỉ có với chiến dịch boost 1 bài viết cụ thể (thêm 23/09/2026)
-let state = { range: 0, chienDich: '', chiNhanh: '' }; // range: số ngày gần nhất, 0 = toàn bộ
+let state = { range: 0, chiNhanh: '' }; // range: số ngày gần nhất, 0 = toàn bộ. Bộ lọc Chiến dịch đã bỏ 23/09/2026 theo yêu cầu người dùng.
 
 function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
 // ── Định dạng số riêng cho từng bảng (thêm 23/09/2026, theo yêu cầu người dùng) ──
@@ -311,7 +319,6 @@ function filtered(){
   }
   // state.range === 0 ("All time - Theo tháng"): không lọc theo ngày, lấy toàn bộ lịch sử
   if(state.chiNhanh) list = list.filter(x => x.chiNhanh === state.chiNhanh);
-  if(state.chienDich) list = list.filter(x => x.chienDich === state.chienDich);
   return list;
 }
 
@@ -451,18 +458,30 @@ function renderTrend(list){
   // nhỏ ở chế độ theo ngày (~90 cột, tăng lên sẽ tràn/cột quá hẹp). PHẢI đặt
   // GIỐNG NHAU cho #trendChart lẫn #trendLabels — 2 hàng flex riêng biệt nhưng
   // cần khớp gap để nhãn tháng thẳng hàng đúng dưới cột của nó.
-  const khoangCach = theoThang ? '14px' : '3px';
+  const khoangCach = theoThang ? '80px' : '3px';
   chartEl.style.gap = khoangCach;
   labelsEl.style.gap = khoangCach;
   const fmtNhanKy = theoThang ? fmtThangVN : fmtNgayVN; // nhãn hiển thị (tooltip + trục X)
   const max = Math.max(...kys.map(k=>(byKy[k]||{total:0}).total));
+  // Cột đủ rộng để ghi nhãn tổng ở chế độ theo NGÀY (thêm 23/09/2026, theo yêu
+  // cầu người dùng) — áp dụng cho "30 ngày gần nhất" (~30 cột, đủ chỗ); KHÔNG áp
+  // dụng cho "Quý hiện tại" (~85-92 cột, quá hẹp, ghi sẽ đè chữ lên nhau). Ngưỡng
+  // 40 chọn nằm giữa 2 mốc đó, dễ chỉnh nếu sau này đổi khoảng thời gian mặc định.
+  const duRongGhiNhanNgay = !theoThang && kys.length <= 40;
   chartEl.innerHTML = kys.map((k,i)=>{
     const kyData = byKy[k] || { total: 0, byChiNhanh: {} }; // tháng chưa có dữ liệu (để sẵn tới cuối năm)
     const h = max>0 ? Math.max(2, Math.round(kyData.total/max*100)) : 0;
-    // Tổng mỗi cột (thêm 23/09/2026: ghi ở MỌI cột, không chỉ cột cao nhất như
-    // trước) — bỏ qua nếu tổng quá nhỏ hoặc = 0 (tháng chưa có dữ liệu).
-    const label = kyData.total >= FBADS_TREND_NGUONG_GHI_SO
-      ? `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieuNhan(kyData.total)}</div>` : '';
+    // Tổng mỗi cột: chế độ theo THÁNG ghi đủ chữ "X triệu" (cột rộng, vẫn theo
+    // ngưỡng FBADS_TREND_NGUONG_GHI_SO tránh cột quá nhỏ); chế độ theo NGÀY khi
+    // đủ rộng (duRongGhiNhanNgay) ghi ĐẦY ĐỦ mọi cột có chi phí (theo yêu cầu
+    // người dùng — "không đầy đủ"), dùng số GỌN không kèm "triệu" (fmtTrieu(),
+    // không phải fmtTrieuNhan()) vì cột hẹp hơn nhiều so với cột theo tháng.
+    let label = '';
+    if(theoThang){
+      if(kyData.total >= FBADS_TREND_NGUONG_GHI_SO) label = `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieuNhan(kyData.total)}</div>`;
+    } else if(duRongGhiNhanNgay && kyData.total > 0){
+      label = `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieu(kyData.total)}</div>`;
+    }
     const chiNhanhsKy = sapXepChiNhanh(Object.keys(kyData.byChiNhanh));
     const segs = chiNhanhsKy.map(cn=>{
       const gtri = kyData.byChiNhanh[cn];
@@ -484,7 +503,10 @@ function renderTrend(list){
   // Trục X: gộp theo tháng thì MỖI cột đều ghi nhãn (mỗi cột = 1 tháng); gộp theo
   // ngày thì chỉ ghi nhãn ở cột đầu tiên của mỗi tháng (khớp vị trí vạch mờ).
   labelsEl.innerHTML = kys.map((k,i)=>{
-    if(theoThang) return `<div class="trend-tick">${esc(fmtThangVN(k))}</div>`;
+    // Chế độ theo tháng (thêm 23/09/2026, theo yêu cầu người dùng): nhãn rút
+    // gọn "Tháng 7" (không kèm năm, fmtThangNgan()) + canh GIỮA cột (khác chế
+    // độ theo ngày vẫn canh trái để khớp vị trí vạch mờ .month-start).
+    if(theoThang) return `<div class="trend-tick" style="text-align:center;">${esc(fmtThangNgan(k))}</div>`;
     const isNewMonth = i===0 || k.slice(8,10)==='01';
     return `<div class="trend-tick">${isNewMonth ? esc(fmtThangVN(k.slice(0,7))) : ''}</div>`;
   }).join('');
@@ -508,6 +530,14 @@ function thangCuaNgay(iso){ return (iso||'').slice(0,7); } // "yyyy-MM"
 function fmtThangVN(ym){
   const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
   return m ? `Tháng ${parseInt(m[2],10)}/${m[1]}` : (ym||'—');
+}
+// Nhãn tháng RÚT GỌN, không kèm năm (thêm 23/09/2026, theo yêu cầu người dùng:
+// "Tháng 7" thay vì "Tháng 07/2026") — chỉ dùng cho trục X ở chế độ "Theo tháng"
+// (đủ 1 năm nên không cần ghi năm mỗi cột); tooltip/panel 2 vẫn dùng fmtThangVN()
+// đầy đủ như cũ vì không nằm cạnh nhau liên tiếp để dễ hiểu lầm khác năm.
+function fmtThangNgan(ym){
+  const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
+  return m ? `Tháng ${parseInt(m[2],10)}` : (ym||'—');
 }
 // (đổi 23/09/2026, theo thiết kế người dùng cung cấp — ảnh mẫu) Mỗi chi nhánh 1
 // bảng DUY NHẤT (không phải 3 bảng con nữa): cột = Tháng + CSC + Khác + CDR, dòng
@@ -676,16 +706,6 @@ function populateFilterOptions(){
   const btns = ['<button class="filter-btn active" data-chinhanh="">Tất cả chi nhánh</button>']
     .concat(chiNhanhs.map(c=>`<button class="filter-btn" data-chinhanh="${esc(c)}">${esc(c)}</button>`));
   document.getElementById('chiNhanhBtns').innerHTML = btns.join('');
-  updateChienDichOptions();
-}
-// Danh sách chiến dịch trong dropdown chỉ lấy trong phạm vi chi nhánh đang chọn
-// (thêm 23/09/2026) — tránh hiện tên chiến dịch của chi nhánh khác, và tránh
-// trường hợp 2 chi nhánh trùng tên chiến dịch gây nhầm lẫn khi chọn "Tất cả".
-// esc() bắt buộc — tên chiến dịch "Bài viết: ..." (Đà Lạt) có thể chứa dấu ngoặc kép.
-function updateChienDichOptions(){
-  const scope = state.chiNhanh ? LICHSU.filter(x=>x.chiNhanh===state.chiNhanh) : LICHSU;
-  const chienDichs = uniqSorted(scope.map(x=>x.chienDich));
-  document.getElementById('fChienDich').innerHTML = '<option value="">Tất cả chiến dịch</option>' + chienDichs.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
 
 function setRange(r){
@@ -696,23 +716,13 @@ function setRange(r){
 
 function setChiNhanh(cn){
   state.chiNhanh = cn;
-  state.chienDich = ''; // đổi chi nhánh thì bỏ chọn chiến dịch cũ, tránh giữ lựa chọn không còn thuộc chi nhánh mới
   document.querySelectorAll('#chiNhanhBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.chinhanh===cn));
-  updateChienDichOptions();
-  document.getElementById('fChienDich').value = '';
-  render();
-}
-
-function onFilterChange(){
-  state.chienDich = document.getElementById('fChienDich').value;
   render();
 }
 
 function resetFilters(){
-  state = { range:0, chienDich:'', chiNhanh:'' };
+  state = { range:0, chiNhanh:'' };
   document.querySelectorAll('#chiNhanhBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.chinhanh===''));
-  updateChienDichOptions();
-  document.getElementById('fChienDich').value = '';
   document.querySelectorAll('#rangeBtns .filter-btn').forEach(b=>b.classList.toggle('active', b.dataset.range==='0'));
   render();
 }
