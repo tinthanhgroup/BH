@@ -306,6 +306,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-mkt-btn" onclick="switchTab('mkt')">5. MKT 🔒</div>
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
+    <div class="tab" id="tab-bct-btn" style="display:none" onclick="switchTab('bct')">8. BC tuần 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -422,6 +423,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-crm" class="tab-panel" style="padding:0;">
     <iframe id="crm-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+  </div>
+  <div id="tab-bct" class="tab-panel" style="padding:0;">
+    <iframe id="bct-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
 
   <!-- TAB HÀNG HÓA -->
@@ -1018,6 +1022,7 @@ function afterParse(fileDate){
 // Bán hàng/MKT: xem 2-5 (bh, mkt)
 // Dịch vụ: chỉ xem 3 (dv)
 // HCNS: chỉ xem 4 (ns) — gồm cả sub-tab Chấm công
+// Tab 8 "BC tuần" (bct): chỉ Admin
 // Nhóm không xác định: không có quyền xem mục nào (an toàn)
 var _authenticated = false;
 var _allowedTabs = new Set();
@@ -1067,6 +1072,10 @@ function _applyAuthSession(pass, res){
     var crmBtn=document.getElementById('tab-crm-btn');
     if(crmBtn) crmBtn.style.display='';
   }
+  if(_allowedTabs.has('bct')){
+    var bctBtn=document.getElementById('tab-bct-btn');
+    if(bctBtn) bctBtn.style.display='';
+  }
   _allowedTabs.forEach(function(t){ _unlockTabUI(t); });
 }
 function _restoreAuthSession(){
@@ -1086,7 +1095,8 @@ function _classifyGroup(nhomRaw, isAdmin){
   // CRM (Bizfly) tạm ẩn bớt 09/2026, mở lại cho Bán hàng thường và PGĐ 09/2026 —
   // hiện Admin/MKT/Bán hàng/PGĐ xem được, riêng GĐ thường vẫn CHƯA có (module
   // đang trong giai đoạn hoàn thiện, GĐ sẽ được mở sau khi ổn định hơn).
-  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm']);
+  // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN gửi TGĐ — CHỈ Admin.
+  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct']);
   var n = _stripDiacritics(nhomRaw);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
@@ -1101,7 +1111,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   return new Set();
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'BC tuần'}[t];
 }
 // "Giả định đặt hàng" (dathang) — mở cho Admin + đúng nhóm được xem CRM (PGĐ, Bán
 // hàng thường, MKT — 3 nhóm này dùng chung 1 bộ quyền ['bh','mkt','crm'] nên không
@@ -1113,7 +1123,7 @@ function _canSeeDatHang(){
   return _isAdmin || _allowedTabs.has('crm') || _isGD;
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'Báo cáo tuần chi nhánh'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1157,11 +1167,13 @@ function _fixEmbedPanelHeights(){
   var mkt=document.getElementById('tab-mkt');
   var policy=document.getElementById('tab-policy');
   var crm=document.getElementById('tab-crm');
+  var bct=document.getElementById('tab-bct');
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
   if(mkt) mkt.style.height=h;
   if(policy) policy.style.height=h;
   if(crm) crm.style.height=h;
+  if(bct) bct.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
 
@@ -1170,7 +1182,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','admin'];
+  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','bct','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1212,6 +1224,14 @@ function _doSwitchTab(t){
     if(!crmIframe.getAttribute('data-loaded')){
       crmIframe.src='https://tinthanhgroup.github.io/BH/crm.html';
       crmIframe.setAttribute('data-loaded','1');
+    }
+  }
+  // Lazy load iframe Báo cáo tuần chi nhánh
+  if(t==='bct'){
+    var bctIframe=document.getElementById('bct-iframe');
+    if(!bctIframe.getAttribute('data-loaded')){
+      bctIframe.src='https://tinthanhgroup.github.io/BH/baocaotuan.html';
+      bctIframe.setAttribute('data-loaded','1');
     }
   }
   if(t==='hh') renderHH();

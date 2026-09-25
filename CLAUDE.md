@@ -16,7 +16,7 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (2 sub-tab, thêm 09/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (2 sub-tab, thêm 09/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (HCNS) lẫn tab 5 (MKT/FB Ads) | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "2. Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "1. Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
@@ -26,6 +26,7 @@ Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyund
 | `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 6 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
 | `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong sub-tab "4. Quy định nội bộ" của tab 4 (**chuyển từ tab 7 riêng vào đây 09/2026** — không còn là tab cấp cao nhất) | Không tự có auth, nhưng **sub-tab này mở tự do** — xem chi tiết ngay dưới bảng | [docs/module-quydinh.md](docs/module-quydinh.md) |
 | `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 7 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
+| `baocaotuan.html` | Báo cáo tuần chi nhánh (quá trình điều hành của GĐCN gửi TGĐ: đề xuất cần quyết, trọng tâm tuần, cải tiến, TCT giao, cảnh báo quá hạn/chưa cập nhật), nhúng iframe trong tab 8 (thêm 25/09/2026). Dữ liệu `baocaotuan.json` — **giai đoạn đầu chuyển tay từ Excel** bằng `Bao cao tuan/xlsx_to_json.ps1`, sau này Google Sheet + Apps Script ghi cùng cấu trúc | Không tự có auth (như trên) — khoá cấp tab key `bct`: **chỉ Admin** (nút tab ẩn hẳn với người khác, giống tab CRM/Admin) | [docs/module-baocaotuan.md](docs/module-baocaotuan.md) |
 
 Tab 4 **nhãn hiển thị là "HCNS"** (đổi tên từ "Nhân sự & Chấm công" 09/2026, xem `_tabLabel()`/`_pwModalTitle()` — nội bộ code vẫn dùng key `ns`, không đổi) — gộp 4 báo cáo vào 1 tab (ban đầu 2 tab riêng "Báo cáo Nhân sự"/"Chấm công", sau đó lần lượt thêm "Nhà cung cấp CSVC" và "Quy định nội bộ" — cái sau vốn là tab 7 riêng, chuyển hẳn vào đây 09/2026). Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), **đánh số 1-4** ngay trong nhãn sub-tab ("1. Báo cáo Nhân sự", "2. Chấm công", "3. Nhà cung cấp CSVC", "4. Quy định nội bộ"), chuyển qua hàm `switchNsSub('ns'|'cc'|'ncc'|'noiquy')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab).
 
@@ -78,7 +79,7 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
   | Nhóm (chứa từ khoá) | Xem được tab |
   |---|---|
-  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM) |
+  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần — BC tuần chỉ Admin) |
   | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM |
   | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT |
   | `hcns` / `nhan su` | Chỉ HCNS |
