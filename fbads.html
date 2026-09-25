@@ -138,10 +138,13 @@
   /* Chế độ "All time - Theo tháng" (ít cột, rộng) — chữ to hơn hẳn để dễ đọc
      (đổi 25/09/2026, theo yêu cầu người dùng: "số vẫn quá nhỏ"). Chế độ theo
      ngày giữ cỡ nhỏ như cũ vì cột hẹp. Class .theo-thang gắn trong renderTrend(). */
-  .trend-chart.theo-thang{padding-top:40px;margin-top:8px;} /* chừa chỗ cho nhãn tổng 15px của cột cao nhất, không sát tiêu đề panel */
-  .trend-chart.theo-thang .trend-seg{font-size:14px;}
-  .trend-chart.theo-thang .trend-bar-label{font-size:15px;font-weight:800;margin-bottom:6px;}
-  .trend-labels.theo-thang .trend-tick{font-size:12.5px;font-weight:600;}
+  .trend-chart.theo-thang{padding-top:28px;margin-top:8px;} /* chừa chỗ cho nhãn tổng 15px của cột cao nhất, không sát tiêu đề panel */
+  .trend-chart.theo-thang .trend-seg{font-size:12px;}
+  /* Bỏ translateY(-100%) ở chế độ theo tháng (đổi 25/09/2026, theo yêu cầu người
+     dùng: tổng nằm gần mép trên cột hơn) — "bottom:${h}%" đã đặt đáy nhãn đúng
+     đỉnh cột, translateY(-100%) đẩy nhãn lên thêm 1 lần chiều cao chữ nữa. */
+  .trend-chart.theo-thang .trend-bar-label{font-size:15px;font-weight:800;transform:translateX(-50%);margin-bottom:4px;}
+  .trend-labels.theo-thang .trend-tick{font-size:12px;font-weight:600;}
   .trend-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
   .trend-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
   .trend-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
