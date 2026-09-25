@@ -686,9 +686,13 @@ function fetchGSheet(){
       .then(function(r){ return r.json(); })
       .then(function(current){ _loadHistory(current, 2, 1200); });
   };
-  fetch(BASE+'data.json?t='+Date.now())
-    .then(function(r){ if(!r.ok) throw new Error('data.json: HTTP '+r.status); return r.json(); })
-    .then(function(current){
+  Promise.all([
+    fetch(BASE+'data.json?t='+Date.now())
+      .then(function(r){ if(!r.ok) throw new Error('data.json: HTTP '+r.status); return r.json(); }),
+    _loadKCK()
+  ])
+    .then(function(res){
+      var current=res[0];
       _initFromRecords(current.records||[], current);
       // Load history ngầm sau khi trang đã hiển thị, thử tối đa 3 lần
       _loadHistory(current, 2, 1200);
@@ -1354,6 +1358,20 @@ var KCK_CHANGE_NOTE = {
   removed: ['Tucson 2.0 Xăng Đặc Biệt 2024: hết hàng KCK (không còn màu nào)'],
   added: []
 };
+// KCK tự đồng bộ từ file Excel HTV qua TinThanh_KCK_Sync.gs → kck.json (mỗi 4 giờ).
+// KCK_DATA/KCK_DATE/KCK_CHANGE_NOTE hardcode ở trên chỉ còn là bản DỰ PHÒNG khi tải
+// kck.json lỗi — không cần cập nhật tay nữa. Trùng lặp có chủ đích với mobile.html.
+function _loadKCK(){
+  return fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/kck.json?t='+Date.now())
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(j){
+      if(j && Array.isArray(j.data) && j.data.length && j.date){
+        KCK_DATA=j.data; KCK_DATE=j.date;
+        if(j.changeNote) KCK_CHANGE_NOTE=j.changeNote;
+      }
+    })
+    .catch(function(e){ console.warn('kck.json tải lỗi, dùng KCK_DATA dự phòng:', e); });
+}
 function _kckChangeNoteHTML(){
   if(!KCK_CHANGE_NOTE || KCK_CHANGE_NOTE.date !== KCK_DATE) return '';
   var parts=[];

@@ -295,6 +295,19 @@ var KCK_CHANGE_NOTE = {
   removed: ['Tucson 2.0 Xăng Đặc Biệt 2024: hết hàng KCK (không còn màu nào)'],
   added: []
 };
+// Tự đồng bộ từ kck.json (TinThanh_KCK_Sync.gs) — trùng lặp có chủ đích với index.html,
+// xem giải thích ở đó. KCK_DATA hardcode ở trên chỉ là bản dự phòng.
+function _loadKCK(){
+  return fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/kck.json?t='+Date.now())
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(j){
+      if(j && Array.isArray(j.data) && j.data.length && j.date){
+        KCK_DATA=j.data; KCK_DATE=j.date;
+        if(j.changeNote) KCK_CHANGE_NOTE=j.changeNote;
+      }
+    })
+    .catch(function(e){ console.warn('kck.json tải lỗi, dùng KCK_DATA dự phòng:', e); });
+}
 function _kckChangeNoteHTML(){
   if(!KCK_CHANGE_NOTE || KCK_CHANGE_NOTE.date !== KCK_DATE) return '';
   var parts=[];
@@ -476,7 +489,8 @@ function loadData(){
   var BASE = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/';
   Promise.all([
     fetch(BASE+'data.json?t='+Date.now()).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }),
-    fetch(BASE+'data_history.json').then(function(r){ if(!r.ok) return {records:[]}; return r.json(); })
+    fetch(BASE+'data_history.json').then(function(r){ if(!r.ok) return {records:[]}; return r.json(); }),
+    _loadKCK()
   ])
     .then(function(results){
       setProgress(50,'Đang đọc dữ liệu...');
