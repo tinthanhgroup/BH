@@ -74,11 +74,22 @@
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
 
   /* ── Chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý), ưu tiên theo Chi nhánh (đổi 23/09/2026) ── */
-  .budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .budget-group-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:8px;text-align:center;}
+  /* (đổi 25/09/2026, theo yêu cầu người dùng) Cột "Tháng" tách thành 1 cột riêng
+     (.budget-box-thang, không viền) đứng trước — không còn dính vào bảng Phú Yên;
+     mỗi chi nhánh là 1 khung viền rõ (.budget-box) để tách biệt; tiêu đề chi nhánh
+     cách xa header bảng hơn. Cột tháng dùng CÙNG padding/viền (trong suốt) với
+     khung chi nhánh để các hàng luôn thẳng nhau. Grid không co về 1 cột trên màn
+     hẹp (sẽ tách cột tháng khỏi số liệu) — thay bằng cuộn ngang. */
+  .budget-scroll{overflow-x:auto;}
+  .budget-grid{display:grid;gap:14px;min-width:760px;margin-top:12px;}
+  .budget-box{border:1.5px solid #C9D6E8;border-radius:12px;padding:14px 12px 6px;}
+  .budget-box.budget-box-thang{border-color:transparent;padding-left:0;padding-right:0;}
+  .budget-group-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:14px;text-align:center;}
+  .budget-box table{font-size:13px;}
+  .budget-box thead th{white-space:nowrap;}
+  .budget-box td{white-space:nowrap;}
   tbody tr.budget-total{background:#F7F9FC;font-weight:700;}
-  tbody tr.budget-total td{border-top:2px solid var(--line);}
-  @media (max-width:900px){ .budget-grid{grid-template-columns:1fr;} }
+  tbody tr.budget-total td{border-top:2px solid var(--line);border-bottom:none;}
 
   /* ── Biểu đồ xu hướng chi phí — cột CSS thuần, không dùng thư viện chart (đúng chủ trương "không build step" của repo) ── */
   /* Mỗi cột xếp chồng theo chi nhánh (thêm 23/09/2026) — .trend-bar là flex column-reverse
@@ -124,6 +135,13 @@
      ("Tháng 9/2026"), rộng hơn nhiều so với 1 cột ngày, đặt ở đúng vị trí bắt đầu
      tháng thay vì căn giữa; các cột trống xen giữa không có nhãn nên không bị đè. */
   .trend-tick{flex:1;min-width:4px;text-align:left;font-size:9.5px;color:var(--ink-soft);white-space:nowrap;overflow:visible;}
+  /* Chế độ "All time - Theo tháng" (ít cột, rộng) — chữ to hơn hẳn để dễ đọc
+     (đổi 25/09/2026, theo yêu cầu người dùng: "số vẫn quá nhỏ"). Chế độ theo
+     ngày giữ cỡ nhỏ như cũ vì cột hẹp. Class .theo-thang gắn trong renderTrend(). */
+  .trend-chart.theo-thang{padding-top:40px;margin-top:8px;} /* chừa chỗ cho nhãn tổng 15px của cột cao nhất, không sát tiêu đề panel */
+  .trend-chart.theo-thang .trend-seg{font-size:14px;}
+  .trend-chart.theo-thang .trend-bar-label{font-size:15px;font-weight:800;margin-bottom:6px;}
+  .trend-labels.theo-thang .trend-tick{font-size:12.5px;font-weight:600;}
   .trend-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
   .trend-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
   .trend-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
@@ -457,9 +475,12 @@ function renderTrend(list){
   // nhỏ ở chế độ theo ngày (~90 cột, tăng lên sẽ tràn/cột quá hẹp). PHẢI đặt
   // GIỐNG NHAU cho #trendChart lẫn #trendLabels — 2 hàng flex riêng biệt nhưng
   // cần khớp gap để nhãn tháng thẳng hàng đúng dưới cột của nó.
-  const khoangCach = theoThang ? '80px' : '3px';
+  // (đổi 25/09/2026) 80px → 100px theo yêu cầu người dùng.
+  const khoangCach = theoThang ? '100px' : '3px';
   chartEl.style.gap = khoangCach;
   labelsEl.style.gap = khoangCach;
+  chartEl.classList.toggle('theo-thang', theoThang);
+  labelsEl.classList.toggle('theo-thang', theoThang);
   const fmtNhanKy = theoThang ? fmtThangVN : fmtNgayVN; // nhãn hiển thị (tooltip + trục X)
   const max = Math.max(...kys.map(k=>(byKy[k]||{total:0}).total));
   // Cột đủ rộng để ghi nhãn tổng ở chế độ theo NGÀY (thêm 23/09/2026, theo yêu
@@ -470,14 +491,14 @@ function renderTrend(list){
   chartEl.innerHTML = kys.map((k,i)=>{
     const kyData = byKy[k] || { total: 0, byChiNhanh: {} }; // tháng chưa có dữ liệu (để sẵn tới cuối năm)
     const h = max>0 ? Math.max(2, Math.round(kyData.total/max*100)) : 0;
-    // Tổng mỗi cột: chế độ theo THÁNG ghi đủ chữ "X triệu" (cột rộng, vẫn theo
-    // ngưỡng FBADS_TREND_NGUONG_GHI_SO tránh cột quá nhỏ); chế độ theo NGÀY khi
-    // đủ rộng (duRongGhiNhanNgay) ghi ĐẦY ĐỦ mọi cột có chi phí (theo yêu cầu
-    // người dùng — "không đầy đủ"), dùng số GỌN không kèm "triệu" (fmtTrieu(),
-    // không phải fmtTrieuNhan()) vì cột hẹp hơn nhiều so với cột theo tháng.
+    // Tổng mỗi cột: chế độ theo THÁNG theo ngưỡng FBADS_TREND_NGUONG_GHI_SO tránh
+    // cột quá nhỏ; chế độ theo NGÀY khi đủ rộng (duRongGhiNhanNgay) ghi ĐẦY ĐỦ mọi
+    // cột có chi phí (theo yêu cầu người dùng — "không đầy đủ"). Cả 2 chế độ chỉ
+    // ghi SỐ, không kèm "triệu" (đổi 25/09/2026 cho chế độ theo tháng, theo yêu
+    // cầu người dùng — trước đó theo tháng dùng fmtTrieuNhan() ghi "X triệu").
     let label = '';
     if(theoThang){
-      if(kyData.total >= FBADS_TREND_NGUONG_GHI_SO) label = `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieuNhan(kyData.total)}</div>`;
+      if(kyData.total >= FBADS_TREND_NGUONG_GHI_SO) label = `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieu(kyData.total)}</div>`;
     } else if(duRongGhiNhanNgay && kyData.total > 0){
       label = `<div class="trend-bar-label" style="bottom:${h}%;">${fmtTrieu(kyData.total)}</div>`;
     }
@@ -570,17 +591,24 @@ function renderBudgetGroups(list){
   // nhánh không có dữ liệu 1 tháng nào đó (đổi theo yêu cầu người dùng 23/09/2026).
   const thangs = [...thangSet].sort().reverse(); // mới nhất lên đầu
   const oTien = v => v ? fmtNgan(v) : ''; // 0/không có dữ liệu → ô trống, không ghi "0"
-  container.innerHTML = '<div class="budget-grid">' + chiNhanhList.map((cn, idx)=>{
-    // Cột "Tháng" chỉ hiện ở bảng ĐẦU TIÊN (Phú Yên, theo CHI_NHANH_ORDER) — 2 bảng
-    // còn lại bỏ cột này để đỡ lặp lại, hàng vẫn thẳng hàng nhờ dùng chung `thangs`
-    // ở trên (theo yêu cầu người dùng 23/09/2026).
-    const conCotThang = idx === 0;
-    const soCot = conCotThang ? 4 : 3;
+  // (đổi 25/09/2026, theo yêu cầu người dùng) Cột "Tháng" tách thành 1 khối RIÊNG
+  // đứng đầu lưới (không còn gắn vào bảng Phú Yên) — 3 bảng chi nhánh giờ cân đối
+  // như nhau, mỗi bảng 1 khung viền rõ. Hàng vẫn thẳng nhau nhờ dùng chung `thangs`
+  // + cùng padding/tiêu đề (tiêu đề cột tháng là &nbsp; giữ đúng chiều cao).
+  const cotThang = `<div class="budget-box budget-box-thang">
+    <div class="budget-group-title">&nbsp;</div>
+    <table><thead><tr><th>Tháng</th></tr></thead>
+      <tbody>${thangs.length
+        ? thangs.map(t=>`<tr><td style="font-weight:700;color:var(--navy);">${fmtThangVN(t)}</td></tr>`).join('')
+          + `<tr class="budget-total"><td style="color:var(--navy);">Tổng</td></tr>`
+        : '<tr><td class="empty">&nbsp;</td></tr>'}</tbody></table>
+  </div>`;
+  const cotChiNhanh = chiNhanhList.map(cn=>{
     if(!thangs.length){
-      return `<div>
+      return `<div class="budget-box">
         <div class="budget-group-title">${esc(cn)}</div>
-        <table><thead><tr>${conCotThang?'<th>Tháng</th>':''}<th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
-          <tbody><tr><td colspan="${soCot}" class="empty">Chưa có dữ liệu</td></tr></tbody></table>
+        <table><thead><tr><th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
+          <tbody><tr><td colspan="3" class="empty">Chưa có dữ liệu</td></tr></tbody></table>
       </div>`;
     }
     const tong = { CSC:0, Khac:0, CDR:0 };
@@ -588,24 +616,24 @@ function renderBudgetGroups(list){
       const v = (byChiNhanh[cn] && byChiNhanh[cn][t]) || { CSC:0, Khac:0, CDR:0 };
       tong.CSC += v.CSC; tong.Khac += v.Khac; tong.CDR += v.CDR;
       return `<tr>
-        ${conCotThang ? `<td style="font-weight:700;color:var(--navy);">${fmtThangVN(t)}</td>` : ''}
         <td>${oTien(v.CSC)}</td>
         <td>${oTien(v.Khac)}</td>
         <td>${oTien(v.CDR)}</td>
       </tr>`;
     }).join('');
     const tongRow = `<tr class="budget-total">
-      ${conCotThang ? `<td style="color:var(--navy);">Tổng</td>` : ''}
       <td>${oTien(tong.CSC)}</td>
       <td>${oTien(tong.Khac)}</td>
       <td>${oTien(tong.CDR)}</td>
     </tr>`;
-    return `<div>
+    return `<div class="budget-box">
       <div class="budget-group-title">${esc(cn)}</div>
-      <table><thead><tr>${conCotThang?'<th>Tháng</th>':''}<th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
+      <table><thead><tr><th>CSC</th><th>Khác</th><th>CDR</th></tr></thead>
         <tbody>${rows}${tongRow}</tbody></table>
     </div>`;
-  }).join('') + '</div>';
+  }).join('');
+  container.innerHTML = `<div class="budget-scroll"><div class="budget-grid" style="grid-template-columns:auto repeat(${chiNhanhList.length},1fr);">`
+    + cotThang + cotChiNhanh + '</div></div>';
 }
 
 // ── Xuất Excel (CSV) cho panel 3 — dùng để đối chiếu thanh toán với công ty (thêm 23/09/2026) ──
