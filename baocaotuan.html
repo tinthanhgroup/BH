@@ -110,6 +110,28 @@
   table.ov thead th{white-space:normal;vertical-align:bottom;line-height:1.35;}
   table.ov td{vertical-align:middle;overflow-wrap:anywhere;}
   .ov-sub{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+  /* Chỉ số trọng yếu (mục 1) */
+  .cs-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;align-items:start;}
+  .cs-block{border:1px solid var(--line);border-top:3px solid #9fb8d8;border-radius:10px;padding:12px 14px;}
+  .cs-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+  .cs-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink);margin-bottom:4px;}
+  .cs-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+  .cs-note{color:var(--ink-soft);}
+  .cs-svg{width:100%;height:auto;display:block;}
+  .cs-svg rect:hover{opacity:.8;}
+  .cs-ax{font-size:10.5px;fill:var(--ink-soft);font-family:'Inter',sans-serif;}
+  .cs-tot{font-size:12px;font-weight:800;fill:var(--ink);font-family:'Inter',sans-serif;}
+  .cs-src{font-size:10.5px;color:var(--ink-soft);margin-top:4px;}
+  .cs-tbl{margin-top:6px;} .cs-tbl summary{font-size:11.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
+  .cs-pct{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;margin:6px 0 8px;color:var(--navy);}
+  .cs-pct span{font-size:12px;font-weight:600;color:var(--ink-soft);margin-left:4px;}
+  .cs-pct.low{color:var(--red);}
+  .cs-bar{position:relative;height:12px;background:#EEF3F9;border-radius:6px;margin-bottom:10px;}
+  .cs-fill{height:100%;border-radius:6px;background:var(--red);}
+  .cs-fill.ok{background:var(--green);}
+  .cs-mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);margin-left:-1px;}
+  .cs-kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);}
+  .cs-kv b{color:var(--ink);font-variant-numeric:tabular-nums;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:14px;text-align:center;line-height:1.6;}
   .loading,.error{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:13px;}
   .error{color:var(--red);font-weight:600;}
@@ -118,7 +140,7 @@
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
-    .nd-grid{grid-template-columns:1fr;}
+    .nd-grid,.cs-grid{grid-template-columns:1fr;}
     .nd-qa,.nd-block.gd .nd-qa{grid-template-columns:1fr;gap:2px;}
     .nd-v{margin-bottom:6px;}
     .task-meta{margin-left:0;white-space:normal;width:100%;}
@@ -376,7 +398,80 @@ function renderOverview(A){
     h+='<td class="num">'+cnt(a.issues.length,'warnc')+'</td>';
     h+='</tr>';
   });
-  return h+'</tbody></table></div>';
+  return h+'</tbody></table>'+renderChiSo(A[selIdx])+'</div>';
+}
+
+// ── Chỉ số trọng yếu (sheet "Chi so trong yeu", thêm 26/09/2026) — biểu đồ trong mục 1, theo chi nhánh đang chọn.
+// Bán hàng: số HĐ ký TỰ ĐỘNG từ data.json (weekBH, cùng cách đếm với biểu đồ Chốt cọc tab BC Bán hàng) — cột tên
+// chi nhánh → đếm theo mã, cột "Tổng" = cộng các cột; không tải được data.json thì dùng số điền tay trong sheet.
+// Các bộ phận khác: lấy nguyên số trong sheet (vd Dịch vụ: Chỉ tiêu / Thực hiện).
+const CS_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#8E6BBF'];
+function fmtN(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:1}); }
+function csBHData(sec, a){
+  var cols=sec.cot||[], tongIdx=-1, series=[];
+  cols.forEach(function(c,i){ if(stripVN(c)==='tong') tongIdx=i; else series.push({name:c, i:i, code:BRANCH_CODE[stripVN(c)]}); });
+  var byKey={};
+  if(SALES) SALES.rows.forEach(function(s){ var k=s.br+'|'+weekBH(s.d); byKey[k]=(byKey[k]||0)+1; });
+  var rows=(sec.dong||[]).map(function(d){
+    var m=/(\d{1,2})/.exec(d.nhan), wk=m?+m[1]:null;
+    var vals=series.map(function(s){
+      if(SALES && s.code && wk) return byKey[s.code+'|'+a.refYear+'-'+wk]||0;
+      return (d.giaTri||[])[s.i];
+    });
+    var tong=vals.some(function(v){ return v!=null; })? vals.reduce(function(x,v){ return x+(v||0); },0) : (tongIdx>=0?(d.giaTri||[])[tongIdx]:null);
+    return {nhan:d.nhan, vals:vals, tong:tong};
+  });
+  return {series:series, rows:rows, auto:!!SALES};
+}
+// Cột chồng theo tuần, nhãn tổng trên đỉnh cột; rê chuột vào từng đoạn xem số
+function svgStacked(series, rows){
+  var W=560, H=200, pl=30, pr=10, pt=22, pb=28, iw=W-pl-pr, ih=H-pt-pb;
+  var max=Math.max(1, Math.max.apply(null, rows.map(function(r){ return r.tong||0; })));
+  var step=Math.pow(10, Math.floor(Math.log10(max))), nice=Math.ceil(max/step)*step; if(nice/step<=2) step/=2;
+  var y=function(v){ return pt+ih-(v/nice)*ih; };
+  var s='<svg viewBox="0 0 '+W+' '+H+'" class="cs-svg" role="img">';
+  for(var g=0; g<=nice+1e-9; g+=step){ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="#E4EAF3"/><text x="'+(pl-6)+'" y="'+(y(g)+3.5)+'" text-anchor="end" class="cs-ax">'+fmtN(g)+'</text>'; }
+  var bw=Math.min(56, iw/rows.length*0.55);
+  rows.forEach(function(r,i){
+    var cx=pl+iw*(i+0.5)/rows.length, acc=0;
+    series.forEach(function(se,j){
+      var v=r.vals[j]||0; if(!v) return;
+      var y0=y(acc), y1=y(acc+v); acc+=v;
+      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+CS_COLORS[j%CS_COLORS.length]+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' HĐ')+'</title></rect>';
+    });
+    s+='<text x="'+cx+'" y="'+(y(r.tong||0)-6)+'" text-anchor="middle" class="cs-tot">'+fmtN(r.tong)+'</text>';
+    s+='<text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle" class="cs-ax">'+esc(r.nhan)+'</text>';
+  });
+  return s+'</svg>';
+}
+function renderChiSo(a){
+  if(!a) return '';
+  var secs=a.b.chiSo||[]; if(!secs.length) return '';
+  var blocks=secs.map(function(sec){
+    var bp=BP_NAME[sec.boPhan]||sec.boPhan;
+    if(sec.boPhan==='BH' && (sec.cot||[]).length){
+      var d=csBHData(sec, a);
+      var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng</span></div>';
+      var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>'+esc(sec.nhanCot||'')+'</th>'+d.series.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
+        d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
+      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>'+leg+svgStacked(d.series, d.rows)+
+        '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+'</div>';
+    }
+    // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
+    var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
+    var ct=get(/chi tieu|ke hoach|muc tieu/), th=get(/thuc hien|dat duoc|ket qua/);
+    var h='<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>';
+    if(ct && th!=null){
+      var pct=th/ct*100, ok=pct>=100;
+      h+='<div class="cs-pct'+(ok?' ok':' low')+'">'+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> chỉ tiêu</span></div>';
+      h+='<div class="cs-bar" title="Thực hiện '+fmtN(th)+' / Chỉ tiêu '+fmtN(ct)+'"><div class="cs-fill'+(ok?' ok':'')+'" style="width:'+Math.min(100,pct/Math.max(100,pct)*100)+'%"></div><div class="cs-mark" style="left:'+(100/Math.max(100,pct)*100)+'%"></div></div>';
+      h+='<div class="cs-kv"><span>Thực hiện <b>'+fmtN(th)+'</b></span><span>Chỉ tiêu <b>'+fmtN(ct)+'</b></span><span>'+(th>=ct?'Vượt':'Còn thiếu')+' <b>'+fmtN(Math.abs(th-ct))+'</b></span></div>';
+    } else {
+      h+='<div class="cs-kv">'+(sec.dong||[]).map(function(x){ return '<span>'+esc(x.nhan)+' <b>'+(x.giaTri||[]).map(fmtN).join(' · ')+'</b></span>'; }).join('')+'</div>';
+    }
+    return h+'</div>';
+  });
+  return subHead('Chỉ số trọng yếu — '+esc(a.b.chiNhanh)+' · Tuần '+a.refWeek)+'<div class="cs-grid">'+blocks.join('')+'</div>';
 }
 
 // Nhảy tới 1 mục (mở luôn nếu đang thu gọn) — dùng cho các ô KPI của thẻ chi nhánh

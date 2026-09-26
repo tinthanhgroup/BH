@@ -53,6 +53,13 @@ Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống t
 - File mẫu cũ chưa có sheet này: chạy `Bao cao tuan/them_sheet_nhan_dinh.ps1 -Path <file>` (chèn sheet sau "Huong dan", tự sao lưu `<file>.bak.xlsx` — converter bỏ qua file `.bak.xlsx`; chạy lại trên file đã có sheet thì tự bỏ qua).
 Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày dạng chữ** (vd `"30/09/2026"`) — vẫn parse được thì điền cả ngày lẫn raw, web báo lỗi nhập liệu để sửa.
 
+### Chỉ số trọng yếu (sheet `Chi so trong yeu`, thêm 26/09/2026)
+
+- Biểu đồ nằm **trong mục 1** (dưới bảng tổng quan), theo chi nhánh đang chọn — `renderChiSo()`.
+- Converter đọc theo cột B: dòng tên bộ phận (`Bán hàng`/`Dịch vụ`/`Văn phòng`) mở khối → dòng chữ đơn = tiêu đề chỉ số → dòng toàn chữ = tiêu đề cột → các dòng sau = số liệu. JSON: `chiSo:[{boPhan, tieuDe, nhanCot, cot:[..], dong:[{nhan, giaTri:[..]}]}]`.
+- **Bán hàng**: cột chồng theo tuần, số **tự đếm từ `data.json`** (cột tên chi nhánh → `BRANCH_CODE`, tuần lấy số trong nhãn "Tuần N", đếm theo `weekBH()` giống tab BC Bán hàng; "Tổng" = cộng các cột). Ô trong sheet để trống cũng được; chỉ dùng số trong sheet khi không tải được `data.json`.
+- **Dịch vụ** (và khối khác có dòng "Chỉ tiêu" + "Thực hiện"): thanh tiến độ % hoàn thành, xanh ≥100%, đỏ <100%. Khối không có cặp này thì liệt kê số.
+
 ## Logic trang (tự tính lại, bám sát sheet Bao cao GDCN)
 
 - **Mốc tham chiếu** = `ngayBaoCao` (GĐCN điền) hoặc `ngayDuLieu` (ngày lưu file) — KHÔNG dùng ngày hôm nay, để xem lại dữ liệu cũ không bị báo quá hạn sai. Tuần = `weekNum()` giống Excel `WEEKNUM(date,2)`.

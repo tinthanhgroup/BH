@@ -1,5 +1,5 @@
 {
-    "updated_at":  "2026-09-26T16:33:27",
+    "updated_at":  "2026-09-26T17:55:48",
     "nguon":  "excel",
     "branches":  [
                      {
@@ -1110,6 +1110,82 @@
                          "nhanDinh":  [
 
                                       ],
+                         "chiSo":  [
+                                       {
+                                           "boPhan":  "BH",
+                                           "tieuDe":  "Ký hợp đồng trong 5 tuần gần nhất",
+                                           "nhanCot":  "Tuần",
+                                           "cot":  [
+                                                       "Nha Trang",
+                                                       "Phan Rang",
+                                                       "Tổng"
+                                                   ],
+                                           "dong":  [
+                                                        {
+                                                            "nhan":  "Tuần 35",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           null,
+                                                                           null
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Tuần 36",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           null,
+                                                                           null
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Tuần 37",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           null,
+                                                                           null
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Tuần 38",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           null,
+                                                                           null
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Tuần 39",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           null,
+                                                                           null
+                                                                       ]
+                                                        }
+                                                    ]
+                                       },
+                                       {
+                                           "boPhan":  "DV",
+                                           "tieuDe":  "",
+                                           "nhanCot":  "",
+                                           "cot":  [
+
+                                                   ],
+                                           "dong":  [
+                                                        {
+                                                            "nhan":  "Chỉ tiêu",
+                                                            "giaTri":  [
+                                                                           11925
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Thực hiện",
+                                                            "giaTri":  [
+                                                                           12597
+                                                                       ]
+                                                        }
+                                                    ]
+                                       }
+                                   ],
                          "nhanDinhBP":  [
                                             {
                                                 "nam":  2026,
