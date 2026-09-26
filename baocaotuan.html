@@ -173,10 +173,14 @@ function isDone(t){ return t.trangThai==='Hoàn thành'; }
 function isClosed(t){ return t.trangThai==='Hoàn thành' || t.trangThai==='Tạm dừng'; }
 function stClass(s){ return {'Kế hoạch':'plan','Đang làm':'doing','Hoàn thành':'done','Tạm dừng':'pause'}[s]||'none'; }
 function stTag(s){ return '<span class="st '+stClass(s)+'">'+esc(s||'Chưa chọn')+'</span>'; }
+// Nhận cả giá trị cũ "Chuyển TGĐ" lẫn giá trị mới "Chuyển thông tin TGĐ" (đổi tên 26/09/2026)
+function isTGD(s){ return s==='Chuyển TGĐ' || s==='Chuyển thông tin TGĐ'; }
 function gdTag(s){
-  if(!s) return '<span class="tag gdnone">GĐCN chưa xử lý</span>';
-  var c = s==='Chuyển TGĐ'?'tgd':(s==='Đã có quyết định'?'gdqd':'gdtu');
-  return '<span class="tag '+c+'">'+esc(s)+'</span>';
+  // Cột "GĐCN xử lý" (26/09/2026): chỉ cần chọn "Chuyển thông tin TGĐ" khi muốn TGĐ biết/quyết;
+  // để trống (hoặc giá trị cũ "GĐCN tự xử lý") = GĐCN tự xử lý → hiển thị "GĐCN đang xử lý".
+  if(isTGD(s)) return '<span class="tag tgd">Chuyển thông tin TGĐ</span>';
+  if(s==='Đã có quyết định') return '<span class="tag gdqd">Đã có quyết định</span>';
+  return '<span class="tag gdtu">GĐCN đang xử lý</span>';
 }
 // Cập nhật tuần ghi nối tiếp "T39: ... / T40: ..." — tô đậm mốc tuần cho dễ đọc
 function fmtUpd(s){ return esc(s).replace(/(^|[\s\/(])((?:T|Tuần\s*)\d{1,2}\s*:)/g,'$1<span class="wk">$2</span>'); }
@@ -205,7 +209,7 @@ function analyze(b){
   // Đề xuất: MỌI dòng có Đề xuất mà chưa Hoàn thành, không qua bộ lọc Trọng tâm (giống sheet Bao cao GDCN)
   var deXuat = viec.filter(function(t){ return t.deXuat && !isDone(t); })
     .concat(tct.filter(function(t){ return t.deXuat && !isDone(t); }).map(function(t){ t._isTCT=true; return t; }));
-  var rank = function(t){ return t.gdXuLy==='Chuyển TGĐ'?0:(!t.gdXuLy?1:2); };
+  var rank = function(t){ return isTGD(t.gdXuLy)?0:1; };
   deXuat.sort(function(a,b){ return rank(a)-rank(b); });
 
   // Nhận định: lấy đúng tuần báo cáo; các tuần khác đưa vào lịch sử
@@ -228,7 +232,6 @@ function analyze(b){
     if(isDone(t) && !t.ngayHT) p.push('Hoàn thành nhưng thiếu Ngày hoàn thành');
     if(isDone(t) && !t.ketQua) p.push('Hoàn thành nhưng thiếu Kết quả hoàn thành');
     if(!isDone(t) && (t.ngayHT||t.ngayHTRaw)) p.push('Có Ngày hoàn thành nhưng Trạng thái chưa là "Hoàn thành"');
-    if(t.deXuat && !t.gdXuLy) p.push('Có Đề xuất nhưng GĐCN chưa chọn hướng xử lý');
     if(t.nguon==='Trọng tâm tháng' && t.duyetTT!=='Có') p.push('Trọng tâm tháng chưa được GĐCN duyệt');
     if(t.nguon==='TCT giao' && !t.maTCT) p.push('Nguồn "TCT giao" nhưng chưa chọn Mã TCT');
     if(!t.loaiHD) p.push('Chưa chọn Loại hoạt động');
@@ -239,7 +242,6 @@ function analyze(b){
     if(!t.ma) p.push('Thiếu Mã việc');
     if(!t.ngayGiao) p.push(t.ngayGiaoRaw?'Ngày TCT giao gõ dạng chữ':'Chưa điền Ngày TCT giao');
     if(!isClosed(t) && !t._soDong) p.push('Chưa bộ phận nào mở dòng triển khai');
-    if(t.deXuat && !t.gdXuLy) p.push('Có Đề xuất nhưng GĐCN chưa chọn hướng xử lý');
     if(p.length) issues.push({t:t, p:p, tct:true});
   });
 
@@ -249,7 +251,8 @@ function analyze(b){
     overdue: viec.filter(function(t){ return t._overdue; }),
     stale: viec.filter(function(t){ return t._stale; }).concat(tct.filter(function(t){ return t._stale; })),
     deXuat:deXuat,
-    chuyenTGD: deXuat.filter(function(t){ return t.gdXuLy==='Chuyển TGĐ'; }),
+    chuyenTGD: deXuat.filter(function(t){ return isTGD(t.gdXuLy); }),
+    gdDangXuLy: deXuat.filter(function(t){ return !isTGD(t.gdXuLy) && t.gdXuLy!=='Đã có quyết định'; }),
     caiTien: viec.filter(function(t){ return t.loaiHD==='Cải tiến'; }),
     trongTam: viec.filter(function(t){ return t.trongTamTuan==='Có'; }),
     tctOpen: tct.filter(function(t){ return !isDone(t); }),
@@ -262,7 +265,7 @@ function analyze(b){
 // ── Render ──────────────────────────────────────────────────
 function taskCard(t, opt){
   opt=opt||{};
-  var cls='task'+(t.gdXuLy==='Chuyển TGĐ'&&opt.hlTGD?' tgd':'')+(isDone(t)?' done':'');
+  var cls='task'+(isTGD(t.gdXuLy)&&opt.hlTGD?' tgd':'')+(isDone(t)?' done':'');
   var meta=[];
   if(t.phuTrach) meta.push(esc(t.phuTrach));
   if(t._isTCT||opt.tct){ if(t.ngayGiao) meta.push('Giao '+fmtDShort(t.ngayGiao)); }
@@ -296,9 +299,8 @@ function taskCard(t, opt){
 function renderOverview(A){
   var h='<div class="panel"><h3><span class="chart-num">1</span> Tổng quan các chi nhánh</h3>';
   h+='<p class="desc">Bấm vào 1 dòng để xem chi tiết chi nhánh. Số màu đỏ/vàng là việc cần GĐCN truy trách nhiệm hoặc TGĐ lưu ý.</p>';
-  h+='<div class="tbl-wrap"><table><thead><tr><th>Chi nhánh</th><th class="num">Tuần BC</th><th>Nhận định GĐCN</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chờ TGĐ quyết</th><th class="num">Đề xuất chưa xử lý</th><th class="num">Quá hạn</th><th class="num">Chưa CN tuần</th><th class="num">Cải tiến</th><th class="num">HT trong tháng</th><th class="num">Lỗi nhập liệu</th></tr></thead><tbody>';
+  h+='<div class="tbl-wrap"><table><thead><tr><th>Chi nhánh</th><th class="num">Tuần BC</th><th>Nhận định GĐCN</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển TT TGĐ</th><th class="num">GĐCN đang xử lý</th><th class="num">Quá hạn</th><th class="num">Chưa CN tuần</th><th class="num">Cải tiến</th><th class="num">HT trong tháng</th><th class="num">Lỗi nhập liệu</th></tr></thead><tbody>';
   A.forEach(function(a,i){
-    var noGD=a.deXuat.filter(function(t){ return !t.gdXuLy; }).length;
     h+='<tr class="clickable'+(i===selIdx?' sel':'')+'" onclick="selectBranch('+i+')">';
     h+='<td><b>'+esc(a.b.chiNhanh)+'</b></td>';
     h+='<td class="num">T'+a.refWeek+'</td>';
@@ -306,7 +308,7 @@ function renderOverview(A){
     h+='<td class="num">'+cnt(a.open.length)+'</td>';
     h+='<td class="num">'+cnt(a.trongTam.length)+'</td>';
     h+='<td class="num">'+cnt(a.chuyenTGD.length,'bad')+'</td>';
-    h+='<td class="num">'+cnt(noGD,'bad')+'</td>';
+    h+='<td class="num">'+cnt(a.gdDangXuLy.length)+'</td>';
     h+='<td class="num">'+cnt(a.overdue.length,'bad')+'</td>';
     h+='<td class="num">'+cnt(a.stale.length,'warnc')+'</td>';
     h+='<td class="num">'+cnt(a.caiTien.length)+'</td>';
@@ -324,12 +326,11 @@ function renderBranchCard(a){
   var notes=(b.canhBao||[]).slice();
   if(!b.ngayBaoCao) notes.push('GĐCN chưa điền Ngày báo cáo (sheet "Bao cao GDCN", ô G3).');
   if(notes.length) h+='<div class="notice">'+notes.map(function(n){ return '<div>⚠ '+esc(n)+'</div>'; }).join('')+'</div>';
-  var noGD=a.deXuat.filter(function(t){ return !t.gdXuLy; }).length;
   var k=function(lbl,n,cls,sub){ return '<div class="kpi '+(n?cls:'muted')+'"><div class="kpi-label">'+lbl+'</div><div class="kpi-num">'+n+'</div>'+(sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>'; };
   h+='<div class="kpi-row">';
   h+=k('Việc đang mở',a.open.length,'','/ '+a.viec.length+' việc đã ghi');
-  h+=k('Chờ TGĐ quyết',a.chuyenTGD.length,'orange','GĐCN chọn "Chuyển TGĐ"');
-  h+=k('Đề xuất chưa xử lý',noGD,'red','GĐCN chưa chọn hướng xử lý');
+  h+=k('Chuyển thông tin TGĐ',a.chuyenTGD.length,'orange','đề xuất GĐCN chuyển lên');
+  h+=k('GĐCN đang xử lý',a.gdDangXuLy.length,'','đề xuất GĐCN tự xử lý');
   h+=k('Quá hạn',a.overdue.length,'red','chưa Hoàn thành/Tạm dừng');
   h+=k('Chưa CN tuần này',a.stale.length,'gold','Tuần CN < T'+a.refWeek);
   h+=k('Hoàn thành tháng '+(a.ref.getMonth()+1),a.doneMonth,'green','theo Ngày hoàn thành');
@@ -349,7 +350,7 @@ function renderBranchCard(a){
 
 function renderDeXuat(a){
   var h='<div class="panel"><h3><span class="chart-num">2</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
-  h+='<p class="desc">Mọi việc có "Đề xuất / Cần hỗ trợ" mà chưa hoàn thành (kể cả không được chọn Trọng tâm tuần). Việc GĐCN "Chuyển TGĐ" xếp đầu và tô cam.</p>';
+  h+='<p class="desc">Mọi việc có "Đề xuất / Cần hỗ trợ" mà chưa hoàn thành (kể cả không được chọn Trọng tâm tuần). Việc GĐCN "Chuyển thông tin TGĐ" xếp đầu và tô cam; để trống = GĐCN đang tự xử lý.</p>';
   if(!a.deXuat.length) h+='<div class="empty">Không có đề xuất nào đang chờ.</div>';
   a.deXuat.forEach(function(t){ h+=taskCard(t,{hlTGD:true, tct:!!t._isTCT}); });
   return h+'</div>';

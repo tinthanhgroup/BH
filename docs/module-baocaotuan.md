@@ -47,9 +47,12 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 
 - **Mốc tham chiếu** = `ngayBaoCao` (GĐCN điền) hoặc `ngayDuLieu` (ngày lưu file) — KHÔNG dùng ngày hôm nay, để xem lại dữ liệu cũ không bị báo quá hạn sai. Tuần = `weekNum()` giống Excel `WEEKNUM(date,2)`.
 - Quá hạn: có Hạn < mốc và chưa Hoàn thành/Tạm dừng. Chưa CN tuần này: đang mở và `tuanCN` trống hoặc < tuần mốc.
-- Mục 2 Đề xuất: mọi dòng có Đề xuất và chưa Hoàn thành (không lọc Trọng tâm), "Chuyển TGĐ" xếp đầu, tô cam.
+- **Quy ước 2 cột GĐCN (26/09/2026):**
+  - "Trọng tâm tuần" chỉ có lựa chọn `Có`; **để trống = Không** (web chỉ đếm `==='Có'`).
+  - "GĐCN xử lý" có `Chuyển thông tin TGĐ` / `Đã có quyết định` (bỏ lựa chọn "GĐCN tự xử lý"; tên cũ là "Chuyển TGĐ"). **Để trống = GĐCN tự xử lý** → web hiện nhãn trung tính "GĐCN đang xử lý", không coi là lỗi. `isTGD()` nhận cả giá trị cũ "Chuyển TGĐ" lẫn giá trị mới.
+- Mục 2 Đề xuất: mọi dòng có Đề xuất và chưa Hoàn thành (không lọc Trọng tâm), "Chuyển thông tin TGĐ" xếp đầu, tô cam.
 - Mục 3 Trọng tâm tuần: `trongTamTuan==='Có'`, nhóm theo BP. Mục 4 Cải tiến: `loaiHD==='Cải tiến'`.
-- Mục 6 Cảnh báo & lỗi nhập liệu (tự ẩn khi rỗng): quá hạn, chưa CN, thiếu/trùng mã, hạn dạng chữ, Hoàn thành thiếu ngày/kết quả, có Ngày HT mà chưa Hoàn thành, Đề xuất chưa có GĐCN xử lý, TT tháng chưa duyệt, TCT giao thiếu Mã TCT, nhiệm vụ TCT chưa BP nào triển khai.
+- Mục 6 Cảnh báo & lỗi nhập liệu (tự ẩn khi rỗng): quá hạn, chưa CN, thiếu/trùng mã, hạn dạng chữ, Hoàn thành thiếu ngày/kết quả, có Ngày HT mà chưa Hoàn thành, TT tháng chưa duyệt, TCT giao thiếu Mã TCT, nhiệm vụ TCT chưa BP nào triển khai.
 - Nhận định: lấy dòng cùng tuần/năm với mốc; các tuần khác vào "Nhận định các tuần khác".
 - Chi nhánh đang chọn nhớ ở `localStorage` key `_bctBranch`.
 
