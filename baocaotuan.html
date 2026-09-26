@@ -83,7 +83,11 @@
   .nd-block.gd .nd-qa{grid-template-columns:170px 1fr;}
   .nd-k{font-size:11.5px;font-weight:700;color:#4a5a70;cursor:help;line-height:1.55;}
   .nd-v{font-size:12.5px;line-height:1.55;white-space:pre-line;}
-  .nd-v.none{color:#c3ccd8;font-style:italic;}
+  .nd-v.none,.nd-v .none{color:#c3ccd8;font-style:italic;}
+  /* Số liệu tự động (số HĐ ký từ tab BC Bán hàng) — nền nhạt để phân biệt với phần trưởng BP tự viết */
+  .nd-auto{background:#EEF3F9;border-radius:6px;padding:5px 9px;margin-bottom:5px;font-size:12.5px;line-height:1.5;}
+  .nd-auto b{color:var(--navy);}
+  .nd-auto-src{display:block;font-size:10.5px;color:var(--ink-soft);}
   .nd-free{font-size:13px;line-height:1.6;white-space:pre-line;}
   .nd-missing{font-size:12.5px;color:var(--red);font-weight:600;}
   .nd-week{font-size:12px;font-weight:800;color:var(--navy);margin:14px 0 8px;}
@@ -142,6 +146,12 @@
 // cấu trúc này (xem docs/module-baocaotuan.md). Trang chỉ đọc dữ liệu GỐC 4 sheet nhập liệu +
 // Nhận định tuần, tự tính lại toàn bộ các khối tổng hợp (không đọc sheet FILTER của Excel).
 const BCT_JSON_URL = 'baocaotuan.json';
+// Số HĐ ký trong tuần của bộ phận Bán hàng lấy TỰ ĐỘNG từ data.json (cùng nguồn với tab "BC Bán hàng"),
+// hiện kèm câu "Hợp đồng" trong khối BH-000 — trưởng BP chỉ cần viết đánh giá, không phải tự đếm.
+const SALES_JSON_URL = 'data.json';
+// Tên chi nhánh (ô B3 file Excel) → mã "Nguồn khách" trong data.json (BRANCH_NAMES trong index.html)
+const BRANCH_CODE = {'nha trang':'NT', 'da lat':'ĐL', 'phu yen':'PY', 'phan rang':'PR', 'bao loc':'BL', 'dak nong':'ĐN'};
+let SALES = null;   // [{d:Date, br:'NT'}] — null nếu tải data.json lỗi
 const BP_NAME = {BH:'Bán hàng', DV:'Dịch vụ', VP:'Văn phòng'};
 const BP_ORDER = ['BH','DV','VP'];
 // Thứ tự khối "Nhận định tuần" — GĐCN đọc trước, rồi tới 3 bộ phận
@@ -271,6 +281,39 @@ function qaBlock(title, by, rows, cls){
   }
   return h+'</div>';
 }
+// ── Số HĐ ký tự động (data.json) ───────────────────────────
+function stripVN(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đĐ]/g,'d').toLowerCase().trim(); }
+// Tuần Chủ nhật → Thứ 7, GIỐNG HỆT isoWeek() trong index.html để số khớp biểu đồ "Chốt cọc" của tab BC Bán hàng
+// (khác weekNum() của trang này — tuần Thứ 2 → Chủ nhật theo Excel; 2 cách lệch nhau đúng 1 ngày).
+function weekBH(d){ var t=new Date(d); t.setHours(0,0,0,0); var j=new Date(t.getFullYear(),0,1); return t.getFullYear()+'-'+Math.ceil(((t-j)/864e5+j.getDay()+1)/7); }
+function hdStats(chiNhanh, ref){
+  var code=BRANCH_CODE[stripVN(chiNhanh)];
+  if(!SALES || !code || !ref) return null;
+  var r0=new Date(ref); r0.setHours(0,0,0,0);
+  var from=new Date(r0); from.setDate(r0.getDate()-r0.getDay());   // Chủ nhật đầu tuần
+  var to=new Date(from); to.setDate(from.getDate()+6);
+  var byWeek={}, mtd=0;
+  SALES.rows.forEach(function(s){
+    if(s.br!==code) return;
+    var k=weekBH(s.d); byWeek[k]=(byWeek[k]||0)+1;
+    if(s.d.getFullYear()===r0.getFullYear() && s.d.getMonth()===r0.getMonth() && s.d<=new Date(to.getTime()+864e5-1)) mtd++;
+  });
+  var wk=function(back){ var d=new Date(from); d.setDate(from.getDate()-7*back); return byWeek[weekBH(d)]||0; };
+  var prev4=[1,2,3,4].map(wk);
+  return {cur:wk(0), prev:prev4[0], avg4:prev4.reduce(function(s,v){ return s+v; },0)/4, mtd:mtd, month:r0.getMonth()+1,
+          week:+weekBH(from).split('-')[1], prevWeek:+weekBH(new Date(from.getTime()-7*864e5)).split('-')[1], from:from, to:to};
+}
+function hdAutoHtml(chiNhanh, ref){
+  var s=hdStats(chiNhanh, ref); if(!s) return '';
+  var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
+  var diff=s.cur-s.prev;
+  var trend=s.prev? ' ('+(diff>=0?'+':'')+diff+', '+(diff>=0?'+':'')+Math.round(diff/s.prev*100)+'%)' : '';
+  var h='<b>Tuần '+s.week+'</b> ('+dm(s.from)+'–'+dm(s.to)+'): <b>'+s.cur+' HĐ</b>'+trend+' · tuần '+s.prevWeek+': '+s.prev+
+        ' · TB 4 tuần trước: '+s.avg4.toLocaleString('vi-VN',{maximumFractionDigits:1})+' · luỹ kế tháng '+s.month+': '+s.mtd;
+  return '<div class="nd-auto" title="Đếm theo Ngày đặt cọc + Nguồn khách trong data.json — cùng nguồn với biểu đồ Chốt cọc ở tab BC Bán hàng">'+h+
+         '<span class="nd-auto-src">Tự động từ tab BC Bán hàng'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')+'</span></div>';
+}
+
 function grid(blocks){ return blocks.length ? '<div class="nd-grid">'+blocks.join('')+'</div>' : ''; }
 function subHead(s){ return '<div class="nd-week">'+s+'</div>'; }
 
@@ -368,20 +411,25 @@ function renderBranchCard(a){
 
 // Mục 2 "Nhận định tuần" — phần TGĐ đọc đầu tiên: nhận định tổng thể của GĐCN + 3 trưởng bộ phận
 // (sheet "Nhan dinh tong the"). GĐCN chưa dùng sheet mới thì lấy tạm nhận định tự do ở sheet cũ "Nhan dinh tuan".
-function ndBlock(bp, e, oldGD, isHist){
+// autoHtml: số liệu tự động gắn vào câu "Hợp đồng" (câu 1) của khối Bán hàng — xem hdAutoHtml()
+function ndBlock(bp, e, oldGD, isHist, autoHtml){
   var h='<div class="nd-block'+(bp==='GDCN'?' gd':'')+'"><div class="nd-head"><span class="nd-title">'+ND_NAME[bp]+'</span>';
   if(e && e.nguoiViet) h+='<span class="nd-by">'+esc(e.nguoiViet)+'</span>';
   h+='</div>';
+  var used=false;
   if(e){
     h+='<div class="nd-qa">';
     (e.items||[]).forEach(function(it){
+      var withAuto=autoHtml && !used && (it.nhan==='Hợp đồng' || it.stt===1);
+      if(withAuto) used=true;
       h+='<div class="nd-k" title="'+esc(it.cauHoi)+'">'+esc(it.nhan||('Câu '+it.stt))+'</div>';
-      h+='<div class="nd-v'+(it.traLoi?'':' none')+'">'+(it.traLoi?esc(it.traLoi):'Chưa trả lời')+'</div>';
+      h+='<div class="nd-v">'+(withAuto?autoHtml:'')+(it.traLoi?esc(it.traLoi):'<span class="none">Chưa trả lời</span>')+'</div>';
     });
     h+='</div>';
   } else if(oldGD){
     h+='<div class="nd-free">'+esc(oldGD.noiDung)+'</div>';
   } else if(!isHist){
+    if(autoHtml) h+='<div class="nd-qa"><div class="nd-k">Hợp đồng</div><div class="nd-v">'+autoHtml+'</div></div>';
     h+='<div class="nd-missing">Chưa viết nhận định tuần này.</div>';
   }
   return h+'</div>';
@@ -392,14 +440,14 @@ function renderNhanDinh(a){
   var h='<div class="panel"><h3><span class="chart-num">2</span> Nhận định tuần '+a.refWeek+' — GĐCN &amp; trưởng bộ phận <span class="count-pill'+(done<ND_ORDER.length?' red':'')+'">'+done+'/'+ND_ORDER.length+'</span></h3>';
   h+='<p class="desc">Đánh giá tổng thể hoạt động trong tuần và lý do, trả lời theo bộ câu hỏi cố định (rê chuột vào nhãn để xem câu hỏi đầy đủ). Nguồn: sheet "Nhan dinh tong the".</p>';
   h+='<div class="nd-grid">';
-  ND_ORDER.forEach(function(bp){ h+=ndBlock(bp, cur[bp], bp==='GDCN'&&!cur.GDCN?a.ndCur:null, false); });
+  ND_ORDER.forEach(function(bp){ h+=ndBlock(bp, cur[bp], bp==='GDCN'&&!cur.GDCN?a.ndCur:null, false, bp==='BH'?hdAutoHtml(a.b.chiNhanh, a.ref):''); });
   h+='</div>';
   var nHist=a.ndBP.hist.length + (a.ndHist.length);
   if(nHist){
     h+='<details class="history"><summary>Nhận định các tuần trước ('+a.ndBP.hist.length+' tuần)</summary>';
     a.ndBP.hist.forEach(function(w){
       h+=subHead('Tuần '+w.tuan+'/'+w.nam+(w.ngay?' · '+fmtD(w.ngay):''))+'<div class="nd-grid">';
-      ND_ORDER.forEach(function(bp){ if(w.bp[bp]) h+=ndBlock(bp, w.bp[bp], null, true); });
+      ND_ORDER.forEach(function(bp){ if(w.bp[bp]) h+=ndBlock(bp, w.bp[bp], null, true, bp==='BH'?hdAutoHtml(a.b.chiNhanh, parseD(w.ngay)):''); });
       h+='</div>';
     });
     // Nhận định tự do của GĐCN ở sheet cũ "Nhan dinh tuan" (trước khi có sheet "Nhan dinh tong the")
@@ -521,10 +569,20 @@ function render(){
 }
 
 async function load(){
+  // data.json (số HĐ ký) tải song song, lỗi thì bỏ qua — báo cáo tuần vẫn hiện bình thường, chỉ thiếu số tự động
+  var salesP=fetch(SALES_JSON_URL+'?t='+Date.now())
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(function(j){
+      SALES={updated:j.updated_vn||'', rows:(j.records||[]).filter(function(r){ return r.ngayDatCoc && r.nguonKhach; })
+        .map(function(r){ return {d:new Date(r.ngayDatCoc), br:String(r.nguonKhach).trim()}; })
+        .filter(function(r){ return !isNaN(r.d); })};
+    })
+    .catch(function(e){ console.warn('Không tải được data.json — bỏ qua số HĐ tự động:', e); SALES=null; });
   try{
     var res=await fetch(BCT_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     DATA=await res.json();
+    await salesP;
   }catch(e){
     document.getElementById('app').innerHTML='<div class="error">Không tải được baocaotuan.json ('+esc(e.message)+').</div>';
     document.getElementById('updatedTag').textContent='Lỗi tải dữ liệu';

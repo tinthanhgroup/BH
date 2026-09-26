@@ -66,6 +66,12 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 - Nhận định: lấy dòng cùng tuần/năm với mốc; các tuần khác vào "Nhận định các tuần khác".
 - Chi nhánh đang chọn nhớ ở `localStorage` key `_bctBranch`.
 
+### Số HĐ ký tự động trong khối BH-000 (thêm 26/09/2026)
+
+- Câu "Hợp đồng" (câu 1) của khối Bán hàng tự gắn thêm dòng số liệu (nền xanh nhạt `.nd-auto`): số HĐ tuần này (+/− so với tuần trước), tuần trước, TB 4 tuần trước, luỹ kế tháng — **trưởng BP chỉ cần viết đánh giá + lý do**, không tự đếm. Hiện cả khi khối BH chưa viết, và ở các tuần trong lịch sử.
+- Nguồn: `data.json` (cùng nguồn tab "BC Bán hàng"), đếm bản ghi theo `ngayDatCoc` + `nguonKhach` = mã chi nhánh (`BRANCH_CODE`: tên ô B3 bỏ dấu → NT/ĐL/PY/PR/BL/ĐN). Chỉ cần `data.json` (mọi HĐ 2026 nằm ở đây, `data_history.json` chỉ tới 2025). Tải lỗi thì bỏ qua, trang vẫn chạy.
+- ⚠ Tuần tính **Chủ nhật → Thứ 7** (`weekBH()`, sao y `isoWeek()` trong `index.html`) để số khớp biểu đồ "Chốt cọc 5 tuần" của tab BC Bán hàng — **khác** tuần báo cáo của trang này (`weekNum()`, Thứ 2 → CN theo Excel `WEEKNUM(,2)`), lệch nhau 1 ngày; số tuần hiển thị thường trùng nhau. Tuần lấy theo ngày mốc báo cáo (`ngayBaoCao || ngayDuLieu`).
+
 ## Quy ước trình bày (26/09/2026, theo góp ý người dùng)
 
 - **Toàn trang dùng 1 kiểu khối duy nhất** — kiểu của mục 2 (`.nd-block` + lưới `.nd-qa` "nhãn → nội dung", hàm `qaBlock()`/`taskBlock()`), xếp 2 cột (`.nd-grid`). **Không** dùng lại thẻ màu (tag/pill trạng thái), bảng nhiều cột hay nhiều kiểu định dạng khác nhau cho mục 3–9. Màu chỉ dùng cho điều bất thường: đỏ = quá hạn/thiếu, vàng = chưa cập nhật/nhập sai, cam = Chuyển thông tin TGĐ (viền trên khối + chữ).
