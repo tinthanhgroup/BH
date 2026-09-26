@@ -26,7 +26,8 @@ Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống t
 |---|---|---|
 | `Ban hang` / `Dich vu` / `Van phong` | từ dòng 9, bỏ dòng có F (Nội dung) trống | B Mã · C Nguồn · D Tháng · E Lĩnh vực · F Nội dung · G Phụ trách · H Hạn · I Trạng thái · J Cập nhật tuần · K Tuần CN · L Vướng mắc · M Đề xuất · N Kế hoạch · O Ngày HT · P Kết quả · Q Trọng tâm tuần · R Ghi chú GĐCN · S GĐCN xử lý · T Duyệt TT tháng · U Loại hoạt động · V Mã TCT |
 | `Ke hoach TCT giao` | từ dòng 9, bỏ dòng D trống | B Mã · C Ngày giao · D Nội dung · E Bộ phận · F Trạng thái · G Cập nhật · H Tuần CN · I Vướng mắc · J Đề xuất · K Kế hoạch · L Ngày HT · M Kết quả · N Ghi chú GĐCN · O GĐCN xử lý |
-| `Nhan dinh tuan` | từ dòng 4, bỏ dòng D trống | A Ngày BC · D Nhận định · E Người viết |
+| `Nhan dinh tong the` (thêm 26/09/2026) | dò theo mã cột A | Khối `GĐCN` / `BH-000` / `DV-000` / `VP-000`: dòng tiêu đề (A mã · D Người viết) + dòng câu hỏi (A STT · B Nhãn · C Câu hỏi · D Trả lời). **Ghi đè mỗi tuần** |
+| `Nhan dinh tuan` (cũ) | từ dòng 4, bỏ dòng D trống | A Ngày BC · D Nhận định · E Người viết — nhận định tự do của GĐCN, web chỉ dùng làm dự phòng khi GĐCN chưa điền khối `GĐCN` ở sheet mới |
 | `Bao cao GDCN` | ô `G3` | Ngày báo cáo |
 
 ## Cấu trúc `baocaotuan.json`
@@ -39,8 +40,17 @@ Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống t
            gdXuLy, duyetTT, loaiHD, maTCT, nguoiCapNhat}],
     tct:[{dong, ma, ngayGiao, ngayGiaoRaw, noiDung, boPhan, trangThai, capNhat, tuanCN, vuongMac, deXuat,
           keHoach, ngayHT, ngayHTRaw, ketQua, ghiChuGD, gdXuLy}],
-    nhanDinh:[{ngay, noiDung, nguoiViet}] }] }
+    nhanDinh:[{ngay, noiDung, nguoiViet}],
+    nhanDinhBP:[{nam, tuan, ngay, boPhan:'GDCN'|'BH'|'DV'|'VP', nguoiViet, items:[{stt, nhan, cauHoi, traLoi}]}] }] }
 ```
+
+### Nhận định tổng thể tuần (sheet `Nhan dinh tong the`, thêm 26/09/2026)
+
+- GĐCN (8 câu) + 3 trưởng BP (10 câu mỗi BP, mã `BH-000`/`DV-000`/`VP-000`) trả lời theo **bộ câu hỏi cố định** — xoáy vào đánh giá + lý do, không chép lại số liệu dashboard. Hiện ở **mục 2** trang web, ngay dưới thẻ chi nhánh (phần TGĐ đọc đầu tiên); cột "Nhận định tuần" ở bảng tổng quan cho biết ai đã/chưa viết.
+- Là **sheet riêng**, không phải dòng trong 3 sheet bộ phận — để không đụng công thức/định dạng/`Mã tiếp theo` của bảng việc.
+- Sheet bị **ghi đè mỗi tuần**; lịch sử giữ ở `nhanDinhBP` trong `baocaotuan.json`: `xlsx_to_json.ps1` đọc file JSON cũ, gộp theo chi nhánh + năm + tuần + bộ phận (tuần báo cáo = `WEEKNUM(ngayBaoCao || ngayDuLieu, 2)`), khối chưa trả lời câu nào thì không lưu. ⚠ Khoá gộp là **tên chi nhánh** — chi nhánh phải điền ô B3, nếu không tên lấy theo tên file (đổi tên file mỗi tuần → mất nối lịch sử). Apps Script sau này phải làm y như vậy (GET JSON cũ → upsert → PUT, giống `TinThanh_FBAds_Sync.gs`).
+- Câu hỏi/nhãn lấy **từ chính file** (cột B/C), nên sửa câu hỏi trong Excel là web tự theo — không hardcode trong HTML.
+- File mẫu cũ chưa có sheet này: chạy `Bao cao tuan/them_sheet_nhan_dinh.ps1 -Path <file>` (chèn sheet sau "Huong dan", tự sao lưu `<file>.bak.xlsx` — converter bỏ qua file `.bak.xlsx`; chạy lại trên file đã có sheet thì tự bỏ qua).
 Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày dạng chữ** (vd `"30/09/2026"`) — vẫn parse được thì điền cả ngày lẫn raw, web báo lỗi nhập liệu để sửa.
 
 ## Logic trang (tự tính lại, bám sát sheet Bao cao GDCN)

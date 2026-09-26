@@ -1,14 +1,14 @@
 {
-    "updated_at":  "2026-09-26T13:25:33",
+    "updated_at":  "2026-09-26T13:49:36",
     "nguon":  "excel",
     "branches":  [
                      {
-                         "chiNhanh":  "Bao cao tuan 39",
+                         "chiNhanh":  "Nha Trang",
                          "file":  "Bao cao tuan 39.xlsx",
                          "ngayBaoCao":  "",
                          "ngayDuLieu":  "2026-09-26",
                          "canhBao":  [
-                                         "Chưa điền ô Chi nhánh (B3) — tạm lấy theo tên file"
+
                                      ],
                          "viec":  [
                                       {
@@ -885,7 +885,273 @@
                                  ],
                          "nhanDinh":  [
 
-                                      ]
+                                      ],
+                         "nhanDinhBP":  [
+                                            {
+                                                "nam":  2026,
+                                                "tuan":  39,
+                                                "ngay":  "2026-09-26",
+                                                "boPhan":  "DV",
+                                                "nguoiViet":  "DEMO – Quang",
+                                                "items":  [
+                                                              {
+                                                                  "stt":  1,
+                                                                  "nhan":  "Lượt xe",
+                                                                  "cauHoi":  "Lượt xe vào xưởng tăng hay giảm, đánh giá thế nào, vì sao?",
+                                                                  "traLoi":  "(demo) Ổn định so với tuần trước; xe đồng sơn tăng nhờ làm việc với bảo hiểm DBV và Bảo Việt."
+                                                              },
+                                                              {
+                                                                  "stt":  2,
+                                                                  "nhan":  "Doanh thu – LN",
+                                                                  "cauHoi":  "Doanh thu DV/PT và lợi nhuận so với kế hoạch, mảng nào kéo xuống?",
+                                                                  "traLoi":  "Doanh thu DV – PT quý đạt 100%/100%; DRP dự kiến 90%."
+                                                              },
+                                                              {
+                                                                  "stt":  3,
+                                                                  "nhan":  "Khách hàng",
+                                                                  "cauHoi":  "Có khiếu nại, xe làm lại (comeback) hay phản hồi xấu không?",
+                                                                  "traLoi":  "(demo) Không có khiếu nại mới; 1 xe làm lại nhẹ, đã xử lý trong ngày."
+                                                              },
+                                                              {
+                                                                  "stt":  4,
+                                                                  "nhan":  "Năng suất xưởng",
+                                                                  "cauHoi":  "Khoang và KTV có quá tải hay dư, xe chờ lâu, xe tồn xưởng quá hạn?",
+                                                                  "traLoi":  "(demo) Xưởng chạy đủ tải; đang xây dựng kế hoạch 5S toàn xưởng."
+                                                              },
+                                                              {
+                                                                  "stt":  5,
+                                                                  "nhan":  "Phụ tùng",
+                                                                  "cauHoi":  "Thiếu hàng, chờ đặt lâu, tồn kho chậm luân chuyển?",
+                                                                  "traLoi":  "(demo) Không thiếu hàng đáng kể; tiếp tục chạy chỉ tiêu quý để đạt thưởng phụ tùng."
+                                                              },
+                                                              {
+                                                                  "stt":  6,
+                                                                  "nhan":  "Bảo hiểm – đồng sơn",
+                                                                  "cauHoi":  "Số hồ sơ, phối hợp với hãng bảo hiểm, công nợ bảo hiểm?",
+                                                                  "traLoi":  "Đã gặp bảo hiểm DBV và Bảo Việt để tăng doanh thu đồng sơn (hướng tới XanhSM); công nợ quá hạn đang xử lý để về dưới 200 tr."
+                                                              },
+                                                              {
+                                                                  "stt":  7,
+                                                                  "nhan":  "Khách quay lại",
+                                                                  "cauHoi":  "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
+                                                                  "traLoi":  "Xe hết bảo hành mới đạt 93% (thiếu ~200 xe) – điểm yếu nhất của quý."
+                                                              },
+                                                              {
+                                                                  "stt":  8,
+                                                                  "nhan":  "Đối thủ",
+                                                                  "cauHoi":  "Đại lý khác hoặc gara ngoài có chính sách lôi kéo khách không?",
+                                                                  "traLoi":  "(demo) Gara ngoài chào giá bảo dưỡng thấp cho xe hết bảo hành, khó kéo khách quay lại."
+                                                              },
+                                                              {
+                                                                  "stt":  9,
+                                                                  "nhan":  "Nhân sự xưởng",
+                                                                  "cauHoi":  "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
+                                                                  "traLoi":  "(demo) Đủ KTV; đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên nên hơi căng người."
+                                                              },
+                                                              {
+                                                                  "stt":  10,
+                                                                  "nhan":  "Dự báo \u0026 cần hỗ trợ",
+                                                                  "cauHoi":  "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
+                                                                  "traLoi":  "Cần TGĐ cho mở lệnh nội bộ để bù số xe hết bảo hành; duyệt chi tỉa cây trước mùa bão (báo giá 20 tr, đang deal về 15 tr)."
+                                                              }
+                                                          ]
+                                            },
+                                            {
+                                                "nam":  2026,
+                                                "tuan":  39,
+                                                "ngay":  "2026-09-26",
+                                                "boPhan":  "VP",
+                                                "nguoiViet":  "DEMO – Văn phòng",
+                                                "items":  [
+                                                              {
+                                                                  "stt":  1,
+                                                                  "nhan":  "Biến động nhân sự",
+                                                                  "cauHoi":  "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+                                                                  "traLoi":  "Không có nghỉ việc mới; còn thiếu bảo vệ và nhân viên MKT."
+                                                              },
+                                                              {
+                                                                  "stt":  2,
+                                                                  "nhan":  "Tuyển dụng",
+                                                                  "cauHoi":  "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+                                                                  "traLoi":  "MKT có 4 hồ sơ, sắp phỏng vấn. Bảo vệ đăng tuyển 2 tháng không hiệu quả, chuyển sang treo băng rôn tuyển dụng trước công ty."
+                                                              },
+                                                              {
+                                                                  "stt":  3,
+                                                                  "nhan":  "Tinh thần – kỷ luật",
+                                                                  "cauHoi":  "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+                                                                  "traLoi":  "Đã thông báo giờ làm việc mới, chi đủ quà trung thu cho con CBNV; không có vi phạm đáng chú ý."
+                                                              },
+                                                              {
+                                                                  "stt":  4,
+                                                                  "nhan":  "Công nợ – dòng tiền",
+                                                                  "cauHoi":  "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+                                                                  "traLoi":  "(demo) Không có khoản thu chi bất thường; đang theo dõi hoa hồng bảo hiểm tái tục."
+                                                              },
+                                                              {
+                                                                  "stt":  5,
+                                                                  "nhan":  "Chứng từ – hồ sơ",
+                                                                  "cauHoi":  "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+                                                                  "traLoi":  "BHXH chưa phản hồi vụ đóng trùng BHXH T7 của nhân sự đã nghỉ; đang soạn HĐ khoán cho lao động lớn tuổi để trả lương chuyển khoản."
+                                                              },
+                                                              {
+                                                                  "stt":  6,
+                                                                  "nhan":  "CSVC – an toàn",
+                                                                  "cauHoi":  "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+                                                                  "traLoi":  "Trần thạch cao phòng giải trí/lối tiếp nhận xe hư do thấm mưa (báo giá 9,3–12 tr); dù che showroom giao 29/09; phương án PCCC\u0026CNCH chưa nộp."
+                                                              },
+                                                              {
+                                                                  "stt":  7,
+                                                                  "nhan":  "Tuân thủ",
+                                                                  "cauHoi":  "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+                                                                  "traLoi":  "Rủi ro kết quả quan trắc nước thải quý 3 không đạt (nước thải có màu lạ, chưa rõ nguyên nhân) – lấy mẫu 28/09. Đăng ký nội quy lao động online hay lỗi link."
+                                                              },
+                                                              {
+                                                                  "stt":  8,
+                                                                  "nhan":  "Chi phí",
+                                                                  "cauHoi":  "Có chi phí vượt kế hoạch hoặc bất thường không?",
+                                                                  "traLoi":  "(demo) Trong kế hoạch; phát sinh sửa trần và dù che (~15–20 tr)."
+                                                              },
+                                                              {
+                                                                  "stt":  9,
+                                                                  "nhan":  "Phối hợp",
+                                                                  "cauHoi":  "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+                                                                  "traLoi":  "Hạng mục chỉnh trang khuôn viên chờ Dịch vụ bố trí người. Tháng 10 bàn giao lại các việc đề xuất/bảo hiểm cho Admin Dịch vụ."
+                                                              },
+                                                              {
+                                                                  "stt":  10,
+                                                                  "nhan":  "Tuần tới \u0026 cần hỗ trợ",
+                                                                  "cauHoi":  "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+                                                                  "traLoi":  "Hoàn tất lấy mẫu nước thải; nhờ CN Đà Lạt hỗ trợ hồ sơ PCCC; đề xuất cải tạo hệ thống xử lý nước thải nếu kết quả không đạt."
+                                                              }
+                                                          ]
+                                            },
+                                            {
+                                                "nam":  2026,
+                                                "tuan":  39,
+                                                "ngay":  "2026-09-26",
+                                                "boPhan":  "GDCN",
+                                                "nguoiViet":  "DEMO – GĐCN Nha Trang",
+                                                "items":  [
+                                                              {
+                                                                  "stt":  1,
+                                                                  "nhan":  "Đánh giá chung",
+                                                                  "cauHoi":  "Tuần này tốt, bình thường hay đáng lo, vì sao (1–2 câu)?",
+                                                                  "traLoi":  "Tuần ổn nhưng áp lực cuối quý. Bán hàng đạt ~90% chỉ tiêu quý HTV, có rủi ro hụt mốc 95% do HTV giao Creta/Tucson trễ. Dịch vụ đạt 100% doanh thu DV – PT, chỉ còn thiếu xe hết bảo hành."
+                                                              },
+                                                              {
+                                                                  "stt":  2,
+                                                                  "nhan":  "Điểm sáng",
+                                                                  "cauHoi":  "Kết quả hoặc nỗ lực nổi bật nhất?",
+                                                                  "traLoi":  "Dịch vụ đạt 100% doanh thu DV \u0026 phụ tùng quý. TVBH bắt đầu làm video/livestream theo chính sách mới. Đổi giờ làm việc và chi quà trung thu êm, không phát sinh phản ứng."
+                                                              },
+                                                              {
+                                                                  "stt":  3,
+                                                                  "nhan":  "Vấn đề lớn nhất",
+                                                                  "cauHoi":  "Rủi ro lớn nhất toàn chi nhánh, đang xử lý thế nào?",
+                                                                  "traLoi":  "Nguy cơ không đạt 95% chỉ tiêu HTV để nhận thưởng quý: HTV mapvin 28/09, không kịp báo bán 4 xe. Đang xin phương án dùng 03 xe ngập nước + hạ LN để báo bán (đã chuyển thông tin TGĐ – BH-001)."
+                                                              },
+                                                              {
+                                                                  "stt":  4,
+                                                                  "nhan":  "Bộ phận cần lưu ý",
+                                                                  "cauHoi":  "Bộ phận nào cần TGĐ để ý, vì sao?",
+                                                                  "traLoi":  "Văn phòng: nhiều việc tuân thủ đang chậm (phương án PCCC, nội quy lao động, quan trắc nước thải 28/09) và tuyển dụng bảo vệ, MKT kéo dài."
+                                                              },
+                                                              {
+                                                                  "stt":  5,
+                                                                  "nhan":  "Thị trường – đối thủ",
+                                                                  "cauHoi":  "Có thay đổi gì đáng chú ý?",
+                                                                  "traLoi":  "(demo) Đối thủ đẩy mạnh ưu đãi cuối quý; chưa thấy ảnh hưởng rõ tới lượng khách tuần này, Bán hàng theo dõi tiếp."
+                                                              },
+                                                              {
+                                                                  "stt":  6,
+                                                                  "nhan":  "Nhân sự chủ chốt",
+                                                                  "cauHoi":  "Có biến động hay rủi ro với người quan trọng không?",
+                                                                  "traLoi":  "Chưa tuyển được nhân sự MKT (có 4 hồ sơ, sắp phỏng vấn); vị trí bảo vệ tuyển 2 tháng chưa có người."
+                                                              },
+                                                              {
+                                                                  "stt":  7,
+                                                                  "nhan":  "Cần TGĐ",
+                                                                  "cauHoi":  "Việc cần TGĐ quyết hoặc hỗ trợ (tóm gọn)?",
+                                                                  "traLoi":  "(1) Duyệt phương án dùng 03 xe ngập nước + hạ LN để báo bán (BH-001). (2) Cho mở lệnh nội bộ bù ~200 xe hết bảo hành (DV-001). (3) Duyệt chi tỉa cây trước mùa bão, 15–20 tr (DV-005)."
+                                                              },
+                                                              {
+                                                                  "stt":  8,
+                                                                  "nhan":  "Cam kết tuần tới",
+                                                                  "cauHoi":  "2–3 ưu tiên GĐCN cam kết cho tuần tới?",
+                                                                  "traLoi":  "Chốt báo bán tối đa trước 30/09; hoàn tất lấy mẫu nước thải 28/09; phỏng vấn và chốt ứng viên MKT."
+                                                              }
+                                                          ]
+                                            },
+                                            {
+                                                "nam":  2026,
+                                                "tuan":  39,
+                                                "ngay":  "2026-09-26",
+                                                "boPhan":  "BH",
+                                                "nguoiViet":  "DEMO – Duy",
+                                                "items":  [
+                                                              {
+                                                                  "stt":  1,
+                                                                  "nhan":  "Hợp đồng",
+                                                                  "cauHoi":  "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
+                                                                  "traLoi":  "(demo) Ký 17 HĐ, tăng nhẹ so với T38 (15 HĐ), đạt kế hoạch tuần. Luỹ kế quý 68/72 xe báo bán (90% của 79)."
+                                                              },
+                                                              {
+                                                                  "stt":  2,
+                                                                  "nhan":  "Lợi nhuận gộp",
+                                                                  "cauHoi":  "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
+                                                                  "traLoi":  "Thấp hơn bình thường do phải hạ LN để đẩy báo bán cuối quý; Tucson đang dùng mức hỗ trợ 1%."
+                                                              },
+                                                              {
+                                                                  "stt":  3,
+                                                                  "nhan":  "Mất deal",
+                                                                  "cauHoi":  "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
+                                                                  "traLoi":  "(demo) Mất 3 deal: 2 do không có sẵn Creta/Tucson Trắng giao ngay, 1 do giá so với đối thủ."
+                                                              },
+                                                              {
+                                                                  "stt":  4,
+                                                                  "nhan":  "KH tiềm năng",
+                                                                  "cauHoi":  "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
+                                                                  "traLoi":  "(demo) ~45 KH mới, chủ yếu từ Facebook/livestream và khách vãng lai; gọi lại trong 24h ~80%. Sẽ đo chuẩn hơn khi triển khai CRM Bizfly."
+                                                              },
+                                                              {
+                                                                  "stt":  5,
+                                                                  "nhan":  "Đối thủ",
+                                                                  "cauHoi":  "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
+                                                                  "traLoi":  "(demo) Một số đại lý đối thủ tung ưu đãi lệ phí trước bạ cuối quý, khách hỏi so sánh nhiều hơn; chưa mất deal đáng kể vì lý do này."
+                                                              },
+                                                              {
+                                                                  "stt":  6,
+                                                                  "nhan":  "Nguồn xe \u0026 tồn kho",
+                                                                  "cauHoi":  "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
+                                                                  "traLoi":  "Thiếu Creta và Tucson ĐB Trắng (HTV nợ 4 xe, mapvin 28/09 – không kịp báo bán). Có 03 xe ngập nước cần phương án xử lý."
+                                                              },
+                                                              {
+                                                                  "stt":  7,
+                                                                  "nhan":  "Hồ sơ – giao xe",
+                                                                  "cauHoi":  "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
+                                                                  "traLoi":  "Chứng từ giải ngân CSC T8 chưa chốt được từ phía HTV; xe lái thử Palisade LX3 cần HTV xác nhận lại."
+                                                              },
+                                                              {
+                                                                  "stt":  8,
+                                                                  "nhan":  "Đội ngũ TVBH",
+                                                                  "cauHoi":  "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
+                                                                  "traLoi":  "TVBH đã làm 1 video + 1 livestream theo chính sách hỗ trợ mới; chưa có dấu hiệu nghỉ việc."
+                                                              },
+                                                              {
+                                                                  "stt":  9,
+                                                                  "nhan":  "MKT – sự kiện",
+                                                                  "cauHoi":  "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
+                                                                  "traLoi":  "Lái thử tại Cam Lâm đang chuẩn bị; KPI quý CDR 30/30 triệu, CSC T9 25 triệu đang bám."
+                                                              },
+                                                              {
+                                                                  "stt":  10,
+                                                                  "nhan":  "Dự báo \u0026 cần hỗ trợ",
+                                                                  "cauHoi":  "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+                                                                  "traLoi":  "Nếu không có phương án xe ngập nước, dự kiến chỉ đạt ~90–92%, hụt mốc 95%. Cần TGĐ quyết trước 30/09."
+                                                              }
+                                                          ]
+                                            }
+                                        ]
                      }
                  ]
 }

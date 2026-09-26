@@ -73,6 +73,22 @@
   details.history summary{font-size:11.5px;font-weight:700;color:var(--ink-soft);cursor:pointer;}
   .hist-item{font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line);white-space:pre-line;line-height:1.55;}
   .hist-item b{color:var(--navy);}
+  /* Mục 2 Nhận định tuần */
+  .nd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start;}
+  .nd-block{border:1px solid var(--line);border-top:3px solid #9fb8d8;border-radius:10px;padding:12px 14px;}
+  .nd-block.gd{grid-column:1/-1;border-top-color:var(--navy);background:#F7F9FC;}
+  .nd-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;}
+  .nd-title{font-size:13px;font-weight:800;color:var(--navy);}
+  .nd-by{font-size:11.5px;color:var(--ink-soft);}
+  .nd-qa{display:grid;grid-template-columns:150px 1fr;gap:5px 12px;}
+  .nd-block.gd .nd-qa{grid-template-columns:170px 1fr;}
+  .nd-k{font-size:11.5px;font-weight:700;color:#4a5a70;cursor:help;line-height:1.55;}
+  .nd-v{font-size:12.5px;line-height:1.55;white-space:pre-line;}
+  .nd-v.none{color:#c3ccd8;font-style:italic;}
+  .nd-free{font-size:13px;line-height:1.6;white-space:pre-line;}
+  .nd-missing{font-size:12.5px;color:var(--red);font-weight:600;}
+  .nd-week{font-size:12px;font-weight:800;color:var(--navy);margin:14px 0 8px;}
+  .nd-ok{color:var(--green);font-weight:700;}
   .notice{background:#fff8e6;border:1px solid #f1dc9c;color:#8a6500;border-radius:10px;padding:8px 14px;margin-bottom:14px;font-size:12px;}
   .notice div+div{margin-top:3px;}
 
@@ -126,6 +142,9 @@
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .nd-grid{grid-template-columns:1fr;}
+    .nd-qa,.nd-block.gd .nd-qa{grid-template-columns:1fr;gap:2px;}
+    .nd-v{margin-bottom:6px;}
     .task-meta{margin-left:0;white-space:normal;width:100%;}
   }
 </style>
@@ -153,6 +172,9 @@
 const BCT_JSON_URL = 'baocaotuan.json';
 const BP_NAME = {BH:'Bán hàng', DV:'Dịch vụ', VP:'Văn phòng'};
 const BP_ORDER = ['BH','DV','VP'];
+// Thứ tự khối "Nhận định tuần" — GĐCN đọc trước, rồi tới 3 bộ phận
+const ND_ORDER = ['GDCN','BH','DV','VP'];
+const ND_NAME = {GDCN:'Giám đốc chi nhánh', BH:'Bán hàng · BH-000', DV:'Dịch vụ · DV-000', VP:'Văn phòng · VP-000'};
 const SEL_KEY = '_bctBranch';
 
 let DATA = null, BR = [], selIdx = 0, monthSel = null, achMonthSel = null;
@@ -260,6 +282,15 @@ function analyze(b){
     tctOpen: tct.filter(function(t){ return !isDone(t); }),
     doneMonth: viec.filter(function(t){ var d=parseD(t.ngayHT); return isDone(t) && d && d.getMonth()===ref.getMonth() && d.getFullYear()===refYear; }).length,
     ndCur:ndCur[0]||null, ndHist:nd.filter(function(n){ return n!==ndCur[0]; }),
+    // Nhận định tổng thể (sheet "Nhan dinh tong the"): tuần báo cáo + các tuần trước (script tự tích luỹ lịch sử)
+    ndBP: (function(){
+      var cur={}, hist={};
+      (b.nhanDinhBP||[]).forEach(function(e){
+        if(e.tuan===refWeek && e.nam===refYear) cur[e.boPhan]=e;
+        else { var k=e.nam+'-'+String(e.tuan).padStart(2,'0'); (hist[k]=hist[k]||{nam:e.nam,tuan:e.tuan,ngay:e.ngay,bp:{}}).bp[e.boPhan]=e; }
+      });
+      return {cur:cur, hist:Object.keys(hist).sort().reverse().map(function(k){ return hist[k]; })};
+    })(),
     issues:issues
   };
 }
@@ -301,12 +332,13 @@ function taskCard(t, opt){
 function renderOverview(A){
   var h='<div class="panel"><h3><span class="chart-num">1</span> Tổng quan các chi nhánh</h3>';
   h+='<p class="desc">Bấm vào 1 dòng để xem chi tiết chi nhánh. Số màu đỏ/vàng là việc cần GĐCN truy trách nhiệm hoặc TGĐ lưu ý.</p>';
-  h+='<div class="tbl-wrap"><table><thead><tr><th>Chi nhánh</th><th class="num">Tuần BC</th><th>Nhận định GĐCN</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển TT TGĐ</th><th class="num">GĐCN đang xử lý</th><th class="num">Quá hạn</th><th class="num">Chưa CN tuần</th><th class="num">Cải tiến</th><th class="num">HT trong tháng</th><th class="num">Lỗi nhập liệu</th></tr></thead><tbody>';
+  h+='<div class="tbl-wrap"><table><thead><tr><th>Chi nhánh</th><th class="num">Tuần BC</th><th>Nhận định tuần</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển TT TGĐ</th><th class="num">GĐCN đang xử lý</th><th class="num">Quá hạn</th><th class="num">Chưa CN tuần</th><th class="num">Cải tiến</th><th class="num">HT trong tháng</th><th class="num">Lỗi nhập liệu</th></tr></thead><tbody>';
   A.forEach(function(a,i){
     h+='<tr class="clickable'+(i===selIdx?' sel':'')+'" onclick="selectBranch('+i+')">';
     h+='<td><b>'+esc(a.b.chiNhanh)+'</b></td>';
     h+='<td class="num">T'+a.refWeek+'</td>';
-    h+='<td>'+(a.ndCur?'<span style="color:var(--green);font-weight:600">Đã viết</span>':'<span class="bad">Chưa viết</span>')+'</td>';
+    // Ai đã viết nhận định tuần này: GĐ · BH · DV · VP (xanh = đã viết, đỏ = chưa)
+    h+='<td class="nowrap">'+ND_ORDER.map(function(bp){ var ok=a.ndBP.cur[bp]||(bp==='GDCN'&&a.ndCur); return '<span class="'+(ok?'nd-ok':'bad')+'" title="'+ND_NAME[bp]+(ok?': đã viết':': chưa viết')+'">'+(bp==='GDCN'?'GĐ':bp)+'</span>'; }).join(' · ')+'</td>';
     h+='<td class="num">'+cnt(a.open.length)+'</td>';
     h+='<td class="num">'+cnt(a.trongTam.length)+'</td>';
     h+='<td class="num">'+cnt(a.chuyenTGD.length,'bad')+'</td>';
@@ -337,21 +369,54 @@ function renderBranchCard(a){
   h+=k('Chưa CN tuần này',a.stale.length,'gold','Tuần CN < T'+a.refWeek);
   h+=k('Hoàn thành tháng '+(a.ref.getMonth()+1),a.doneMonth,'green','theo Ngày hoàn thành');
   h+='</div>';
-  if(a.ndCur){
-    h+='<div class="nhandinh"><div class="lbl">Nhận định chung của GĐCN — tuần '+a.refWeek+'</div><div class="txt">'+esc(a.ndCur.noiDung)+'</div>'+(a.ndCur.nguoiViet||a.ndCur.ngay?'<div class="by">'+esc(a.ndCur.nguoiViet||'')+(a.ndCur.ngay?' · '+fmtD(a.ndCur.ngay):'')+'</div>':'')+'</div>';
-  } else {
-    h+='<div class="nhandinh missing"><div class="lbl">Nhận định chung của GĐCN — tuần '+a.refWeek+'</div><div class="txt">GĐCN chưa viết nhận định cho tuần này (sheet "Nhan dinh tuan").</div></div>';
+  return h+'</div>';
+}
+
+// Mục 2 "Nhận định tuần" — phần TGĐ đọc đầu tiên: nhận định tổng thể của GĐCN + 3 trưởng bộ phận
+// (sheet "Nhan dinh tong the"). GĐCN chưa dùng sheet mới thì lấy tạm nhận định tự do ở sheet cũ "Nhan dinh tuan".
+function ndBlock(bp, e, oldGD, isHist){
+  var h='<div class="nd-block'+(bp==='GDCN'?' gd':'')+'"><div class="nd-head"><span class="nd-title">'+ND_NAME[bp]+'</span>';
+  if(e && e.nguoiViet) h+='<span class="nd-by">'+esc(e.nguoiViet)+'</span>';
+  h+='</div>';
+  if(e){
+    h+='<div class="nd-qa">';
+    (e.items||[]).forEach(function(it){
+      h+='<div class="nd-k" title="'+esc(it.cauHoi)+'">'+esc(it.nhan||('Câu '+it.stt))+'</div>';
+      h+='<div class="nd-v'+(it.traLoi?'':' none')+'">'+(it.traLoi?esc(it.traLoi):'Chưa trả lời')+'</div>';
+    });
+    h+='</div>';
+  } else if(oldGD){
+    h+='<div class="nd-free">'+esc(oldGD.noiDung)+'</div>';
+  } else if(!isHist){
+    h+='<div class="nd-missing">Chưa viết nhận định tuần này.</div>';
   }
-  if(a.ndHist.length){
-    h+='<details class="history"><summary>Nhận định các tuần khác ('+a.ndHist.length+')</summary>';
-    a.ndHist.forEach(function(n){ h+='<div class="hist-item"><b>'+(n._w?'Tuần '+n._w+'/'+n._y:'Không rõ ngày')+'</b>'+(n.ngay?' · '+fmtD(n.ngay):'')+(n.nguoiViet?' · '+esc(n.nguoiViet):'')+'<br>'+esc(n.noiDung)+'</div>'; });
+  return h+'</div>';
+}
+function renderNhanDinh(a){
+  var cur=a.ndBP.cur;
+  var done=ND_ORDER.filter(function(bp){ return cur[bp] || (bp==='GDCN' && a.ndCur); }).length;
+  var h='<div class="panel"><h3><span class="chart-num">2</span> Nhận định tuần '+a.refWeek+' — GĐCN &amp; trưởng bộ phận <span class="count-pill'+(done<ND_ORDER.length?' red':'')+'">'+done+'/'+ND_ORDER.length+'</span></h3>';
+  h+='<p class="desc">Đánh giá tổng thể hoạt động trong tuần và lý do, trả lời theo bộ câu hỏi cố định (rê chuột vào nhãn để xem câu hỏi đầy đủ). Nguồn: sheet "Nhan dinh tong the".</p>';
+  h+='<div class="nd-grid">';
+  ND_ORDER.forEach(function(bp){ h+=ndBlock(bp, cur[bp], bp==='GDCN'&&!cur.GDCN?a.ndCur:null, false); });
+  h+='</div>';
+  var nHist=a.ndBP.hist.length + (a.ndHist.length);
+  if(nHist){
+    h+='<details class="history"><summary>Nhận định các tuần trước ('+a.ndBP.hist.length+' tuần)</summary>';
+    a.ndBP.hist.forEach(function(w){
+      h+='<div class="nd-week">Tuần '+w.tuan+'/'+w.nam+(w.ngay?' · '+fmtD(w.ngay):'')+'</div><div class="nd-grid">';
+      ND_ORDER.forEach(function(bp){ if(w.bp[bp]) h+=ndBlock(bp, w.bp[bp], null, true); });
+      h+='</div>';
+    });
+    // Nhận định tự do của GĐCN ở sheet cũ "Nhan dinh tuan" (trước khi có sheet "Nhan dinh tong the")
+    a.ndHist.forEach(function(n){ h+='<div class="hist-item"><b>GĐCN · '+(n._w?'Tuần '+n._w+'/'+n._y:'Không rõ ngày')+'</b>'+(n.nguoiViet?' · '+esc(n.nguoiViet):'')+'<br>'+esc(n.noiDung)+'</div>'; });
     h+='</details>';
   }
   return h+'</div>';
 }
 
 function renderDeXuat(a){
-  var h='<div class="panel"><h3><span class="chart-num">2</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
+  var h='<div class="panel"><h3><span class="chart-num">3</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
   h+='<p class="desc">Mọi việc có "Đề xuất / Cần hỗ trợ" mà chưa hoàn thành (kể cả không được chọn Trọng tâm tuần). Việc GĐCN "Chuyển thông tin TGĐ" xếp đầu và tô cam; để trống = GĐCN đang tự xử lý.</p>';
   if(!a.deXuat.length) h+='<div class="empty">Không có đề xuất nào đang chờ.</div>';
   a.deXuat.forEach(function(t){ h+=taskCard(t,{hlTGD:true, tct:!!t._isTCT}); });
@@ -359,7 +424,7 @@ function renderDeXuat(a){
 }
 
 function renderTrongTam(a){
-  var h='<details class="panel" open><summary><span class="chart-num">3</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">'+a.trongTam.length+'</span></summary>';
+  var h='<details class="panel" open><summary><span class="chart-num">4</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">'+a.trongTam.length+'</span></summary>';
   h+='<p class="desc">Các việc GĐCN chọn "Trọng tâm tuần = Có" để báo TGĐ tuần này.</p>';
   BP_ORDER.forEach(function(bp){
     var list=a.trongTam.filter(function(t){ return t.boPhan===bp; });
@@ -371,7 +436,7 @@ function renderTrongTam(a){
 }
 
 function renderCaiTien(a){
-  var h='<details class="panel"><summary><span class="chart-num">4</span> Hoạt động cải tiến <span class="count-pill">'+a.caiTien.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">5</span> Hoạt động cải tiến <span class="count-pill">'+a.caiTien.length+'</span></summary>';
   h+='<p class="desc">Mọi việc có Loại hoạt động = "Cải tiến", không phụ thuộc Trọng tâm tuần.</p>';
   if(!a.caiTien.length) return h+'<div class="empty">Chưa có hoạt động cải tiến nào.</div></details>';
   h+='<div class="tbl-wrap"><table><thead><tr><th>Mã việc</th><th>Bộ phận</th><th>Nội dung / Mục tiêu</th><th>Phụ trách</th><th>Trạng thái</th><th>Cập nhật tuần</th><th>Ngày HT</th><th>Kết quả hoàn thành</th></tr></thead><tbody>';
@@ -382,7 +447,7 @@ function renderCaiTien(a){
 }
 
 function renderTCT(a){
-  var h='<details class="panel"><summary><span class="chart-num">5</span> Tổng Công ty giao — việc chưa hoàn thành <span class="count-pill">'+a.tctOpen.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">6</span> Tổng Công ty giao — việc chưa hoàn thành <span class="count-pill">'+a.tctOpen.length+'</span></summary>';
   h+='<p class="desc">Từ sheet "Ke hoach TCT giao". "0 dòng triển khai ở BP" (đỏ) = nhiệm vụ đang mở mà chưa bộ phận nào mở dòng tương ứng — dễ bị bỏ quên.</p>';
   if(!a.tctOpen.length) h+='<div class="empty">Không có nhiệm vụ TCT giao nào đang mở.</div>';
   a.tctOpen.forEach(function(t){ h+=taskCard(t,{tct:true}); });
@@ -392,7 +457,7 @@ function renderTCT(a){
 function renderIssues(a){
   var total=a.overdue.length+a.stale.length+a.issues.length;
   if(!total) return '';
-  var h='<details class="panel"><summary><span class="chart-num">6</span> Cảnh báo &amp; lỗi nhập liệu <span class="count-pill red">'+total+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">7</span> Cảnh báo &amp; lỗi nhập liệu <span class="count-pill red">'+total+'</span></summary>';
   h+='<p class="desc">Tương ứng các ô ĐỎ/VÀNG trong file Excel — GĐCN rà và truy trách nhiệm trước khi gửi TGĐ.</p>';
   var tbl=function(title, rows, cols){
     if(!rows.length) return '';
@@ -417,7 +482,7 @@ function renderThang(a){
   var by=function(s){ return list.filter(function(t){ return t.trangThai===s; }).length; };
   var tt=list.filter(function(t){ return t.nguon==='Trọng tâm tháng'; });
   var chuaDuyet=tt.filter(function(t){ return t.duyetTT!=='Có'; }).length;
-  var h='<details class="panel"><summary><span class="chart-num">7</span> Toàn bộ việc trong tháng <span class="count-pill">'+list.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">8</span> Toàn bộ việc trong tháng <span class="count-pill">'+list.length+'</span></summary>';
   h+='<div class="toolbar">Tháng <select onchange="monthSel=+this.value;render()">'+Object.keys(months).map(Number).sort(function(x,y){return x-y;}).map(function(x){ return '<option value="'+x+'"'+(x===m?' selected':'')+'>Tháng '+x+'</option>'; }).join('')+'</select></div>';
   h+='<div class="mini-stats"><span>Kế hoạch: '+by('Kế hoạch')+'</span><span>Đang làm: '+by('Đang làm')+'</span><span>Hoàn thành: '+by('Hoàn thành')+'</span><span>Tạm dừng: '+by('Tạm dừng')+'</span>';
   h+='<span>TT tháng đã duyệt: '+(tt.length-chuaDuyet)+'</span><span class="'+(chuaDuyet?'bad':'')+'">TT tháng chưa duyệt: '+chuaDuyet+'</span>';
@@ -449,7 +514,7 @@ function renderAchievement(a){
   var m = achMonthSel!=null ? achMonthSel : 0;
   var list=done.filter(function(r){ return !m || r.m===m; });
   list.sort(function(x,y){ return (y.t.ngayHT||'').localeCompare(x.t.ngayHT||''); });
-  var h='<details class="panel"><summary><span class="chart-num">8</span> Achievement — việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">9</span> Achievement — việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
   h+='<div class="toolbar">Tháng <select onchange="achMonthSel=+this.value;render()"><option value="0">Tất cả</option>'+Object.keys(months).map(Number).sort(function(x,y){return x-y;}).map(function(x){ return '<option value="'+x+'"'+(x===m?' selected':'')+'>Tháng '+x+'</option>'; }).join('')+'</select></div>';
   if(!list.length) return h+'<div class="empty">Chưa có việc hoàn thành.</div></details>';
   h+='<div class="tbl-wrap"><table><thead><tr><th>Mã việc</th><th>Bộ phận</th><th>Nguồn</th><th>Nội dung / Mục tiêu</th><th>Phụ trách</th><th>Hạn</th><th>Ngày HT</th><th>Kết quả hoàn thành</th><th class="num">Tháng</th></tr></thead><tbody>';
@@ -467,7 +532,7 @@ function render(){
   var a=BR[selIdx];
   var h=renderOverview(BR);
   h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
-  h+=renderBranchCard(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
+  h+=renderBranchCard(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
   // Giữ trạng thái mở/đóng các <details> khi render lại (đổi tháng, đổi chi nhánh)
   var openState={}; app.querySelectorAll('details.panel').forEach(function(d){ var s=d.querySelector('summary'); if(s) openState[s.textContent.replace(/\d+$/,'').trim()]=d.open; });
   app.innerHTML=h;
