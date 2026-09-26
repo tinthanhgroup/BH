@@ -49,7 +49,7 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 - Quá hạn: có Hạn < mốc và chưa Hoàn thành/Tạm dừng. Chưa CN tuần này: đang mở và `tuanCN` trống hoặc < tuần mốc.
 - **Quy ước 2 cột GĐCN (26/09/2026):**
   - "Trọng tâm tuần" chỉ có lựa chọn `Có`; **để trống = Không** (web chỉ đếm `==='Có'`).
-  - "GĐCN xử lý" có `Chuyển thông tin TGĐ` / `Đã có quyết định` (bỏ lựa chọn "GĐCN tự xử lý"; tên cũ là "Chuyển TGĐ"). **Để trống = GĐCN tự xử lý** → web hiện nhãn trung tính "GĐCN đang xử lý", không coi là lỗi. `isTGD()` nhận cả giá trị cũ "Chuyển TGĐ" lẫn giá trị mới.
+  - "GĐCN xử lý" có `Chuyển thông tin TGĐ` (cần TGĐ biết/quyết) / `TGĐ đã có phản hồi` (TGĐ đã trả lời, việc chưa xong — nội dung phản hồi ghi ở Ghi chú GĐCN). Bỏ lựa chọn "GĐCN tự xử lý"; tên cũ lần lượt là "Chuyển TGĐ" / "Đã có quyết định", web nhận cả tên cũ (`isTGD()`/`isPhanHoi()`). **Để trống = GĐCN tự xử lý** → web hiện nhãn trung tính "GĐCN đang xử lý", không coi là lỗi. 
 - Mục 2 Đề xuất: mọi dòng có Đề xuất và chưa Hoàn thành (không lọc Trọng tâm), "Chuyển thông tin TGĐ" xếp đầu, tô cam.
 - Mục 3 Trọng tâm tuần: `trongTamTuan==='Có'`, nhóm theo BP. Mục 4 Cải tiến: `loaiHD==='Cải tiến'`.
 - Mục 6 Cảnh báo & lỗi nhập liệu (tự ẩn khi rỗng): quá hạn, chưa CN, thiếu/trùng mã, hạn dạng chữ, Hoàn thành thiếu ngày/kết quả, có Ngày HT mà chưa Hoàn thành, TT tháng chưa duyệt, TCT giao thiếu Mã TCT, nhiệm vụ TCT chưa BP nào triển khai.

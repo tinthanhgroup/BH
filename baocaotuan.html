@@ -175,11 +175,13 @@ function stClass(s){ return {'Kế hoạch':'plan','Đang làm':'doing','Hoàn t
 function stTag(s){ return '<span class="st '+stClass(s)+'">'+esc(s||'Chưa chọn')+'</span>'; }
 // Nhận cả giá trị cũ "Chuyển TGĐ" lẫn giá trị mới "Chuyển thông tin TGĐ" (đổi tên 26/09/2026)
 function isTGD(s){ return s==='Chuyển TGĐ' || s==='Chuyển thông tin TGĐ'; }
+// Bước sau "Chuyển thông tin TGĐ": TGĐ đã trả lời nhưng việc chưa xong — nhận cả tên cũ "Đã có quyết định"
+function isPhanHoi(s){ return s==='TGĐ đã có phản hồi' || s==='Đã có quyết định'; }
 function gdTag(s){
   // Cột "GĐCN xử lý" (26/09/2026): chỉ cần chọn "Chuyển thông tin TGĐ" khi muốn TGĐ biết/quyết;
   // để trống (hoặc giá trị cũ "GĐCN tự xử lý") = GĐCN tự xử lý → hiển thị "GĐCN đang xử lý".
   if(isTGD(s)) return '<span class="tag tgd">Chuyển thông tin TGĐ</span>';
-  if(s==='Đã có quyết định') return '<span class="tag gdqd">Đã có quyết định</span>';
+  if(isPhanHoi(s)) return '<span class="tag gdqd">TGĐ đã có phản hồi</span>';
   return '<span class="tag gdtu">GĐCN đang xử lý</span>';
 }
 // Cập nhật tuần ghi nối tiếp "T39: ... / T40: ..." — tô đậm mốc tuần cho dễ đọc
@@ -252,7 +254,7 @@ function analyze(b){
     stale: viec.filter(function(t){ return t._stale; }).concat(tct.filter(function(t){ return t._stale; })),
     deXuat:deXuat,
     chuyenTGD: deXuat.filter(function(t){ return isTGD(t.gdXuLy); }),
-    gdDangXuLy: deXuat.filter(function(t){ return !isTGD(t.gdXuLy) && t.gdXuLy!=='Đã có quyết định'; }),
+    gdDangXuLy: deXuat.filter(function(t){ return !isTGD(t.gdXuLy) && !isPhanHoi(t.gdXuLy); }),
     caiTien: viec.filter(function(t){ return t.loaiHD==='Cải tiến'; }),
     trongTam: viec.filter(function(t){ return t.trongTamTuan==='Có'; }),
     tctOpen: tct.filter(function(t){ return !isDone(t); }),
