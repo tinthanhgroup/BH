@@ -66,6 +66,12 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 - Nhận định: lấy dòng cùng tuần/năm với mốc; các tuần khác vào "Nhận định các tuần khác".
 - Chi nhánh đang chọn nhớ ở `localStorage` key `_bctBranch`.
 
+## Quy ước trình bày (26/09/2026, theo góp ý người dùng)
+
+- **Toàn trang dùng 1 kiểu khối duy nhất** — kiểu của mục 2 (`.nd-block` + lưới `.nd-qa` "nhãn → nội dung", hàm `qaBlock()`/`taskBlock()`), xếp 2 cột (`.nd-grid`). **Không** dùng lại thẻ màu (tag/pill trạng thái), bảng nhiều cột hay nhiều kiểu định dạng khác nhau cho mục 3–9. Màu chỉ dùng cho điều bất thường: đỏ = quá hạn/thiếu, vàng = chưa cập nhật/nhập sai, cam = Chuyển thông tin TGĐ (viền trên khối + chữ).
+- Mục 1 là bảng duy nhất: `table.ov` cố định độ rộng (`table-layout:fixed`), tiêu đề tự xuống dòng, chỉ 8 cột → **không trượt ngang** (đã kiểm tra ở 700/900/1300px). Thêm cột mới phải cân nhắc bỏ cột khác; số chi tiết để ở ô KPI của thẻ chi nhánh.
+- Ô KPI thẻ chi nhánh bấm được (khi số > 0) → `jumpTo()` cuộn tới mục tương ứng và tự mở nếu đang thu gọn: Chuyển thông tin TGĐ / GĐCN đang xử lý → mục 3 (`#sec-dexuat`), Quá hạn / Chưa CN → mục 7 (`#sec-canhbao`), Việc đang mở → mục 8, Hoàn thành tháng → mục 9.
+
 ## Phân quyền
 
 Key tab `bct`, khoá cấp tab: **chỉ Admin** (25/09/2026, theo yêu cầu người dùng), nút tab ẩn với người khác (xem `_classifyGroup()` trong `index.html`). Không có trong `mobile.html`.
