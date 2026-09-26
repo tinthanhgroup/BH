@@ -4409,8 +4409,64 @@ function setupResizer(rsId,leftId,rightId,wrap){
 }
 
 // ── TAB ADMIN ────────────────────────────────────────────────
+// Bảng phân quyền trong tab Admin — tính THẲNG từ _classifyGroup()/_canSeeDatHang()/_canSeeChuaHD()
+// với tên nhóm mẫu (không hardcode ✅/❌), nên sửa quyền trong code là bảng tự đúng theo.
+// Nhớ thêm dòng/cột ở đây khi thêm nhóm hoặc tab mới.
+function _permMatrixHTML(){
+  var rows=[
+    {lbl:'Admin', nhom:'Admin', admin:true, note:'Cờ isAdmin=TRUE'},
+    {lbl:'PGĐ', nhom:'PGĐ', note:'"pgd" / "Phó Giám Đốc"'},
+    {lbl:'GĐ', nhom:'GĐ', note:'"gd" / "Giám Đốc"'},
+    {lbl:'MKT', nhom:'MKT', note:'"mkt" / "Marketing"'},
+    {lbl:'Bán hàng', nhom:'Bán hàng', note:'"Bán hàng"'},
+    {lbl:'Dịch vụ', nhom:'Dịch vụ', note:'"Dịch vụ"'},
+    {lbl:'HCNS', nhom:'HCNS', note:'"HCNS" / "Nhân sự"'},
+    {lbl:'Không khớp nhóm', nhom:'', note:'Chưa đăng nhập / nhóm lạ'}
+  ];
+  var FREE='free';
+  var cols=[
+    {lbl:'1. Hàng hóa', f:function(){ return FREE; }},
+    {lbl:'2. BC Bán hàng', f:function(s){ return s.has('bh'); }},
+    {lbl:'3. BC Dịch vụ', f:function(s){ return s.has('dv'); }},
+    {lbl:'4.1–4.2 Nhân sự,<br>Chấm công', f:function(s){ return s.has('ns'); }},
+    {lbl:'4.3–4.4 NCC,<br>Quy định', f:function(){ return FREE; }},
+    {lbl:'5. MKT', f:function(s){ return s.has('mkt'); }},
+    {lbl:'6. Chính sách<br>HTV', f:function(){ return FREE; }},
+    {lbl:'7. CRM', f:function(s){ return s.has('crm'); }},
+    {lbl:'8. BC tuần', f:function(s){ return s.has('bct'); }},
+    {lbl:'Tab Admin', f:function(s,a){ return a; }},
+    {lbl:'Tab 1 · Xe<br>chưa xuất HĐ', f:function(s,a,gd,known){ return known && (a||gd); }},
+    {lbl:'Tab 1 · Đặt<br>hàng giả định', f:function(s,a,gd,known){ return known && (a||s.has('crm')||gd); }}
+  ];
+  var th='padding:7px 8px;font-size:10.5px;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border);text-align:center;vertical-align:bottom;line-height:1.3;white-space:normal;min-width:58px;';
+  var td='padding:7px 8px;border-bottom:1px solid var(--border);text-align:center;font-size:14px;';
+  var h='<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">';
+  h+='<div style="font-size:15px;font-weight:700;margin-bottom:4px;">🔐 Bảng phân quyền theo nhóm</div>';
+  h+='<div style="font-size:11.5px;color:var(--muted);margin-bottom:12px;">Nhóm nhận diện theo từ khoá chứa trong cột "Nhóm" (Sheet Users), không phân biệt hoa/thường/dấu. Bảng tự tính từ code phân quyền hiện hành. <span style="color:#1FA97A;font-weight:700">Tự do</span> = mở cho mọi người, không cần đăng nhập.</div>';
+  h+='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12.5px;"><thead><tr><th style="'+th+'text-align:left;">Nhóm</th>';
+  cols.forEach(function(c){ h+='<th style="'+th+'">'+c.lbl+'</th>'; });
+  h+='</tr></thead><tbody>';
+  rows.forEach(function(r){
+    var s=_classifyGroup(r.nhom, !!r.admin);
+    var n=_stripDiacritics(r.nhom);
+    var gd=n.indexOf('gd')>=0||n.indexOf('giam doc')>=0; // cùng điều kiện với _isGD
+    var known=!!r.nhom;
+    h+='<tr><td style="'+td+'text-align:left;font-size:12.5px;white-space:nowrap;"><b>'+r.lbl+'</b><div style="font-size:10.5px;color:var(--muted)">'+r.note+'</div></td>';
+    cols.forEach(function(c){
+      var v=c.f(s,!!r.admin,gd,known);
+      h+='<td style="'+td+(v===FREE?'background:#F3FBF7;':'')+'">'+(v===FREE?'<span style="color:#1FA97A;font-size:11px;font-weight:700">Tự do</span>':(v?'✅':'<span style="color:#c3ccd8">—</span>'))+'</td>';
+    });
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div style="font-size:11px;color:var(--muted);margin-top:10px;">Lưu ý: "PGĐ" bỏ dấu là "pgd" vẫn chứa "gd" nên PGĐ cũng được tính là GĐ ở 2 mục riêng của tab 1. Đây là khoá ẩn hiển thị phía trình duyệt, không phải bảo mật dữ liệu thật.</div>';
+  return h+'</div>';
+}
+
 function renderAdminTab(){
-  var el=document.getElementById('tab-admin');
+  var root=document.getElementById('tab-admin');
+  root.innerHTML=_permMatrixHTML()+'<div id="admin-logs"></div>';
+  var el=document.getElementById('admin-logs');
   el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div><div style="margin-top:12px">Đang tải dữ liệu...</div></div>';
   // Dùng GET request để tránh CORS
   fetch(AUTH_URL+'?action=getLogs&password='+encodeURIComponent(_adminPass))
