@@ -111,7 +111,7 @@
   table.ov td{vertical-align:middle;overflow-wrap:anywhere;}
   .ov-sub{font-size:11px;color:var(--ink-soft);margin-top:2px;}
   /* Chỉ số trọng yếu (mục 1) */
-  .cs-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:12px;align-items:start;}
+  .cs-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:stretch;}
   .cs-block{border:1px solid var(--line);border-top:3px solid #9fb8d8;border-radius:10px;padding:12px 14px;}
   .cs-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
   .cs-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink);margin-bottom:4px;}
@@ -132,22 +132,21 @@
   .cs-mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);margin-left:-1px;}
   .cs-kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);}
   .cs-kv b{color:var(--ink);font-variant-numeric:tabular-nums;}
-  .cs-wide{grid-column:1/-1;}
-  .cs-bh{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px;align-items:start;}
   .cs-dms tr.tot td{font-weight:700;border-top:1.5px solid var(--line);}
   .cs-cmp span.up{color:var(--green);font-weight:700;}
   .cs-part{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);}
   .cs-sub{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
   .cs-cmp{width:100%;border-collapse:collapse;font-size:12.5px;}
-  .cs-cmp th{text-align:left;font-size:11px;font-weight:700;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:4px 6px;}
-  .cs-cmp td{padding:5px 6px;border-bottom:1px solid #EEF3F9;font-variant-numeric:tabular-nums;}
+  .cs-cmp th{text-align:left;font-size:10px;font-weight:700;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:4px 5px;white-space:normal;vertical-align:bottom;line-height:1.3;letter-spacing:0;}
+  .cs-cmp td:first-child{white-space:nowrap;}
+  .cs-cmp td{padding:5px 5px;border-bottom:1px solid #EEF3F9;font-variant-numeric:tabular-nums;}
   .cs-cmp .num{text-align:right;}
   .cs-cmp td.up{color:var(--green);font-weight:700;} .cs-cmp td.down{color:var(--red);font-weight:700;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:14px;text-align:center;line-height:1.6;}
   .loading,.error{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:13px;}
   .error{color:var(--red);font-weight:600;}
 
-  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} .cs-bh{grid-template-columns:1fr;} }
+  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} }
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
@@ -442,7 +441,7 @@ function csDMSTable(a){
                             : '<td class="num">'+fmtN(r.choTien)+'</td><td class="num">'+fmtN(r.chuaXe)+'</td>';
     return '<tr><td>'+esc(lbl)+'</td><td class="num"><b>'+fmtN(r.dms)+'</b></td><td class="num">'+fmtN(r.khop)+'</td>'+ko+'<td class="num">'+fmtN(r.target)+'</td><td class="num">'+pct(r.dms,r.target)+'</td></tr>';
   };
-  var head=function(c1){ return '<table class="cs-cmp cs-dms"><thead><tr><th>'+c1+'</th><th class="num">Báo bán DMS</th><th class="num">Đã phân xe</th><th class="num">Chờ đóng tiền</th><th class="num">Chưa có xe</th><th class="num">Chỉ tiêu</th><th class="num">Hoàn thành</th></tr></thead><tbody>'; };
+  var head=function(c1){ return '<table class="cs-cmp cs-dms"><thead><tr><th>'+c1+'</th><th class="num">Báo bán DMS</th><th class="num">Đã phân xe</th><th class="num">Chờ đóng tiền</th><th class="num">Chưa có xe</th><th class="num">Chỉ tiêu</th><th class="num">% HT</th></tr></thead><tbody>'; };
   var h, note;
   if(m){
     h='<div class="cs-sub">Báo bán '+esc(m.label)+' so với chỉ tiêu</div>'+head('Kỳ')+row('Tháng '+d.thang+'/'+d.nam, m);
@@ -460,7 +459,7 @@ function csDMSTable(a){
     h+=row('Tổng', tot).replace('<tr>','<tr class="tot">')+'</tbody></table>';
     note=d.note||'';
   }
-  return h+'<div class="cs-src">Từ bảng 9 (tháng) và 10 (quý) tab BC Bán hàng · Hoàn thành = Báo bán DMS / Chỉ tiêu'+(note?' · '+esc(note):'')+'</div>';
+  return h+'<div class="cs-src">Từ bảng 9 (tháng) và 10 (quý) tab BC Bán hàng · % HT = Báo bán DMS / Chỉ tiêu'+(note?' · '+esc(note):'')+'</div>';
 }
 function fmtN(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:1}); }
 function csBHData(sec, a){
@@ -517,10 +516,10 @@ function renderChiSo(a){
       var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng</span></div>';
       var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>'+esc(sec.nhanCot||'')+'</th>'+d.series.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
         d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
-      return '<div class="cs-block cs-wide"><div class="cs-title">'+esc(bp)+'</div><div class="cs-bh"><div>'+
+      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div><div>'+
         '<div class="cs-sub">'+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
         '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+
-        '</div><div>'+csDMSTable(a)+'</div></div></div>';
+        '</div><div class="cs-part">'+csDMSTable(a)+'</div></div>';
     }
     // Khối có tiêu đề cột từ 2 cột trở lên (sheet: "Loại | Tuần 39 | TB 90 ngày" = cột 1 kỳ này, cột 2 mốc so sánh)
     // → bảng hiện giá trị tuyệt đối trước (mốc so sánh rồi kỳ này), sau đó mới tới Tăng/giảm (số tuyệt đối) và %
