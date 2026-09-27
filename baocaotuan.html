@@ -132,6 +132,8 @@
   .cs-mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);margin-left:-1px;}
   .cs-kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);}
   .cs-kv b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .cs-part{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);}
+  .cs-sub{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
   .cs-cmp{width:100%;border-collapse:collapse;font-size:12.5px;}
   .cs-cmp th{text-align:left;font-size:11px;font-weight:700;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:4px 6px;}
   .cs-cmp td{padding:5px 6px;border-bottom:1px solid #EEF3F9;font-variant-numeric:tabular-nums;}
@@ -479,12 +481,12 @@ function renderChiSo(a){
         var a=(x.giaTri||[])[0], b=(x.giaTri||[])[1], d=(a!=null&&b)?(a/b-1)*100:null;
         t+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtR(a)+'</b></td><td class="num">'+fmtR(b)+'</td><td class="num'+(d==null?'':d>=0?' up':' down')+'">'+(d==null?'—':(d>=0?'+':'')+d.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%')+'</td></tr>';
       });
-      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>'+t+'</tbody></table></div>';
+      return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:t+'</tbody></table>'};
     }
     // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
     var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
     var ct=get(/chi tieu|ke hoach|muc tieu/), th=get(/thuc hien|dat duoc|ket qua/);
-    var h='<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>';
+    var h='';
     if(ct && th!=null){
       var pct=th/ct*100, ok=pct>=100;
       h+='<div class="cs-pct'+(ok?' ok':' low')+'">'+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> chỉ tiêu</span></div>';
@@ -493,7 +495,18 @@ function renderChiSo(a){
     } else {
       h+='<div class="cs-kv">'+(sec.dong||[]).map(function(x){ return '<span>'+esc(x.nhan)+' <b>'+(x.giaTri||[]).map(fmtN).join(' · ')+'</b></span>'; }).join('')+'</div>';
     }
-    return h+'</div>';
+    return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:h};
+  });
+  // Gộp các khối cùng bộ phận (sheet mở nhiều khối "Dịch vụ" cho nhiều chỉ số) thành 1 thẻ:
+  // tiêu đề của khối đầu lên tên thẻ, tiêu đề các khối sau thành tiêu đề phụ bên trong.
+  var cards=[], byBP={};
+  blocks.forEach(function(b){
+    if(typeof b==='string'){ cards.push(b); return; }
+    if(byBP[b.bp]){ byBP[b.bp].body+='<div class="cs-part">'+(b.tieuDe?'<div class="cs-sub">'+esc(b.tieuDe)+'</div>':'')+b.body+'</div>'; return; }
+    byBP[b.bp]=b; cards.push(b);
+  });
+  blocks=cards.map(function(b){
+    return typeof b==='string'?b:'<div class="cs-block"><div class="cs-title">'+esc(b.name)+(b.tieuDe?' — '+esc(b.tieuDe):'')+'</div>'+b.body+'</div>';
   });
   return subHead('Chỉ số trọng yếu — '+esc(a.b.chiNhanh)+' · Tuần '+a.refWeek)+'<div class="cs-grid">'+blocks.join('')+'</div>';
 }
