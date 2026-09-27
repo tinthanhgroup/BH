@@ -1,5 +1,5 @@
 {
-    "updated_at":  "2026-09-26T17:55:48",
+    "updated_at":  "2026-09-27T16:15:47",
     "nguon":  "excel",
     "branches":  [
                      {
@@ -1181,6 +1181,38 @@
                                                             "nhan":  "Thực hiện",
                                                             "giaTri":  [
                                                                            12597
+                                                                       ]
+                                                        }
+                                                    ]
+                                       },
+                                       {
+                                           "boPhan":  "DV",
+                                           "tieuDe":  "Lượt xe TB/ngày làm việc: Tuần 39 (21–26/09) so với 90 ngày trước (23/06–20/09)",
+                                           "nhanCot":  "Loại",
+                                           "cot":  [
+                                                       "Tuần 39",
+                                                       "TB 90 ngày"
+                                                   ],
+                                           "dong":  [
+                                                        {
+                                                            "nhan":  "Bảo dưỡng",
+                                                            "giaTri":  [
+                                                                           18.17,
+                                                                           22.99
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Bảo hiểm",
+                                                            "giaTri":  [
+                                                                           3.17,
+                                                                           3.91
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Đồng sơn tiền mặt",
+                                                            "giaTri":  [
+                                                                           0.33,
+                                                                           0.28
                                                                        ]
                                                         }
                                                     ]

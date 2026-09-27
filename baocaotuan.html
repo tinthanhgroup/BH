@@ -132,6 +132,11 @@
   .cs-mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);margin-left:-1px;}
   .cs-kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);}
   .cs-kv b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .cs-cmp{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .cs-cmp th{text-align:left;font-size:11px;font-weight:700;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:4px 6px;}
+  .cs-cmp td{padding:5px 6px;border-bottom:1px solid #EEF3F9;font-variant-numeric:tabular-nums;}
+  .cs-cmp .num{text-align:right;}
+  .cs-cmp td.up{color:var(--green);font-weight:700;} .cs-cmp td.down{color:var(--red);font-weight:700;}
   .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:14px;text-align:center;line-height:1.6;}
   .loading,.error{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:13px;}
   .error{color:var(--red);font-weight:600;}
@@ -406,16 +411,24 @@ function renderOverview(A){
 // chi nhánh → đếm theo mã, cột "Tổng" = cộng các cột; không tải được data.json thì dùng số điền tay trong sheet.
 // Các bộ phận khác: lấy nguyên số trong sheet (vd Dịch vụ: Chỉ tiêu / Thực hiện).
 const CS_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#8E6BBF'];
+const CS_WEEKS = 15;   // số tuần gần nhất của biểu đồ HĐ ký Bán hàng
 function fmtN(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:1}); }
 function csBHData(sec, a){
   var cols=sec.cot||[], tongIdx=-1, series=[];
   cols.forEach(function(c,i){ if(stripVN(c)==='tong') tongIdx=i; else series.push({name:c, i:i, code:BRANCH_CODE[stripVN(c)]}); });
   var byKey={};
   if(SALES) SALES.rows.forEach(function(s){ var k=s.br+'|'+weekBH(s.d); byKey[k]=(byKey[k]||0)+1; });
-  var rows=(sec.dong||[]).map(function(d){
-    var m=/(\d{1,2})/.exec(d.nhan), wk=m?+m[1]:null;
+  // Có data.json: tự lấy CS_WEEKS tuần gần nhất tính tới tuần báo cáo (không theo số dòng trong sheet);
+  // không có: dùng đúng các dòng + số điền tay trong sheet.
+  var src=sec.dong||[];
+  if(SALES){
+    var r0=new Date(a.ref); r0.setHours(0,0,0,0); r0.setDate(r0.getDate()-r0.getDay());
+    src=[]; for(var b=CS_WEEKS-1; b>=0; b--){ var dd=new Date(r0); dd.setDate(r0.getDate()-7*b); src.push({key:weekBH(dd), nhan:'T'+weekBH(dd).split('-')[1]}); }
+  }
+  var rows=src.map(function(d){
+    var m=/(\d{1,2})\s*$/.exec(d.nhan), wk=m?+m[1]:null;
     var vals=series.map(function(s){
-      if(SALES && s.code && wk) return byKey[s.code+'|'+a.refYear+'-'+wk]||0;
+      if(SALES && s.code) return byKey[s.code+'|'+(d.key||a.refYear+'-'+wk)]||0;
       return (d.giaTri||[])[s.i];
     });
     var tong=vals.some(function(v){ return v!=null; })? vals.reduce(function(x,v){ return x+(v||0); },0) : (tongIdx>=0?(d.giaTri||[])[tongIdx]:null);
@@ -431,7 +444,7 @@ function svgStacked(series, rows){
   var y=function(v){ return pt+ih-(v/nice)*ih; };
   var s='<svg viewBox="0 0 '+W+' '+H+'" class="cs-svg" role="img">';
   for(var g=0; g<=nice+1e-9; g+=step){ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="#E4EAF3"/><text x="'+(pl-6)+'" y="'+(y(g)+3.5)+'" text-anchor="end" class="cs-ax">'+fmtN(g)+'</text>'; }
-  var bw=Math.min(56, iw/rows.length*0.55);
+  var bw=Math.min(56, iw/rows.length*0.62);
   rows.forEach(function(r,i){
     var cx=pl+iw*(i+0.5)/rows.length, acc=0;
     series.forEach(function(se,j){
@@ -454,8 +467,19 @@ function renderChiSo(a){
       var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng</span></div>';
       var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>'+esc(sec.nhanCot||'')+'</th>'+d.series.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
         d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
-      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>'+leg+svgStacked(d.series, d.rows)+
+      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+' — '+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
         '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+'</div>';
+    }
+    // Khối có tiêu đề cột từ 2 cột trở lên (vd "Loại | Tuần 39 | TB 90 ngày") → bảng so sánh cột 1 với cột 2,
+    // thêm cột Chênh lệch % (xanh = tăng, đỏ = giảm)
+    if((sec.cot||[]).length>=2){
+      var fmtR=function(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:Math.abs(v)<1?2:1}); };
+      var t='<table class="cs-cmp"><thead><tr><th>'+esc(sec.nhanCot||'')+'</th><th class="num">'+esc(sec.cot[0])+'</th><th class="num">'+esc(sec.cot[1])+'</th><th class="num">Chênh lệch</th></tr></thead><tbody>';
+      (sec.dong||[]).forEach(function(x){
+        var a=(x.giaTri||[])[0], b=(x.giaTri||[])[1], d=(a!=null&&b)?(a/b-1)*100:null;
+        t+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtR(a)+'</b></td><td class="num">'+fmtR(b)+'</td><td class="num'+(d==null?'':d>=0?' up':' down')+'">'+(d==null?'—':(d>=0?'+':'')+d.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%')+'</td></tr>';
+      });
+      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+(sec.tieuDe?' — '+esc(sec.tieuDe):'')+'</div>'+t+'</tbody></table></div>';
     }
     // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
     var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
