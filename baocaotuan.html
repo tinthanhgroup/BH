@@ -522,14 +522,19 @@ function renderChiSo(a){
         '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+
         '</div><div>'+csDMSTable(a)+'</div></div></div>';
     }
-    // Khối có tiêu đề cột từ 2 cột trở lên (vd "Loại | Tuần 39 | TB 90 ngày") → bảng so sánh cột 1 với cột 2,
-    // thêm cột Chênh lệch % (xanh = tăng, đỏ = giảm)
+    // Khối có tiêu đề cột từ 2 cột trở lên (sheet: "Loại | Tuần 39 | TB 90 ngày" = cột 1 kỳ này, cột 2 mốc so sánh)
+    // → bảng hiện giá trị tuyệt đối trước (mốc so sánh rồi kỳ này), sau đó mới tới Tăng/giảm (số tuyệt đối) và %
+    // (xanh = tăng, đỏ = giảm)
     if((sec.cot||[]).length>=2){
-      var fmtR=function(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:Math.abs(v)<1?2:1}); };
-      var t='<table class="cs-cmp"><thead><tr><th>'+esc(sec.nhanCot||'')+'</th><th class="num">'+esc(sec.cot[0])+'</th><th class="num">'+esc(sec.cot[1])+'</th><th class="num">Chênh lệch</th></tr></thead><tbody>';
+      var fmtR=function(v){ var d=Math.abs(v)<1?2:1; return v==null?'—':Number(v).toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+      var sgn=function(v,s){ return (v>0?'+':v<0?'−':'')+s.replace('-',''); };
+      var t='<table class="cs-cmp"><thead><tr><th>'+esc(sec.nhanCot||'')+'</th><th class="num">'+esc(sec.cot[1])+'</th><th class="num">'+esc(sec.cot[0])+'</th><th class="num">Tăng/giảm</th><th class="num">%</th></tr></thead><tbody>';
       (sec.dong||[]).forEach(function(x){
-        var a=(x.giaTri||[])[0], b=(x.giaTri||[])[1], d=(a!=null&&b)?(a/b-1)*100:null;
-        t+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtR(a)+'</b></td><td class="num">'+fmtR(b)+'</td><td class="num'+(d==null?'':d>=0?' up':' down')+'">'+(d==null?'—':(d>=0?'+':'')+d.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%')+'</td></tr>';
+        var a=(x.giaTri||[])[0], b=(x.giaTri||[])[1], ok=(a!=null&&b!=null), dv=ok?a-b:null, dp=(ok&&b)?(a/b-1)*100:null;
+        var cls=dv==null?'':dv>=0?' up':' down';
+        t+='<tr><td>'+esc(x.nhan)+'</td><td class="num">'+fmtR(b)+'</td><td class="num"><b>'+fmtR(a)+'</b></td>'+
+           '<td class="num'+cls+'">'+(dv==null?'—':sgn(dv,fmtR(dv)))+'</td>'+
+           '<td class="num'+cls+'">'+(dp==null?'—':sgn(dp,dp.toLocaleString('vi-VN',{maximumFractionDigits:1}))+'%')+'</td></tr>';
       });
       return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:t+'</tbody></table>'};
     }
