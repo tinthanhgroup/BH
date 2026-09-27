@@ -132,6 +132,10 @@
   .cs-mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);margin-left:-1px;}
   .cs-kv{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);}
   .cs-kv b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  .cs-wide{grid-column:1/-1;}
+  .cs-bh{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px;align-items:start;}
+  .cs-dms tr.tot td{font-weight:700;border-top:1.5px solid var(--line);}
+  .cs-cmp span.up{color:var(--green);font-weight:700;}
   .cs-part{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);}
   .cs-sub{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;}
   .cs-cmp{width:100%;border-collapse:collapse;font-size:12.5px;}
@@ -143,7 +147,7 @@
   .loading,.error{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:13px;}
   .error{color:var(--red);font-weight:600;}
 
-  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} .cs-bh{grid-template-columns:1fr;} }
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
@@ -180,6 +184,13 @@ const BCT_JSON_URL = 'baocaotuan.json';
 const SALES_JSON_URL = 'data.json';
 // Tên chi nhánh (ô B3 file Excel) → mã "Nguồn khách" trong data.json (BRANCH_NAMES trong index.html)
 const BRANCH_CODE = {'nha trang':'NT', 'da lat':'ĐL', 'phu yen':'PY', 'phan rang':'PR', 'bao loc':'BL', 'dak nong':'ĐN'};
+// Tên chi nhánh (ô B3 / tiêu đề cột) → mã. Nhận cả tên có chữ thêm ("CN Đà Lạt", "Hyundai Phú Yên") lẫn mã viết tắt ("ĐL").
+function branchCode(s){
+  var k=stripVN(s); if(!k) return undefined;
+  if(BRANCH_CODE[k]) return BRANCH_CODE[k];
+  for(var n in BRANCH_CODE){ if(k.indexOf(n)>=0 || stripVN(BRANCH_CODE[n])===k) return BRANCH_CODE[n]; }
+  return undefined;
+}
 let SALES = null;   // [{d:Date, br:'NT'}] — null nếu tải data.json lỗi
 const BP_NAME = {BH:'Bán hàng', DV:'Dịch vụ', VP:'Văn phòng'};
 const BP_ORDER = ['BH','DV','VP'];
@@ -316,7 +327,7 @@ function stripVN(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,''
 // (khác weekNum() của trang này — tuần Thứ 2 → Chủ nhật theo Excel; 2 cách lệch nhau đúng 1 ngày).
 function weekBH(d){ var t=new Date(d); t.setHours(0,0,0,0); var j=new Date(t.getFullYear(),0,1); return t.getFullYear()+'-'+Math.ceil(((t-j)/864e5+j.getDay()+1)/7); }
 function hdStats(chiNhanh, ref){
-  var code=BRANCH_CODE[stripVN(chiNhanh)];
+  var code=branchCode(chiNhanh);
   if(!SALES || !code || !ref) return null;
   var r0=new Date(ref); r0.setHours(0,0,0,0);
   var from=new Date(r0); from.setDate(r0.getDate()-r0.getDay());   // Chủ nhật đầu tuần
@@ -413,11 +424,48 @@ function renderOverview(A){
 // chi nhánh → đếm theo mã, cột "Tổng" = cộng các cột; không tải được data.json thì dùng số điền tay trong sheet.
 // Các bộ phận khác: lấy nguyên số trong sheet (vd Dịch vụ: Chỉ tiêu / Thực hiện).
 const CS_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#8E6BBF'];
-const CS_WEEKS = 15;   // số tuần gần nhất của biểu đồ HĐ ký Bán hàng
+const CS_WEEKS = 10;   // số tuần gần nhất của biểu đồ HĐ ký Bán hàng
+// Báo bán tháng so với chỉ tiêu = bảng 9 "Thực hiện chỉ tiêu Tháng" của tab BC Bán hàng, lấy thẳng từ trang cha
+// index.html (parent.getDMSMonth()) để cùng 1 logic + chỉ tiêu tự chỉnh tay. Mở trang này riêng lẻ thì không có.
+function getDMS(){ try{ return (window.parent!==window && typeof window.parent.getDMSMonth==='function') ? window.parent.getDMSMonth() : null; }catch(e){ return null; } }
+function csDMSTable(a){
+  var d=getDMS();
+  if(!d) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">'+(window.parent!==window?'Đang chờ dữ liệu tab BC Bán hàng…':'Chỉ hiện khi mở trong trang chính (tab BC tuần).')+'</div>';
+  // Nhóm chỉ tiêu của chi nhánh đang xem: PR tính chung NT, BL/ĐN tính chung ĐL (như TARGET_GROUPS ở index.html)
+  var my={nt:'nt',pr:'nt',dl:'dl',bl:'dl',dn:'dl',py:'py'}[stripVN(branchCode(a.b.chiNhanh)||'')]||'';
+  var pick=function(rows){ return (rows||[]).filter(function(r){ return my && stripVN(r.key)===my; })[0]; };
+  var m=pick(d.rows), q=pick(d.quy&&d.quy.rows);
+  var pct=function(x,t){ if(!t) return '—'; var p=x/t*100; return '<span class="'+(p>=100?'up':'')+'">'+p.toLocaleString('vi-VN',{maximumFractionDigits:0})+'%</span>'; };
+  // Tháng tách "Chờ đóng tiền" / "Chưa có xe" như bảng 9; Quý chỉ có tổng "Chờ phân xe" (bảng 10) → gộp 2 ô
+  var row=function(lbl,r){
+    var ko=r.ky!==undefined ? '<td class="num" colspan="2" title="Chờ phân xe (bảng 10 không tách Chờ đóng tiền / Chưa có xe)">'+fmtN(r.ky)+'</td>'
+                            : '<td class="num">'+fmtN(r.choTien)+'</td><td class="num">'+fmtN(r.chuaXe)+'</td>';
+    return '<tr><td>'+esc(lbl)+'</td><td class="num"><b>'+fmtN(r.dms)+'</b></td><td class="num">'+fmtN(r.khop)+'</td>'+ko+'<td class="num">'+fmtN(r.target)+'</td><td class="num">'+pct(r.dms,r.target)+'</td></tr>';
+  };
+  var head=function(c1){ return '<table class="cs-cmp cs-dms"><thead><tr><th>'+c1+'</th><th class="num">Báo bán DMS</th><th class="num">Đã phân xe</th><th class="num">Chờ đóng tiền</th><th class="num">Chưa có xe</th><th class="num">Chỉ tiêu</th><th class="num">Hoàn thành</th></tr></thead><tbody>'; };
+  var h, note;
+  if(m){
+    h='<div class="cs-sub">Báo bán '+esc(m.label)+' so với chỉ tiêu</div>'+head('Kỳ')+row('Tháng '+d.thang+'/'+d.nam, m);
+    if(q) h+=row('Quý '+d.quy.q+'/'+d.nam, q);
+    h+='</tbody></table>';
+    // Ghi chú chuyển chỉ tiêu: chỉ giữ các lần chuyển có liên quan tới nhóm này (tháng lẫn quý)
+    var keep=function(n){ return (n||'').replace(/^Chuyển chỉ tiêu:\s*/,'').split(/;\s*/).filter(function(p){ return p && stripVN(p).split(/[^a-z]+/).indexOf(my)>=0; }); };
+    var nm=keep(d.note), nq=q?keep(d.quy.note):[];
+    note=(nm.length?'Chuyển chỉ tiêu tháng: '+nm.join('; '):'')+(nq.length?(nm.length?' · ':'')+'Quý: '+nq.join('; '):'');
+  } else {
+    // Không nhận ra chi nhánh → bảng tháng đủ 3 nhóm + Tổng như bảng 9
+    var tot={dms:0,khop:0,choTien:0,chuaXe:0,target:0};
+    h='<div class="cs-sub">Báo bán tháng '+d.thang+'/'+d.nam+' so với chỉ tiêu</div>'+head('Chi nhánh');
+    d.rows.forEach(function(r){ Object.keys(tot).forEach(function(k){ tot[k]+=r[k]||0; }); h+=row(r.label, r); });
+    h+=row('Tổng', tot).replace('<tr>','<tr class="tot">')+'</tbody></table>';
+    note=d.note||'';
+  }
+  return h+'<div class="cs-src">Từ bảng 9 (tháng) và 10 (quý) tab BC Bán hàng · Hoàn thành = Báo bán DMS / Chỉ tiêu'+(note?' · '+esc(note):'')+'</div>';
+}
 function fmtN(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{maximumFractionDigits:1}); }
 function csBHData(sec, a){
   var cols=sec.cot||[], tongIdx=-1, series=[];
-  cols.forEach(function(c,i){ if(stripVN(c)==='tong') tongIdx=i; else series.push({name:c, i:i, code:BRANCH_CODE[stripVN(c)]}); });
+  cols.forEach(function(c,i){ if(stripVN(c)==='tong') tongIdx=i; else series.push({name:c, i:i, code:branchCode(c)}); });
   var byKey={};
   if(SALES) SALES.rows.forEach(function(s){ var k=s.br+'|'+weekBH(s.d); byKey[k]=(byKey[k]||0)+1; });
   // Có data.json: tự lấy CS_WEEKS tuần gần nhất tính tới tuần báo cáo (không theo số dòng trong sheet);
@@ -469,8 +517,10 @@ function renderChiSo(a){
       var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng</span></div>';
       var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>'+esc(sec.nhanCot||'')+'</th>'+d.series.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
         d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
-      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+' — '+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
-        '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+'</div>';
+      return '<div class="cs-block cs-wide"><div class="cs-title">'+esc(bp)+'</div><div class="cs-bh"><div>'+
+        '<div class="cs-sub">'+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
+        '<div class="cs-src">'+(d.auto?'Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):''):'Không tải được data.json — dùng số điền trong sheet')+'</div>'+tbl+
+        '</div><div>'+csDMSTable(a)+'</div></div></div>';
     }
     // Khối có tiêu đề cột từ 2 cột trở lên (vd "Loại | Tuần 39 | TB 90 ngày") → bảng so sánh cột 1 với cột 2,
     // thêm cột Chênh lệch % (xanh = tăng, đỏ = giảm)
@@ -728,6 +778,11 @@ async function load(){
     ? 'Tổng hợp lúc '+String(u.getHours()).padStart(2,'0')+':'+String(u.getMinutes()).padStart(2,'0')+' '+String(u.getDate()).padStart(2,'0')+'/'+String(u.getMonth()+1).padStart(2,'0')+'/'+u.getFullYear()+(DATA.nguon==='excel'?' (từ file Excel)':'')
     : 'Chưa rõ thời điểm tổng hợp';
   render();
+  // Bảng báo bán (bảng 9) lấy từ trang cha — trang cha có thể chưa tải xong data.json lúc iframe này chạy:
+  // thử lại mỗi giây trong 60s, có số thì vẽ lại 1 lần.
+  if(window.parent!==window && !getDMS()){
+    var tries=0, tm=setInterval(function(){ if(getDMS()){ clearInterval(tm); render(); } else if(++tries>=60) clearInterval(tm); }, 1000);
+  }
 }
 load();
 </script>

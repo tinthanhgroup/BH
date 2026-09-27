@@ -2838,10 +2838,18 @@ function attachSmartTooltip(container){
   });
 }
 function renderDMSProgress(data){
-  const {bbMap,bbGiaVonMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
+  const {today}=data;
   const m=today.getMonth()+1;
   const badgeM=document.getElementById('dms-progress-badge-m');
   if(badgeM) badgeM.textContent='Theo tháng — T'+m+'/'+today.getFullYear();
+  const {groupData,noteText}=dmsMonthGroupData(data);
+  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true,false);
+}
+// Số liệu bảng 9 "Thực hiện chỉ tiêu Tháng" — dùng chung cho bảng 9 và trang Báo cáo tuần (baocaotuan.html
+// nhúng iframe gọi parent.getDMSMonth()), để 2 nơi luôn cùng 1 logic, kể cả chỉ tiêu tự chỉnh tay (localStorage).
+function dmsMonthGroupData(data){
+  const {bbMap,bbGiaVonMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
+  const m=today.getMonth()+1;
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(bbMap[dmsMonthKey]||{})[g.key]||0;
@@ -2856,13 +2864,27 @@ function renderDMSProgress(data){
     const target=(targets[g.key]||[])[m-1]||0;
     return {g,dms,giaVon,khop,choTien,chuaXe,chuaXeList,target,total:dms+khop+choTien+chuaXe};
   });
-  const noteText=transferNoteText(transferLogByMonth,[dmsMonthKey]);
-  renderDMSBars('dms-progress-wrap',groupData,'tháng',true,noteText,undefined,true,true,true,true,false);
+  return {groupData, noteText:transferNoteText(transferLogByMonth,[dmsMonthKey])};
 }
+window.getDMSMonth=function(){
+  if(!_bhData) return null;
+  const {groupData,noteText}=dmsMonthGroupData(_bhData);
+  const q=dmsQuarterGroupData(_bhData);
+  return {thang:_bhData.today.getMonth()+1, nam:_bhData.today.getFullYear(), note:noteText,
+    rows:groupData.map(r=>({key:r.g.key, label:r.g.label, dms:r.dms, khop:r.khop, choTien:r.choTien, chuaXe:r.chuaXe, target:r.target})),
+    quy:{q:_bhData.curQuarter, note:q.noteText,
+      rows:q.groupData.map(r=>({key:r.g.key, label:r.g.label, dms:r.dms, khop:r.khop, ky:r.ky, target:r.target}))}};
+};
 function renderDMSProgressQuarter(data){
-  const {bbMap,bbGiaVonMap,dmsKhopQ,qMonthKeys,daKy,curQuarter,today,transferLogByMonth}=data;
+  const {curQuarter,today}=data;
   const badgeQ=document.getElementById('dms-progress-badge-q');
   if(badgeQ) badgeQ.textContent='Theo quý — Q'+curQuarter+'/'+today.getFullYear();
+  const {groupData,noteText}=dmsQuarterGroupData(data);
+  renderDMSBars('dms-progress-wrap-q',groupData,'quý',true,noteText,820,false,true,undefined,undefined,true,true);
+}
+// Số liệu bảng 10 "Thực hiện chỉ tiêu Quý" — dùng chung cho bảng 10 và getDMSMonth().quy (trang Báo cáo tuần)
+function dmsQuarterGroupData(data){
+  const {bbMap,bbGiaVonMap,dmsKhopQ,qMonthKeys,daKy,today,transferLogByMonth}=data;
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(qMonthKeys||[]).reduce((s,mk)=>s+((bbMap[mk]||{})[g.key]||0),0);
@@ -2872,8 +2894,7 @@ function renderDMSProgressQuarter(data){
     const target=(targets[g.key]||[]).reduce((s,v,i)=>(qMonthKeys&&qMonthKeys.includes(`${today.getFullYear()}-${String(i+1).padStart(2,'0')}`))?s+(v||0):s,0);
     return {g,dms,giaVon,khop,ky,target,total:dms+khop+ky};
   });
-  const noteText=transferNoteText(transferLogByMonth,qMonthKeys);
-  renderDMSBars('dms-progress-wrap-q',groupData,'quý',true,noteText,820,false,true,undefined,undefined,true,true);
+  return {groupData, noteText:transferNoteText(transferLogByMonth,qMonthKeys)};
 }
 function renderWeeklyGrid(data){
   const {last5,curWK}=data;
