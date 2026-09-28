@@ -368,6 +368,20 @@ function getConfig(){
   };
 }
 
+// Giờ vào chiều đổi theo thông báo giờ làm mới: từ tuần 40/2026 (T2 28/09/2026) là 13:15.
+// Ô cấu hình "Giờ vào buổi chiều" chỉ áp dụng cho các ngày TRƯỚC mốc này.
+const GIO_VAO_CHIEU_MOI = { tu: new Date(2026, 8, 28), gio: '13:15' };
+// chamcong.json đang ghi "ngay" dạng năm-NGÀY-tháng ("2026-21-09") — tự nhận lúc tải (phần giữa có số > 12)
+let NGAY_YDM = false;
+function ngayDate(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); if(!m) return null;
+  return NGAY_YDM ? new Date(+m[1], +m[3]-1, +m[2]) : new Date(+m[1], +m[2]-1, +m[3]);
+}
+function gioVaoChieu(r, cfg){
+  const d = ngayDate(r.ngay);
+  return d && d >= GIO_VAO_CHIEU_MOI.tu ? timeToMin(GIO_VAO_CHIEU_MOI.gio) : cfg.vaoChieu;
+}
+
 function nguongCuaNguoi(ten, cfg){
   const ex = PERSON_EXCEPTIONS[ten];
   return ex ? cfg.nguong + ex.extraPhut : cfg.nguong;
@@ -386,11 +400,12 @@ function computeDerived(rows, cfg){
     const quenChamCong = r.sopunch === 1 && vaoSangMin !== null && (vaoSangMin - cfg.vaoSang) > NGUONG_QUEN_CHAM;
 
     const tresang = r.cocong && !quenChamCong && vaoSangMin!==null && vaoSangMin > cfg.vaoSang + nguong;
-    const trechieu = r.co_chieu && vaoChieuMin!==null && vaoChieuMin > cfg.vaoChieu + nguong;
+    const vaoChieuChuan = gioVaoChieu(r, cfg);
+    const trechieu = r.co_chieu && vaoChieuMin!==null && vaoChieuMin > vaoChieuChuan + nguong;
     const ditre = tresang || trechieu;
     const vesom = r.giora_cuoi && raCuoiMin!==null && raCuoiMin < cfg.raChieu - cfg.nguong;
     const phutTreSang = tresang ? (vaoSangMin - cfg.vaoSang) : 0;
-    const phutTreChieu = trechieu ? (vaoChieuMin - cfg.vaoChieu) : 0;
+    const phutTreChieu = trechieu ? (vaoChieuMin - vaoChieuChuan) : 0;
     return Object.assign({}, r, {ditre, tresang, trechieu, vesom, phutTreSang, phutTreChieu, quenChamCong, phong: r.phong_hr, to: r.to_hr || '—', ngoaiLe: !!PERSON_EXCEPTIONS[r.ten_hr]});
   });
 }
@@ -698,9 +713,10 @@ function renderToday(rows){
     : `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:12px;">Không có ai vắng</td></tr>`);
 
   const exNames = Object.keys(PERSON_EXCEPTIONS);
-  document.getElementById('exceptionNote').textContent = exNames.length
-    ? '* Chế độ riêng: ' + exNames.map(n=>`${n} (${PERSON_EXCEPTIONS[n].lyDo}, được trễ thêm ${PERSON_EXCEPTIONS[n].extraPhut} phút)`).join('; ')
-    : '';
+  const tu = GIO_VAO_CHIEU_MOI.tu;
+  document.getElementById('exceptionNote').textContent =
+    `* Từ ${String(tu.getDate()).padStart(2,'0')}/${String(tu.getMonth()+1).padStart(2,'0')}/${tu.getFullYear()} giờ vào buổi chiều là ${GIO_VAO_CHIEU_MOI.gio} (ô cấu hình chỉ áp dụng cho các ngày trước đó).`
+    + (exNames.length ? ' Chế độ riêng: ' + exNames.map(n=>`${n} (${PERSON_EXCEPTIONS[n].lyDo}, được trễ thêm ${PERSON_EXCEPTIONS[n].extraPhut} phút)`).join('; ') : '');
 }
 
 function branchOverview(chinhanh){
@@ -917,6 +933,7 @@ async function loadAttendanceData(){
     if(!res.ok) throw new Error('chamcong.json: HTTP '+res.status);
     const payload = await res.json();
     ATT = payload.records || [];
+    NGAY_YDM = ATT.some(r => { const m = /^\d{4}-(\d{2})-/.exec(r.ngay || ''); return m && +m[1] > 12; });
   }catch(e){
     console.error('Lỗi tải chamcong.json:', e);
     ATT = [];

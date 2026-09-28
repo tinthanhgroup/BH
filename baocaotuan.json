@@ -1,5 +1,5 @@
 {
-    "updated_at":  "2026-09-28T09:34:58",
+    "updated_at":  "2026-09-28T09:48:39",
     "nguon":  "excel",
     "branches":  [
                      {
@@ -190,7 +190,7 @@
                                           "phuTrach":  "Duy",
                                           "han":  "2026-09-26",
                                           "hanRaw":  "",
-                                          "trangThai":  "Kế hoạch",
+                                          "trangThai":  "Hoàn thành",
                                           "capNhat":  "",
                                           "tuanCN":  39,
                                           "vuongMac":  "",
@@ -218,8 +218,8 @@
                                           "phuTrach":  "HCNS",
                                           "han":  "2026-09-30",
                                           "hanRaw":  "",
-                                          "trangThai":  "Đang làm",
-                                          "capNhat":  "Chưa có ứng viên",
+                                          "trangThai":  "Tạm dừng",
+                                          "capNhat":  "Chưa có ứng viên. T39: Chuyển sang VP-005 — Văn phòng chủ trì báo cáo tuyển dụng MKT.",
                                           "tuanCN":  39,
                                           "vuongMac":  "Chưa coi trọng hoạt động tuyển dụng",
                                           "deXuat":  "Đặt KPI cho HCNS, đồng thời đưa vào công việc trọng tâm của đại lý",
@@ -252,9 +252,9 @@
                                           "vuongMac":  "Thiếu 200 xe hết bảo hành",
                                           "deXuat":  "Cho mở lệnh nội bộ để đạt số lượng xe hết BH làm dịch vụ",
                                           "keHoach":  "",
-                                          "ngayHT":  "2026-09-23",
+                                          "ngayHT":  "",
                                           "ngayHTRaw":  "",
-                                          "ketQua":  "Đạt 100% tất cả chỉ số",
+                                          "ketQua":  "Đạt 100% tất cả chỉ số, trừ xe hết bảo hành (93% tại 25/09)",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
@@ -1467,7 +1467,7 @@
                                                                   "stt":  9,
                                                                   "nhan":  "MKT – sự kiện",
                                                                   "cauHoi":  "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
-                                                                  "traLoi":  "Lái thử tại Cam Lâm theo kế hoạch 26/09 (trên sheet vẫn để Kế hoạch — cần cập nhật kết quả). KPI quý CDR 30/30 triệu, CSC T9 25 triệu đang bám. Tuyển nhân sự MKT chưa có kết quả — đề xuất đặt KPI tuyển dụng cho HCNS."
+                                                                  "traLoi":  "Lái thử tại Cam Lâm đã tổ chức ngày 26/09. KPI quý CDR 30/30 triệu, CSC T9 25 triệu đang bám. Tuyển nhân sự MKT: xem VP-005 (Văn phòng chủ trì báo cáo)."
                                                               },
                                                               {
                                                                   "stt":  10,

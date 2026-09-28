@@ -14,6 +14,10 @@
 1. **Lớp server (`.gs`, hàm `joinWithNhanSu_()`):** fetch thẳng `nhansu.json` (`JOIN_NHANSU=true`), match theo `Mã NV + Chi nhánh` trước, rơi về `Tên + Chi nhánh` nếu thiếu mã. Mã NV phụ (cột "Mã NV phụ" khai báo tường minh trong Sheet Nhân sự, xem [module-nhansu.md](module-nhansu.md)) được trỏ về cùng 1 hồ sơ ở bước này — **đây là cách gộp chắc chắn, dựa trên khai báo tường minh của HR**. Nếu người đã nghỉ việc (có trong `turnover`) và ngày chấm công sau ngày nghỉ → **loại bỏ dòng đó** (không tính là vắng nhầm sau khi đã nghỉ).
 2. **Lớp client (`chamcong.html`, hàm `mergeDuplicateManv_()`):** xử lý các trường hợp HR **chưa kịp khai báo** Mã NV phụ. Heuristic: gom theo cùng Tên+Chi nhánh, mã nào có số ngày công ≤ `max(2, 15% số ngày công của mã nhiều nhất)` bị coi là "mã bóng ma" (vân tay phụ ít dùng) và tự gộp vào mã chính. Nếu ≥2 mã đều có nhiều ngày công gần nhau → **không tự gộp**, đẩy vào bảng "🔁 Cần kiểm tra thủ công" để người dùng tự xác nhận (rất có thể là 2 người trùng tên thật, không phải cùng 1 người).
 
+**Giờ vào buổi chiều theo ngày (28/09/2026):** từ T2 28/09/2026 (tuần 40) là **13:15** (`GIO_VAO_CHIEU_MOI`, hàm `gioVaoChieu()`); ô cấu hình "Giờ vào buổi chiều" (mặc định 13:30) chỉ áp dụng cho các ngày trước mốc. `baocaotuan.html` (khối Nhân sự) dùng cùng quy tắc (`ccVaoChieu()`) — đổi 1 nơi nhớ đổi nơi kia.
+
+⚠️ Field `ngay` trong `chamcong.json` đang ở dạng **năm-NGÀY-tháng** (`2026-21-09`), không phải ISO chuẩn — trang so sánh chuỗi nên chỉ đúng trong 1 tháng; khi cần ra ngày thật dùng `ngayDate()` (cờ `NGAY_YDM` tự nhận lúc tải).
+
 **3 bảng chẩn đoán cuối `chamcong.html`** (đều dropdown, mặc định đóng khi không có gì bất thường):
 - **"⚠ Nhân sự chưa khớp với dữ liệu Nhân sự"** — có chấm công nhưng không khớp được cả Mã NV lẫn Tên với sheet Nhân sự.
 - **"🔁 Cần kiểm tra thủ công"** — nghi trùng vân tay nhưng lớp client không tự tin gộp (xem heuristic ở trên).
