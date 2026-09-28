@@ -718,8 +718,11 @@ function renderChiSo(a){
   var leadHtml=leadSecs.map(function(s){ return '<div class="cs-part">'+csLeadTable(a,s)+'</div>'; }).join('');
   if(leadHtml && !secs.some(function(s){ return s.boPhan==='BH' && (s.cot||[]).length; }))
     secs.unshift({boPhan:'BH', cot:[], dong:[], _leadOnly:true});
-  // Có dichvu.json → bỏ khối "Lượt xe..." nhập tay của sheet, chèn khối tự động ngay sau khối Dịch vụ cuối cùng
-  var dvAuto=dvLuotXe(a);
+  // Lượt xe Dịch vụ: khối "Lượt xe..." NHẬP TAY trong sheet có số → ƯU TIÊN (28/09/2026: trước mắt nhập tay,
+  // tự động tính sau khi chuyển sang Google Sheet). Chỉ khi khối nhập tay không có / trống số mới dùng dichvu.json.
+  var dvTay=secs.some(function(s){ return s.boPhan==='DV' && /luot xe/.test(stripVN(s.tieuDe)) &&
+    (s.dong||[]).some(function(x){ return (x.giaTri||[]).some(function(v){ return v!=null; }); }); });
+  var dvAuto=dvTay?null:dvLuotXe(a);
   if(dvAuto){
     secs=secs.filter(function(s){ return !(s.boPhan==='DV' && /luot xe/.test(stripVN(s.tieuDe))); });
     var lastDV=-1; secs.forEach(function(s,i){ if(s.boPhan==='DV') lastDV=i; });
