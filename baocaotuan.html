@@ -438,12 +438,12 @@ function taskBlock(t, opt){
 }
 
 function renderOverview(A){
-  // Chỉ giữ 7 cột số quan trọng nhất + bảng cố định độ rộng, tiêu đề tự xuống dòng → không trượt ngang.
+  // Chỉ giữ 6 cột số quan trọng nhất (bỏ cột Lỗi nhập liệu 28/09/2026 — xem mục 7) + bảng cố định độ rộng, tiêu đề tự xuống dòng → không trượt ngang.
   // Các số chi tiết khác (GĐCN đang xử lý, cải tiến, hoàn thành tháng) xem ở thẻ chi nhánh bên dưới.
   var h='<div class="panel"><h3><span class="chart-num">1</span> Tổng quan các chi nhánh</h3>';
   h+='<p class="desc">Bấm vào 1 dòng để xem chi tiết chi nhánh. Số màu đỏ/vàng là việc cần lưu ý.</p>';
-  h+='<table class="ov"><colgroup><col style="width:19%"><col style="width:17%"><col><col><col><col><col><col></colgroup>';
-  h+='<thead><tr><th>Chi nhánh</th><th>Nhận định tuần</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển thông tin TGĐ</th><th class="num">Quá hạn</th><th class="num">Chưa cập nhật tuần</th><th class="num">Lỗi nhập liệu</th></tr></thead><tbody>';
+  h+='<table class="ov"><colgroup><col style="width:20%"><col style="width:19%"><col><col><col><col><col></colgroup>';
+  h+='<thead><tr><th>Chi nhánh</th><th>Nhận định tuần</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển thông tin TGĐ</th><th class="num">Quá hạn</th><th class="num">Chưa cập nhật tuần</th></tr></thead><tbody>';
   A.forEach(function(a,i){
     h+='<tr class="clickable'+(i===selIdx?' sel':'')+'" onclick="selectBranch('+i+')">';
     h+='<td><b>'+esc(a.b.chiNhanh)+'</b><div class="ov-sub">Tuần '+a.refWeek+'</div></td>';
@@ -454,7 +454,6 @@ function renderOverview(A){
     h+='<td class="num">'+cnt(a.chuyenTGD.length,'hl-tgd')+'</td>';
     h+='<td class="num">'+cnt(a.overdue.length,'bad')+'</td>';
     h+='<td class="num">'+cnt(a.stale.length,'warnc')+'</td>';
-    h+='<td class="num">'+cnt(a.issues.length,'warnc')+'</td>';
     h+='</tr>';
   });
   return h+'</tbody></table>'+renderChiSo(A[selIdx])+'</div>';
