@@ -98,4 +98,4 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 
 ## Phân quyền
 
-Key tab `bct`, khoá cấp tab: **chỉ Admin** (25/09/2026, theo yêu cầu người dùng), nút tab ẩn với người khác (xem `_classifyGroup()` trong `index.html`). Không có trong `mobile.html`.
+Key tab `bct`, khoá cấp tab: **Admin + GĐ thường** (ban đầu chỉ Admin 25/09/2026; mở cho GĐ 28/09/2026 — nhóm "Tổng Giám đốc" bỏ dấu chứa "giam doc" nên cũng thuộc nhánh GĐ; PGĐ chưa có), nút tab ẩn với người khác (xem `_classifyGroup()` trong `index.html`). Không có trong `mobile.html`.

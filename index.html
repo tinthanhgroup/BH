@@ -1022,7 +1022,7 @@ function afterParse(fileDate){
 // Bán hàng/MKT: xem 2-5 (bh, mkt)
 // Dịch vụ: chỉ xem 3 (dv)
 // HCNS: chỉ xem 4 (ns) — gồm cả sub-tab Chấm công
-// Tab 8 "BC tuần" (bct): chỉ Admin
+// Tab 8 "BC tuần" (bct): Admin + GĐ thường (mở cho GĐ 28/09/2026; PGĐ chưa có)
 // Nhóm không xác định: không có quyền xem mục nào (an toàn)
 var _authenticated = false;
 var _allowedTabs = new Set();
@@ -1095,7 +1095,8 @@ function _classifyGroup(nhomRaw, isAdmin){
   // CRM (Bizfly) tạm ẩn bớt 09/2026, mở lại cho Bán hàng thường và PGĐ 09/2026 —
   // hiện Admin/MKT/Bán hàng/PGĐ xem được, riêng GĐ thường vẫn CHƯA có (module
   // đang trong giai đoạn hoàn thiện, GĐ sẽ được mở sau khi ổn định hơn).
-  // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN gửi TGĐ — CHỈ Admin.
+  // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN gửi TGĐ — Admin + GĐ thường
+  // (mở cho GĐ 28/09/2026; PGĐ chưa có). Nhóm "Tổng Giám đốc" bỏ dấu cũng chứa "giam doc" → rơi vào nhánh GĐ.
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct']);
   var n = _stripDiacritics(nhomRaw);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
@@ -1103,7 +1104,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
   // (pho giam doc, có dấu cách nên không chứa liền "pgd").
   if(n.indexOf('pgd')>=0 || n.indexOf('pho giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm']);
-  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt']);
+  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','bct']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns']);
   if(n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt','crm']);
   if(n.indexOf('ban hang')>=0) return new Set(['bh','mkt','crm']);
