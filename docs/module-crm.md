@@ -54,7 +54,7 @@ Bảng "Danh sách chi tiết lead" (hiện toàn bộ) đã **bỏ hẳn** kh�
 
 ## Tab CRM trong `index.html`
 
-Tab 8 "CRM 🔒" — **tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026**: hiện Admin, nhóm `mkt`/`marketing`, `ban hang` và `pgd`/`pho giam doc` xem được (`_classifyGroup()`, nhánh này phải đặt **trước** nhánh `gd` chung vì "pgd" bỏ dấu vẫn chứa substring "gd"); riêng **GĐ thường (`gd`/`giam doc`) vẫn chưa có** — xem bảng quyền + lý do trong CLAUDE.md gốc. Lazy-load iframe khi bấm vào tab lần đầu, giống cơ chế các tab MKT/Chính sách/Quy định.
+Tab 8 "CRM 🔒" — **tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026**: hiện Admin, nhóm `mkt`/`marketing`, `ban hang` và `pgd`/`pho giam doc` xem được (`_classifyGroup()`, nhánh này phải đặt **trước** nhánh `gd` chung vì "pgd" bỏ dấu vẫn chứa substring "gd"); **GĐ thường (`gd`/`giam doc`) được mở từ 28/09/2026** — giờ mọi nhóm GĐ/PGĐ/Bán hàng/MKT + Admin đều xem được. Lazy-load iframe khi bấm vào tab lần đầu, giống cơ chế các tab MKT/Chính sách/Quy định.
 
 ## Trigger
 

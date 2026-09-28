@@ -82,14 +82,14 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
   |---|---|
   | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần) |
   | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM |
-  | `gd` / `giam doc` (Giám Đốc thường — gồm cả "Tổng Giám đốc" nếu không có cờ Admin) | Bán hàng, Dịch vụ, HCNS, MKT, BC tuần (mở 28/09/2026) |
+  | `gd` / `giam doc` (Giám Đốc thường — gồm cả "Tổng Giám đốc" nếu không có cờ Admin) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026) |
   | `hcns` / `nhan su` | Chỉ HCNS |
   | `mkt` / `marketing` | Bán hàng, MKT, CRM |
   | `ban hang` (không khớp `mkt`/`marketing`) | Bán hàng, MKT, CRM |
   | `dich vu` | Chỉ Dịch vụ |
   | Không khớp gì | Không xem được tab khoá nào (an toàn theo mặc định) |
 
-  **CRM tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026** — hiện Admin/MKT/Bán hàng thường/PGĐ xem được; riêng nhóm **GĐ thường (`gd`/`giam doc`) vẫn CHƯA có** quyền xem CRM, có chủ đích: module CRM đang trong giai đoạn hoàn thiện, GĐ thường sẽ được mở sau khi ổn định hơn — lưu ý bất thường này khi debug quyền: GĐ thường hiện thấy ÍT tab hơn cả Bán hàng thường lẫn PGĐ ở đúng mục CRM.
+  **CRM tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026, mở nốt cho GĐ thường 28/09/2026** — hiện Admin/PGĐ/GĐ/MKT/Bán hàng thường đều xem được CRM.
 
   Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
 
