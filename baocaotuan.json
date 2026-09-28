@@ -1,12 +1,12 @@
 {
-    "updated_at":  "2026-09-27T16:54:39",
+    "updated_at":  "2026-09-28T09:34:58",
     "nguon":  "excel",
     "branches":  [
                      {
                          "chiNhanh":  "Nha Trang",
                          "file":  "Bao cao tuan 39.xlsx",
-                         "ngayBaoCao":  "",
-                         "ngayDuLieu":  "2026-09-26",
+                         "ngayBaoCao":  "2026-09-26",
+                         "ngayDuLieu":  "2026-09-28",
                          "canhBao":  [
 
                                      ],
@@ -18,7 +18,7 @@
                                           "nguon":  "Trọng tâm tháng",
                                           "thang":  9,
                                           "linhVuc":  "Bán hàng",
-                                          "noiDung":  "Đạt 100% hoặc 95% chỉ tiêu HTV (đạt thưởng Quý bán hàng)",
+                                          "noiDung":  "Chắc chắn đạt 100% chỉ tiêu HTV",
                                           "phuTrach":  "Duy",
                                           "han":  "2026-09-30",
                                           "hanRaw":  "",
@@ -26,7 +26,7 @@
                                           "capNhat":  "Đạt 68 xe/ 72 xe (90% của 79)",
                                           "tuanCN":  39,
                                           "vuongMac":  "HTV dự kiến giao 2 Creta, Tucson ĐB Trắng (nợ 4 xe) thì mapvin vào 28-09, không đủ thời gian báo bán.",
-                                          "deXuat":  "Có thể cần sử dụng 03 xe ngập nước để báo bán. Đồng thời hạ LN để tối đa báo bán. Tucson có sẵn mức 1% (GĐBH quyết)",
+                                          "deXuat":  "Xem xét sử dụng 03 xe ngập nước để báo bán để hưởng phần thưởng, hoặc chuyển Đà Lạt chạy chỉ tiêu. Đồng thời hạ LN để tối đa báo bán. Tucson có sẵn mức 1% (GĐBH quyết)",
                                           "keHoach":  "",
                                           "ngayHT":  "",
                                           "ngayHTRaw":  "",
@@ -35,7 +35,7 @@
                                           "ghiChuGD":  "Tiếp tục bám sát",
                                           "gdXuLy":  "Chuyển thông tin TGĐ",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -61,9 +61,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -89,9 +89,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Cải tiến",
+                                          "loaiHD":  "4. Cải tiến",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -117,9 +117,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Không",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Cải tiến",
+                                          "loaiHD":  "4. Cải tiến",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -145,9 +145,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Không",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "Chuyển thông tin TGĐ",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -173,9 +173,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Không",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Cải tiến",
+                                          "loaiHD":  "4. Cải tiến",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -201,9 +201,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -229,9 +229,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -257,9 +257,9 @@
                                           "ketQua":  "Đạt 100% tất cả chỉ số",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "Chuyển thông tin TGĐ",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -285,9 +285,9 @@
                                           "ketQua":  "",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "GĐCN tự xử lý",
+                                          "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -371,7 +371,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "Chuyển thông tin TGĐ",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -399,7 +399,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -427,7 +427,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -455,7 +455,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -483,7 +483,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -511,7 +511,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -539,7 +539,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -567,7 +567,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -595,7 +595,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -623,7 +623,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -651,7 +651,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Xử lý sự cố",
+                                          "loaiHD":  "3. Xử lý sự cố",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -679,7 +679,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -707,7 +707,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -735,7 +735,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -763,7 +763,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -791,7 +791,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -819,7 +819,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -847,7 +847,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -875,7 +875,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -903,7 +903,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -931,7 +931,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -959,7 +959,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -987,7 +987,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Vận hành thường xuyên",
+                                          "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -1015,7 +1015,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "",
-                                          "loaiHD":  "Cải tiến",
+                                          "loaiHD":  "4. Cải tiến",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -1099,7 +1099,7 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "",
                                           "duyetTT":  "Có",
-                                          "loaiHD":  "Xử lý sự cố",
+                                          "loaiHD":  "3. Xử lý sự cố",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       }
@@ -1230,58 +1230,52 @@
                                                                   "stt":  1,
                                                                   "nhan":  "Lượt xe",
                                                                   "cauHoi":  "Lượt xe vào xưởng tăng hay giảm, đánh giá thế nào, vì sao?",
-                                                                  "traLoi":  "(demo) Ổn định so với tuần trước; xe đồng sơn tăng nhờ làm việc với bảo hiểm DBV và Bảo Việt."
+                                                                  "traLoi":  "GIẢM. Lượt xe TB/ngày tuần 39 so với 90 ngày trước: bảo dưỡng 18,2 so với 23,0 (−21%), bảo hiểm 3,2 so với 3,9 (−19%); riêng đồng sơn tiền mặt nhích lên 0,33 so với 0,28 nhờ làm việc với bảo hiểm DBV, Bảo Việt. Nguyên nhân bảo dưỡng giảm — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  2,
                                                                   "nhan":  "Doanh thu – LN",
                                                                   "cauHoi":  "Doanh thu DV/PT và lợi nhuận so với kế hoạch, mảng nào kéo xuống?",
-                                                                  "traLoi":  "Doanh thu DV – PT quý đạt 100%/100%; DRP dự kiến 90%."
+                                                                  "traLoi":  "Vượt chỉ tiêu: doanh thu DV – PT đạt 105,6% (12.597/11.925); DRP dự kiến 90%."
                                                               },
                                                               {
                                                                   "stt":  3,
                                                                   "nhan":  "Khách hàng",
                                                                   "cauHoi":  "Có khiếu nại, xe làm lại (comeback) hay phản hồi xấu không?",
-                                                                  "traLoi":  "(demo) Không có khiếu nại mới; 1 xe làm lại nhẹ, đã xử lý trong ngày."
+                                                                  "traLoi":  "Chưa có số liệu khiếu nại / xe làm lại tuần này — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  4,
                                                                   "nhan":  "Năng suất xưởng",
                                                                   "cauHoi":  "Khoang và KTV có quá tải hay dư, xe chờ lâu, xe tồn xưởng quá hạn?",
-                                                                  "traLoi":  "(demo) Xưởng chạy đủ tải; đang xây dựng kế hoạch 5S toàn xưởng."
+                                                                  "traLoi":  "5S toàn xưởng đang xây dựng kế hoạch (hạn 10/10); xưởng đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên. Tình trạng tải khoang/KTV — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  5,
                                                                   "nhan":  "Phụ tùng",
                                                                   "cauHoi":  "Thiếu hàng, chờ đặt lâu, tồn kho chậm luân chuyển?",
-                                                                  "traLoi":  "(demo) Không thiếu hàng đáng kể; tiếp tục chạy chỉ tiêu quý để đạt thưởng phụ tùng."
+                                                                  "traLoi":  "Đang chạy chỉ tiêu quý để đạt thưởng phụ tùng; kiểm kê kho phụ tùng Quý 3 (gồm PT ngập nước) phối hợp Kế toán, hạn 01/10."
                                                               },
                                                               {
                                                                   "stt":  6,
                                                                   "nhan":  "Bảo hiểm – đồng sơn",
                                                                   "cauHoi":  "Số hồ sơ, phối hợp với hãng bảo hiểm, công nợ bảo hiểm?",
-                                                                  "traLoi":  "Đã gặp bảo hiểm DBV và Bảo Việt để tăng doanh thu đồng sơn (hướng tới XanhSM); công nợ quá hạn đang xử lý để về dưới 200 tr."
+                                                                  "traLoi":  "Đã gặp bảo hiểm DBV và Bảo Việt để tăng doanh thu đồng sơn (hướng tới XanhSM); công nợ quá hạn đang xử lý để về dưới 200 tr (hạn 30/09)."
                                                               },
                                                               {
                                                                   "stt":  7,
                                                                   "nhan":  "Khách quay lại",
                                                                   "cauHoi":  "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
-                                                                  "traLoi":  "Xe hết bảo hành mới đạt 93% (thiếu ~200 xe) – điểm yếu nhất của quý."
+                                                                  "traLoi":  "Xe hết bảo hành mới đạt 93% (25/09), thiếu ~200 xe — điểm yếu nhất của quý; đề xuất mở lệnh nội bộ để bù."
                                                               },
                                                               {
                                                                   "stt":  8,
-                                                                  "nhan":  "Đối thủ",
-                                                                  "cauHoi":  "Đại lý khác hoặc gara ngoài có chính sách lôi kéo khách không?",
-                                                                  "traLoi":  "(demo) Gara ngoài chào giá bảo dưỡng thấp cho xe hết bảo hành, khó kéo khách quay lại."
+                                                                  "nhan":  "Nhân sự xưởng",
+                                                                  "cauHoi":  "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
+                                                                  "traLoi":  "Đủ KTV; mới tuyển Admin Dịch vụ (07/09). Đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên nên hơi căng người."
                                                               },
                                                               {
                                                                   "stt":  9,
-                                                                  "nhan":  "Nhân sự xưởng",
-                                                                  "cauHoi":  "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
-                                                                  "traLoi":  "(demo) Đủ KTV; đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên nên hơi căng người."
-                                                              },
-                                                              {
-                                                                  "stt":  10,
                                                                   "nhan":  "Dự báo \u0026 cần hỗ trợ",
                                                                   "cauHoi":  "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
                                                                   "traLoi":  "Cần TGĐ cho mở lệnh nội bộ để bù số xe hết bảo hành; duyệt chi tỉa cây trước mùa bão (báo giá 20 tr, đang deal về 15 tr)."
@@ -1299,19 +1293,19 @@
                                                                   "stt":  1,
                                                                   "nhan":  "Biến động nhân sự",
                                                                   "cauHoi":  "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
-                                                                  "traLoi":  "Không có nghỉ việc mới; còn thiếu bảo vệ và nhân viên MKT."
+                                                                  "traLoi":  "Tuần 39 không có nghỉ việc mới. Trong 30 ngày: nghỉ 2 (Bảo vệ 01/09, Chuyên viên Marketing 10/09), vào 2 (Admin Dịch vụ 07/09, Tạp vụ 09/09). Còn trống bảo vệ và nhân viên MKT."
                                                               },
                                                               {
                                                                   "stt":  2,
                                                                   "nhan":  "Tuyển dụng",
                                                                   "cauHoi":  "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
-                                                                  "traLoi":  "MKT có 4 hồ sơ, sắp phỏng vấn. Bảo vệ đăng tuyển 2 tháng không hiệu quả, chuyển sang treo băng rôn tuyển dụng trước công ty."
+                                                                  "traLoi":  "MKT có 4 hồ sơ, sắp phỏng vấn. Bảo vệ đăng tuyển 2 tháng không hiệu quả (ứng viên chỉ hỏi giờ làm, chế độ rồi không đến phỏng vấn), chuyển sang treo băng rôn tuyển dụng trước công ty."
                                                               },
                                                               {
                                                                   "stt":  3,
                                                                   "nhan":  "Tinh thần – kỷ luật",
                                                                   "cauHoi":  "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
-                                                                  "traLoi":  "Đã thông báo giờ làm việc mới, chi đủ quà trung thu cho con CBNV; không có vi phạm đáng chú ý."
+                                                                  "traLoi":  "Đã thông báo giờ làm việc mới (sáng 7h30–11h45, chiều 13h15–17h00, T7 đến 15h45) và chi đủ quà trung thu cho con CBNV. Chấm công tuần 39: 46 lượt đi muộn (7,7 lượt/ngày), Bán hàng đi muộn nhiều nhất (18 lượt/18 người); 12 lượt nghỉ/vắng."
                                                               },
                                                               {
                                                                   "stt":  4,
@@ -1323,37 +1317,37 @@
                                                                   "stt":  5,
                                                                   "nhan":  "Chứng từ – hồ sơ",
                                                                   "cauHoi":  "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
-                                                                  "traLoi":  "BHXH chưa phản hồi vụ đóng trùng BHXH T7 của nhân sự đã nghỉ; đang soạn HĐ khoán cho lao động lớn tuổi để trả lương chuyển khoản."
+                                                                  "traLoi":  "BHXH chưa phản hồi vụ đóng trùng BHXH T7 của nhân sự đã nghỉ; đang soạn HĐ khoán cho lao động lớn tuổi để trả lương chuyển khoản (đã mở thẻ ngân hàng)."
                                                               },
                                                               {
                                                                   "stt":  6,
                                                                   "nhan":  "CSVC – an toàn",
                                                                   "cauHoi":  "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
-                                                                  "traLoi":  "Trần thạch cao phòng giải trí/lối tiếp nhận xe hư do thấm mưa (báo giá 9,3–12 tr); dù che showroom giao 29/09; phương án PCCC\u0026CNCH chưa nộp."
+                                                                  "traLoi":  "Trần thạch cao phòng giải trí/lối tiếp nhận xe hư do thấm mưa (báo giá 9,3–12 tr, đang xin thêm báo giá); dù che showroom giao 29/09 nhưng NCC không lắp, công ty tự chuẩn bị vị trí; phương án PCCC\u0026CNCH hạn 15/10, đang rà soát nội dung."
                                                               },
                                                               {
                                                                   "stt":  7,
                                                                   "nhan":  "Tuân thủ",
                                                                   "cauHoi":  "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
-                                                                  "traLoi":  "Rủi ro kết quả quan trắc nước thải quý 3 không đạt (nước thải có màu lạ, chưa rõ nguyên nhân) – lấy mẫu 28/09. Đăng ký nội quy lao động online hay lỗi link."
+                                                                  "traLoi":  "Rủi ro kết quả quan trắc nước thải quý 3 không đạt (nước thải có màu lạ, chưa rõ nguyên nhân) — lấy mẫu 28/09. Đăng ký nội quy lao động online hay lỗi link, hạn 30/09."
                                                               },
                                                               {
                                                                   "stt":  8,
                                                                   "nhan":  "Chi phí",
                                                                   "cauHoi":  "Có chi phí vượt kế hoạch hoặc bất thường không?",
-                                                                  "traLoi":  "Trong kế hoạch; phát sinh sửa trần và dù che (~15–20 tr). Chi phí MKT tăng cao vào tháng 9 nhưng MKT đã giải trình"
+                                                                  "traLoi":  "Trong kế hoạch; phát sinh sửa trần và dù che (~15–20 tr). Chi phí MKT tăng cao vào tháng 9 nhưng MKT đã giải trình."
                                                               },
                                                               {
                                                                   "stt":  9,
                                                                   "nhan":  "Phối hợp",
                                                                   "cauHoi":  "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
-                                                                  "traLoi":  "Hạng mục chỉnh trang khuôn viên chờ Dịch vụ bố trí người. Tháng 10 bàn giao lại các việc đề xuất/bảo hiểm cho Admin Dịch vụ."
+                                                                  "traLoi":  "Hạng mục chỉnh trang khuôn viên chờ Dịch vụ bố trí người. Ấn phẩm Membership chờ MKT phản hồi. Tháng 10 bàn giao lại các việc đề xuất/bảo hiểm cho Admin Dịch vụ."
                                                               },
                                                               {
                                                                   "stt":  10,
                                                                   "nhan":  "Tuần tới \u0026 cần hỗ trợ",
                                                                   "cauHoi":  "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
-                                                                  "traLoi":  "Hoàn tất lấy mẫu nước thải; nhờ CN Đà Lạt hỗ trợ hồ sơ PCCC; đề xuất cải tạo hệ thống xử lý nước thải nếu kết quả không đạt."
+                                                                  "traLoi":  "Hoàn tất lấy mẫu nước thải 28/09 và nộp nội quy lao động trước 30/09; nhờ CN Đà Lạt hỗ trợ hồ sơ PCCC; đề xuất cải tạo hệ thống xử lý nước thải nếu kết quả không đạt."
                                                               }
                                                           ]
                                             },
@@ -1368,49 +1362,49 @@
                                                                   "stt":  1,
                                                                   "nhan":  "Đánh giá chung",
                                                                   "cauHoi":  "Tuần này tốt, bình thường hay đáng lo, vì sao (1–2 câu)?",
-                                                                  "traLoi":  "Tuần ổn nhưng áp lực cuối quý. Bán hàng đạt ~90% chỉ tiêu quý HTV, có rủi ro hụt mốc 95% do HTV giao Creta/Tucson trễ. Dịch vụ đạt 100% doanh thu DV – PT, chỉ còn thiếu xe hết bảo hành."
+                                                                  "traLoi":  "Đáng lo ở cả 2 mảng chính dù doanh thu Dịch vụ vượt chỉ tiêu. Bán hàng mới đạt 91% báo bán quý (72/79 theo DMS) trong khi mục tiêu là chắc chắn 100% — phần còn thiếu phụ thuộc 4 xe HTV nợ và phương án 03 xe ngập nước. Dịch vụ vượt doanh thu (105,6%) nhưng lượt bảo dưỡng tuần 39 giảm 21% so với TB 90 ngày và xe hết bảo hành mới đạt 93%."
                                                               },
                                                               {
                                                                   "stt":  2,
                                                                   "nhan":  "Điểm sáng",
                                                                   "cauHoi":  "Kết quả hoặc nỗ lực nổi bật nhất?",
-                                                                  "traLoi":  "Dịch vụ đạt 100% doanh thu DV \u0026 phụ tùng quý. TVBH bắt đầu làm video/livestream theo chính sách mới. Đổi giờ làm việc và chi quà trung thu êm, không phát sinh phản ứng."
+                                                                  "traLoi":  "Doanh thu Dịch vụ – Phụ tùng vượt chỉ tiêu (105,6%). Đồng sơn tiền mặt nhích lên (+18% lượt/ngày) sau khi làm việc với bảo hiểm DBV, Bảo Việt. Hoàn thành đúng hạn phương án chống lũ lụt 2026, thông báo giờ làm việc mới và chi quà trung thu, không phát sinh phản ứng."
                                                               },
                                                               {
                                                                   "stt":  3,
                                                                   "nhan":  "Vấn đề lớn nhất",
                                                                   "cauHoi":  "Rủi ro lớn nhất toàn chi nhánh, đang xử lý thế nào?",
-                                                                  "traLoi":  "Nguy cơ không đạt 95% chỉ tiêu HTV để nhận thưởng quý: HTV mapvin 28/09, không kịp báo bán 4 xe. Đang xin phương án dùng 03 xe ngập nước + hạ LN để báo bán (đã chuyển thông tin TGĐ – BH-001)."
+                                                                  "traLoi":  "Nguy cơ không đạt 100% chỉ tiêu HTV quý: còn thiếu 7 xe; HTV giao 2 Creta + Tucson ĐB Trắng (nợ 4 xe) mapvin 28/09, không kịp báo bán trong quý. Đã chuyển thông tin TGĐ phương án dùng 03 xe ngập nước để báo bán hoặc chuyển Đà Lạt chạy chỉ tiêu, kèm hạ LN (BH-001)."
                                                               },
                                                               {
                                                                   "stt":  4,
                                                                   "nhan":  "Bộ phận cần lưu ý",
                                                                   "cauHoi":  "Bộ phận nào cần TGĐ để ý, vì sao?",
-                                                                  "traLoi":  "Văn phòng: nhiều việc tuân thủ đang chậm (phương án PCCC, nội quy lao động, quan trắc nước thải 28/09) và tuyển dụng bảo vệ, MKT kéo dài."
+                                                                  "traLoi":  "Văn phòng: nhiều việc tuân thủ sát hạn — quan trắc nước thải (lấy mẫu 28/09, nguy cơ không đạt vì nước thải có màu lạ chưa rõ nguyên nhân), nội quy lao động (link nộp hay lỗi, hạn 30/09), phương án PCCC\u0026CNCH (hạn 15/10, chưa rõ nội dung). Tuyển MKT và bảo vệ chưa có kết quả. Dịch vụ: lượt bảo dưỡng và bảo hiểm cùng giảm ~20%, cần tìm nguyên nhân."
                                                               },
                                                               {
                                                                   "stt":  5,
                                                                   "nhan":  "Thị trường – đối thủ",
                                                                   "cauHoi":  "Có thay đổi gì đáng chú ý?",
-                                                                  "traLoi":  "(demo) Đối thủ đẩy mạnh ưu đãi cuối quý; chưa thấy ảnh hưởng rõ tới lượng khách tuần này, Bán hàng theo dõi tiếp."
+                                                                  "traLoi":  "Đối thủ đẩy mạnh ưu đãi cuối quý; chưa thấy ảnh hưởng rõ tới lượng khách tuần này, Bán hàng theo dõi tiếp."
                                                               },
                                                               {
                                                                   "stt":  6,
                                                                   "nhan":  "Nhân sự chủ chốt",
                                                                   "cauHoi":  "Có biến động hay rủi ro với người quan trọng không?",
-                                                                  "traLoi":  "Chưa tuyển được nhân sự MKT (có 4 hồ sơ, sắp phỏng vấn); vị trí bảo vệ tuyển 2 tháng chưa có người."
+                                                                  "traLoi":  "30 ngày qua nghỉ 2 người (Bảo vệ 01/09, Chuyên viên Marketing 10/09), tuyển mới 2 (Admin Dịch vụ 07/09, Tạp vụ 09/09). Hai vị trí MKT và bảo vệ vẫn trống: MKT có 4 hồ sơ sắp phỏng vấn, bảo vệ đăng tuyển 2 tháng chưa có người. CSKH chỉ 1 người trực hotline — rủi ro KPI gọi nhỡ dưới 10%."
                                                               },
                                                               {
                                                                   "stt":  7,
                                                                   "nhan":  "Cần TGĐ",
                                                                   "cauHoi":  "Việc cần TGĐ quyết hoặc hỗ trợ (tóm gọn)?",
-                                                                  "traLoi":  "(1) Duyệt phương án dùng 03 xe ngập nước + hạ LN để báo bán (BH-001). (2) Cho mở lệnh nội bộ bù ~200 xe hết bảo hành (DV-001). (3) Duyệt chi tỉa cây trước mùa bão, 15–20 tr (DV-005)."
+                                                                  "traLoi":  "(1) BH-001: duyệt dùng 03 xe ngập nước để báo bán hoặc chuyển Đà Lạt chạy chỉ tiêu, kèm hạ LN — cần quyết trước 30/09. (2) DV-001: cho mở lệnh nội bộ để bù ~200 xe hết bảo hành. (3) DV-005: duyệt chi tỉa cây cao trước mùa mưa bão (báo giá 20 tr, đang deal về 15 tr)."
                                                               },
                                                               {
                                                                   "stt":  8,
                                                                   "nhan":  "Cam kết tuần tới",
                                                                   "cauHoi":  "2–3 ưu tiên GĐCN cam kết cho tuần tới?",
-                                                                  "traLoi":  "Chốt báo bán tối đa trước 30/09; hoàn tất lấy mẫu nước thải 28/09; phỏng vấn và chốt ứng viên MKT."
+                                                                  "traLoi":  "Chốt báo bán tối đa trước 30/09; hỗ trợ lấy mẫu nước thải 28/09 và nộp nội quy lao động trước 30/09; phỏng vấn ứng viên MKT; kiểm kê kho phụ tùng Quý 3 (gồm PT ngập nước) trước 01/10."
                                                               }
                                                           ]
                                             },
@@ -1425,43 +1419,43 @@
                                                                   "stt":  1,
                                                                   "nhan":  "Hợp đồng",
                                                                   "cauHoi":  "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
-                                                                  "traLoi":  "(demo) THẤP. Tuần này nhỉnh hơn tuần 38 nhưng chỉ bằng khoảng 1/3 tuần 37 và thấp hơn trung bình 4 tuần. Nguyên nhân chính: thiếu Creta/Tucson Trắng giao ngay, khách chờ xe HTV nên chưa chốt cọc. Nếu HTV giao đủ 4 xe nợ, dự kiến tuần 40 phục hồi về mức trung bình."
+                                                                  "traLoi":  "THẤP. Tuần 39 ký 6 HĐ (NT 5, PR 1), gấp đôi tuần 38 (3) nhưng chỉ bằng khoảng 1/3 tuần 37 (15). Nguyên nhân chính: thiếu Creta/Tucson ĐB Trắng giao ngay, khách chờ xe HTV nên chưa chốt cọc."
                                                               },
                                                               {
                                                                   "stt":  2,
                                                                   "nhan":  "Lợi nhuận gộp",
                                                                   "cauHoi":  "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
-                                                                  "traLoi":  "Thấp hơn bình thường do phải hạ LN để đẩy báo bán cuối quý; Tucson đang dùng mức hỗ trợ 1%."
+                                                                  "traLoi":  "Thấp hơn bình thường do phải hạ LN để đẩy báo bán cuối quý; Tucson có sẵn mức hỗ trợ 1% (GĐBH quyết)."
                                                               },
                                                               {
                                                                   "stt":  3,
                                                                   "nhan":  "Mất deal",
                                                                   "cauHoi":  "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
-                                                                  "traLoi":  "(demo) Mất 3 deal: 2 do không có sẵn Creta/Tucson Trắng giao ngay, 1 do giá so với đối thủ."
+                                                                  "traLoi":  "Chưa có số liệu mất deal tuần này — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  4,
                                                                   "nhan":  "KH tiềm năng",
                                                                   "cauHoi":  "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
-                                                                  "traLoi":  "(demo) ~45 KH mới, chủ yếu từ Facebook/livestream và khách vãng lai; gọi lại trong 24h ~80%. Sẽ đo chuẩn hơn khi triển khai CRM Bizfly."
+                                                                  "traLoi":  "Chưa có số liệu KH tiềm năng tuần này — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  5,
                                                                   "nhan":  "Đối thủ",
                                                                   "cauHoi":  "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
-                                                                  "traLoi":  "(demo) Một số đại lý đối thủ tung ưu đãi lệ phí trước bạ cuối quý, khách hỏi so sánh nhiều hơn; chưa mất deal đáng kể vì lý do này."
+                                                                  "traLoi":  "Chưa có thông tin đối thủ tuần này — trưởng BP bổ sung."
                                                               },
                                                               {
                                                                   "stt":  6,
                                                                   "nhan":  "Nguồn xe \u0026 tồn kho",
                                                                   "cauHoi":  "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
-                                                                  "traLoi":  "Thiếu Creta và Tucson ĐB Trắng (HTV nợ 4 xe, mapvin 28/09 – không kịp báo bán). Có 03 xe ngập nước cần phương án xử lý."
+                                                                  "traLoi":  "Thiếu Creta và Tucson ĐB Trắng: HTV nợ 4 xe, mapvin 28/09 — không kịp báo bán trong quý. 03 xe ngập nước đang chờ phương án (báo bán hoặc chuyển Đà Lạt chạy chỉ tiêu)."
                                                               },
                                                               {
                                                                   "stt":  7,
                                                                   "nhan":  "Hồ sơ – giao xe",
                                                                   "cauHoi":  "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
-                                                                  "traLoi":  "Chứng từ giải ngân CSC T8 chưa chốt được từ phía HTV; xe lái thử Palisade LX3 cần HTV xác nhận lại."
+                                                                  "traLoi":  "Chứng từ giải ngân CSC T8 chưa chốt được từ phía HTV; xe lái thử Palisade LX3 cần HTV xác nhận lại. Creta lái thử đăng ký Nha Trang nhưng không xuất hóa đơn từ HTV — đã xử lý sau buổi họp với HTV."
                                                               },
                                                               {
                                                                   "stt":  8,
@@ -1473,13 +1467,13 @@
                                                                   "stt":  9,
                                                                   "nhan":  "MKT – sự kiện",
                                                                   "cauHoi":  "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
-                                                                  "traLoi":  "Lái thử tại Cam Lâm đang chuẩn bị; KPI quý CDR 30/30 triệu, CSC T9 25 triệu đang bám."
+                                                                  "traLoi":  "Lái thử tại Cam Lâm theo kế hoạch 26/09 (trên sheet vẫn để Kế hoạch — cần cập nhật kết quả). KPI quý CDR 30/30 triệu, CSC T9 25 triệu đang bám. Tuyển nhân sự MKT chưa có kết quả — đề xuất đặt KPI tuyển dụng cho HCNS."
                                                               },
                                                               {
                                                                   "stt":  10,
                                                                   "nhan":  "Dự báo \u0026 cần hỗ trợ",
                                                                   "cauHoi":  "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-                                                                  "traLoi":  "Nếu không có phương án xe ngập nước, dự kiến chỉ đạt ~90–92%, hụt mốc 95%. Cần TGĐ quyết trước 30/09."
+                                                                  "traLoi":  "Báo bán quý đang 91% (72/79). Muốn chắc chắn 100% cần phương án 03 xe ngập nước hoặc chuyển Đà Lạt chạy chỉ tiêu; không có thì dừng quanh 90–92%. Cần TGĐ quyết trước 30/09."
                                                               }
                                                           ]
                                             }
