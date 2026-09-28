@@ -120,6 +120,14 @@
   /* Kiểu dùng chung cho mục 3–9 (cùng kiểu khối của mục 2) */
   .ma{font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
   .nd-block.tgd{border-top-color:var(--accent);}
+  /* Khung "Điểm TGĐ cần lưu ý" ngay dưới thẻ chi nhánh (28/09/2026) — trích câu Vấn đề lớn nhất / Cần TGĐ của GĐCN */
+  .panel.tgd-box{border-left:4px solid var(--accent);}
+  .panel.tgd-box h3{color:var(--accent);margin-bottom:10px;}
+  .tgd-link{margin-top:10px;font-size:12.5px;}
+  .tgd-link a{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
+  .tgd-link a:hover{text-decoration:underline;}
+  .branch-meta a.warn-link{color:var(--red);font-weight:700;cursor:pointer;text-decoration:none;margin-left:6px;}
+  .dup-note{color:#9aa8bb;font-style:italic;}
   .hl-tgd{color:var(--accent);font-weight:700;}
   .wk{font-weight:700;color:var(--navy);}
   .empty{color:var(--ink-soft);font-size:12.5px;padding:6px 0 10px;font-style:italic;}
@@ -412,16 +420,22 @@ function tinhTrang(t, isTCT){
 }
 // Cột "Chuyển TGĐ" (tên cũ "GĐCN xử lý", đổi 28/09/2026): "Chuyển thông tin TGĐ" khi cần TGĐ biết/quyết,
 // "TGĐ đã có chỉ đạo" khi TGĐ đã chỉ đạo; để trống = không chuyển, GĐCN tự xử lý → hiện "GĐCN đang xử lý".
-function gdLine(t){
+// noEmpty: không ghi "Chưa có ý kiến chỉ đạo" (mục 3 đã có tiêu đề nhóm nói rõ — tránh lặp chữ vàng ở từng việc)
+function gdLine(t, noEmpty){
   if(!t.deXuat && !t.gdXuLy && !t.ghiChuGD) return '';
   var s=isTGD(t.gdXuLy)?'<span class="hl-tgd">Chuyển thông tin TGĐ</span>'
     :isYKienGD(t.gdXuLy)?'GĐCN đã có ý kiến chỉ đạo'
     :isPhanHoi(t.gdXuLy)?'TGĐ đã có chỉ đạo'
     :t.gdXuLy?esc(t.gdXuLy)
-    :(t.deXuat && !isDone(t))?'<span class="warnc">Chưa có ý kiến chỉ đạo</span>':'';
+    :(t.deXuat && !isDone(t) && !noEmpty)?'<span class="warnc">Chưa có ý kiến chỉ đạo</span>':'';
   return s+(s&&t.ghiChuGD?' — ':'')+esc(t.ghiChuGD||'');
 }
-// opt.compact: chỉ tình trạng + cập nhật + kết quả (mục tháng / cải tiến / achievement)
+// Tiêu đề việc: Nội dung nhiều dòng gạch đầu dòng ("- A\n- B") → "A; B" (tránh "VP-004 · - Thống kê…")
+function tieuDe(s){
+  var p=String(s||'').split(/\r?\n/).map(function(x){ return x.replace(/^\s*[-–•+*]\s*/,'').replace(/[\s.;]+$/,''); }).filter(Boolean);
+  return p.reduce(function(r,x,i){ return i? r+(/:$/.test(r)?' ':'; ')+x : x; }, '');   // dòng kết thúc ":" thì nối bằng dấu cách
+}
+// opt.compact: chỉ tình trạng + cập nhật + kết quả (mục tháng / cải tiến / việc đã hoàn thành)
 function taskBlock(t, opt){
   opt=opt||{};
   var isTCT=!!(t._isTCT||opt.tct);
@@ -436,14 +450,16 @@ function taskBlock(t, opt){
   }
   if(isDone(t)) add('Kết quả', t.ketQua);
   if(isTCT && !isClosed(t)) add('Triển khai ở BP', t._soDong?t._soDong+' dòng':'<span class="bad">Chưa bộ phận nào mở dòng triển khai</span>', true);
-  if(!opt.compact) add('Hướng chỉ đạo', gdLine(t), true);
+  if(!opt.compact){ var g=gdLine(t, opt.noEmptyGD); if(g) rows.push(['Hướng chỉ đạo', g]); }
   if(opt.extra) opt.extra.forEach(function(r){ rows.push(r); });
   // opt.fold: bên phải dòng tóm tắt = trạng thái · hạn (tô đỏ nếu quá hạn) thay cho bộ phận/nguồn
+  // opt.showBP: thêm tên bộ phận (danh sách trộn nhiều BP); opt.dupNote: ghi chú việc đã nêu ở mục khác
   if(opt.fold){
     var hn=t.han?(t._overdue?'<span class="bad">hạn '+fmtDShort(t.han)+'</span>':'hạn '+fmtDShort(t.han)):'';
-    by=[t.trangThai?esc(t.trangThai):'<span class="bad">chưa có trạng thái</span>', hn, t.phuTrach?esc(t.phuTrach):''].filter(Boolean).join(' · ');
+    by=[opt.dupNote?'<span class="dup-note">'+opt.dupNote+'</span>':'', opt.showBP?esc(t._bpName):'',
+        t.trangThai?esc(t.trangThai):'<span class="bad">chưa có trạng thái</span>', hn, t.phuTrach?esc(t.phuTrach):''].filter(Boolean).join(' · ');
   }
-  var title=(opt.fold?esc(t.ma||'(thiếu mã)'):'<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>')+' · '+esc(t.noiDung);
+  var title=(opt.fold?esc(t.ma||'(thiếu mã)'):'<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>')+' · '+esc(tieuDe(t.noiDung));
   return qaBlock(title, by, rows, (opt.hlTGD&&isTGD(t.gdXuLy))?'tgd':'', opt.fold);
 }
 
@@ -815,21 +831,26 @@ function jumpTo(id){
 function renderBranchCard(a){
   var b=a.b;
   var h='<div class="branch-card"><div class="branch-top"><div class="branch-name">'+esc(b.chiNhanh)+' · Tuần '+a.refWeek+'/'+a.refYear+'</div>';
-  h+='<div class="branch-meta">'+(b.ngayBaoCao?'Ngày báo cáo '+fmtD(b.ngayBaoCao):'Chưa điền Ngày báo cáo — tính theo ngày lưu file '+fmtD(b.ngayDuLieu))+' · File: '+esc(b.file||'')+'</div></div>';
+  // Lỗi nhập liệu không có ô KPI riêng (Quá hạn/Chưa CN có thể = 0 trong khi vẫn có lỗi) → link đỏ cạnh ngày báo cáo, bấm nhảy mục 7
+  var nLoi=a.issues.length;
+  h+='<div class="branch-meta">'+(b.ngayBaoCao?'Ngày báo cáo '+fmtD(b.ngayBaoCao):'Chưa điền Ngày báo cáo — tính theo ngày lưu file '+fmtD(b.ngayDuLieu))+' · File: '+esc(b.file||'')+
+     (nLoi?'<a class="warn-link" onclick="jumpTo(\'sec-canhbao\')" title="Xem mục 7 Cảnh báo &amp; lỗi nhập liệu">⚠ '+nLoi+' việc nhập liệu chưa đúng ›</a>':'')+'</div></div>';
   // Thẻ chi nhánh (tên + 6 ô KPI) ghim ở mép trên khi cuộn (position:sticky, 28/09/2026) để bấm KPI lúc nào cũng được;
   // cảnh báo đặt NGOÀI thẻ (renderBranchNotes) cho thanh ghim gọn.
   // jump: id mục cần nhảy tới khi bấm (chỉ khi số > 0)
-  var k=function(lbl,n,cls,sub,jump){
-    var go=jump&&n?' clickable" onclick="jumpTo(\''+jump+'\')" title="Bấm để xem chi tiết':'';
-    return '<div class="kpi '+(n?cls:'muted')+go+'"><div class="kpi-label">'+lbl+(jump&&n?' ›':'')+'</div><div class="kpi-num">'+n+'</div>'+(sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>';
+  // tip: cách tính chi tiết — để trong tooltip, dòng phụ chỉ ghi chữ thường dễ hiểu (28/09/2026)
+  var k=function(lbl,n,cls,sub,jump,tip){
+    var go=jump&&n?' clickable" onclick="jumpTo(\''+jump+'\')':'';
+    var tt=(tip||'')+(jump&&n?(tip?' — ':'')+'bấm để xem chi tiết':'');
+    return '<div class="kpi '+(n?cls:'muted')+go+'"'+(tt?' title="'+esc(tt)+'"':'')+'><div class="kpi-label">'+lbl+(jump&&n?' ›':'')+'</div><div class="kpi-num">'+n+'</div>'+(sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>';
   };
   h+='<div class="kpi-row">';
-  h+=k('Việc đang mở',a.open.length,'','/ '+a.viec.length+' việc đã ghi','sec-thang');
-  h+=k('Chuyển thông tin TGĐ',a.chuyenTGD.length,'orange','đề xuất GĐCN chuyển lên','sec-dexuat');
-  h+=k('Chưa có ý kiến chỉ đạo',a.chuaYKien.length,'gold','có đề xuất, Hướng chỉ đạo trống','sec-dexuat');
-  h+=k('Quá hạn',a.overdue.length,'red','chưa Hoàn thành/Tạm dừng','sec-canhbao');
-  h+=k('Chưa CN tuần này',a.stale.length,'gold','Tuần CN < T'+a.refWeek,'sec-canhbao');
-  h+=k('Hoàn thành tháng '+(a.ref.getMonth()+1),a.doneMonth,'green','theo Ngày HT (trống thì theo Tháng)','sec-achievement');
+  h+=k('Việc đang mở',a.open.length,'','trên '+a.viec.length+' việc','sec-thang','Chưa Hoàn thành / Tạm dừng');
+  h+=k('Chuyển thông tin TGĐ',a.chuyenTGD.length,'orange','GĐCN chuyển lên','sec-dexuat');
+  h+=k('Chưa có ý kiến chỉ đạo',a.chuaYKien.length,'gold','đề xuất GĐCN chưa xử lý','sec-dexuat','Có đề xuất, chưa hoàn thành, cột Hướng chỉ đạo để trống');
+  h+=k('Quá hạn',a.overdue.length,'red','đã qua hạn, chưa xong','sec-canhbao','Hạn dự kiến trước ngày báo cáo, chưa Hoàn thành / Tạm dừng');
+  h+=k('Chưa CN tuần này',a.stale.length,'gold','chưa ghi cập nhật T'+a.refWeek,'sec-canhbao','Việc đang mở có Tuần cập nhật trống hoặc nhỏ hơn T'+a.refWeek);
+  h+=k('Hoàn thành tháng '+(a.ref.getMonth()+1),a.doneMonth,'green','việc đã xong','sec-achievement','Đếm theo Ngày hoàn thành; dòng không có ngày thì theo cột Tháng');
   h+='</div>';
   return h+'</div>';
 }
@@ -873,7 +894,7 @@ function renderNhanDinh(a){
   var cur=a.ndBP.cur;
   var done=ND_ORDER.filter(function(bp){ return cur[bp] || (bp==='GDCN' && a.ndCur); }).length;
   var h='<div class="panel"><h3><span class="chart-num">2</span> Nhận định tuần '+a.refWeek+' — GĐCN &amp; trưởng bộ phận <span class="count-pill'+(done<ND_ORDER.length?' red':'')+'">'+done+'/'+ND_ORDER.length+'</span></h3>';
-  h+='<p class="desc">Đánh giá tổng thể hoạt động trong tuần và lý do, trả lời theo bộ câu hỏi cố định (rê chuột vào nhãn để xem câu hỏi đầy đủ). Nguồn: sheet "Nhan dinh tong the".</p>';
+  h+='<p class="desc" title="Rê chuột vào nhãn để xem câu hỏi đầy đủ. Nguồn: sheet &quot;Nhan dinh tong the&quot;">Đánh giá tổng thể tuần và lý do, theo bộ câu hỏi cố định. Bấm tên bộ phận để mở.</p>';
   h+='<div class="nd-grid">';
   ND_ORDER.forEach(function(bp){ h+=ndBlock(bp, cur[bp], bp==='GDCN'&&!cur.GDCN?a.ndCur:null, false, bp==='BH'?hdAutoHtml(a.b.chiNhanh, a.ref):'', bp!=='GDCN'); });
   h+='</div>';
@@ -892,13 +913,31 @@ function renderNhanDinh(a){
   return h+'</div>';
 }
 
+// Khung "Điểm TGĐ cần lưu ý" (28/09/2026): đặt ngay dưới thẻ chi nhánh để TGĐ thấy việc cần mình trước tiên —
+// trích nguyên câu "Vấn đề lớn nhất" + "Cần TGĐ" của GĐCN (mục 2, nhận theo nhãn) + link tới việc Chuyển thông tin TGĐ ở mục 3.
+function renderCanTGD(a){
+  var e=a.ndBP.cur.GDCN;
+  var items=e?(e.items||[]).filter(function(it){ var n=stripVN(it.nhan); return it.traLoi && (n.indexOf('van de lon nhat')>=0 || n.indexOf('tgd')>=0); }):[];
+  var tgd=a.chuyenTGD;
+  if(!items.length && !tgd.length) return '';
+  var h='<div class="panel tgd-box"><h3>Điểm TGĐ cần lưu ý tuần '+a.refWeek+'</h3>';
+  if(items.length){
+    h+='<div class="nd-qa">';
+    items.forEach(function(it){ h+='<div class="nd-k" title="'+esc(it.cauHoi)+'">'+esc(it.nhan)+'</div><div class="nd-v">'+esc(it.traLoi)+'</div>'; });
+    h+='</div>';
+  }
+  if(tgd.length) h+='<div class="tgd-link"><a onclick="jumpTo(\'sec-dexuat\')">'+tgd.length+' việc GĐCN chuyển thông tin TGĐ: '+tgd.map(function(t){ return esc(t.ma||'(thiếu mã)'); }).join(', ')+' ›</a></div>';
+  return h+'</div>';
+}
+
 function renderDeXuat(a){
   var h='<div class="panel" id="sec-dexuat"><h3><span class="chart-num">3</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
-  h+='<p class="desc">Việc có "Đề xuất / cần hỗ trợ", chưa hoàn thành và chưa có hướng chỉ đạo: "Chuyển thông tin TGĐ" xếp đầu (viền cam), sau đó là việc để trống Hướng chỉ đạo (chưa thấy ý kiến). Việc GĐCN đã có ý kiến chỉ đạo không nằm ở mục này.</p>';
+  h+='<p class="desc" title="Việc có Đề xuất / cần hỗ trợ, chưa Hoàn thành, Hướng chỉ đạo = Chuyển thông tin TGĐ hoặc để trống. Việc GĐCN đã có ý kiến chỉ đạo không nằm ở mục này.">Việc có đề xuất, chưa xong và chưa có hướng chỉ đạo. Việc GĐCN chuyển TGĐ hiện đầy đủ; việc chưa có ý kiến chỉ đạo thu gọn — bấm để mở.</p>';
   if(!a.deXuat.length) return h+'<div class="empty">Không có đề xuất nào đang chờ.</div></div>';
-  var tgd=a.chuyenTGD, khac=a.chuaYKien;
+  var tgd=a.chuyenTGD, khac=a.chuaYKien.slice().sort(function(x,y){ return BP_ORDER.indexOf(x.boPhan)-BP_ORDER.indexOf(y.boPhan); });
+  // 28/09/2026: chỉ việc "Chuyển thông tin TGĐ" mở đầy đủ; nhóm "Chưa có ý kiến chỉ đạo" (việc GĐCN còn nợ) thu 1 dòng/việc
   if(tgd.length) h+=subHead('Chuyển thông tin TGĐ ('+tgd.length+')')+grid(tgd.map(function(t){ return taskBlock(t,{hlTGD:true}); }));
-  if(khac.length) h+=subHead('Chưa có ý kiến chỉ đạo ('+khac.length+')')+grid(khac.map(function(t){ return taskBlock(t); }));
+  if(khac.length) h+=subHead('<span class="warnc">Chưa có ý kiến chỉ đạo ('+khac.length+')</span>')+grid(khac.map(function(t){ return taskBlock(t,{fold:true, showBP:true, noEmptyGD:true}); }));
   return h+'</div>';
 }
 
@@ -908,7 +947,8 @@ function renderTrongTam(a){
   BP_ORDER.forEach(function(bp){
     var list=a.trongTam.filter(function(t){ return t.boPhan===bp; });
     h+=subHead(BP_NAME[bp]+' ('+list.length+')');
-    h+=list.length?grid(list.map(function(t){ return taskBlock(t,{fold:true}); })):'<div class="empty">Không có việc trọng tâm tuần.</div>';
+    // Việc đã có ở mục 3 → ghi chú mờ bên phải để người đọc biết đã xem rồi
+    h+=list.length?grid(list.map(function(t){ return taskBlock(t,{fold:true, dupNote:a.deXuat.indexOf(t)>=0?'đã nêu ở mục 3':''}); })):'<div class="empty">Không có việc trọng tâm tuần.</div>';
   });
   return h+'</details>';
 }
@@ -943,7 +983,7 @@ function renderIssues(a){
   h+='<p class="desc">Mỗi khối là 1 việc có vấn đề (tương ứng các ô ĐỎ/VÀNG trong file Excel) — GĐCN rà và truy trách nhiệm trước khi gửi TGĐ.</p>';
   return h+grid(map.map(function(m){
     var t=m.t, by=m.tct?'TCT giao':esc(t._bpName)+(t.phuTrach?' · '+esc(t.phuTrach):'');
-    return qaBlock('<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span> · '+esc(t.noiDung), by, m.rows);
+    return qaBlock('<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span> · '+esc(tieuDe(t.noiDung)), by, m.rows);
   }))+'</details>';
 }
 
@@ -982,7 +1022,7 @@ function renderAchievement(a){
   var m = achMonthSel!=null ? achMonthSel : 0;
   var list=done.filter(function(r){ return !m || r.m===m; });
   list.sort(function(x,y){ return (y.t.ngayHT||'').localeCompare(x.t.ngayHT||''); });
-  var h='<details class="panel" id="sec-achievement"><summary><span class="chart-num">9</span> Achievement — việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
+  var h='<details class="panel" id="sec-achievement"><summary><span class="chart-num">9</span> Việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
   h+='<div class="toolbar">Tháng <select onchange="achMonthSel=+this.value;render()"><option value="0">Tất cả</option>'+Object.keys(months).map(Number).sort(function(x,y){return x-y;}).map(function(x){ return '<option value="'+x+'"'+(x===m?' selected':'')+'>Tháng '+x+'</option>'; }).join('')+'</select></div>';
   if(!list.length) return h+'<div class="empty">Chưa có việc hoàn thành.</div></details>';
   return h+grid(list.map(function(r){ return taskBlock(r.t,{compact:true, tct:!!r.tct}); }))+'</details>';
@@ -995,8 +1035,9 @@ function render(){
   if(!BR.length){ app.innerHTML='<div class="error">Chưa có dữ liệu chi nhánh nào trong baocaotuan.json.</div>'; return; }
   var a=BR[selIdx];
   var h=renderOverview(BR);
-  h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
-  h+=renderBranchCard(a)+renderBranchNotes(a)+renderChiSoPanel(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
+  // Chỉ 1 chi nhánh thì nút chọn trùng với bảng mục 0 → ẩn
+  if(BR.length>1) h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
+  h+=renderBranchCard(a)+renderBranchNotes(a)+renderCanTGD(a)+renderChiSoPanel(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
   // Giữ trạng thái mở/đóng các <details> khi render lại (đổi tháng, đổi chi nhánh)
   var openState={}; app.querySelectorAll('details.panel').forEach(function(d){ var s=d.querySelector('summary'); if(s) openState[s.textContent.replace(/\d+$/,'').trim()]=d.open; });
   app.innerHTML=h;
