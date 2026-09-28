@@ -51,9 +51,14 @@
   .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
   /* Thẻ đầu chi nhánh */
-  .branch-card{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;border-top:4px solid var(--navy);}
-  .branch-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
-  .branch-name{font-size:18px;font-weight:800;color:var(--navy);}
+  /* Thẻ chi nhánh + KPI: ghim ở mép trên khi cuộn (28/09/2026) — gọn hơn để không che nhiều nội dung */
+  .branch-card{background:var(--panel);border-radius:14px;box-shadow:0 4px 14px rgba(27,79,140,.14);padding:10px 16px 12px;margin-bottom:18px;border-top:4px solid var(--navy);position:sticky;top:0;z-index:30;}
+  .branch-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:8px;}
+  .branch-name{font-size:16px;font-weight:800;color:var(--navy);}
+  .branch-card .kpi-row{margin-bottom:0;gap:8px;}
+  .branch-card .kpi{padding:6px 10px;}
+  .branch-card .kpi-num{font-size:18px;}
+  .panel, details.panel{scroll-margin-top:160px;}   /* bấm KPI nhảy tới mục: chừa chỗ cho thanh ghim */
   .branch-meta{font-size:12px;color:var(--ink-soft);}
   .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;}
   .kpi{border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
@@ -170,6 +175,8 @@
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .branch-card{position:static;}   /* điện thoại: 6 ô KPI xếp 3 hàng, ghim sẽ che gần hết màn hình */
+    .panel, details.panel{scroll-margin-top:0;}
     .nd-grid,.cs-grid{grid-template-columns:1fr;}
     .nd-qa,.nd-block.gd .nd-qa{grid-template-columns:1fr;gap:2px;}
     .nd-v{margin-bottom:6px;}
@@ -443,7 +450,8 @@ function taskBlock(t, opt){
 function renderOverview(A){
   // Chỉ giữ 6 cột số quan trọng nhất (bỏ cột Lỗi nhập liệu 28/09/2026 — xem mục 7) + bảng cố định độ rộng, tiêu đề tự xuống dòng → không trượt ngang.
   // Các số chi tiết khác (GĐCN đang xử lý, cải tiến, hoàn thành tháng) xem ở thẻ chi nhánh bên dưới.
-  var h='<div class="panel"><h3><span class="chart-num">1</span> Tổng quan các chi nhánh</h3>';
+  // Mục 0 (đổi 28/09/2026): chỉ còn bảng kê báo cáo các chi nhánh; Chỉ số trọng yếu tách thành mục 1 riêng
+  var h='<div class="panel"><h3><span class="chart-num">0</span> Tổng quan các chi nhánh</h3>';
   h+='<p class="desc">Bấm vào 1 dòng để xem chi tiết chi nhánh. Số màu đỏ/vàng là việc cần lưu ý.</p>';
   h+='<table class="ov"><colgroup><col style="width:20%"><col style="width:19%"><col><col><col><col><col></colgroup>';
   h+='<thead><tr><th>Chi nhánh</th><th>Nhận định tuần</th><th class="num">Việc đang mở</th><th class="num">Trọng tâm tuần</th><th class="num">Chuyển thông tin TGĐ</th><th class="num">Quá hạn</th><th class="num">Chưa cập nhật tuần</th></tr></thead><tbody>';
@@ -459,7 +467,12 @@ function renderOverview(A){
     h+='<td class="num">'+cnt(a.stale.length,'warnc')+'</td>';
     h+='</tr>';
   });
-  return h+'</tbody></table>'+renderChiSo(A[selIdx])+'</div>';
+  return h+'</tbody></table></div>';
+}
+// Mục 1 — Chỉ số trọng yếu của chi nhánh đang chọn (thẻ đánh số 1.1 Bán hàng, 1.2 Dịch vụ, 1.3 Nhân sự...)
+function renderChiSoPanel(a){
+  var body=renderChiSo(a); if(!body) return '';
+  return '<div class="panel" id="sec-chiso"><h3><span class="chart-num">1</span> Chỉ số trọng yếu — '+esc(a.b.chiNhanh)+' · Tuần '+a.refWeek+'</h3>'+body+'</div>';
 }
 
 // ── Chỉ số trọng yếu (sheet "Chi so trong yeu", thêm 26/09/2026) — biểu đồ trong mục 1, theo chi nhánh đang chọn.
@@ -787,7 +800,9 @@ function renderChiSo(a){
     return typeof b==='string'?b:'<div class="cs-block"><div class="cs-title">'+esc(b.name)+(b.tieuDe?' — '+esc(b.tieuDe):'')+'</div>'+b.body+'</div>';
   });
   var ns=renderNS(a); if(ns) blocks.push(ns);
-  return subHead('Chỉ số trọng yếu — '+esc(a.b.chiNhanh)+' · Tuần '+a.refWeek)+'<div class="cs-grid">'+blocks.join('')+'</div>';
+  // Đánh số thẻ theo thứ tự hiển thị: 1.1, 1.2, 1.3... (mỗi thẻ có đúng 1 .cs-title ở đầu)
+  var n=0, html=blocks.join('').replace(/<div class="cs-title">/g, function(m){ n++; return m+'1.'+n+' '; });
+  return '<div class="cs-grid">'+html+'</div>';
 }
 
 // Nhảy tới 1 mục (mở luôn nếu đang thu gọn) — dùng cho các ô KPI của thẻ chi nhánh
@@ -801,9 +816,8 @@ function renderBranchCard(a){
   var b=a.b;
   var h='<div class="branch-card"><div class="branch-top"><div class="branch-name">'+esc(b.chiNhanh)+' · Tuần '+a.refWeek+'/'+a.refYear+'</div>';
   h+='<div class="branch-meta">'+(b.ngayBaoCao?'Ngày báo cáo '+fmtD(b.ngayBaoCao):'Chưa điền Ngày báo cáo — tính theo ngày lưu file '+fmtD(b.ngayDuLieu))+' · File: '+esc(b.file||'')+'</div></div>';
-  var notes=(b.canhBao||[]).slice();
-  if(!b.ngayBaoCao) notes.push('GĐCN chưa điền Ngày báo cáo (sheet "Bao cao GDCN", ô G3).');
-  if(notes.length) h+='<div class="notice">'+notes.map(function(n){ return '<div>⚠ '+esc(n)+'</div>'; }).join('')+'</div>';
+  // Thẻ chi nhánh (tên + 6 ô KPI) ghim ở mép trên khi cuộn (position:sticky, 28/09/2026) để bấm KPI lúc nào cũng được;
+  // cảnh báo đặt NGOÀI thẻ (renderBranchNotes) cho thanh ghim gọn.
   // jump: id mục cần nhảy tới khi bấm (chỉ khi số > 0)
   var k=function(lbl,n,cls,sub,jump){
     var go=jump&&n?' clickable" onclick="jumpTo(\''+jump+'\')" title="Bấm để xem chi tiết':'';
@@ -818,6 +832,11 @@ function renderBranchCard(a){
   h+=k('Hoàn thành tháng '+(a.ref.getMonth()+1),a.doneMonth,'green','theo Ngày HT (trống thì theo Tháng)','sec-achievement');
   h+='</div>';
   return h+'</div>';
+}
+function renderBranchNotes(a){
+  var b=a.b, notes=(b.canhBao||[]).slice();
+  if(!b.ngayBaoCao) notes.push('GĐCN chưa điền Ngày báo cáo (sheet "Bao cao GDCN", ô G3).');
+  return notes.length ? '<div class="notice">'+notes.map(function(n){ return '<div>⚠ '+esc(n)+'</div>'; }).join('')+'</div>' : '';
 }
 
 // Mục 2 "Nhận định tuần" — phần TGĐ đọc đầu tiên: nhận định tổng thể của GĐCN + 3 trưởng bộ phận
@@ -977,7 +996,7 @@ function render(){
   var a=BR[selIdx];
   var h=renderOverview(BR);
   h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
-  h+=renderBranchCard(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
+  h+=renderBranchCard(a)+renderBranchNotes(a)+renderChiSoPanel(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
   // Giữ trạng thái mở/đóng các <details> khi render lại (đổi tháng, đổi chi nhánh)
   var openState={}; app.querySelectorAll('details.panel').forEach(function(d){ var s=d.querySelector('summary'); if(s) openState[s.textContent.replace(/\d+$/,'').trim()]=d.open; });
   app.innerHTML=h;
