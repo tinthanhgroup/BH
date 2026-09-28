@@ -90,7 +90,10 @@
   details.tt-fold[open] > summary .nd-title{white-space:normal;}
   details.tt-fold > summary .nd-by{white-space:nowrap;flex-shrink:0;}
   .nd-grid:has(> details.tt-fold){gap:6px;}
-  details.cs-note{margin-top:4px;} details.cs-note > summary{font-size:11px;color:var(--ink-soft);cursor:pointer;}
+  details.cs-note{margin-top:4px;}
+  .cs-muted{color:var(--ink-soft);font-size:11px;}
+  .cs-btn{display:inline-block;margin-top:8px;font-size:11.5px;font-weight:600;color:var(--navy);border:1px solid var(--navy);border-radius:6px;padding:3px 10px;text-decoration:none;}
+  .cs-btn:hover{background:#EEF4FB;} details.cs-note > summary{font-size:11px;color:var(--ink-soft);cursor:pointer;}
   .nd-title{font-size:13px;font-weight:800;color:var(--navy);}
   .nd-by{font-size:11.5px;color:var(--ink-soft);}
   .nd-qa{display:grid;grid-template-columns:150px 1fr;gap:5px 12px;}
@@ -627,9 +630,101 @@ function renderNS(a){
   h+=list('Nhân sự mới', o.moi, 'ngayvao')+'<div class="cs-part">'+list('Nghỉ việc', o.nghi, 'ngaynghi')+'</div>';
   return h+'</div></div></div>';
 }
+// ── Dịch vụ — lượt xe TB/ngày TỰ ĐỘNG (thêm 28/09/2026) từ dichvu.json (TinThanh_DichVu_Sync.gs đếm RO theo
+// ngày × chi nhánh × phân loại từ file admin tải lên Drive hằng ngày). Có file này thì THAY khối nhập tay
+// "Lượt xe..." trong sheet Chi so trong yeu. Ngày làm việc = không phải Chủ nhật và tổng lượt ngày đó ≥ 30%
+// trung vị của chi nhánh (ngày lễ / vài lệnh phát sinh lẻ bị bỏ, kể cả số lệnh của ngày đó).
+const DV_JSON_URL = 'dichvu.json';
+const DV_SYNC_URL = '';   // URL Web App TinThanh_DichVu_Sync.gs (doGet) — điền sau khi Deploy thì hiện nút "Cập nhật số Dịch vụ"
+let DVX = null;           // null nếu tải lỗi
+const DV_LOAI = [['BD','Bảo dưỡng'],['Bảo hiểm','Bảo hiểm'],['Đồng sơn tiền mặt','Đồng sơn tiền mặt']];
+const DV_CN = {'NT':'NT','PR':'NT','ĐL':'ĐL','ĐN':'ĐL','BL':'BL','PY':'PY'};   // Phan Rang/Đắk Nông không có xưởng riêng
+function dvLuotXe(a){
+  if(!DVX || !DVX.ngay) return null;
+  var cn=DV_CN[branchCode(a.b.chiNhanh)]; if(!cn) return null;
+  var ref=new Date(a.ref); ref.setHours(0,0,0,0);
+  var mon=new Date(ref); mon.setDate(ref.getDate()-(ref.getDay()+6)%7);
+  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  var b0=new Date(mon); b0.setDate(mon.getDate()-90);
+  var b1=new Date(mon); b1.setDate(mon.getDate()-1);
+  var iso=function(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+  var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
+  var tot=function(o){ return Object.keys(o).reduce(function(s,k){ return s+(o[k]||0); },0); };
+  var pick=function(from,to){ var r=[]; Object.keys(DVX.ngay).forEach(function(k){ var d=parseD(k), v=DVX.ngay[k][cn];
+    if(d && d>=from && d<=to && d.getDay()!==0 && v) r.push({k:k, v:v, t:tot(v)}); }); return r; };
+  var wk=pick(mon,sun), base=pick(b0,b1);
+  if(!wk.length) return null;
+  var all=wk.concat(base).map(function(x){ return x.t; }).sort(function(x,y){ return x-y; });
+  var med=all[Math.floor(all.length/2)]||0;
+  var ok=function(x){ return x.t>=med*0.3; };
+  wk=wk.filter(ok); base=base.filter(ok);
+  var avg=function(arr,cat){ return arr.length ? arr.reduce(function(s,x){ return s+(x.v[cat]||0); },0)/arr.length : null; };
+  return { boPhan:'DV', nhanCot:'Loại', _auto:{nW:wk.length, nB:base.length},
+    tieuDe:'Lượt xe TB/ngày làm việc: Tuần '+a.refWeek+' ('+dm(mon)+'–'+dm(sun)+') so với 90 ngày trước ('+dm(b0)+'–'+dm(b1)+')',
+    cot:['Tuần '+a.refWeek+' (lượt/ngày)','TB 90 ngày (lượt/ngày)'],
+    dong:DV_LOAI.map(function(l){ return {nhan:l[1], giaTri:[avg(wk,l[0]), avg(base,l[0])]}; }) };
+}
+// ── Bán hàng — Lead & khách hot (thêm 28/09/2026). Khối sheet "Bán hàng | Tự động | Nhập tay | Ghi chú":
+// ô Nhập tay có số → ƯU TIÊN (kèm Ghi chú nhập tay); trống → lấy từ CRM Bizfly (crm.json).
+// Lead = khách TẠO MỚI trong tuần báo cáo (T2–CN chứa ngày mốc); Khách hot = trạng thái Hot/Very Hot HIỆN TẠI,
+// chưa ký HĐ và chưa dừng (crm.json chỉ có trạng thái hiện tại, không dựng lại được cho tuần cũ).
+// Nhóm chi nhánh như bảng báo bán: NT gồm PR, ĐL gồm BL + ĐN.
+const CRM_JSON_URL = 'crm.json';
+let CRMD = null;   // mảng leads, null nếu tải lỗi
+const CRM_GROUP = {'NT':['NT','PR'],'PR':['NT','PR'],'ĐL':['ĐL','BL','ĐN'],'BL':['ĐL','BL','ĐN'],'ĐN':['ĐL','BL','ĐN'],'PY':['PY']};
+function isLeadSec(sec){ return sec.boPhan==='BH' && (sec.cot||[]).some(function(c){ return stripVN(c)==='nhap tay'; }); }
+function crmTs(s){ var m=/(\d{1,2}):(\d{2}):(\d{2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(s||''); return m? new Date(+m[6],+m[5]-1,+m[4],+m[1],+m[2],+m[3]) : null; }
+function crmAuto(a){
+  if(!CRMD) return null;
+  var grp=CRM_GROUP[branchCode(a.b.chiNhanh)]; if(!grp) return null;
+  var ref=new Date(a.ref); ref.setHours(0,0,0,0);
+  var mon=new Date(ref); mon.setDate(ref.getDate()-(ref.getDay()+6)%7);
+  var end=new Date(mon); end.setDate(mon.getDate()+7);
+  var live=CRMD.filter(function(l){ return !l.isTest; });
+  var inWk=function(l){ var d=crmTs(l.ngayTao); return d && d>=mon && d<end; };
+  var mine=live.filter(function(l){ return grp.indexOf(l.chiNhanh)>=0; });
+  var hot=mine.filter(function(l){ return /hot/.test(stripVN(l.trangThai)) && !/ky hop dong/.test(stripVN(l.tienTrinhMaxLabel)) && !(l.tienTrinhMaxNum>=7); });
+  var byModel={}; hot.forEach(function(l){ var m=l.model||'(chưa nhập model)'; byModel[m]=(byModel[m]||0)+1; });
+  return { lead:mine.filter(inWk).length, hot:hot.length, grp:grp, mon:mon,
+    hotNote:Object.keys(byModel).sort(function(x,y){ return byModel[y]-byModel[x]; }).map(function(m){ return byModel[m]+' '+m; }).join(', '),
+    chuaGan:live.filter(function(l){ return !l.chiNhanh && inWk(l); }).length };
+}
+function csLeadTable(a, sec){
+  var col=function(name){ var i=-1; (sec.cot||[]).forEach(function(c,j){ if(stripVN(c)===name) i=j; }); return i; };
+  var iTu=col('tu dong'), iTay=col('nhap tay'), iGc=col('ghi chu');
+  var au=crmAuto(a);
+  var h='<div class="cs-sub">Lead &amp; khách hot — tuần '+a.refWeek+'</div><table class="cs-cmp"><thead><tr><th>Chỉ số</th><th class="num">Số liệu</th><th>Nguồn</th><th>Ghi chú</th></tr></thead><tbody>';
+  (sec.dong||[]).forEach(function(x){
+    var k=stripVN(x.nhan), isLead=/lead/.test(k), isHot=/hot/.test(k);
+    var tay=iTay>=0?(x.giaTri||[])[iTay]:null, tuSheet=iTu>=0?(x.giaTri||[])[iTu]:null;
+    var crm=au?(isLead?au.lead:isHot?au.hot:null):null;
+    var gcTay=iGc>=0&&x.chu?(x.chu[iGc]||''):'';
+    var v, nguon, gc;
+    if(tay!=null){ v=tay; nguon='Nhập tay'+(crm!=null&&crm!==tay?' <span class="cs-muted">(CRM: '+fmtN(crm)+')</span>':''); gc=esc(gcTay); }
+    else if(crm!=null){ v=crm; nguon='CRM'; gc=gcTay?esc(gcTay):(isHot&&au.hotNote?esc(au.hotNote):''); }
+    else { v=tuSheet; nguon=tuSheet!=null?'Sheet':'—'; gc=esc(gcTay); }
+    h+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtN(v)+'</b></td><td>'+nguon+'</td><td>'+gc+'</td></tr>';
+  });
+  h+='</tbody></table>';
+  return h+csNote('Ô "Nhập tay" trong sheet Chi so trong yeu được ưu tiên; để trống thì lấy từ CRM Bizfly'+(au?' ('+esc(au.grp.join(' + '))+')':'')+
+    '. Lead = khách tạo mới trong tuần (T2–CN); Khách hot = trạng thái Hot/Very Hot hiện tại, chưa ký HĐ / chưa dừng.'+
+    (au&&au.chuaGan?' ⚠ Tuần này CRM còn '+au.chuaGan+' lead chưa gán chi nhánh — số CRM có thể thiếu.':'')+(CRMD?'':' Không tải được crm.json.'));
+}
 function renderChiSo(a){
   if(!a) return '';
-  var secs=a.b.chiSo||[]; if(!secs.length) return '';
+  var secs=(a.b.chiSo||[]).slice(); if(!secs.length) return '';
+  // Khối Lead & khách hot (Bán hàng) vẽ BÊN TRONG thẻ Bán hàng, dưới bảng báo bán — tách khỏi danh sách khối
+  var leadSecs=secs.filter(isLeadSec); secs=secs.filter(function(s){ return !isLeadSec(s); });
+  var leadHtml=leadSecs.map(function(s){ return '<div class="cs-part">'+csLeadTable(a,s)+'</div>'; }).join('');
+  if(leadHtml && !secs.some(function(s){ return s.boPhan==='BH' && (s.cot||[]).length; }))
+    secs.unshift({boPhan:'BH', cot:[], dong:[], _leadOnly:true});
+  // Có dichvu.json → bỏ khối "Lượt xe..." nhập tay của sheet, chèn khối tự động ngay sau khối Dịch vụ cuối cùng
+  var dvAuto=dvLuotXe(a);
+  if(dvAuto){
+    secs=secs.filter(function(s){ return !(s.boPhan==='DV' && /luot xe/.test(stripVN(s.tieuDe))); });
+    var lastDV=-1; secs.forEach(function(s,i){ if(s.boPhan==='DV') lastDV=i; });
+    secs.splice(lastDV>=0?lastDV+1:secs.length, 0, dvAuto);
+  }
   var blocks=secs.map(function(sec){
     var bp=BP_NAME[sec.boPhan]||sec.boPhan;
     if(sec.boPhan==='BH' && (sec.cot||[]).length){
@@ -640,8 +735,9 @@ function renderChiSo(a){
       return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div><div>'+
         '<div class="cs-sub">'+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
         (d.auto?csNote('Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')):'<div class="cs-src">Không tải được data.json — dùng số điền trong sheet</div>')+tbl+
-        '</div><div class="cs-part">'+csDMSTable(a)+'</div></div>';
+        '</div><div class="cs-part">'+csDMSTable(a)+'</div>'+leadHtml+'</div>';
     }
+    if(sec._leadOnly) return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div>'+leadHtml+'</div>';
     // Khối có tiêu đề cột từ 2 cột trở lên (sheet: "Loại | Tuần 39 | TB 90 ngày" = cột 1 kỳ này, cột 2 mốc so sánh)
     // → bảng hiện giá trị tuyệt đối trước (mốc so sánh rồi kỳ này), sau đó mới tới Tăng/giảm (số tuyệt đối) và %
     // (xanh = tăng, đỏ = giảm)
@@ -656,7 +752,11 @@ function renderChiSo(a){
            '<td class="num'+cls+'">'+(dv==null?'—':sgn(dv,fmtR(dv)))+'</td>'+
            '<td class="num'+cls+'">'+(dp==null?'—':sgn(dp,dp.toLocaleString('vi-VN',{maximumFractionDigits:1}))+'%')+'</td></tr>';
       });
-      return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:t+'</tbody></table>'};
+      t+='</tbody></table>';
+      if(sec._auto) t+=(DV_SYNC_URL?'<a class="cs-btn" href="'+esc(DV_SYNC_URL)+'" target="_blank" rel="noopener">🔄 Cập nhật số Dịch vụ</a>':'')+
+        csNote('Tự động từ dichvu.json — file lệnh sửa chữa admin tải lên Drive hằng ngày'+(DVX.updated_vn?' · cập nhật '+esc(DVX.updated_vn):'')+(DVX.nguon_cap_nhat?' (file nguồn lưu lúc '+esc(DVX.nguon_cap_nhat)+')':'')+
+          '. Đếm RO không trùng theo Phân loại; ngày làm việc = trừ Chủ nhật và ngày có quá ít lệnh (nghỉ lễ): tuần này '+sec._auto.nW+' ngày, 90 ngày trước '+sec._auto.nB+' ngày.');
+      return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:t};
     }
     // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
     var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
@@ -899,11 +999,15 @@ async function load(){
       CC_YDM=(CC||[]).some(function(r){ var m=/^\d{4}-(\d{2})-/.exec(r.ngay||''); return m && +m[1]>12; });
     })
     .catch(function(e){ console.warn('Không tải được chamcong.json:', e); CC=null; });
+  var dvP=getJ(DV_JSON_URL).then(function(j){ DVX=j; })
+    .catch(function(e){ console.warn('Không tải được dichvu.json — dùng số nhập tay trong sheet:', e); DVX=null; });
+  var crmP=getJ(CRM_JSON_URL).then(function(j){ CRMD=(j.records&&j.records.leads)||null; })
+    .catch(function(e){ console.warn('Không tải được crm.json — Lead/khách hot chỉ dùng số nhập tay:', e); CRMD=null; });
   try{
     var res=await fetch(BCT_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     DATA=await res.json();
-    await salesP; await nsP; await ccP;
+    await salesP; await nsP; await ccP; await dvP; await crmP;
   }catch(e){
     document.getElementById('app').innerHTML='<div class="error">Không tải được baocaotuan.json ('+esc(e.message)+').</div>';
     document.getElementById('updatedTag').textContent='Lỗi tải dữ liệu';

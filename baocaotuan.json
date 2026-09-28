@@ -1,5 +1,5 @@
 {
-    "updated_at":  "2026-09-28T10:22:42",
+    "updated_at":  "2026-09-28T12:15:05",
     "nguon":  "excel",
     "branches":  [
                      {
@@ -1214,6 +1214,39 @@
                                                                            0.33,
                                                                            0.28
                                                                        ]
+                                                        }
+                                                    ]
+                                       },
+                                       {
+                                           "boPhan":  "BH",
+                                           "tieuDe":  "",
+                                           "nhanCot":  "",
+                                           "cot":  [
+                                                       "Tự động",
+                                                       "Nhập tay",
+                                                       "Ghi chú"
+                                                   ],
+                                           "dong":  [
+                                                        {
+                                                            "nhan":  "Lượt Lead phát sinh trong tuần",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           20,
+                                                                           null
+                                                                       ]
+                                                        },
+                                                        {
+                                                            "nhan":  "Số lượng khách hot",
+                                                            "giaTri":  [
+                                                                           null,
+                                                                           4,
+                                                                           null
+                                                                       ],
+                                                            "chu":  [
+                                                                        null,
+                                                                        null,
+                                                                        "2 Tucson, 2 Creta"
+                                                                    ]
                                                         }
                                                     ]
                                        }
