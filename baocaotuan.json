@@ -1,5 +1,5 @@
 {
-    "updated_at":  "2026-09-28T09:48:39",
+    "updated_at":  "2026-09-28T10:22:42",
     "nguon":  "excel",
     "branches":  [
                      {
@@ -208,34 +208,6 @@
                                           "nguoiCapNhat":  ""
                                       },
                                       {
-                                          "boPhan":  "BH",
-                                          "dong":  16,
-                                          "ma":  "BH-008",
-                                          "nguon":  "Trọng tâm tháng",
-                                          "thang":  9,
-                                          "linhVuc":  "Marketing",
-                                          "noiDung":  "Tuyển dụng Nhân sự MKT",
-                                          "phuTrach":  "HCNS",
-                                          "han":  "2026-09-30",
-                                          "hanRaw":  "",
-                                          "trangThai":  "Tạm dừng",
-                                          "capNhat":  "Chưa có ứng viên. T39: Chuyển sang VP-005 — Văn phòng chủ trì báo cáo tuyển dụng MKT.",
-                                          "tuanCN":  39,
-                                          "vuongMac":  "Chưa coi trọng hoạt động tuyển dụng",
-                                          "deXuat":  "Đặt KPI cho HCNS, đồng thời đưa vào công việc trọng tâm của đại lý",
-                                          "keHoach":  "",
-                                          "ngayHT":  "",
-                                          "ngayHTRaw":  "",
-                                          "ketQua":  "",
-                                          "trongTamTuan":  "Có",
-                                          "ghiChuGD":  "",
-                                          "gdXuLy":  "",
-                                          "duyetTT":  "Có",
-                                          "loaiHD":  "1. Vận hành thường xuyên",
-                                          "maTCT":  "",
-                                          "nguoiCapNhat":  ""
-                                      },
-                                      {
                                           "boPhan":  "DV",
                                           "dong":  9,
                                           "ma":  "DV-001",
@@ -257,7 +229,7 @@
                                           "ketQua":  "Đạt 100% tất cả chỉ số, trừ xe hết bảo hành (93% tại 25/09)",
                                           "trongTamTuan":  "Có",
                                           "ghiChuGD":  "",
-                                          "gdXuLy":  "",
+                                          "gdXuLy":  "GĐCN đã có ý kiến chỉ đạo",
                                           "duyetTT":  "Có",
                                           "loaiHD":  "1. Vận hành thường xuyên",
                                           "maTCT":  "",
@@ -371,7 +343,35 @@
                                           "ghiChuGD":  "",
                                           "gdXuLy":  "Chuyển thông tin TGĐ",
                                           "duyetTT":  "",
-                                          "loaiHD":  "1. Vận hành thường xuyên",
+                                          "loaiHD":  "2. Phát sinh không thường xuyên",
+                                          "maTCT":  "",
+                                          "nguoiCapNhat":  ""
+                                      },
+                                      {
+                                          "boPhan":  "DV",
+                                          "dong":  14,
+                                          "ma":  "DV-006",
+                                          "nguon":  "Bộ phận bổ sung",
+                                          "thang":  9,
+                                          "linhVuc":  "Quy trình",
+                                          "noiDung":  "Quy hoạch lại mã nhân công",
+                                          "phuTrach":  "Quang",
+                                          "han":  "2026-09-30",
+                                          "hanRaw":  "",
+                                          "trangThai":  "Hoàn thành",
+                                          "capNhat":  "Đã đi vào ổn định, không có vướng mắc.",
+                                          "tuanCN":  39,
+                                          "vuongMac":  "",
+                                          "deXuat":  "",
+                                          "keHoach":  "",
+                                          "ngayHT":  "",
+                                          "ngayHTRaw":  "",
+                                          "ketQua":  "Cập nhật khoảng 2.200 lệnh nhân công, được quy hoạch thành các nhóm, đồng thời ban hành quy định tạo mã mới. Đảm bảo hoạt động lâu dài",
+                                          "trongTamTuan":  "Có",
+                                          "ghiChuGD":  "",
+                                          "gdXuLy":  "",
+                                          "duyetTT":  "",
+                                          "loaiHD":  "2. Phát sinh không thường xuyên",
                                           "maTCT":  "",
                                           "nguoiCapNhat":  ""
                                       },
@@ -1248,7 +1248,7 @@
                                                                   "stt":  4,
                                                                   "nhan":  "Năng suất xưởng",
                                                                   "cauHoi":  "Khoang và KTV có quá tải hay dư, xe chờ lâu, xe tồn xưởng quá hạn?",
-                                                                  "traLoi":  "5S toàn xưởng đang xây dựng kế hoạch (hạn 10/10); xưởng đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên. Tình trạng tải khoang/KTV — trưởng BP bổ sung."
+                                                                  "traLoi":  "5S toàn xưởng đang xây dựng kế hoạch (hạn 10/10); xưởng đang hỗ trợ Văn phòng các hạng mục chỉnh trang khuôn viên. Tình trạng tải khoang/KTV — trưởng BP bổ sung. Đã hoàn thành quy hoạch lại mã nhân công (khoảng 2.200 lệnh, chia nhóm + quy định tạo mã mới), đã đi vào ổn định."
                                                               },
                                                               {
                                                                   "stt":  5,
@@ -1266,7 +1266,7 @@
                                                                   "stt":  7,
                                                                   "nhan":  "Khách quay lại",
                                                                   "cauHoi":  "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
-                                                                  "traLoi":  "Xe hết bảo hành mới đạt 93% (25/09), thiếu ~200 xe — điểm yếu nhất của quý; đề xuất mở lệnh nội bộ để bù."
+                                                                  "traLoi":  "Xe hết bảo hành mới đạt 93% (25/09), thiếu ~200 xe — điểm yếu nhất của quý; mở lệnh nội bộ để bù — GĐCN đã có ý kiến chỉ đạo."
                                                               },
                                                               {
                                                                   "stt":  8,
@@ -1278,7 +1278,7 @@
                                                                   "stt":  9,
                                                                   "nhan":  "Dự báo \u0026 cần hỗ trợ",
                                                                   "cauHoi":  "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
-                                                                  "traLoi":  "Cần TGĐ cho mở lệnh nội bộ để bù số xe hết bảo hành; duyệt chi tỉa cây trước mùa bão (báo giá 20 tr, đang deal về 15 tr)."
+                                                                  "traLoi":  "Mở lệnh nội bộ để bù số xe hết bảo hành: GĐCN đã có ý kiến chỉ đạo. Cần TGĐ duyệt chi tỉa cây trước mùa bão (báo giá 20 tr, đang deal về 15 tr)."
                                                               }
                                                           ]
                                             },
@@ -1362,13 +1362,13 @@
                                                                   "stt":  1,
                                                                   "nhan":  "Đánh giá chung",
                                                                   "cauHoi":  "Tuần này tốt, bình thường hay đáng lo, vì sao (1–2 câu)?",
-                                                                  "traLoi":  "Đáng lo ở cả 2 mảng chính dù doanh thu Dịch vụ vượt chỉ tiêu. Bán hàng mới đạt 91% báo bán quý (72/79 theo DMS) trong khi mục tiêu là chắc chắn 100% — phần còn thiếu phụ thuộc 4 xe HTV nợ và phương án 03 xe ngập nước. Dịch vụ vượt doanh thu (105,6%) nhưng lượt bảo dưỡng tuần 39 giảm 21% so với TB 90 ngày và xe hết bảo hành mới đạt 93%."
+                                                                  "traLoi":  "Cần theo dõi sát ở cả 2 mảng chính dù doanh thu Dịch vụ vượt chỉ tiêu. Bán hàng mới đạt 91% báo bán quý (72/79 theo DMS) trong khi mục tiêu là chắc chắn 100% — phần còn thiếu phụ thuộc 4 xe HTV nợ và phương án 03 xe ngập nước. Dịch vụ vượt doanh thu (105,6%) nhưng lượt bảo dưỡng tuần 39 giảm 21% so với TB 90 ngày và xe hết bảo hành mới đạt 93%."
                                                               },
                                                               {
                                                                   "stt":  2,
                                                                   "nhan":  "Điểm sáng",
                                                                   "cauHoi":  "Kết quả hoặc nỗ lực nổi bật nhất?",
-                                                                  "traLoi":  "Doanh thu Dịch vụ – Phụ tùng vượt chỉ tiêu (105,6%). Đồng sơn tiền mặt nhích lên (+18% lượt/ngày) sau khi làm việc với bảo hiểm DBV, Bảo Việt. Hoàn thành đúng hạn phương án chống lũ lụt 2026, thông báo giờ làm việc mới và chi quà trung thu, không phát sinh phản ứng."
+                                                                  "traLoi":  "Doanh thu Dịch vụ – Phụ tùng vượt chỉ tiêu (105,6%). Đồng sơn tiền mặt nhích lên (+18% lượt/ngày). Hoàn thành đúng hạn phương án chống lũ lụt 2026, thông báo giờ làm việc mới và chi quà trung thu, không phát sinh phản ứng. Dịch vụ hoàn thành quy hoạch lại mã nhân công: cập nhật khoảng 2.200 lệnh nhân công theo nhóm và ban hành quy định tạo mã mới, bảo đảm vận hành lâu dài (DV-006)."
                                                               },
                                                               {
                                                                   "stt":  3,
@@ -1398,7 +1398,7 @@
                                                                   "stt":  7,
                                                                   "nhan":  "Cần TGĐ",
                                                                   "cauHoi":  "Việc cần TGĐ quyết hoặc hỗ trợ (tóm gọn)?",
-                                                                  "traLoi":  "(1) BH-001: duyệt dùng 03 xe ngập nước để báo bán hoặc chuyển Đà Lạt chạy chỉ tiêu, kèm hạ LN — cần quyết trước 30/09. (2) DV-001: cho mở lệnh nội bộ để bù ~200 xe hết bảo hành. (3) DV-005: duyệt chi tỉa cây cao trước mùa mưa bão (báo giá 20 tr, đang deal về 15 tr)."
+                                                                  "traLoi":  "(1) BH-001: duyệt dùng 03 xe ngập nước để báo bán hoặc chuyển Đà Lạt chạy chỉ tiêu, kèm hạ LN — cần quyết trước 30/09. (2) DV-005: duyệt chi tỉa cây cao trước mùa mưa bão (báo giá 20 tr, đang deal về 15 tr)."
                                                               },
                                                               {
                                                                   "stt":  8,
