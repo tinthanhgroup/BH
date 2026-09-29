@@ -202,8 +202,8 @@
   </div>
   <div id="app"><div class="loading">Đang tải dữ liệu báo cáo tuần…</div></div>
   <div class="footnote">
-    Mốc tính "quá hạn" và "chưa cập nhật tuần này" = Ngày báo cáo GĐCN điền trong file (nếu chưa điền thì lấy ngày lưu file Excel).<br>
-    Dữ liệu tổng hợp từ file Excel các chi nhánh gửi về — xem hướng dẫn nhập ở sheet "Huong dan" trong file.
+    Tuần báo cáo tự đổi lúc 10h sáng thứ 7 (hạn chót cập nhật của trưởng bộ phận; GĐCN chốt trước 10h thứ 7 tuần sau). Mốc tính "quá hạn" và "chưa cập nhật" = thứ 7 của tuần báo cáo.<br>
+    Dữ liệu tổng hợp từ Google Sheet báo cáo tuần của các chi nhánh (tự đồng bộ mỗi giờ) — xem hướng dẫn nhập ở sheet "1. Huong dan".
   </div>
 </div>
 
@@ -345,6 +345,8 @@ function analyze(b){
       var cur={}, hist={};
       (b.nhanDinhBP||[]).forEach(function(e){
         if(e.tuan===refWeek && e.nam===refYear) cur[e.boPhan]=e;
+        // Tuần MỚI hơn tuần báo cáo (trưởng BP đã viết cho tuần sau trong lúc GĐCN chưa chốt tuần này) → chưa hiện
+        else if(e.nam>refYear || (e.nam===refYear && e.tuan>refWeek)) return;
         else { var k=e.nam+'-'+String(e.tuan).padStart(2,'0'); (hist[k]=hist[k]||{nam:e.nam,tuan:e.tuan,ngay:e.ngay,bp:{}}).bp[e.boPhan]=e; }
       });
       return {cur:cur, hist:Object.keys(hist).sort().reverse().map(function(k){ return hist[k]; })};

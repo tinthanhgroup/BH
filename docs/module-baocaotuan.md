@@ -16,9 +16,23 @@ powershell -ExecutionPolicy Bypass -File "Bao cao tuan\xlsx_to_json.ps1"
 ```
 → ghi `baocaotuan.json` ở root → commit/push. Script mở .xlsx như ZIP, đọc XML trực tiếp (máy không có Python/node). File `.ps1` **phải lưu UTF-8 có BOM** (PowerShell 5.1).
 
-**Giai đoạn Google Sheet (sau này):** viết Apps Script ghi ra **đúng cấu trúc JSON bên dưới** → `baocaotuan.html` không phải sửa.
+**Giai đoạn Google Sheet (từ 29/09/2026):** `apps-script/TinThanh_BaoCaoTuan_Sync.gs` đọc các file Google Sheet (`BCT_CONFIG.SHEET_IDS`; Nha Trang = `1SYRz8jrqWjauPj85lQ1W6JL7cY_WfG555bx6Qu7poYg`) → ghi **đúng cấu trúc JSON bên dưới** (`nguon:'sheet'`), đồng bộ mỗi giờ, không đổi gì thì không push. Chi nhánh có trong JSON cũ mà không nằm trong `SHEET_IDS` vẫn được giữ nguyên.
+- **Gắn tuần nhận định theo giờ sửa** (giải quyết điểm ⚠ ở mục "Tuần báo cáo & hạn chót"): trigger `bctOnEdit` ghi giờ sửa cột D từng khối (`bct_nd|<sheetId>|<GDCN|BH|DV|VP>` trong Script Properties). BP → tuần T2–CN chứa lúc sửa; GĐCN → tuần báo cáo lúc sửa; chưa có giờ sửa → tuần báo cáo lúc đồng bộ. Nội dung khối **giống hệt** bản mới nhất đã lưu (ở tuần khác) thì không tạo bản mới. Hàm `xemGioSuaNhanDinh()` in giờ sửa + tuần sẽ gắn.
+- Web: nhận định có tuần **mới hơn** tuần báo cáo (BP viết cho tuần sau trong lúc GĐCN chưa chốt) chưa hiện, kể cả ở "các tuần trước".
 
 Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống thì lấy **tên file** (nên đặt tên file theo chi nhánh, vd `Nha Trang.xlsx`) và hiện cảnh báo.
+
+## Tên sheet có số thứ tự (29/09/2026)
+
+File làm việc duy nhất: `Bao cao tuan/Bao cao tuan.xlsx` (trước là `Bao cao tuan 39.xlsx`, chuẩn bị đưa lên Google Sheet). Sheet đã đổi tên + sắp lại: `1. Huong dan` · `2. Ban hang` · `3. Dich vu` · `4. Van phong` · `5. Ke hoach TCT giao` · `6. Chi so trong yeu` · `7. Nhan dinh tong the` · `8. Bao cao GDCN` · `9. Trong tam thang` · `10. Achievement` · `11. Nhan dinh tuan` (cũ) (sheet nháp `Ghi chu` đã xoá 29/09/2026; + sheet `foxz` veryHidden do add-in chèn, để nguyên). Converter **bỏ số đầu tên sheet** trước khi tra (`^\d+[.)] `) nên bảng dưới vẫn ghi tên gốc; Apps Script sau này cũng phải tra kiểu đó. Đổi thứ tự sheet → bỏ `calcChain.xml` + đặt `fullCalcOnLoad` (Excel tự dựng lại).
+
+## Tuần báo cáo & hạn chót (29/09/2026, người dùng chốt)
+
+- **Trưởng BP** cập nhật xong trước **10h sáng thứ 7** (sheet bộ phận, ô cam sheet 6, khối nhận định BP ở sheet 7). **GĐCN** không có giờ cố định, nhưng phải chốt tuần N **trước 10h thứ 7 tuần N+1** (nghỉ phép vẫn kịp); quá mốc → tuần N để trống phần GĐCN.
+- **Tuần báo cáo** tự tính: từ 10h T7 tuần N đến trước 10h T7 tuần N+1 = tuần N. `8. Bao cao GDCN!G3` (Ngày báo cáo) giờ là **công thức** = thứ 7 đó: `INT(NOW())-MOD(WEEKDAY(NOW(),2)-6,7)-IF(NOW()<INT(NOW())-MOD(WEEKDAY(NOW(),2)-6,7)+10/24,7,0)`; `E3 = WEEKNUM(G3,2)`. Hết nhập tay → hết lỗi "G3 cũ của tuần trước".
+- Sheet 2/3/4/5: thêm `F4` "Tuần báo cáo" / `G4 = '8. Bao cao GDCN'!$E$3`. Tô VÀNG "chưa cập nhật" đổi từ `Tuần CN <> WEEKNUM(TODAY())` sang `N(Tuần CN) < $G$4` → chỉ vàng khi **trễ hạn 10h T7**, GĐCN mở file muộn (giữa tuần sau) không thấy vàng oan. `E3` "Tuần hiện tại" giữ `WEEKNUM(TODAY())` để trưởng BP biết ghi số tuần nào vào cột Tuần CN. Tô ĐỎ quá hạn vẫn theo TODAY.
+- Trên Google Sheet: đặt múi giờ file GMT+7 và Tính toán lại = "Khi thay đổi và mỗi giờ" (NOW() mới tự đổi tuần lúc 10h T7 khi không ai sửa).
+- ⚠ Chưa giải quyết (để Apps Script khi lên Google Sheet): khối nhận định sheet 7 bị ghi đè hằng tuần, converter gắn tuần theo G3 lúc chạy → giữa tuần N+1 (trước 10h T7) trưởng BP đã viết nhận định tuần N+1 mà tuần báo cáo vẫn là N → nếu chạy converter lúc đó sẽ ghi đè lịch sử tuần N của BP. Hướng giải: Apps Script onEdit ghi giờ sửa từng khối → BP gắn tuần theo hạn chót kế tiếp, GĐCN theo tuần báo cáo. Giai đoạn Excel: chạy converter ngay sau khi GĐCN chốt.
 
 ## Sheet được đọc (chỉ dữ liệu gốc, KHÔNG đọc các sheet tổng hợp FILTER)
 
@@ -80,14 +94,14 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 
 ## Logic trang (tự tính lại, bám sát sheet Bao cao GDCN)
 
-- **Mốc tham chiếu** = `ngayBaoCao` (GĐCN điền) hoặc `ngayDuLieu` (ngày lưu file) — KHÔNG dùng ngày hôm nay, để xem lại dữ liệu cũ không bị báo quá hạn sai. Tuần = `weekNum()` giống Excel `WEEKNUM(date,2)`.
+- **Mốc tham chiếu** = `ngayBaoCao` (G3, tự tính = thứ 7 tuần báo cáo) hoặc `ngayDuLieu` (ngày lưu file) — KHÔNG dùng ngày hôm nay, để xem lại dữ liệu cũ không bị báo quá hạn sai. Tuần = `weekNum()` giống Excel `WEEKNUM(date,2)`.
 - Quá hạn: có Hạn < mốc và chưa Hoàn thành/Tạm dừng. Chưa CN tuần này: đang mở và `tuanCN` trống hoặc < tuần mốc.
 - **Quy ước 2 cột GĐCN (26/09/2026):**
   - "Trọng tâm tuần" chỉ có lựa chọn `Có`; **để trống = Không** (web chỉ đếm `==='Có'`).
   - Cột **"Hướng chỉ đạo"** (28/09/2026; tên cũ "Chuyển TGĐ" ← "GĐCN xử lý" — cột S sheet bộ phận, cột O sheet TCT giao; field JSON vẫn là `gdXuLy`, web ghi nhãn dòng "Hướng chỉ đạo") có 2 lựa chọn: `GĐCN đã có ý kiến chỉ đạo` (GĐCN tự chỉ đạo, nội dung ghi ở Ghi chú GĐCN) / `Chuyển thông tin TGĐ` (cần TGĐ biết/quyết). **Có Đề xuất, chưa Hoàn thành mà để trống = chưa có ý kiến**: Excel tô VÀNG ô Hướng chỉ đạo (CF dùng lại dxf vàng của cột Tuần CN), web hiện chữ vàng "Chưa có ý kiến chỉ đạo". Web vẫn nhận giá trị cũ: "Chuyển TGĐ" (`isTGD()`), "TGĐ đã có chỉ đạo"/"TGĐ đã có phản hồi"/"Đã có quyết định" (`isPhanHoi()`, coi như đã có chỉ đạo — `daCoChiDao()`).
 - **Loại hoạt động (cột U) đánh số** (28/09/2026): `1. Vận hành thường xuyên` · `2. Phát sinh không thường xuyên` (việc thi thoảng mới có: tuyển dụng, nhân sự nghỉ việc…) · `3. Xử lý sự cố` · `4. Cải tiến` · `5. Tuân thủ - TCT giao`. Công thức/tô màu trong file dò "Cải tiến" bằng `SEARCH`/`"*Cải tiến*"` (không so bằng tuyệt đối); web so qua `loaiHD()`/`isCaiTien()` (bỏ số đầu chuỗi) → nhận cả giá trị cũ không số.
 - **Ngày hoàn thành / Kết quả hoàn thành KHÔNG bắt buộc** (28/09/2026): web không báo thiếu; ô KPI "Hoàn thành tháng" đếm theo Ngày HT, dòng không có Ngày HT thì theo cột Tháng.
-- ⚠ Ô **Ngày báo cáo** (`Bao cao GDCN!G3`) để trống thì mốc = ngày lưu file → mở sửa file vào tuần sau (vd sáng thứ 2) là bị coi thành tuần mới, nhận định bị chép sang tuần mới trong lịch sử. Luôn điền G3 (file tuần 39 được điền 26/09/2026 vào ngày 28/09 vì lý do này).
+- Ô **Ngày báo cáo** (`Bao cao GDCN!G3`) **tự tính từ 29/09/2026** (thứ 7 của tuần báo cáo, xem mục "Tuần báo cáo & hạn chót"). Trước đó nhập tay — để trống/quên sửa là lệch tuần, nhận định bị chép sang tuần sai trong lịch sử.
 - Mục 3 Vướng mắc & đề xuất cần TGĐ / Công ty quyết: dòng có Đề xuất, chưa Hoàn thành, **Hướng chỉ đạo = "Chuyển thông tin TGĐ" hoặc TRỐNG** (bỏ dòng đã có ý kiến chỉ đạo); không lọc Trọng tâm. 2 nhóm: "Chuyển thông tin TGĐ" (xếp đầu, viền cam, khối đầy đủ) → "Chưa có ý kiến chỉ đạo" (**thu 1 dòng/việc** từ 28/09/2026, sắp theo BP, bên phải ghi BP · trạng thái · hạn · phụ trách; không lặp dòng "Chưa có ý kiến chỉ đạo" trong khối — `noEmptyGD`). Mục 4 Trọng tâm tuần ghi mờ "đã nêu ở mục 3" cho việc trùng. Sheet Bao cao GDCN (khối VƯỚNG MẮC & ĐỀ XUẤT, 24 FILTER + COUNTIFS ô A9) lọc y như vậy. ⚠ Việc "Tạm dừng" vẫn được tính (chỉ loại Hoàn thành).
 - Mục 3 Trọng tâm tuần: `trongTamTuan==='Có'`, nhóm theo BP — **mỗi việc 1 dòng thu gọn, chữ thường** (`taskBlock(t,{fold:true})` → `<details class="tt-fold">`, bên phải: trạng thái · hạn · phụ trách), bấm mở chi tiết (28/09/2026). Mục 4 Cải tiến: `loaiHD==='Cải tiến'`.
 - Mục 6 Cảnh báo & lỗi nhập liệu (tự ẩn khi rỗng): quá hạn, chưa CN, thiếu/trùng mã, hạn dạng chữ, có Ngày HT mà chưa Hoàn thành, TT tháng chưa duyệt, TCT giao thiếu Mã TCT, nhiệm vụ TCT chưa BP nào triển khai.
