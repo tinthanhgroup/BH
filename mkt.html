@@ -19,6 +19,12 @@
   .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
   .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
 
+  .qtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .qtab{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:8px 18px;border-radius:8px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;transition:all .15s;}
+  .qtab:hover:not(.active){background:#E8EEF7;}
+  .qtab.active{background:var(--navy);color:#fff;}
+  .qtab .qsub{font-weight:500;font-size:11.5px;opacity:.8;margin-left:6px;}
+
   .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
   .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
   .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
@@ -84,6 +90,8 @@
     </a>
   </div>
 
+  <div class="qtabs" id="qTabs"></div>
+
   <div class="kpi-row" id="kpiRow"></div>
 
   <div class="panel">
@@ -115,7 +123,7 @@
 
     <div class="panel">
       <h3><span class="chart-num">2</span> Theo Tuần — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh</h3>
-      <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng tuần (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó.</p>
+      <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng tuần của Quý đang chọn (không áp dụng bộ lọc phía trên) — cột "Cảnh báo" báo chi nhánh nào chưa đăng ký đủ tối thiểu 1 bài trong tuần đó. Tuần đã bắt đầu mà chưa có bài nào vẫn hiện để cảnh báo.</p>
       <table>
         <thead><tr id="weeklyHead"></tr></thead>
         <tbody id="weeklyTable"></tbody>
@@ -125,7 +133,7 @@
 
   <details class="panel">
     <summary><span class="chart-num">3</span> Độ phủ hạng mục theo Chi nhánh</summary>
-    <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng hạng mục (tính trên toàn bộ dữ liệu, không áp dụng bộ lọc phía trên) — ô tô đỏ = chi nhánh đó chưa đăng ký hạng mục này lần nào, cần rà soát bổ sung kế hoạch.</p>
+    <p class="desc">Số bài <b>đã đăng / đăng ký</b> theo từng hạng mục trong Quý đang chọn (không áp dụng bộ lọc phía trên) — ô tô đỏ = chi nhánh đó chưa đăng ký hạng mục này lần nào trong Quý, cần rà soát bổ sung kế hoạch.</p>
     <table>
       <thead><tr id="coverageHead"></tr></thead>
       <tbody id="coverageTable"></tbody>
@@ -150,8 +158,79 @@
 
 <script>
 const MKT_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/mkt.json';
-let POSTS = [];
+let ALL_POSTS = [];   // toàn bộ mkt.json
+let POSTS = [];       // chỉ các bài thuộc Quý đang chọn — mọi bảng/KPI tính trên mảng này
+let UPDATED_VN = '—';
+let curQ = '';        // khoá Quý đang chọn, dạng "2026-Q4"
 let state = { chinhanh:'', tuan:'', nhom:'', trangthai:'', q:'' };
+
+// ── Chia Quý theo số tuần (ISO): T1–T13 = Q1, T14–T26 = Q2, T27–T39 = Q3, T40–T53 = Q4 ──
+function weekNum(t){ const m = String(t||'').match(/(\d+)/); return m ? parseInt(m[1],10) : 0; }
+function quarterOfWeek(w){ return w<=13 ? 1 : w<=26 ? 2 : w<=39 ? 3 : 4; }
+function isoWeek(d){
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const y = t.getUTCFullYear();
+  return { y, w: Math.ceil(((t - Date.UTC(y,0,1)) / 86400000 + 1) / 7) };
+}
+function weeksInYear(y){ return isoWeek(new Date(y,11,28)).w; }
+function parseDMY(s){ const m = String(s||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? new Date(+m[3], +m[2]-1, +m[1]) : null; }
+function qKeyOf(p){
+  const w = weekNum(p.tuan), d = parseDMY(p.tuNgay);
+  if(w && d){
+    // T1 có thể bắt đầu từ cuối tháng 12 năm trước → tính sang năm sau
+    const y = (w<=2 && d.getMonth()===11) ? d.getFullYear()+1 : d.getFullYear();
+    return y + '-Q' + quarterOfWeek(w);
+  }
+  if(d){ const iw = isoWeek(d); return iw.y + '-Q' + quarterOfWeek(iw.w); }
+  return todayQKey();
+}
+function todayQKey(){ const iw = isoWeek(new Date()); return iw.y + '-Q' + quarterOfWeek(iw.w); }
+function qParts(k){ const m = k.match(/^(\d{4})-Q(\d)$/); return { y:+m[1], q:+m[2] }; }
+function qLabel(k){
+  const {y,q} = qParts(k);
+  const multiYear = new Set(ALL_POSTS.map(p=>qParts(qKeyOf(p)).y).concat([qParts(todayQKey()).y])).size > 1;
+  return 'Quý ' + q + (multiYear ? '/' + y : '');
+}
+// Dải tuần của 1 Quý để hiển thị: bắt đầu từ tuần đầu Quý (hoặc tuần đầu tiên có kế hoạch trong năm, nếu muộn hơn),
+// kết thúc ở tuần cuối Quý nếu Quý đã qua, ở tuần hiện tại nếu đang trong Quý (kéo dài thêm nếu đã đăng ký trước).
+function qWeekRange(k){
+  const {y,q} = qParts(k);
+  const qStart = (q-1)*13 + 1, qEnd = q===4 ? weeksInYear(y) : q*13;
+  const yearWeeks = ALL_POSTS.filter(p=>qParts(qKeyOf(p)).y===y).map(p=>weekNum(p.tuan)).filter(Boolean);
+  const start = Math.max(qStart, yearWeeks.length ? Math.min(...yearWeeks) : qStart);
+  const inQ = ALL_POSTS.filter(p=>qKeyOf(p)===k).map(p=>weekNum(p.tuan)).filter(Boolean);
+  const lastPlanned = inQ.length ? Math.max(...inQ) : 0;
+  const tk = todayQKey();
+  let end;
+  if(k < tk) end = qEnd;
+  else if(k === tk) end = Math.max(isoWeek(new Date()).w, lastPlanned);
+  else end = lastPlanned;
+  return { start, end: Math.min(end, qEnd), qEnd };
+}
+
+function renderQTabs(){
+  const keys = [...new Set(ALL_POSTS.map(qKeyOf).concat([todayQKey()]))].sort();
+  document.getElementById('qTabs').innerHTML = keys.map(k=>{
+    const r = qWeekRange(k);
+    return `<button class="qtab${k===curQ?' active':''}" onclick="switchQuarter('${k}')">${qLabel(k)}<span class="qsub">T${r.start}–T${r.qEnd}</span></button>`;
+  }).join('');
+}
+
+function switchQuarter(k){
+  curQ = k;
+  POSTS = ALL_POSTS.filter(p=>qKeyOf(p)===k);
+  state = {chinhanh:'',tuan:'',nhom:'',trangthai:'',q:''};
+  document.getElementById('fTrangThai').value='';
+  document.getElementById('fSearch').value='';
+  document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + UPDATED_VN + ' · ' + qLabel(k) + ': ' + POSTS.length + ' bài đăng ký (tổng ' + ALL_POSTS.length + ')';
+  renderQTabs();
+  populateFilterOptions();
+  renderWeekly();
+  renderCoverage();
+  render();
+}
 
 function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
 
@@ -182,11 +261,11 @@ function renderKPI(list){
   const pending = total - done - late;
   const pct = total>0 ? Math.round(done/total*100) : 0;
   const kpis = [
-    {label:'Tổng bài đăng ký', num:total, sub:'trong bộ lọc hiện tại', cls:''},
+    {label:'Tổng bài đăng ký', num:total, sub:'trong ' + (curQ ? qLabel(curQ) : 'bộ lọc') + ' (theo bộ lọc)', cls:''},
     {label:'Đã đăng', num:done, sub:fmtPct(done,total)+' tổng số', cls:'green'},
     {label:'Chưa đăng (còn hạn)', num:pending, sub:'chưa tới hạn', cls:'gold'},
     {label:'Trễ hạn', num:late, sub:'quá "Đến ngày" chưa đăng', cls:'red'},
-    {label:'Tỷ lệ hoàn thành', num:pct+'%', sub:'đã đăng / đăng ký', cls: pct>=80?'green':(pct>=50?'gold':'red')},
+    {label:'Tỷ lệ hoàn thành', num: total>0 ? pct+'%' : '—', sub:'đã đăng / đăng ký', cls: total===0 ? '' : (pct>=80?'green':(pct>=50?'gold':'red'))},
   ];
   document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
     <div class="kpi ${k.cls}">
@@ -260,15 +339,25 @@ function renderDetail(list){
   }).join('');
 }
 
-// ── Theo Tuần: kiểm tra tối thiểu 1 bài/tuần/chi nhánh (không phụ thuộc bộ lọc — luôn dùng toàn bộ POSTS) ──
-function renderWeekly(){
-  const branches = COVERAGE_BRANCH_ORDER.filter(b=>POSTS.some(p=>p.chinhanh===b));
-  uniqSorted(POSTS.map(p=>p.chinhanh)).forEach(b=>{ if(!branches.includes(b)) branches.push(b); });
+// Chi nhánh lấy từ toàn bộ dữ liệu (không riêng Quý đang chọn) để Quý chưa có bài vẫn hiện đủ cột chi nhánh
+function allBranches(){
+  const branches = COVERAGE_BRANCH_ORDER.filter(b=>ALL_POSTS.some(p=>p.chinhanh===b));
+  uniqSorted(ALL_POSTS.map(p=>p.chinhanh)).forEach(b=>{ if(!branches.includes(b)) branches.push(b); });
+  return branches;
+}
 
+// ── Theo Tuần: kiểm tra tối thiểu 1 bài/tuần/chi nhánh (không phụ thuộc bộ lọc — dùng toàn bộ POSTS của Quý) ──
+function renderWeekly(){
+  const branches = allBranches();
+
+  // Tạo sẵn đủ các tuần trong dải của Quý (kể cả tuần chưa có bài nào) để không bỏ sót tuần thiếu
   const weeks = {};
+  const rg = curQ ? qWeekRange(curQ) : {start:1,end:0};
+  for(let w=rg.start; w<=rg.end; w++) weeks['T'+w] = { tuan:'T'+w, sortKey:w, counts:{}, done:{} };
   POSTS.forEach(p=>{
-    const key = p.tuan || '(?)';
-    if(!weeks[key]) weeks[key] = { tuan:key, sortKey:dateSortKey(p.tuNgay), counts:{}, done:{} };
+    const w = weekNum(p.tuan);
+    const key = w ? 'T'+w : (p.tuan || '(?)');
+    if(!weeks[key]) weeks[key] = { tuan:key, sortKey:w || 999, counts:{}, done:{} };
     weeks[key].counts[p.chinhanh] = (weeks[key].counts[p.chinhanh]||0) + 1;
     if(p.daDang) weeks[key].done[p.chinhanh] = (weeks[key].done[p.chinhanh]||0) + 1;
   });
@@ -301,13 +390,17 @@ function renderWeekly(){
   document.getElementById('weeklyTable').innerHTML = bodyRows + totalRow;
 }
 
-// ── Độ phủ hạng mục theo chi nhánh (không phụ thuộc bộ lọc — luôn dùng toàn bộ POSTS) ──
+// ── Độ phủ hạng mục theo chi nhánh (không phụ thuộc bộ lọc — dùng toàn bộ POSTS của Quý) ──
 var COVERAGE_BRANCH_ORDER = ['Nha Trang','Phú Yên','Đà Lạt'];
 function renderCoverage(){
-  const branches = COVERAGE_BRANCH_ORDER.filter(b=>POSTS.some(p=>p.chinhanh===b));
-  uniqSorted(POSTS.map(p=>p.chinhanh)).forEach(b=>{ if(!branches.includes(b)) branches.push(b); });
+  const branches = allBranches();
 
+  // Danh sách hạng mục lấy từ toàn bộ dữ liệu → hạng mục chưa đăng ký trong Quý vẫn hiện (ô đỏ)
   const cats = {};
+  ALL_POSTS.forEach(p=>{
+    const key = p.maHM || '(?)';
+    if(!cats[key]) cats[key] = { maHM:key, nhom:p.nhom, hangMuc:p.hangMuc, counts:{}, done:{} };
+  });
   POSTS.forEach(p=>{
     const key = p.maHM || '(?)';
     if(!cats[key]) cats[key] = { maHM:key, nhom:p.nhom, hangMuc:p.hangMuc, counts:{}, done:{} };
@@ -382,13 +475,10 @@ async function loadData(){
     const res = await fetch(MKT_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('mkt.json: HTTP '+res.status);
     const json = await res.json();
-    POSTS = (json.records && json.records.posts) || [];
-    document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + (json.updated_vn||'—') + ' · ' + POSTS.length + ' bài đăng ký';
-    document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ Nhật ký đăng bài Fanpage các chi nhánh, đồng bộ tự động mỗi giờ.';
-    populateFilterOptions();
-    renderWeekly();
-    renderCoverage();
-    render();
+    ALL_POSTS = (json.records && json.records.posts) || [];
+    UPDATED_VN = json.updated_vn || '—';
+    document.getElementById('footnoteText').textContent = 'Dữ liệu tổng hợp từ Nhật ký đăng bài Fanpage các chi nhánh, đồng bộ tự động mỗi giờ. Quý chia theo tuần: T1–T13 Quý 1 · T14–T26 Quý 2 · T27–T39 Quý 3 · T40–T53 Quý 4.';
+    switchQuarter(todayQKey());   // mặc định mở Quý hiện tại
   }catch(e){
     console.error('Lỗi tải mkt.json:', e);
     document.getElementById('updatedText').textContent = 'Không tải được dữ liệu — vui lòng thử lại sau.';

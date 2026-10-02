@@ -8,12 +8,14 @@
 
 **Mỗi object trong `records.posts[]`**: `stt, chinhanh, tuan, tuNgay, denNgay, maHM, nhom, hangMuc, ngayDangThucTe, trangThai, daDang (bool), link, treHan (bool)`. `treHan` tính sẵn ở backend = `!daDang && denNgay đã qua`.
 
+**Chia theo Quý** (thêm 02/10/2026): thanh nút chọn Quý (`#qTabs`) phía trên KPI — mọi KPI/bảng/bộ lọc chỉ tính trên `POSTS` = các bài của Quý đang chọn (`ALL_POSTS` = toàn bộ `mkt.json`). Quý xác định theo **số tuần ISO trong cột "Tuần"** (`qKeyOf()`): T1–T13 Q1 · T14–T26 Q2 · T27–T39 Q3 · T40–T53 Q4 (năm 2026 có T53 = 28/12/2026–03/01/2027, vẫn thuộc Q4/2026). Mặc định mở Quý hiện tại; Quý hiện tại luôn có nút kể cả khi chưa có bài nào. Bảng 2 tự chèn các tuần đã bắt đầu mà chưa có bài nào (`qWeekRange()`) để không lọt tuần thiếu; bảng 3 lấy danh sách hạng mục/chi nhánh từ `ALL_POSTS` để hạng mục chưa đăng ký trong Quý vẫn hiện ô đỏ. Sheet nguồn (file Google Sheet kế hoạch MKT) đã mở rộng tới T53 (Cấu hình A4:A24, `DS_Tuan`).
+
 **`mkt.html` có 4 bảng, đều đánh số** (2 bảng đầu gộp chung 1 hàng qua CSS `.grid2`):
 1. **Thực hiện theo Chi nhánh** — theo bộ lọc đang chọn.
 2. **Theo Tuần** — kiểm tra quy định tối thiểu 1 bài/tuần/chi nhánh, mỗi ô hiện `đã đăng/đăng ký` (VD "1/3"), cột "Cảnh báo" chỉ dựa trên **đăng ký** (kế hoạch) chứ không dựa trên đã đăng.
 3. **Độ phủ hạng mục theo Chi nhánh** — ma trận Mã HM × Chi nhánh, cùng format `đã đăng/đăng ký`.
 4. **Chi tiết bài đăng** — sắp xếp 4 tầng: Trễ hạn lên đầu → Từ ngày (parse thật `dd/MM/yyyy` thành số `yyyyMMdd` để so sánh, **không dùng `localeCompare` trên chuỗi ngày** — lỗi sắp sai thứ tự tháng đã từng gặp) → Chi nhánh → Mã HM.
 
-**Bảng 2 và 3 CỐ Ý không áp dụng bộ lọc phía trên** (Chi nhánh/Tuần/Trạng thái) — vì mục đích là kiểm tra **kế hoạch tổng thể**, lọc theo tuần sẽ làm mất ý nghĩa "đủ hạng mục"/"đủ tần suất".
+**Bảng 2 và 3 CỐ Ý không áp dụng bộ lọc phía trên** (Chi nhánh/Tuần/Trạng thái — nhưng CÓ theo Quý đang chọn) — vì mục đích là kiểm tra **kế hoạch tổng thể**, lọc theo tuần sẽ làm mất ý nghĩa "đủ hạng mục"/"đủ tần suất".
 
 **Trigger `mktSync`: 1 trigger duy nhất `everyHours(4)`** (từng bị lỗi "too many triggers" — xem mục Bẫy trong CLAUDE.md gốc, đã sửa cùng cách).
