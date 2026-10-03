@@ -1603,8 +1603,13 @@ function _mauToKckKey(mau){
 }
 // Tìm đúng dòng Model+Phiên bản trong KCK_DATA — trả về object màu {COLOR:{n,r}} nếu có,
 // null nếu Nhà máy hiện không có sẵn (KCK) đúng phiên bản này.
+// So phiên bản không phân biệt hoa/thường + bỏ khoảng trắng thừa — tên trong hợp đồng
+// (allCoc) và file HTV hay lệch kiểu "PRESTIGE (6 chỗ)" vs "PRESTIGE (6 CHỖ)",
+// "1.0 T-GDi" vs "1.0 T-GDI".
 function _kckColorsFor(model,phienBan){
-  var entry=KCK_DATA.find(function(k){return k[0]===model&&k[1]===phienBan;});
+  function nz(s){return (s||'').toString().trim().replace(/\s+/g,' ').toUpperCase();}
+  var pb=nz(phienBan);
+  var entry=KCK_DATA.find(function(k){return k[0]===model&&nz(k[1])===pb;});
   return entry?entry[2]:null;
 }
 // Màu đang đặt (mau) có đang sẵn ở Nhà máy (KCK) cho đúng Model+Phiên bản không —
@@ -1831,8 +1836,11 @@ function _spdMauOptions(tree,model,ver){
 // Render 1 bảng chọn (Model/Phiên bản/Màu) dạng bảng thay vì dropdown — mỗi dòng là 1
 // lựa chọn có thể bấm, dòng đang chọn tô nền xanh. allLabel (nếu có) là dòng "Tất cả..."
 // luôn nằm đầu bảng, giá trị SPD_ALL. counts (nếu có) là map giá trị -> số lượng ký,
-// hiện thêm "(n)" sau mỗi lựa chọn.
-function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts){
+// hiện thêm "(n)" sau mỗi lựa chọn. hilite (nếu có) là hàm v -> chuỗi tooltip (hoặc
+// '' nếu không tô) — dòng được tô thì bọc tên trong khung vàng (dùng cho màu KCK ở bảng
+// Màu, cùng kiểu khung vàng với fmtOrder() của bảng Giả định đặt hàng). footHtml (nếu
+// có) là dòng chú thích nhỏ đặt ngay dưới bảng.
+function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts,hilite,footHtml){
   counts=counts||{};
   var rowsHtml='';
   function esc(v){return v.replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
@@ -1843,11 +1851,16 @@ function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts){
   }
   options.forEach(function(v){
     var isSel=selected===v;
-    rowsHtml+='<tr onclick="'+onclickFn+'(\''+esc(v).replace(/'/g,"\\'")+'\')" style="cursor:pointer;'+(isSel?'background:#0d7c66;color:#fff;font-weight:700':'')+'"><td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #f0f0f0">'+esc(v)+cnt(v)+'</td></tr>';
+    var hTip=hilite?hilite(v):'';
+    var label=hTip
+      ? '<span title="'+esc(hTip)+'" style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;color:#713f12;border-radius:5px;padding:0 5px;font-weight:600">'+esc(v)+'</span>'
+      : esc(v);
+    rowsHtml+='<tr onclick="'+onclickFn+'(\''+esc(v).replace(/'/g,"\\'")+'\')" style="cursor:pointer;'+(isSel?'background:#0d7c66;color:#fff;font-weight:700':'')+'"><td style="padding:6px 10px;font-size:12px;border-bottom:1px solid #f0f0f0">'+label+cnt(v)+'</td></tr>';
   });
   if(!rowsHtml) rowsHtml='<tr><td style="padding:6px 10px;font-size:12px;color:#bbb">–</td></tr>';
   return '<div style="font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">'+title+'</div>'
-    +'<div style="border:1px solid #e5e7eb;border-radius:8px;min-width:170px"><table style="width:100%;border-collapse:collapse">'+rowsHtml+'</table></div>';
+    +'<div style="border:1px solid #e5e7eb;border-radius:8px;min-width:170px"><table style="width:100%;border-collapse:collapse">'+rowsHtml+'</table></div>'
+    +(footHtml||'');
 }
 // Đếm số hợp đồng đã ký (ngayCoc) trong năm hiện tại tới tháng hiện tại khớp điều
 // kiện pred — cùng phạm vi thời gian với bảng kết quả, dùng để hiện số lượng cạnh
@@ -1912,7 +1925,25 @@ function _spdMauBoxHtml(model,ver,selected){
   var tree=_spdOptionTree();
   var mauOpts=_spdMauOptions(tree,model,ver);
   var mauCounts=_spdMauCounts(model,ver,mauOpts);
-  return _spdPickTableHtml('Màu',_spdSortByCount(mauOpts,mauCounts),selected,'_spdPickMau','Tất cả màu',mauCounts);
+  // Đã chọn đúng 1 phiên bản → tô khung vàng các màu Nhà máy đang có sẵn trong KCK cho
+  // đúng Model+Phiên bản đó — dùng chung _kckColorsFor/_isKckAvailable với bảng Giả
+  // định đặt hàng để 2 nơi không lệch logic (gồm cả nhóm màu ĐỎ_GRP/XÁM_GRP).
+  var hilite=null,foot='';
+  if(ver&&ver!==SPD_ALL){
+    var kck=_kckColorsFor(model,ver);
+    var noteStyle='font-size:10.5px;color:#94a3b8;margin-top:4px;line-height:1.35';
+    if(kck){
+      hilite=function(c){
+        if(!_isKckAvailable(kck,c)) return '';
+        var e=kck[_mauToKckKey(c)];
+        return 'KCK '+KCK_DATE+': Nhà máy đang có sẵn màu này (năm SX '+e.n+')'+(e.r?' — ⚠️ sắp hết':'');
+      };
+      foot='<div style="'+noteStyle+'"><span style="border:1.5px solid #eab308;background:#fef9c3;border-radius:4px;padding:0 4px;color:#713f12;font-weight:600">Khung vàng</span> = có sẵn ở KCK ('+KCK_DATE+')</div>';
+    } else {
+      foot='<div style="'+noteStyle+'">KCK ('+KCK_DATE+') không có sẵn phiên bản này</div>';
+    }
+  }
+  return _spdPickTableHtml('Màu',_spdSortByCount(mauOpts,mauCounts),selected,'_spdPickMau','Tất cả màu',mauCounts,hilite,foot);
 }
 // Layout: 4 bảng cạnh nhau theo hàng ngang — Model / Phiên bản / Màu (3 bảng chọn,
 // độ rộng cố định) rồi bảng Kết quả chiếm phần còn lại — bọc flex-wrap để tự xuống
