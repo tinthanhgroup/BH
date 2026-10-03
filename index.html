@@ -1773,6 +1773,31 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
 var SPD_BRANCHES=BRANCHES_BH.filter(function(b){return b!=='ĐN';});
 var SPD_ALL='__ALL__'; // sentinel cho lựa chọn "Tất cả phiên bản"/"Tất cả màu"
 var _spdSel={model:null,ver:null,mau:null};
+// Bộ lọc Tháng/Chi nhánh (thêm 03/10/2026) — bấm tên tháng (cột trái) hoặc tên chi
+// nhánh (hàng tiêu đề) trong bảng kết quả để bật/tắt, chọn được nhiều cái. Mảng rỗng =
+// không lọc. Chỉ lọc SỐ ĐẾM ở 3 bảng chọn Model/Phiên bản/Màu (_spdCountYTD); bảng kết
+// quả vẫn hiện đủ mọi tháng/chi nhánh, chỉ tô nền ô đang chọn — để còn bấm chọn tiếp.
+var _spdFilt={months:[],branches:[]};
+var SPD_KHAC='Khác'; // cột phụ gom Nguồn khách trống/không khớp SPD_BRANCHES (xem _spdRenderResult)
+function _spdBranchKey(r){ return SPD_BRANCHES.indexOf(r.branch)>=0?r.branch:SPD_KHAC; }
+function _spdPassFilt(r){
+  if(_spdFilt.months.length&&_spdFilt.months.indexOf(r.ngayCoc.getMonth()+1)<0) return false;
+  if(_spdFilt.branches.length&&_spdFilt.branches.indexOf(_spdBranchKey(r))<0) return false;
+  return true;
+}
+function _spdToggleIn(arr,v){ var i=arr.indexOf(v); if(i>=0) arr.splice(i,1); else arr.push(v); }
+function _spdToggleMonth(m){ _spdToggleIn(_spdFilt.months,m); _spdRefreshAll(); }
+function _spdToggleBranch(b){ _spdToggleIn(_spdFilt.branches,b); _spdRefreshAll(); }
+function _spdClearFilt(){ _spdFilt={months:[],branches:[]}; _spdRefreshAll(); }
+// Vẽ lại cả 4 khung theo _spdSel hiện tại (số đếm ở 3 bảng chọn đổi theo bộ lọc).
+function _spdRefreshAll(){
+  var s=_spdSel;
+  if(!s.model) return;
+  document.getElementById('spd-model-box').innerHTML=_spdModelBoxHtml(s.model);
+  document.getElementById('spd-ver-box').innerHTML=_spdVerBoxHtml(s.model,s.ver);
+  document.getElementById('spd-mau-box').innerHTML=_spdMauBoxHtml(s.model,s.ver,s.mau);
+  document.getElementById('spd-result').innerHTML=_spdRenderResult(s.model,s.ver,s.mau);
+}
 // Toàn bộ công cụ "Tốc độ bán hàng" chỉ tính BÁN LẺ — loại "Bán ngang" (bán cho đại
 // lý khác, nhận diện qua Nguồn khách==='Khác', xem CLAUDE.md) ra khỏi mọi tính toán
 // (option tree, số đếm cạnh mỗi lựa chọn, bảng kết quả) theo yêu cầu người dùng.
@@ -1826,7 +1851,7 @@ function _spdPickTableHtml(title,options,selected,onclickFn,allLabel,counts){
 }
 // Đếm số hợp đồng đã ký (ngayCoc) trong năm hiện tại tới tháng hiện tại khớp điều
 // kiện pred — cùng phạm vi thời gian với bảng kết quả, dùng để hiện số lượng cạnh
-// mỗi lựa chọn trong 3 bảng điều khiển.
+// mỗi lựa chọn trong 3 bảng điều khiển. Có áp bộ lọc Tháng/Chi nhánh (_spdFilt).
 function _spdCountYTD(pred){
   var ref=fileLastModified instanceof Date?fileLastModified:new Date();
   var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
@@ -1834,6 +1859,7 @@ function _spdCountYTD(pred){
   allCoc.forEach(function(r){
     if(!_spdIsRetail(r)) return;
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year||r.ngayCoc.getMonth()+1>curMonth) return;
+    if(!_spdPassFilt(r)) return;
     if(pred(r)) c++;
   });
   return c;
@@ -1858,8 +1884,9 @@ function _spdTonFor(model,ver){
 // Bỏ khỏi danh sách phiên bản những phiên bản đã hết hoạt động: 0 hợp đồng ký từ
 // đầu năm (count YTD, verCounts) VÀ 0 xe tồn (Tồn) — tránh rác danh sách bởi phiên
 // bản cũ đã ngừng bán/hết hàng lâu mà vẫn còn trong lịch sử allCoc.
-function _spdFilterActiveVers(model,vers,verCounts){
-  return vers.filter(function(v){return (verCounts[v]||0)>0||_spdTonFor(model,v)>0;});
+// Luôn giữ phiên bản đang chọn (selected) — bộ lọc Tháng/Chi nhánh có thể đưa số đếm về 0.
+function _spdFilterActiveVers(model,vers,verCounts,selected){
+  return vers.filter(function(v){return v===selected||(verCounts[v]||0)>0||_spdTonFor(model,v)>0;});
 }
 // 3 hàm dựng HTML cho từng bảng chọn — dùng chung cho cả lần render đầu tiên
 // (renderTocDoBanHang, có Model mặc định) lẫn mỗi lần bấm chọn lại (_spdPickModel/
@@ -1878,7 +1905,7 @@ function _spdVerBoxHtml(model,selected){
   var tree=_spdOptionTree();
   var vers=tree[model]?Object.keys(tree[model]):[];
   var verCounts=_spdVerCounts(model,vers);
-  vers=_spdFilterActiveVers(model,vers,verCounts);
+  vers=_spdFilterActiveVers(model,vers,verCounts,selected);
   return _spdPickTableHtml('Phiên bản',_spdSortByCount(vers,verCounts),selected,'_spdPickVer','Tất cả phiên bản',verCounts);
 }
 function _spdMauBoxHtml(model,ver,selected){
@@ -1900,6 +1927,7 @@ function _spdMauBoxHtml(model,ver,selected){
 // Model/Phiên bản phía trên, không giữ thì lựa chọn của người dùng bị mất.
 function renderTocDoBanHang(opts){
   opts=opts||{};
+  if(!opts.keepSel) _spdFilt={months:[],branches:[]}; // vẽ mới hẳn thì bỏ luôn bộ lọc Tháng/Chi nhánh cũ
   var _spdModels=Object.keys(_spdOptionTree());
   var _spdModelsSorted=_spdSortByCount(_spdModels,_spdModelCounts(_spdModels));
   var defModel=_spdModelsSorted.length?_spdModelsSorted[0]:null;
@@ -1956,7 +1984,7 @@ function _spdPickMau(mau){
 function _spdRenderResult(model,ver,mau){
   var ref=fileLastModified instanceof Date?fileLastModified:new Date();
   var year=ref.getFullYear(),curMonth=ref.getMonth()+1;
-  var KHAC='Khác';
+  var KHAC=SPD_KHAC;
   // Cột phụ "Khác" gom các bản ghi có Nguồn khách trống hoặc không khớp đúng 5 chi
   // nhánh SPD_BRANCHES (ví dụ dòng bị bỏ trống cột Nguồn khách trong DATA TỔNG, hoặc
   // thuộc ĐN đã dừng bán) — nếu không, số ở đây vẫn cộng vào Tổng nhưng KHÔNG cộng
@@ -1974,24 +2002,39 @@ function _spdRenderResult(model,ver,mau){
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
     var m=r.ngayCoc.getMonth()+1;
     if(m>curMonth) return;
-    var b=SPD_BRANCHES.indexOf(r.branch)>=0?r.branch:KHAC;
+    var b=_spdBranchKey(r);
     monthTotals[m]++;grandTotal++;
     byMonthBranch[m][b]++;grandByBranch[b]++;
   });
-  // Chỉ hiện cột "Khác" khi thực sự có dữ liệu rơi vào đó — đa số model sẽ không
-  // cần cột này, tránh rác bảng.
-  var cols=grandByBranch[KHAC]>0?SPD_BRANCHES.concat([KHAC]):SPD_BRANCHES;
+  // Chỉ hiện cột "Khác" khi thực sự có dữ liệu rơi vào đó (hoặc đang được chọn làm bộ
+  // lọc — để còn bấm bỏ chọn) — đa số model sẽ không cần cột này, tránh rác bảng.
+  var cols=(grandByBranch[KHAC]>0||_spdFilt.branches.indexOf(KHAC)>=0)?SPD_BRANCHES.concat([KHAC]):SPD_BRANCHES;
   var colLabel={};SPD_BRANCHES.forEach(function(b){colLabel[b]=BRANCH_NAMES[b]||b;});colLabel[KHAC]='Khác*';
+  // Bộ lọc Tháng/Chi nhánh (_spdFilt): bấm tên tháng/chi nhánh để bật/tắt. Ô đang chọn
+  // tô nền xanh nhạt; giao của tháng × chi nhánh đã chọn tô đậm hơn — chính là phần số
+  // liệu đang được dùng để đếm ở 3 bảng chọn bên trái.
+  var fM=_spdFilt.months,fB=_spdFilt.branches,hasF=fM.length||fB.length;
+  function mSel(mm){return fM.indexOf(mm)>=0;}
+  function bSel(b){return fB.indexOf(b)>=0;}
+  function inF(mm,b){return hasF&&(!fM.length||mSel(mm))&&(!fB.length||bSel(b));}
+  var SEL_BG='#d1fae5',HIT_BG='#a7f3d0';
   var thBase='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:#fafafa;text-align:center;padding:6px 10px';
   var tdBase='padding:6px 10px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0';
   var thead='<th style="'+thBase+';text-align:left">Tháng</th>'
-    +cols.map(function(b){return '<th style="'+thBase+(b===KHAC?';color:#b45309':'')+'">'+colLabel[b]+'</th>';}).join('')
+    +cols.map(function(b){
+      return '<th onclick="_spdToggleBranch(\''+b+'\')" title="Bấm để lọc theo chi nhánh này (bấm nhiều chi nhánh để chọn nhiều)" style="'+thBase+';cursor:pointer'+(b===KHAC?';color:#b45309':'')+(bSel(b)?';background:'+SEL_BG+';color:#065f46;box-shadow:inset 0 -2px 0 #0d7c66':'')+'">'+colLabel[b]+'</th>';
+    }).join('')
     +'<th style="'+thBase+';color:#0d7c66">Tổng</th>';
-  var rowsHtml='';
+  var rowsHtml='',filtSum=0;
   for(var mi=1;mi<=curMonth;mi++){
     rowsHtml+='<tr>'
-      +'<td style="'+tdBase+';text-align:left;font-weight:600">T'+mi+'/'+year+'</td>'
-      +cols.map(function(b){return '<td style="'+tdBase+'">'+(byMonthBranch[mi][b]||'')+'</td>';}).join('')
+      +'<td onclick="_spdToggleMonth('+mi+')" title="Bấm để lọc theo tháng này (bấm nhiều tháng để chọn nhiều)" style="'+tdBase+';text-align:left;font-weight:600;cursor:pointer'+(mSel(mi)?';background:'+SEL_BG+';color:#065f46;box-shadow:inset 3px 0 0 #0d7c66':'')+'">T'+mi+'/'+year+'</td>'
+      +cols.map(function(b){
+        var hit=inF(mi,b);
+        if(hit) filtSum+=byMonthBranch[mi][b];
+        var bg=hit?HIT_BG:((mSel(mi)||bSel(b))?'#f0fdf4':'');
+        return '<td style="'+tdBase+(bg?';background:'+bg:'')+(hit?';font-weight:700':'')+'">'+(byMonthBranch[mi][b]||'')+'</td>';
+      }).join('')
       +'<td style="'+tdBase+';font-weight:700">'+(monthTotals[mi]||'')+'</td>'
       +'</tr>';
   }
@@ -2002,7 +2045,13 @@ function _spdRenderResult(model,ver,mau){
     +'</tr>';
   var verLabel=ver===SPD_ALL?'Tất cả phiên bản':ver;
   var mauLabel=mau===SPD_ALL?'Tất cả màu':mau;
+  var filtBar=hasF
+    ? '<div style="font-size:11.5px;margin-bottom:6px;padding:5px 9px;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:6px;color:#065f46;display:flex;flex-wrap:wrap;gap:6px;align-items:center">'
+      +'<span>🔎 Đang lọc 3 bảng bên trái theo: <b>'+(fM.length?fM.slice().sort(function(a,b){return a-b;}).map(function(x){return 'T'+x;}).join(', '):'mọi tháng')+'</b> · <b>'+(fB.length?fB.map(function(b){return colLabel[b];}).join(' + '):'mọi chi nhánh')+'</b> — '+filtSum+' HĐ của lựa chọn này</span>'
+      +'<span onclick="_spdClearFilt()" style="cursor:pointer;color:#b91c1c;font-weight:600;margin-left:auto">✕ Bỏ lọc</span></div>'
+    : '<div style="font-size:11px;color:#94a3b8;font-style:italic;margin-bottom:6px">Bấm tên tháng / chi nhánh để lọc số lượng ở 3 bảng bên trái (chọn được nhiều).</div>';
   return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+model+' — '+verLabel+' — '+mauLabel+'</div>'
+    +filtBar
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>';
 }
 function renderKCK(){
