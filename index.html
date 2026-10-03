@@ -1381,11 +1381,37 @@ var KCK_CHANGE_NOTE = {
 // KCK tự đồng bộ từ file Excel HTV qua TinThanh_KCK_Sync.gs → kck.json (mỗi 4 giờ).
 // KCK_DATA/KCK_DATE/KCK_CHANGE_NOTE hardcode ở trên chỉ còn là bản DỰ PHÒNG khi tải
 // kck.json lỗi — không cần cập nhật tay nữa. Trùng lặp có chủ đích với mobile.html.
+// Làm sạch kck.json trước khi dùng (thêm 03/10/2026): file HTV đôi khi ghi NĂM SX vào
+// cột Màu (vd. 3 dòng Creta FACELIFT, Staria CỨU THƯƠNG) — HTV xác nhận nghĩa là KHÔNG
+// còn màu nào, lẽ ra không đưa vào. Bỏ các "màu" chỉ là số năm, bỏ luôn phiên bản không
+// còn màu thật nào, và bỏ các dòng ghi chú thay đổi chỉ nói về "màu" năm đó. Script
+// TinThanh_KCK_Sync.gs cũng đã sửa để bỏ từ gốc — đoạn này phòng dữ liệu cũ/còn sót.
+// Trùng lặp có chủ đích giữa index.html và mobile.html.
+function _kckIsYearKey(c){ return /^\d{4}(\.0)?$/.test((c||'').toString().trim()); }
+function _kckSanitize(j){
+  j.data=j.data.map(function(e){
+    var cols={};Object.keys(e[2]||{}).forEach(function(c){ if(!_kckIsYearKey(c)) cols[c]=e[2][c]; });
+    return [e[0],e[1],cols];
+  }).filter(function(e){ return Object.keys(e[2]).length>0; });
+  if(j.changeNote){
+    ['removed','added'].forEach(function(k){
+      j.changeNote[k]=(j.changeNote[k]||[]).map(function(x){
+        var i=x.indexOf(': '); if(i<0) return x;
+        var tail=x.substring(i+2), suf='';
+        var sm=tail.match(/\s*\(phiên bản mới\)$/); if(sm){ suf=sm[0]; tail=tail.substring(0,tail.length-suf.length); }
+        var cs=tail.split(', ').filter(function(c){ return !_kckIsYearKey(c); });
+        return cs.length?x.substring(0,i+2)+cs.join(', ')+suf:null;
+      }).filter(function(x){ return x; });
+    });
+  }
+  return j;
+}
 function _loadKCK(){
   return fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/kck.json?t='+Date.now())
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(function(j){
       if(j && Array.isArray(j.data) && j.data.length && j.date){
+        _kckSanitize(j);
         KCK_DATA=j.data; KCK_DATE=j.date;
         if(j.changeNote) KCK_CHANGE_NOTE=j.changeNote;
         KCK_CHECKED_AT=j.checked_at?new Date(j.checked_at):null;
@@ -1595,21 +1621,28 @@ function _last30DaysCutoff(){
 // Quy đổi tên màu đơn lẻ (như dùng trong DAT_HANG_ORDERS.orders) sang đúng key nhóm
 // màu của KCK_DATA — dùng chung bảng nhóm màu với uploadKCK() (ĐỎ/ĐỎ ĐÔ/CAM/VÀNG/
 // CAM NÓNG/ĐỎ RUBY → ĐỎ_GRP; XÁM/XÁM TITAN → XÁM_GRP) để so khớp đúng chuẩn.
+// Thêm 03/10/2026 theo xác nhận người dùng: màu 2 tông tính theo màu thân ("Trắng nóc
+// đen", "Trắng (trần đen)" → TRẮNG; "Xám titan nóc đen" → XÁM_GRP…), "Xám kim loại" → XÁM_GRP.
 function _mauToKckKey(mau){
-  var m=(mau||'').toString().trim().toUpperCase();
+  var m=(mau||'').toString().trim().toUpperCase().replace(/\s+/g,' ');
+  m=m.replace(/\s*(NÓC ĐEN|\(TRẦN ĐEN\)|TRẦN ĐEN)$/,'').trim();
   if(['ĐỎ','ĐỎ ĐÔ','CAM','VÀNG','CAM NÓNG','ĐỎ RUBY'].indexOf(m)>=0) return 'ĐỎ_GRP';
-  if(['XÁM','XÁM TITAN'].indexOf(m)>=0) return 'XÁM_GRP';
+  if(['XÁM','XÁM TITAN','XÁM KIM LOẠI'].indexOf(m)>=0) return 'XÁM_GRP';
   return m;
 }
 // Tìm đúng dòng Model+Phiên bản trong KCK_DATA — trả về object màu {COLOR:{n,r}} nếu có,
 // null nếu Nhà máy hiện không có sẵn (KCK) đúng phiên bản này.
 // So phiên bản không phân biệt hoa/thường + bỏ khoảng trắng thừa — tên trong hợp đồng
 // (allCoc) và file HTV hay lệch kiểu "PRESTIGE (6 chỗ)" vs "PRESTIGE (6 CHỖ)",
-// "1.0 T-GDi" vs "1.0 T-GDI".
+// "1.0 T-GDi" vs "1.0 T-GDI". Không khớp thì thử lại sau khi bỏ đuôi năm (" 2025")
+// ở cả 2 phía — vd. hợp đồng "2.5 CALLIGRAPHY" = KCK "2.5 CALLIGRAPHY 2025" (người dùng
+// xác nhận cùng 1 phiên bản, 03/10/2026). Khớp chính xác luôn được ưu tiên trước.
 function _kckColorsFor(model,phienBan){
   function nz(s){return (s||'').toString().trim().replace(/\s+/g,' ').toUpperCase();}
+  function noYr(s){return s.replace(/\s+(19|20)\d{2}$/,'');}
   var pb=nz(phienBan);
-  var entry=KCK_DATA.find(function(k){return k[0]===model&&nz(k[1])===pb;});
+  var entry=KCK_DATA.find(function(k){return k[0]===model&&nz(k[1])===pb;})
+    ||KCK_DATA.find(function(k){return k[0]===model&&noYr(nz(k[1]))===noYr(pb);});
   return entry?entry[2]:null;
 }
 // Màu đang đặt (mau) có đang sẵn ở Nhà máy (KCK) cho đúng Model+Phiên bản không —

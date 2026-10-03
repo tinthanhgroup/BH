@@ -297,11 +297,37 @@ var KCK_CHANGE_NOTE = {
 };
 // Tự đồng bộ từ kck.json (TinThanh_KCK_Sync.gs) — trùng lặp có chủ đích với index.html,
 // xem giải thích ở đó. KCK_DATA hardcode ở trên chỉ là bản dự phòng.
+// Làm sạch kck.json trước khi dùng (thêm 03/10/2026): file HTV đôi khi ghi NĂM SX vào
+// cột Màu (vd. 3 dòng Creta FACELIFT, Staria CỨU THƯƠNG) — HTV xác nhận nghĩa là KHÔNG
+// còn màu nào, lẽ ra không đưa vào. Bỏ các "màu" chỉ là số năm, bỏ luôn phiên bản không
+// còn màu thật nào, và bỏ các dòng ghi chú thay đổi chỉ nói về "màu" năm đó. Script
+// TinThanh_KCK_Sync.gs cũng đã sửa để bỏ từ gốc — đoạn này phòng dữ liệu cũ/còn sót.
+// Trùng lặp có chủ đích giữa index.html và mobile.html.
+function _kckIsYearKey(c){ return /^\d{4}(\.0)?$/.test((c||'').toString().trim()); }
+function _kckSanitize(j){
+  j.data=j.data.map(function(e){
+    var cols={};Object.keys(e[2]||{}).forEach(function(c){ if(!_kckIsYearKey(c)) cols[c]=e[2][c]; });
+    return [e[0],e[1],cols];
+  }).filter(function(e){ return Object.keys(e[2]).length>0; });
+  if(j.changeNote){
+    ['removed','added'].forEach(function(k){
+      j.changeNote[k]=(j.changeNote[k]||[]).map(function(x){
+        var i=x.indexOf(': '); if(i<0) return x;
+        var tail=x.substring(i+2), suf='';
+        var sm=tail.match(/\s*\(phiên bản mới\)$/); if(sm){ suf=sm[0]; tail=tail.substring(0,tail.length-suf.length); }
+        var cs=tail.split(', ').filter(function(c){ return !_kckIsYearKey(c); });
+        return cs.length?x.substring(0,i+2)+cs.join(', ')+suf:null;
+      }).filter(function(x){ return x; });
+    });
+  }
+  return j;
+}
 function _loadKCK(){
   return fetch('https://raw.githubusercontent.com/tinthanhgroup/BH/main/kck.json?t='+Date.now())
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(function(j){
       if(j && Array.isArray(j.data) && j.data.length && j.date){
+        _kckSanitize(j);
         KCK_DATA=j.data; KCK_DATE=j.date;
         if(j.changeNote) KCK_CHANGE_NOTE=j.changeNote;
       }
