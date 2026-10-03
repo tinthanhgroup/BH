@@ -1893,18 +1893,41 @@ function _spdMauBoxHtml(model,ver,selected){
 // số lượng ký (_spdSortByCount) — tức model bán chạy nhất — để vừa vào là thấy luôn
 // kết quả đáng chú ý nhất, không cần bấm chọn từ đầu. Tự động đổi theo dữ liệu, không
 // cố định tên model.
-function renderTocDoBanHang(){
+// opts (tuỳ chọn, dùng khi nhúng bảng này dưới view "Tổng" của tab Hàng hóa — xem
+// _tongTocDoHtml()): noTitle=true bỏ dòng tiêu đề (đã có <summary> thay thế);
+// keepSel=true giữ nguyên Model/Phiên bản/Màu đang chọn (_spdSel) thay vì reset về
+// model bán chạy nhất — vì view "Tổng" bị renderHH() vẽ lại mỗi lần bấm drill
+// Model/Phiên bản phía trên, không giữ thì lựa chọn của người dùng bị mất.
+function renderTocDoBanHang(opts){
+  opts=opts||{};
   var _spdModels=Object.keys(_spdOptionTree());
   var _spdModelsSorted=_spdSortByCount(_spdModels,_spdModelCounts(_spdModels));
   var defModel=_spdModelsSorted.length?_spdModelsSorted[0]:null;
-  _spdSel=defModel?{model:defModel,ver:SPD_ALL,mau:SPD_ALL}:{model:null,ver:null,mau:null};
-  return '<div class="sec-title" style="color:#0d7c66;border-bottom:none">1. Tốc độ bán hàng (Bán lẻ)</div>'
+  var defVer=SPD_ALL,defMau=SPD_ALL;
+  if(opts.keepSel&&_spdSel.model&&_spdModels.indexOf(_spdSel.model)>=0){
+    defModel=_spdSel.model;defVer=_spdSel.ver||SPD_ALL;defMau=_spdSel.mau||SPD_ALL;
+  }
+  _spdSel=defModel?{model:defModel,ver:defVer,mau:defMau}:{model:null,ver:null,mau:null};
+  return (opts.noTitle?'':'<div class="sec-title" style="color:#0d7c66;border-bottom:none">1. Tốc độ bán hàng (Bán lẻ)</div>')
     +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
     +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdModelBoxHtml(defModel)+'</div>'
-    +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,SPD_ALL):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
-    +'<div id="spd-mau-box" style="flex:0 0 150px">'+(defModel?_spdMauBoxHtml(defModel,SPD_ALL,SPD_ALL):_spdPickTableHtml('Màu',[],null,'_spdPickMau',null))+'</div>'
-    +'<div id="spd-result" style="flex:1;min-width:320px">'+(defModel?_spdRenderResult(defModel,SPD_ALL,SPD_ALL):'')+'</div>'
+    +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,defVer):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
+    +'<div id="spd-mau-box" style="flex:0 0 150px">'+(defModel?_spdMauBoxHtml(defModel,defVer,defMau):_spdPickTableHtml('Màu',[],null,'_spdPickMau',null))+'</div>'
+    +'<div id="spd-result" style="flex:1;min-width:320px">'+(defModel?_spdRenderResult(defModel,defVer,defMau):'')+'</div>'
     +'</div>';
+}
+// Bảng "Tốc độ bán hàng" thu gọn (<details>) đặt dưới bảng drill Model/Phiên bản/Màu
+// khi bấm tile "Tổng" (typeFilter==='tong') — để xem tồn kho và tốc độ bán cùng lúc
+// khi tính đặt hàng hằng tháng. Mở cho mọi người (như cả tab Hàng hóa), KHÁC mục
+// "Giả định đặt hàng" vốn khoá theo _canSeeDatHang — theo yêu cầu người dùng
+// 03/10/2026. Ghi nhớ trạng thái mở/đóng (_tongSpdOpen) để renderHH() vẽ lại (khi
+// bấm drill) không tự gập bảng lại.
+var _tongSpdOpen=false;
+function _tongTocDoHtml(){
+  return '<details style="margin-top:24px"'+(_tongSpdOpen?' open':'')+' ontoggle="_tongSpdOpen=this.open">'
+    +'<summary class="sec-title" style="color:#0d7c66;cursor:pointer;border-bottom:none">📈 Tốc độ bán hàng (Bán lẻ) — số hợp đồng ký theo tháng</summary>'
+    +renderTocDoBanHang({noTitle:true,keepSel:true})
+    +'</details>';
 }
 // Chọn Model xong tự mặc định "Tất cả phiên bản" + "Tất cả màu" và render luôn kết quả —
 // không bắt phải bấm tiếp 2 bảng còn lại mới ra số liệu.
@@ -3994,7 +4017,8 @@ function renderHH(){
       +'<div class="drill-resizer" id="rs2"></div>'
       +'<div class="drill-panel" id="dp3" style="flex:1;min-width:0"><div class="drill-header">Lev 3 – Màu sắc · Chi nhánh'+h3+'</div><div class="drill-body" style="overflow-x:auto">'+lv3+'</div></div>'
       +'</div>'
-      +'<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">* Mức thưởng TVBH (badge bên cạnh tên Model) theo Công văn số 51/2026/CV-HTV</div>';
+      +'<div style="font-size:10.5px;color:var(--muted);margin-top:6px;font-style:italic;">* Mức thưởng TVBH (badge bên cạnh tên Model) theo Công văn số 51/2026/CV-HTV</div>'
+      +(typeFilter==='tong'?_tongTocDoHtml():'');
   }
   document.getElementById('hh-content').innerHTML=mkStats(totS,totB,totL,totD,totDaPhan)+mkHHFilters()+bodyContent;
   setTimeout(initResizers,0);
