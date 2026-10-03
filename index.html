@@ -1621,14 +1621,28 @@ function _last30DaysCutoff(){
 // Quy đổi tên màu đơn lẻ (như dùng trong DAT_HANG_ORDERS.orders) sang đúng key nhóm
 // màu của KCK_DATA — dùng chung bảng nhóm màu với uploadKCK() (ĐỎ/ĐỎ ĐÔ/CAM/VÀNG/
 // CAM NÓNG/ĐỎ RUBY → ĐỎ_GRP; XÁM/XÁM TITAN → XÁM_GRP) để so khớp đúng chuẩn.
-// Thêm 03/10/2026 theo xác nhận người dùng: màu 2 tông tính theo màu thân ("Trắng nóc
-// đen", "Trắng (trần đen)" → TRẮNG; "Xám titan nóc đen" → XÁM_GRP…), "Xám kim loại" → XÁM_GRP.
+// Màu đi qua _mauCanon() trước (gộp tên đồng nghĩa) rồi mới nhóm.
 function _mauToKckKey(mau){
-  var m=(mau||'').toString().trim().toUpperCase().replace(/\s+/g,' ');
-  m=m.replace(/\s*(NÓC ĐEN|\(TRẦN ĐEN\)|TRẦN ĐEN)$/,'').trim();
-  if(['ĐỎ','ĐỎ ĐÔ','CAM','VÀNG','CAM NÓNG','ĐỎ RUBY'].indexOf(m)>=0) return 'ĐỎ_GRP';
-  if(['XÁM','XÁM TITAN','XÁM KIM LOẠI'].indexOf(m)>=0) return 'XÁM_GRP';
+  var m=_mauCanon(mau).toUpperCase();
+  if(['ĐỎ/ĐỎ ĐÔ','ĐỎ','ĐỎ ĐÔ','CAM','VÀNG','CAM NÓNG','ĐỎ RUBY'].indexOf(m)>=0) return 'ĐỎ_GRP';
+  if(['XÁM/XÁM TITAN','XÁM','XÁM TITAN'].indexOf(m)>=0) return 'XÁM_GRP';
   return m;
+}
+// Gộp các tên màu đồng nghĩa về 1 tên chuẩn (người dùng xác nhận 03/10/2026) — dùng cho
+// CẢ so khớp KCK (_mauToKckKey) LẪN bảng Màu của Tốc độ bán hàng (_spdOptionTree/
+// _spdMauCounts/_spdRenderResult), để 2 nơi luôn gộp giống nhau:
+//  - Màu 2 tông tính theo màu thân: bỏ đuôi "nóc đen"/"(trần đen)" → "Trắng nóc đen",
+//    "Trắng (trần đen)" = Trắng; "Đỏ nóc đen" = Đỏ; "Xám titan nóc đen" = Xám titan.
+//  - Đỏ, Đỏ đô, Đỏ tươi → "Đỏ/Đỏ đô"; Xám, Xám titan, Xám kim loại → "Xám/Xám titan"
+//    (đúng nhãn nhóm màu của file HTV/KCK — gộp 1 dòng trong bảng Màu, 03/10/2026).
+// KHÔNG gộp (người dùng xác nhận là màu riêng): Ghi vàng ≠ Vàng cát; Trắng mờ, Vàng mờ;
+// các màu Xanh (dương/nước biển/lục bảo/bóng đêm/tối/xám) khác nhau.
+var MAU_ALIAS={'ĐỎ':'Đỏ/Đỏ đô','ĐỎ ĐÔ':'Đỏ/Đỏ đô','ĐỎ TƯƠI':'Đỏ/Đỏ đô',
+  'XÁM':'Xám/Xám titan','XÁM TITAN':'Xám/Xám titan','XÁM KIM LOẠI':'Xám/Xám titan'};
+function _mauCanon(mau){
+  var m=(mau||'').toString().trim().replace(/\s+/g,' ');
+  m=m.replace(/\s*(nóc đen|\(trần đen\)|trần đen)$/i,'').trim();
+  return MAU_ALIAS[m.toUpperCase()]||m;
 }
 // Tìm đúng dòng Model+Phiên bản trong KCK_DATA — trả về object màu {COLOR:{n,r}} nếu có,
 // null nếu Nhà máy hiện không có sẵn (KCK) đúng phiên bản này.
@@ -1850,7 +1864,7 @@ function _spdOptionTree(){
     var pb=r.phienBan||'—';
     if(!map[r.model]) map[r.model]={};
     if(!map[r.model][pb]) map[r.model][pb]={};
-    if(r.mau) map[r.model][pb][r.mau]=true;
+    if(r.mau) map[r.model][pb][_mauCanon(r.mau)]=true; // gộp tên màu đồng nghĩa, xem _mauCanon()
   });
   return map;
 }
@@ -1921,7 +1935,7 @@ function _spdVerCounts(model,vers){
 }
 function _spdMauCounts(model,ver,mauOpts){
   var m={};m[SPD_ALL]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver);});
-  mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver)&&r.mau===c;});});
+  mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver)&&_mauCanon(r.mau)===c;});});
   return m;
 }
 function _spdTonFor(model,ver){
@@ -2062,7 +2076,7 @@ function _spdRenderResult(model,ver,mau){
     if(!_spdIsRetail(r)) return;
     if(r.model!==model) return;
     if(ver!==SPD_ALL && r.phienBan!==ver) return;
-    if(mau!==SPD_ALL && r.mau!==mau) return;
+    if(mau!==SPD_ALL && _mauCanon(r.mau)!==mau) return;
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
     var m=r.ngayCoc.getMonth()+1;
     if(m>curMonth) return;
