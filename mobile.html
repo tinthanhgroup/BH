@@ -585,6 +585,28 @@ function parseJsonRecords(records){
       allData.lxx.push(Object.assign({type:'lxx'},base,{kho:daly||kho}));
     }
   });
+  _khopLxxPhanKhach(records);
+}
+// "LXX đã phân khách" — bản sao đúng logic _khopLxxPhanKhach() trong index.html (sửa 1
+// nơi nhớ sửa nơi kia): LXX có số khung khớp khách DS nợ → bỏ khỏi LXX và bỏ khách đó
+// khỏi Nợ; khớp dòng DATA TỔNG (Xe đã về kho/Đã bán) → bỏ khỏi LXX (tránh đếm 2 lần).
+// Không khớp số khung nào → LXX bình thường, dù ô KH ghi "X".
+function _khopLxxPhanKhach(records){
+  function nk(s){return (s||'').toString().trim().toUpperCase();}
+  var dtKhung={};
+  records.forEach(function(r){
+    var tt=(r.trangThai||'').trim(), k=nk(r.soKhung);
+    if(k&&(tt==='Xe đã về kho'||tt==='Đã bán')) dtKhung[k]=true;
+  });
+  var noKhung={};
+  allData.debt.forEach(function(d){var k=nk(d.soKhung); if(k) noKhung[k]=true;});
+  var khungKhopNo={};
+  allData.lxx=allData.lxx.filter(function(r){
+    var k=nk(r.soKhung);
+    if(k&&noKhung[k]){ khungKhopNo[k]=true; return false; }
+    return !(k&&dtKhung[k]);
+  });
+  allData.debt=allData.debt.filter(function(d){return !khungKhopNo[nk(d.soKhung)];});
 }
 
 // ─── FILTERS ───

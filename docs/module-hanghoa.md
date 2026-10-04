@@ -37,6 +37,15 @@ Bảng tạm thời cho **1 đợt đặt hàng cụ thể** — chỉ liệt k�
 - Cột **Số lượng xe ký (30 ngày gần nhất)**: tổng số xe **đã ký** (theo ngày đặt cọc `ngayCoc`) trong 30 ngày gần nhất tính đến `fileLastModified`, lấy từ `allCoc` lọc đúng `model`+`phienBan`. Hàm `_last30DaysCutoff()` tính mốc cắt (rolling 30 ngày, không theo tuần/tháng lịch). Đã đổi 2 lần theo yêu cầu người dùng 09/2026: chốt cọc 5 tuần (`allCoc`) → đã bán 30 ngày (`allSales`/`ngayBan`) → xe ký 30 ngày (`allCoc`/`ngayCoc`, bản hiện tại) — nếu đổi lại cách tính, nhớ sửa cả tiêu đề cột lẫn dòng ghi chú `⚠️` bên dưới `sec-title`.
 - Muốn thêm đợt đặt hàng mới: ghi đè hẳn `DAT_HANG_ORDERS[]` (không cộng dồn với đợt cũ, trừ khi người dùng muốn giữ lại để đối chiếu).
 
+## "LXX đã phân khách" (`_khopLxxPhanKhach()`, thêm 04/10/2026)
+
+Người dùng **không muốn sửa dữ liệu Sheet**, nên việc khớp làm ở frontend, gọi cuối `parseJsonRecords()` (cả `index.html` lẫn bản sao trong `mobile.html` — sửa 1 nơi nhớ sửa nơi kia). Khớp theo **số khung** của xe LXX (sheet ĐƠN HÀNG):
+- Khớp 1 khách **DS nợ** → xe bỏ khỏi `allData.lxx`, khách đó bỏ khỏi `allData.debt` (khách đã có xe đang về). Tổng − Nợ không đổi, chỉ cột LXX/Nợ đúng nghĩa hơn.
+- Khớp 1 dòng **DATA TỔNG** (`Xe đã về kho`/`Đã bán`) → bỏ khỏi LXX (xe đã về/đã bán nhưng ĐƠN HÀNG chưa dọn — trước đây bị đếm 2 lần, vd. 2 xe bán ngang Hyundai Huế/Vinh).
+- Ô "KH đặt cọc" của LXX thường chỉ ghi `"X"`. Người dùng xác nhận: **ghi "X" mà không khớp số khung nào = LXX bình thường, chưa phân khách**. Đừng dùng ô này làm điều kiện.
+- Xe/khách đã tách lưu ở `allData.lxxPhan`/`allData.debtKhop`; `index.html` hiện dòng thu gọn "🔗 N xe LXX đã phân khách" dưới danh sách LXX và Nợ (`_lxxPhanNoteHtml()`). `mobile.html` chỉ đổi số, không hiện ghi chú (trang người dùng cuối).
+- Đường upload Excel thủ công cũ (`parseRawRows()`) không áp dụng việc khớp này.
+
 ## Bảng "Tốc độ bán hàng" dưới view "Tổng" (thêm 03/10/2026)
 
 Bấm tile "Tổng" (`typeFilter==='tong'`) → dưới bảng drill Model/Phiên bản/Màu có thêm 1 `<details>` thu gọn (`_tongTocDoHtml()`) chứa đúng bảng 1 "Tốc độ bán hàng (Bán lẻ)" của mục "Giả định đặt hàng" (`renderTocDoBanHang({noTitle:true,keepSel:true})`) — để xem tồn kho và tốc độ bán cùng lúc khi tính đặt hàng hằng tháng. **Mở cho mọi người** (kể cả chưa đăng nhập) — khác mục "Giả định đặt hàng" vốn khoá theo `_canSeeDatHang()`, theo yêu cầu người dùng 03/10/2026. `keepSel` giữ Model/Phiên bản/Màu đang chọn, `_tongSpdOpen` giữ trạng thái mở — vì `renderHH()` vẽ lại cả trang mỗi lần bấm drill phía trên. Bảng ở mục "Giả định đặt hàng" vẫn gọi không tham số (reset về model bán chạy nhất như cũ).

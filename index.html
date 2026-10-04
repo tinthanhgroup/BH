@@ -831,6 +831,54 @@ function parseJsonRecords(records, fileDate){
                            nguonKhach:nguonKhach,khach:khach,xuatHoSo:!!r.xuatHoSo});
     }
   });
+  _khopLxxPhanKhach(records);
+}
+// "LXX đã phân khách" (thêm 04/10/2026, theo xác nhận người dùng — KHÔNG sửa dữ liệu
+// Sheet): xe LXX được coi là đã phân khách khi SỐ KHUNG khớp với
+//  (a) 1 khách trong DS nợ → bỏ xe khỏi LXX VÀ bỏ khách đó khỏi Nợ (khách đã có xe
+//      đang về — trước đây cộng LXX rồi trừ Nợ, Tổng − Nợ không đổi, chỉ đúng nghĩa hơn);
+//  (b) 1 dòng DATA TỔNG (Xe đã về kho / Đã bán) → xe đã về/đã bán nhưng sheet ĐƠN HÀNG
+//      chưa dọn → bỏ khỏi LXX để không đếm 2 lần.
+// Ô "KH đặt cọc" của LXX ghi "X" mà KHÔNG khớp số khung nào → vẫn là LXX bình thường
+// (chưa phân khách). Xe tách ra lưu ở allData.lxxPhan / allData.debtKhop để còn xem lại.
+// mobile.html có bản sao cùng logic — sửa 1 nơi nhớ sửa nơi kia.
+function _khopLxxPhanKhach(records){
+  function nk(s){return (s||'').toString().trim().toUpperCase();}
+  var dtKhung={};
+  records.forEach(function(r){
+    var tt=(r.trangThai||'').trim(), k=nk(r.soKhung);
+    if(k&&(tt==='Xe đã về kho'||tt==='Đã bán')) dtKhung[k]=r;
+  });
+  var noByKhung={};
+  allData.debt.forEach(function(d){var k=nk(d.soKhung); if(k) noByKhung[k]=d;});
+  var lxxCon=[], lxxPhan=[], khungKhopNo={};
+  allData.lxx.forEach(function(r){
+    var k=nk(r.soKhung), no=k&&noByKhung[k], dt=k&&dtKhung[k];
+    if(no){ khungKhopNo[k]=true; lxxPhan.push(Object.assign({},r,{khopVoi:'DS nợ',khachKhop:no.khach,tvbhKhop:no.tvbh})); }
+    else if(dt){ lxxPhan.push(Object.assign({},r,{khopVoi:dt.trangThai,khachKhop:(dt.khDatCoc||'').trim(),tvbhKhop:(dt.tvbh||'').trim()})); }
+    else lxxCon.push(r);
+  });
+  allData.lxx=lxxCon;
+  allData.lxxPhan=lxxPhan;
+  allData.debtKhop=allData.debt.filter(function(d){return khungKhopNo[nk(d.soKhung)];});
+  allData.debt=allData.debt.filter(function(d){return !khungKhopNo[nk(d.soKhung)];});
+}
+// Ghi chú dưới danh sách LXX/Nợ: các xe đã tách ra theo _khopLxxPhanKhach() — để số
+// không "biến mất" mà không ai biết. Lọc theo chi nhánh đang chọn giống danh sách chính.
+function _lxxPhanNoteHtml(){
+  var rows=(allData.lxxPhan||[]).filter(function(r){return khoMatch(r.kho);});
+  if(!rows.length) return '';
+  var nNo=rows.filter(function(r){return r.khopVoi==='DS nợ';}).length;
+  var td='padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:12px;white-space:nowrap';
+  return '<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:#4b5563">🔗 <b>'+rows.length+'</b> xe LXX đã phân khách (không tính vào LXX'
+    +(nNo?'; '+nNo+' xe khớp khách DS nợ nên khách đó cũng không tính vào Nợ':'')+') — bấm để xem</summary>'
+    +'<div class="table-wrap" style="margin-top:8px"><div class="table-scroll"><table><thead><tr>'
+    +'<th>Model</th><th>Phiên bản</th><th>Màu</th><th>Chi nhánh đặt</th><th>Số khung</th><th>Khớp với</th><th>Khách hàng</th><th>TVBH</th></tr></thead><tbody>'
+    +rows.map(function(r){
+      return '<tr><td style="'+td+'">'+r.model+'</td><td style="'+td+'">'+r.phienBan+'</td><td style="'+td+'">'+r.mau+'</td><td style="'+td+'">'+khoLabel(r.kho)+'</td>'
+        +'<td style="'+td+';font-family:monospace">'+r.soKhung+'</td><td style="'+td+'">'+r.khopVoi+'</td><td style="'+td+'">'+(r.khachKhop||'—')+'</td><td style="'+td+'">'+(r.tvbhKhop||'—')+'</td></tr>';
+    }).join('')
+    +'</tbody></table></div></div></details>';
 }
 function _canSeeChuaHD(){ return _authenticated && (_isAdmin || _isGD); }
 function toggleType(t){
@@ -4120,7 +4168,8 @@ function renderHH(){
     });
     var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
-    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>';
+    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
+      +(isLxx||isDebt?_lxxPhanNoteHtml():''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
   }
   } else {
     bodyContent='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--muted);align-items:center;"><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-stock);border-radius:2px"></div>Tồn kho</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-bo);border-radius:2px"></div>BO</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-lxx);border-radius:2px"></div>Có LXX</div><span style="color:#bbb;font-size:11px;margin-left:6px">+N = xe nợ (không tính tổng)</span></div>'
