@@ -1563,54 +1563,41 @@ function renderChuaGiao(){
 // `orders` là số liệu CỐ ĐỊNH của đợt đặt hàng này — sửa tay khi có đợt đặt mới,
 // không tự suy ra từ đâu khác.
 var DAT_HANG_ORDERS = [
-  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
-    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  // Đợt THÁNG 10/2026 — tổng hợp từ đề xuất 3 file trong "2. Dat hang/T10/" (sheet
+  // "ĐƠN ĐẶT HÀNG"): VC037 = Nha Trang (gồm Phan Rang), VC048 = Đà Lạt (gồm Bảo Lộc),
+  // VC079 = Phú Yên. Tổng 20 xe: NT 8 · PY 5 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
+  // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:2},{mau:'Đen',sl:1}], 'ĐL':[]}},
+    orders:{NT:[], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
-    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
-  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
-    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
-  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
-  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
-    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:2}], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Trắng',sl:2}]}}
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
 // Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
 // khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
-// thực tế vận hành, ví dụ hạn ngạch/đầu mối nhà máy). Field "note" ghi rõ đặt hộ ai:
-// - Creta N Line FL: PY đặt hộ NT 3 xe Trắng (dời từ cột NT sang PY).
-// - Accent 1.5 AT: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
-// - Tucson 2.0 Xăng ĐB: NT đặt hộ PY 2 xe Trắng (dời PY→NT) VÀ ĐL đặt hộ NT 2 xe Đen
-//   (dời NT→ĐL) — cùng 1 model nhưng 2 chiều đặt hộ khác nhau, 2 màu khác nhau.
-// - Stargazer Đặc Biệt FL 2026: NT đặt hộ PY 1 xe Trắng (dời từ cột PY sang NT).
-// - Grand i10 1.2AT: NT đặt hộ ĐL thêm 1 xe Trắng (cộng thêm, không dời — ĐL vẫn giữ
-//   nguyên 1 xe tự đặt trước đó).
+// thực tế vận hành, ví dụ hạn ngạch/đầu mối nhà máy). Field "note" ghi rõ đặt hộ ai,
+// vd. {mau:'Trắng',sl:2,note:'cho PY'}.
+// Đợt T10/2026: chưa có thông tin đặt hộ → tạm giống hệt DAT_HANG_ORDERS.
 var DAT_HANG_ORDERS_THUCTE = [
-  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
-    orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[{mau:'Trắng',sl:2},{mau:'Trắng',sl:3,note:'cho NT'},{mau:'Đen',sl:1}], 'ĐL':[]}},
+    orders:{NT:[], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
-    orders:{NT:[{mau:'Trắng',sl:1,note:'cho ĐL'}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
-  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
-    orders:{NT:[{mau:'Trắng',sl:1,note:'cho PY'}], PY:[], 'ĐL':[]}},
-  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
-  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
-    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Trắng',sl:2,note:'cho PY'}], PY:[], 'ĐL':[{mau:'Trắng',sl:2},{mau:'Đen',sl:2,note:'cho NT'}]}}
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
 // Mốc 30 ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
 // cột "Số lượng xe ký 30 ngày gần nhất" trong renderDatHang().
