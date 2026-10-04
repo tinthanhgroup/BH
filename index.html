@@ -1764,7 +1764,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<th style="'+thBase+';color:#6d28d9" title="Tổng cột 10 của tất cả phiên bản cùng Model">Tổng theo Model</th>'
     +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(13=10−12)</span></th>'
-    +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất, tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>(30 ngày)</th>'
+    +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất — chỉ bán lẻ, không gồm bán ngang — tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>(30 ngày)</th>'
     +'<th style="'+thBase+';color:#b45309" title="Cột 13 ÷ Cột 14 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(15=13/14)</span></th>';
   var rows='';
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
@@ -1782,8 +1782,10 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var lxx=allData.lxx.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var debt=allData.debt.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
+    // Chỉ tính BÁN LẺ (bỏ bán ngang, _spdIsRetail) — cùng cách đếm với bảng 1 "Tốc độ
+    // bán hàng" để 2 bảng không lệch (người dùng yêu cầu 04/10/2026).
     var ky30=allCoc.filter(function(r){
-      return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&r.ngayCoc>=cutoff30;
+      return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&r.ngayCoc>=cutoff30&&_spdIsRetail(r);
     }).length;
     var kckColors=_kckColorsFor(o.model,o.phienBan);
     var datHang=0;
@@ -1844,7 +1846,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<td style="'+tdBase+';color:#b45309">'+sumTyLe+'</td>'
     +'</tr>';
   var noteHtml='<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:10px;line-height:1.6">'
-    +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi.<br>'
+    +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi. SL hợp đồng 30 ngày chỉ tính bán lẻ (không gồm bán ngang).<br>'
       +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>')
     +(hideKckNote?'"(...)" sau tên màu = chi nhánh đó đặt hàng <b>giúp</b> chi nhánh khác, xe vẫn tính vào nhu cầu của chi nhánh được giúp.<br>':'')
     +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).'
@@ -1858,7 +1860,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
 // Chi nhánh dùng cho bảng Tốc độ bán hàng — theo đúng nhóm bán hàng (BRANCHES_BH),
 // ẩn ĐN vì đã dừng bán (giống quy ước BR_SHOW ở các biểu đồ khác).
 var SPD_BRANCHES=BRANCHES_BH.filter(function(b){return b!=='ĐN';});
-var SPD_ALL='__ALL__'; // sentinel cho lựa chọn "Tất cả phiên bản"/"Tất cả màu"
+var SPD_ALL='__ALL__'; // sentinel cho lựa chọn "Tất cả model"/"Tất cả phiên bản"/"Tất cả màu"
 var _spdSel={model:null,ver:null,mau:null};
 // Bộ lọc Tháng/Chi nhánh (thêm 03/10/2026) — bấm tên tháng (cột trái) hoặc tên chi
 // nhánh (hàng tiêu đề) trong bảng kết quả để bật/tắt, chọn được nhiều cái. Mảng rỗng =
@@ -1889,6 +1891,8 @@ function _spdRefreshAll(){
 // lý khác, nhận diện qua Nguồn khách==='Khác', xem CLAUDE.md) ra khỏi mọi tính toán
 // (option tree, số đếm cạnh mỗi lựa chọn, bảng kết quả) theo yêu cầu người dùng.
 function _spdIsRetail(r){ return (r.branch||'').toString().trim().toUpperCase()!=='KHÁC'; }
+// Khớp Model đang chọn — SPD_ALL ("Tất cả model", thêm 04/10/2026) khớp mọi model.
+function _spdModelIs(r,model){ return model===SPD_ALL||r.model===model; }
 // Dựng cây Model -> Phiên bản -> {Màu:true} từ allCoc (mọi xe đã từng đặt cọc) để
 // đổ vào 3 bảng chọn lồng nhau — chỉ hiện đúng lựa chọn thực sự có dữ liệu.
 function _spdOptionTree(){
@@ -1907,6 +1911,10 @@ function _spdOptionTree(){
 // ngược lại chỉ lấy đúng phiên bản đó.
 function _spdMauOptions(tree,model,ver){
   var set={};
+  if(model===SPD_ALL){ // "Tất cả model": hợp nhất màu của mọi model (phiên bản luôn là Tất cả)
+    Object.keys(tree).forEach(function(mo){Object.keys(tree[mo]).forEach(function(v){Object.keys(tree[mo][v]).forEach(function(c){set[c]=true;});});});
+    return Object.keys(set).sort();
+  }
   if(!model||!tree[model]) return [];
   if(ver===SPD_ALL){
     Object.keys(tree[model]).forEach(function(v){Object.keys(tree[model][v]).forEach(function(c){set[c]=true;});});
@@ -1964,13 +1972,13 @@ function _spdModelCounts(models){
   return m;
 }
 function _spdVerCounts(model,vers){
-  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return r.model===model;});
+  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return _spdModelIs(r,model);});
   vers.forEach(function(v){m[v]=_spdCountYTD(function(r){return r.model===model&&r.phienBan===v;});});
   return m;
 }
 function _spdMauCounts(model,ver,mauOpts){
-  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver);});
-  mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return r.model===model&&(ver===SPD_ALL||r.phienBan===ver)&&_mauCanon(r.mau)===c;});});
+  var m={};m[SPD_ALL]=_spdCountYTD(function(r){return _spdModelIs(r,model)&&(ver===SPD_ALL||r.phienBan===ver);});
+  mauOpts.forEach(function(c){m[c]=_spdCountYTD(function(r){return _spdModelIs(r,model)&&(ver===SPD_ALL||r.phienBan===ver)&&_mauCanon(r.mau)===c;});});
   return m;
 }
 function _spdTonFor(model,ver){
@@ -1994,11 +2002,13 @@ function _spdSortByCount(list,counts){
 function _spdModelBoxHtml(selected){
   var models=Object.keys(_spdOptionTree());
   var counts=_spdModelCounts(models);
-  return _spdPickTableHtml('Model',_spdSortByCount(models,counts),selected,'_spdPickModel',null,counts);
+  counts[SPD_ALL]=_spdCountYTD(function(){return true;});
+  return _spdPickTableHtml('Model',_spdSortByCount(models,counts),selected,'_spdPickModel','Tất cả model',counts);
 }
 function _spdVerBoxHtml(model,selected){
   var tree=_spdOptionTree();
-  var vers=tree[model]?Object.keys(tree[model]):[];
+  // "Tất cả model" → không liệt kê phiên bản (phiên bản thuộc từng model), chỉ còn dòng Tất cả.
+  var vers=(model!==SPD_ALL&&tree[model])?Object.keys(tree[model]):[];
   var verCounts=_spdVerCounts(model,vers);
   vers=_spdFilterActiveVers(model,vers,verCounts,selected);
   return _spdPickTableHtml('Phiên bản',_spdSortByCount(vers,verCounts),selected,'_spdPickVer','Tất cả phiên bản',verCounts);
@@ -2045,7 +2055,7 @@ function renderTocDoBanHang(opts){
   var _spdModelsSorted=_spdSortByCount(_spdModels,_spdModelCounts(_spdModels));
   var defModel=_spdModelsSorted.length?_spdModelsSorted[0]:null;
   var defVer=SPD_ALL,defMau=SPD_ALL;
-  if(opts.keepSel&&_spdSel.model&&_spdModels.indexOf(_spdSel.model)>=0){
+  if(opts.keepSel&&_spdSel.model&&(_spdSel.model===SPD_ALL||_spdModels.indexOf(_spdSel.model)>=0)){
     defModel=_spdSel.model;defVer=_spdSel.ver||SPD_ALL;defMau=_spdSel.mau||SPD_ALL;
   }
   _spdSel=defModel?{model:defModel,ver:defVer,mau:defMau}:{model:null,ver:null,mau:null};
@@ -2109,7 +2119,7 @@ function _spdRenderResult(model,ver,mau){
   var grandTotal=0;
   allCoc.forEach(function(r){
     if(!_spdIsRetail(r)) return;
-    if(r.model!==model) return;
+    if(!_spdModelIs(r,model)) return;
     if(ver!==SPD_ALL && r.phienBan!==ver) return;
     if(mau!==SPD_ALL && _mauCanon(r.mau)!==mau) return;
     if(!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
@@ -2156,6 +2166,7 @@ function _spdRenderResult(model,ver,mau){
     +cols.map(function(b){return '<td style="'+tdBase+'">'+(grandByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#0d7c66">'+grandTotal+'</td>'
     +'</tr>';
+  var modelLabel=model===SPD_ALL?'Tất cả model':model;
   var verLabel=ver===SPD_ALL?'Tất cả phiên bản':ver;
   var mauLabel=mau===SPD_ALL?'Tất cả màu':mau;
   var filtBar=hasF
@@ -2163,7 +2174,7 @@ function _spdRenderResult(model,ver,mau){
       +'<span>🔎 Đang lọc 3 bảng bên trái theo: <b>'+(fM.length?fM.slice().sort(function(a,b){return a-b;}).map(function(x){return 'T'+x;}).join(', '):'mọi tháng')+'</b> · <b>'+(fB.length?fB.map(function(b){return colLabel[b];}).join(' + '):'mọi chi nhánh')+'</b> — '+filtSum+' HĐ của lựa chọn này</span>'
       +'<span onclick="_spdClearFilt()" style="cursor:pointer;color:#b91c1c;font-weight:600;margin-left:auto">✕ Bỏ lọc</span></div>'
     : '<div style="font-size:11px;color:#94a3b8;font-style:italic;margin-bottom:6px">Bấm tên tháng / chi nhánh để lọc số lượng ở 3 bảng bên trái (chọn được nhiều).</div>';
-  return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+model+' — '+verLabel+' — '+mauLabel+'</div>'
+  return '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:#333">'+modelLabel+' — '+verLabel+' — '+mauLabel+'</div>'
     +filtBar
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+thead+'</tr></thead><tbody>'+rowsHtml+'</tbody></table></div></div>';
 }
