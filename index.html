@@ -1613,18 +1613,19 @@ function renderChuaGiao(){
 var DAT_HANG_ORDERS = [
   // Đợt THÁNG 10/2026 — tổng hợp từ đề xuất 3 file trong "2. Dat hang/T10/" (sheet
   // "ĐƠN ĐẶT HÀNG"): VC037 = Nha Trang (gồm Phan Rang), VC048 = Đà Lạt (gồm Bảo Lộc),
-  // VC079 = Phú Yên. Tổng 20 xe: NT 8 · PY 5 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
+  // VC079 = Phú Yên (PY cập nhật lại file 05/10/2026: bỏ Creta N Line Đỏ 1, thêm Tucson
+  // 1.6 Turbo Trắng 1). Tổng 20 xe: NT 8 · PY 5 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
   // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
     orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
@@ -1636,14 +1637,14 @@ var DAT_HANG_ORDERS = [
 var DAT_HANG_ORDERS_THUCTE = [
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
     orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
@@ -1708,14 +1709,56 @@ function renderDatHang(){
   // hơn 2 bảng kia.
   return renderTocDoBanHang()
     +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">2. 📦 Giả định đặt hàng — chỉ model đang đặt thêm</summary>'
-    +_datHangTableHtml(DAT_HANG_ORDERS,'')
+    +'<div id="dh-tbl-main">'+_datHangTableHtml(DAT_HANG_ORDERS,'')+'</div>'
     +'</details>'
     +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
-    +_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)
+    +'<div id="dh-tbl-thucte">'+_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
     // dễ — trước đây bảng cuối luôn bị dính khít đáy trang.
     +'<div style="height:50vh"></div>';
+}
+// Hiện đủ mọi phiên bản của model có đặt hàng (thêm 05/10/2026, theo yêu cầu người
+// dùng) — true = hiện cả phiên bản không đặt; nút trên bảng (_dhToggleAll) bật/tắt,
+// áp dụng chung cho cả bảng 2 và bảng 3, giữ nguyên khi vẽ lại.
+var _dhShowAll=true;
+function _dhToggleAll(){
+  _dhShowAll=!_dhShowAll;
+  var a=document.getElementById('dh-tbl-main'), b=document.getElementById('dh-tbl-thucte');
+  if(a) a.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS,'');
+  if(b) b.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true);
+}
+// Bổ sung các phiên bản KHÔNG đặt của mọi model có trong ordersData — lấy phiên bản
+// "đang hoạt động": có xe Tồn/BO/LXX/Nợ hoặc có hợp đồng bán lẻ trong năm hiện tại
+// (giống tinh thần _spdFilterActiveVers — bỏ phiên bản cũ đã ngừng bán). Mỗi model:
+// phiên bản CÓ đặt đứng trước (giữ thứ tự ordersData — để ô Model gộp rowspan nằm ở dòng
+// không bị làm mờ), sau đó phiên bản không đặt xếp theo số hợp đồng bán lẻ từ đầu năm
+// giảm dần; dòng bổ sung có extra:true, orders rỗng. Giữ thứ tự model như ordersData.
+function _dhExpandVersions(ordersData){
+  var year=(fileLastModified instanceof Date?fileLastModified:new Date()).getFullYear();
+  var models=[],byModel={};
+  ordersData.forEach(function(o){
+    if(!byModel[o.model]){byModel[o.model]={};models.push(o.model);}
+    byModel[o.model][o.phienBan]=o;
+  });
+  var vers={},ytd={};
+  models.forEach(function(m){vers[m]={};ytd[m]={};});
+  function addV(r){ if(vers[r.model]) vers[r.model][r.phienBan]=true; }
+  allData.stock.forEach(addV);allData.bo.forEach(addV);allData.lxx.forEach(addV);allData.debt.forEach(addV);
+  allCoc.forEach(function(r){
+    if(!vers[r.model]||!_spdIsRetail(r)||!r.ngayCoc||r.ngayCoc.getFullYear()!==year) return;
+    vers[r.model][r.phienBan]=true;
+    ytd[r.model][r.phienBan]=(ytd[r.model][r.phienBan]||0)+1;
+  });
+  var out=[];
+  models.forEach(function(m){
+    Object.keys(byModel[m]).forEach(function(v){out.push(byModel[m][v]);});
+    Object.keys(vers[m]).filter(function(v){return !byModel[m][v];})
+      .sort(function(a,b){return (ytd[m][b]||0)-(ytd[m][a]||0)||a.localeCompare(b);}).forEach(function(v){
+        out.push({model:m,phienBan:v,label:m+' '+v,orders:{NT:[],PY:[],'ĐL':[]},extra:true});
+      });
+  });
+  return out;
 }
 // Bảng "Giả định đặt hàng" dùng chung cho cả bản gốc (DAT_HANG_ORDERS) và bản
 // "Thực tế thao tác" (DAT_HANG_ORDERS_THUCTE, có 1 số dòng đặt hộ chi nhánh khác —
@@ -1777,7 +1820,9 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   var modelTongMap={};
   var modelDatHangMap={};
   var modelRowCount={};
-  ordersData.forEach(function(o){
+  var allRows=_dhExpandVersions(ordersData);
+  var nExtra=allRows.filter(function(o){return o.extra;}).length;
+  allRows.forEach(function(o){
     var ton=allData.stock.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var bo=allData.bo.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
     var lxx=allData.lxx.filter(function(r){return r.model===o.model&&r.phienBan===o.phienBan;}).length;
@@ -1799,9 +1844,12 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var tong=ton+bo+lxx+datHang;
     var tongTruNo=tong-debt;
     var tyLe=ky30>0?(tongTruNo/ky30).toFixed(1):(tongTruNo>0?'∞':'–');
-    sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
+    // "Tổng theo Model" luôn cộng MỌI phiên bản (kể cả đang ẩn) — không đổi khi bấm ẩn/hiện.
     modelTongMap[o.model]=(modelTongMap[o.model]||0)+tong;
     modelDatHangMap[o.model]=(modelDatHangMap[o.model]||0)+datHang;
+    if(o.extra&&!_dhShowAll) return;
+    // Hàng "Tổng" cuối bảng chỉ cộng các dòng đang hiện.
+    sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
     modelRowCount[o.model]=(modelRowCount[o.model]||0)+1;
     calcRows.push({o:o,ton:ton,bo:bo,lxx:lxx,debt:debt,ky30:ky30,kckColors:kckColors,datHang:datHang,tong:tong,tongTruNo:tongTruNo,tyLe:tyLe});
   });
@@ -1813,11 +1861,11 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var isFirstOfModel=!seenModel[o.model];
     seenModel[o.model]=true;
     var verOnly=o.label.indexOf(o.model)===0?o.label.slice(o.model.length).trim():o.label;
-    rows+='<tr>'
+    rows+='<tr'+(o.extra?' style="opacity:.5" title="Phiên bản không đặt hàng đợt này"':'')+'>'
       +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
-      +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:600">'+verOnly+'</td>'
+      +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
       +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
-      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+c.datHang+'</td>'
+      +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+(c.datHang||(o.extra?'':0))+'</td>'
       +'<td style="'+tdBase+'">'+(c.ton||'')+'</td>'
       +'<td style="'+tdBase+'">'+(c.bo||'')+'</td>'
       +'<td style="'+tdBase+'">'+(c.lxx||'')+'</td>'
@@ -1853,7 +1901,11 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'</div>';
   // table-layout:auto (KHÔNG fixed) để cột co giãn theo nội dung, giới hạn trong khoảng
   // min/max-width đã gắn trên từng ô (wCol1/wBranch/mặc định của thBase/tdBase ở trên).
-  return titleHtml
+  // Nút ẩn/hiện phiên bản không đặt — chỉ hiện khi thực sự có phiên bản bổ sung.
+  var toggleBtn=nExtra?'<div style="margin:6px 0 8px"><button class="fbtn" onclick="_dhToggleAll()">'
+    +(_dhShowAll?'🙈 Ẩn '+nExtra+' phiên bản không đặt':'👁 Hiện thêm '+nExtra+' phiên bản không đặt')+'</button>'
+    +'<span style="font-size:11px;color:#94a3b8;margin-left:8px">Dòng chữ mờ = phiên bản không đặt đợt này · "Tổng theo Model" luôn tính mọi phiên bản · hàng Tổng chỉ cộng dòng đang hiện</span></div>':'';
+  return titleHtml+toggleBtn
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
     +noteHtml;
 }
