@@ -1625,8 +1625,8 @@ function renderChuaGiao(){
 var DAT_HANG_ORDERS = [
   // Đợt THÁNG 10/2026 — tổng hợp từ đề xuất 3 file trong "2. Dat hang/T10/" (sheet
   // "ĐƠN ĐẶT HÀNG"): VC037 = Nha Trang (gồm Phan Rang), VC048 = Đà Lạt (gồm Bảo Lộc),
-  // VC079 = Phú Yên (PY cập nhật lại file 05/10/2026: bỏ Creta N Line Đỏ 1, thêm Tucson
-  // 1.6 Turbo Trắng 1). Tổng 20 xe: NT 8 · PY 5 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
+  // VC079 = Phú Yên (PY cập nhật lại file 2 lần ngày 05/10/2026 — bản cuối 10:57: bỏ Creta
+  // N Line Đỏ 1; Tucson 2.0 Xăng ĐB thành 1 Đỏ + 1 Trắng). Tổng 20 xe: NT 8 · PY 5 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
   // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
@@ -1636,10 +1636,8 @@ var DAT_HANG_ORDERS = [
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
     orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
-  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
 // Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
 // khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
@@ -1655,10 +1653,8 @@ var DAT_HANG_ORDERS_THUCTE = [
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
     orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
-  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
 // Mốc 30 ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
 // cột "Số lượng xe ký 30 ngày gần nhất" trong renderDatHang().
