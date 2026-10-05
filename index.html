@@ -210,6 +210,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .cc-lxx{background:#fef3c7;color:#92400e;}.cc-debt{background:#fee2e2;color:#991b1b;}
 .empty-panel{padding:24px;color:#bbb;font-size:12px;text-align:center;}
 .table-wrap{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;}
+/* Giả định đặt hàng: ẩn cột phụ 7-12 (Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ) khi bấm nút — xem _dhToggleAux() */
+.dh-hide-aux .dh-aux{display:none}
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;}
@@ -866,19 +868,29 @@ function _khopLxxPhanKhach(records){
 // Ghi chú dưới danh sách LXX/Nợ: các xe đã tách ra theo _khopLxxPhanKhach() — để số
 // không "biến mất" mà không ai biết. Lọc theo chi nhánh đang chọn giống danh sách chính.
 function _lxxPhanNoteHtml(){
+  // Tách 2 nhóm (05/10/2026, người dùng yêu cầu — trước gộp chung "đã phân khách" gây
+  // hiểu nhầm cho xe đã về kho chưa có khách): (1) khớp khách DS nợ; (2) đã có ở DATA
+  // TỔNG (về kho/đã bán) — dòng ĐƠN HÀNG chưa dọn. Chỉ đổi chữ hiển thị, không đổi cách đếm.
   var rows=(allData.lxxPhan||[]).filter(function(r){return khoMatch(r.kho);});
   if(!rows.length) return '';
-  var nNo=rows.filter(function(r){return r.khopVoi==='DS nợ';}).length;
   var td='padding:5px 8px;border-bottom:1px solid #f0f0f0;font-size:12px;white-space:nowrap';
-  return '<details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:#4b5563">🔗 <b>'+rows.length+'</b> xe LXX đã phân khách (không tính vào LXX'
-    +(nNo?'; '+nNo+' xe khớp khách DS nợ nên khách đó cũng không tính vào Nợ':'')+') — bấm để xem</summary>'
-    +'<div class="table-wrap" style="margin-top:8px"><div class="table-scroll"><table><thead><tr>'
-    +'<th>Model</th><th>Phiên bản</th><th>Màu</th><th>Chi nhánh đặt</th><th>Số khung</th><th>Khớp với</th><th>Khách hàng</th><th>TVBH</th></tr></thead><tbody>'
-    +rows.map(function(r){
-      return '<tr><td style="'+td+'">'+r.model+'</td><td style="'+td+'">'+r.phienBan+'</td><td style="'+td+'">'+r.mau+'</td><td style="'+td+'">'+khoLabel(r.kho)+'</td>'
-        +'<td style="'+td+';font-family:monospace">'+r.soKhung+'</td><td style="'+td+'">'+r.khopVoi+'</td><td style="'+td+'">'+(r.khachKhop||'—')+'</td><td style="'+td+'">'+(r.tvbhKhop||'—')+'</td></tr>';
-    }).join('')
-    +'</tbody></table></div></div></details>';
+  function block(list,summary){
+    if(!list.length) return '';
+    return '<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12px;color:#4b5563">'+summary+' — bấm để xem</summary>'
+      +'<div class="table-wrap" style="margin-top:8px"><div class="table-scroll"><table><thead><tr>'
+      +'<th>Model</th><th>Phiên bản</th><th>Màu</th><th>Chi nhánh đặt</th><th>Số khung</th><th>Khớp với</th><th>Khách hàng</th><th>TVBH</th></tr></thead><tbody>'
+      +list.map(function(r){
+        return '<tr><td style="'+td+'">'+r.model+'</td><td style="'+td+'">'+r.phienBan+'</td><td style="'+td+'">'+r.mau+'</td><td style="'+td+'">'+khoLabel(r.kho)+'</td>'
+          +'<td style="'+td+';font-family:monospace">'+r.soKhung+'</td><td style="'+td+'">'+r.khopVoi+'</td><td style="'+td+'">'+(r.khachKhop||'—')+'</td><td style="'+td+'">'+(r.tvbhKhop||'—')+'</td></tr>';
+      }).join('')
+      +'</tbody></table></div></div></details>';
+  }
+  var no=rows.filter(function(r){return r.khopVoi==='DS nợ';});
+  var dt=rows.filter(function(r){return r.khopVoi!=='DS nợ';});
+  return '<div style="margin-top:4px">'
+    +block(no,'🔗 <b>'+no.length+'</b> xe LXX đã khớp khách DS nợ (không tính vào LXX, khách đó cũng không tính vào Nợ)')
+    +block(dt,'📥 <b>'+dt.length+'</b> xe LXX đã về kho / đã bán — dòng ĐƠN HÀNG chưa dọn (không tính vào LXX để khỏi đếm 2 lần)')
+    +'</div>';
 }
 function _canSeeChuaHD(){ return _authenticated && (_isAdmin || _isGD); }
 function toggleType(t){
@@ -1722,8 +1734,13 @@ function renderDatHang(){
 // dùng) — true = hiện cả phiên bản không đặt; nút trên bảng (_dhToggleAll) bật/tắt,
 // áp dụng chung cho cả bảng 2 và bảng 3, giữ nguyên khi vẽ lại.
 var _dhShowAll=true;
-function _dhToggleAll(){
-  _dhShowAll=!_dhShowAll;
+// Ẩn/hiện cột phụ 7-12 (Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ) — thêm 05/10/2026 để bảng
+// gọn khi chụp màn hình. Chỉ ẩn hiển thị (class dh-aux + CSS .dh-hide-aux), không đổi
+// công thức; số cột đánh số giữ nguyên để tiêu đề công thức "(13=10−12)" vẫn đúng nghĩa.
+var _dhHideAux=false;
+function _dhToggleAux(){ _dhHideAux=!_dhHideAux; _dhRedrawTables(); }
+function _dhToggleAll(){ _dhShowAll=!_dhShowAll; _dhRedrawTables(); }
+function _dhRedrawTables(){
   var a=document.getElementById('dh-tbl-main'), b=document.getElementById('dh-tbl-thucte');
   if(a) a.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS,'');
   if(b) b.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true);
@@ -1794,18 +1811,19 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   var numBase='font-size:10px;font-weight:700;color:#aaa;background:#fff;border-bottom:1px solid var(--border);text-align:center;padding:2px 10px';
   var numCols=15; // Model(1) + Phiên bản(2) + 3 chi nhánh + Đặt hàng/Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(10) — nhớ sửa nếu thêm/bớt cột
   var numRow='';
-  for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th style="'+numBase+'">'+_ni+'</th>';
+  function aux(i){return i>=7&&i<=12?' class="dh-aux"':'';} // cột phụ 7-12, xem _dhToggleAux()
+  for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th'+aux(_ni)+' style="'+numBase+'">'+_ni+'</th>';
   var subFormula='<br><span style="font-weight:400;text-transform:none;font-size:9px;letter-spacing:0;color:#888">';
   var thead='<th style="'+thBase+wCol1+';text-align:left">Model</th>'
     +'<th style="'+thBase+wCol2+';text-align:left">Phiên bản</th>'
     +branches.map(function(b){return '<th style="'+thBase+wBranch+'">'+branchLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
-    +'<th style="'+thBase+';color:var(--c-stock)">Tồn</th>'
-    +'<th style="'+thBase+';color:var(--c-bo)">BO</th>'
-    +'<th style="'+thBase+';color:var(--c-lxx)">LXX</th>'
-    +'<th style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(10=6+7+8+9)</span></th>'
-    +'<th style="'+thBase+';color:#6d28d9" title="Tổng cột 10 của tất cả phiên bản cùng Model">Tổng theo Model</th>'
-    +'<th style="'+thBase+';color:var(--c-debt)">Nợ</th>'
+    +'<th class="dh-aux" style="'+thBase+';color:var(--c-stock)">Tồn</th>'
+    +'<th class="dh-aux" style="'+thBase+';color:var(--c-bo)">BO</th>'
+    +'<th class="dh-aux" style="'+thBase+';color:var(--c-lxx)">LXX</th>'
+    +'<th class="dh-aux" style="'+thBase+';color:#111" title="Tổng = Đặt hàng + Tồn + BO + LXX">Tổng'+subFormula+'(10=6+7+8+9)</span></th>'
+    +'<th class="dh-aux" style="'+thBase+';color:#6d28d9" title="Tổng cột 10 của tất cả phiên bản cùng Model">Tổng theo Model</th>'
+    +'<th class="dh-aux" style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(13=10−12)</span></th>'
     +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong 30 ngày gần nhất — chỉ bán lẻ, không gồm bán ngang — tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>(30 ngày)</th>'
     +'<th style="'+thBase+';color:#b45309" title="Cột 13 ÷ Cột 14 — số lần của mức bán 30 ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(15=13/14)</span></th>';
@@ -1866,12 +1884,12 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
       +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
       +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+(c.datHang||(o.extra?'':0))+'</td>'
-      +'<td style="'+tdBase+'">'+(c.ton||'')+'</td>'
-      +'<td style="'+tdBase+'">'+(c.bo||'')+'</td>'
-      +'<td style="'+tdBase+'">'+(c.lxx||'')+'</td>'
-      +'<td style="'+tdBase+';font-weight:800">'+c.tong+'</td>'
-      +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
-      +'<td style="'+tdBase+';color:var(--c-debt)">'+(c.debt?'+'+c.debt:'')+'</td>'
+      +'<td class="dh-aux" style="'+tdBase+'">'+(c.ton||'')+'</td>'
+      +'<td class="dh-aux" style="'+tdBase+'">'+(c.bo||'')+'</td>'
+      +'<td class="dh-aux" style="'+tdBase+'">'+(c.lxx||'')+'</td>'
+      +'<td class="dh-aux" style="'+tdBase+';font-weight:800">'+c.tong+'</td>'
+      +(isFirstOfModel?'<td class="dh-aux" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
+      +'<td class="dh-aux" style="'+tdBase+';color:var(--c-debt)">'+(c.debt?'+'+c.debt:'')+'</td>'
       +'<td style="'+tdBase+';font-weight:700">'+c.tongTruNo+'</td>'
       +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+c.ky30+'</td>'
       +'<td style="'+tdBase+';color:#b45309;font-weight:600">'+c.tyLe+'</td>'
@@ -1883,12 +1901,12 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<td colspan="2" style="'+tdBase+';text-align:left">Tổng</td>'
     +branches.map(function(b){return '<td style="'+tdBase+wBranch+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
-    +'<td style="'+tdBase+'">'+sumTon+'</td>'
-    +'<td style="'+tdBase+'">'+sumBO+'</td>'
-    +'<td style="'+tdBase+'">'+sumLXX+'</td>'
-    +'<td style="'+tdBase+'">'+sumTong+'</td>'
-    +'<td style="'+tdBase+'"></td>'
-    +'<td style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
+    +'<td class="dh-aux" style="'+tdBase+'">'+sumTon+'</td>'
+    +'<td class="dh-aux" style="'+tdBase+'">'+sumBO+'</td>'
+    +'<td class="dh-aux" style="'+tdBase+'">'+sumLXX+'</td>'
+    +'<td class="dh-aux" style="'+tdBase+'">'+sumTong+'</td>'
+    +'<td class="dh-aux" style="'+tdBase+'"></td>'
+    +'<td class="dh-aux" style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+'">'+sumTongTruNo+'</td>'
     +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
     +'<td style="'+tdBase+';color:#b45309">'+sumTyLe+'</td>'
@@ -1902,11 +1920,14 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   // table-layout:auto (KHÔNG fixed) để cột co giãn theo nội dung, giới hạn trong khoảng
   // min/max-width đã gắn trên từng ô (wCol1/wBranch/mặc định của thBase/tdBase ở trên).
   // Nút ẩn/hiện phiên bản không đặt — chỉ hiện khi thực sự có phiên bản bổ sung.
-  var toggleBtn=nExtra?'<div style="margin:6px 0 8px"><button class="fbtn" onclick="_dhToggleAll()">'
-    +(_dhShowAll?'🙈 Ẩn '+nExtra+' phiên bản không đặt':'👁 Hiện thêm '+nExtra+' phiên bản không đặt')+'</button>'
-    +'<span style="font-size:11px;color:#94a3b8;margin-left:8px">Dòng chữ mờ = phiên bản không đặt đợt này · "Tổng theo Model" luôn tính mọi phiên bản · hàng Tổng chỉ cộng dòng đang hiện</span></div>':'';
+  var toggleBtn='<div style="margin:6px 0 8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center">'
+    +(nExtra?'<button class="fbtn" onclick="_dhToggleAll()">'
+      +(_dhShowAll?'🙈 Ẩn '+nExtra+' phiên bản không đặt':'👁 Hiện thêm '+nExtra+' phiên bản không đặt')+'</button>':'')
+    +'<button class="fbtn" onclick="_dhToggleAux()">'+(_dhHideAux?'👁 Hiện cột phụ 7–12':'🙈 Ẩn cột phụ 7–12 (Tồn → Nợ)')+'</button>'
+    +(nExtra?'<span style="font-size:11px;color:#94a3b8;margin-left:2px">Dòng chữ mờ = phiên bản không đặt đợt này · "Tổng theo Model" luôn tính mọi phiên bản · hàng Tổng chỉ cộng dòng đang hiện</span>':'')
+    +'</div>';
   return titleHtml+toggleBtn
-    +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
+    +'<div class="table-wrap'+(_dhHideAux?' dh-hide-aux':'')+'"><div class="table-scroll"><table style="table-layout:auto;width:auto;border-collapse:collapse"><thead><tr>'+numRow+'</tr><tr>'+thead+'</tr></thead><tbody>'+rows+'</tbody></table></div></div>'
     +noteHtml;
 }
 // Chi nhánh dùng cho bảng Tốc độ bán hàng — theo đúng nhóm bán hàng (BRANCHES_BH),
