@@ -652,6 +652,11 @@ function fetchGSheet(){
       return (r.khDatCoc||'').toString().toLowerCase().includes('ngập nước');
     });
     window._ngapNuocByModel = buildNgapNuocMap(floodRecords);
+    // Xe ngập nước đã sửa xong, BÁN NỘI BỘ làm xe công vụ (có Ngày báo bán) — HTV vẫn tính
+    // là xe đã bán khi đánh giá thực hiện chỉ tiêu → CHỈ cộng vào bảng 9/10/11 (bbMap trong
+    // prepareBH). Không đưa vào allRecords: không tính bán lẻ, tốc độ bán hàng, tồn kho...
+    // (người dùng xác nhận 05/10/2026).
+    window._banNoiBo = floodRecords.filter(function(r){ return !!r.ngayBaoBan; });
     allRecords = allRecords.filter(function(r){
       return !((r.khDatCoc||'').toString().toLowerCase().includes('ngập nước'));
     });
@@ -2640,6 +2645,23 @@ function prepareBH(raw,fileDate){
       }
     }
   }
+  // Xe ngập nước bán nội bộ (window._banNoiBo, xem _initFromRecords) — cộng vào Thực hiện
+  // chỉ tiêu theo Ngày báo bán + nhóm chi nhánh của Nguồn khách; ghi riêng noiBoByMonth để
+  // hiện dòng ghi chú dưới bảng 9/10/11 (transferNoteText).
+  const noiBoByMonth={};
+  for(const r of (window._banNoiBo||[])){
+    const d=new Date(r.ngayBaoBan);
+    if(isNaN(d)||d.getFullYear()<2026) continue;
+    const g=branchGroupOf((r.nguonKhach||'').trim());
+    if(!g) continue;
+    const m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    if(!bbMap[m]) bbMap[m]={NT:0,DL:0,PY:0};
+    if(!bbGiaVonMap[m]) bbGiaVonMap[m]={NT:0,DL:0,PY:0};
+    bbMap[m][g]=(bbMap[m][g]||0)+1;
+    bbGiaVonMap[m][g]=(bbGiaVonMap[m][g]||0)+(r.giaVon||0);
+    if(!noiBoByMonth[m]) noiBoByMonth[m]={};
+    noiBoByMonth[m][g]=(noiBoByMonth[m][g]||0)+1;
+  }
   // Xe lái thử T3/2026 (note tay, cộng trực tiếp vào kết quả Thực hiện): PY +2 (KS, Ioniq), NT +1 (KS)
   if(!bbMap['2026-03']) bbMap['2026-03']={NT:0,DL:0,PY:0};
   bbMap['2026-03'].PY=(bbMap['2026-03'].PY||0)+2;
@@ -2665,7 +2687,7 @@ function prepareBH(raw,fileDate){
   const sold90=rows.filter(r=>r.date>=cut90).length;
   const avgMonth=sold90/3;
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth,noiBoByMonth};
 }
 
 function renderBH(data){
@@ -2960,7 +2982,22 @@ function renderMonthlyWithFilter(){
     document.getElementById('cancel-filter').onclick=function(){chartBranchFilters=[];chartBranchFilter=null;chartModelFilter=null;updateKpiCards();renderModelLegend();renderMonthlyWithFilter();};
   }
 }
-function transferNoteText(transferLogByMonth, monthKeys){
+function transferNoteText(transferLogByMonth, monthKeys, noiBoByMonth){
+  const noiBo=noiBoNoteText(noiBoByMonth,monthKeys);
+  const tr=_transferOnlyNote(transferLogByMonth,monthKeys);
+  return [tr,noiBo].filter(Boolean).join(' · ');
+}
+// "Gồm N xe bán nội bộ" — xe ngập nước sửa xong làm xe công vụ, HTV vẫn tính đã bán
+// (xem window._banNoiBo / noiBoByMonth trong prepareBH).
+function noiBoNoteText(noiBoByMonth, monthKeys){
+  if(!noiBoByMonth) return '';
+  const merged={};
+  (monthKeys||[]).forEach(mk=>{const x=noiBoByMonth[mk];if(x)for(const[g,v]of Object.entries(x))merged[g]=(merged[g]||0)+v;});
+  const entries=Object.entries(merged).filter(([,v])=>v>0);
+  if(!entries.length) return '';
+  return 'Gồm xe bán nội bộ (xe ngập nước sửa xong làm xe công vụ, HTV tính đã bán): '+entries.map(([g,v])=>`${g} ${String(v).padStart(2,'0')} xe`).join('; ');
+}
+function _transferOnlyNote(transferLogByMonth, monthKeys){
   if(!transferLogByMonth) return '';
   const merged={};
   (monthKeys||[]).forEach(mk=>{
@@ -3110,7 +3147,7 @@ function renderDMSProgress(data){
 // Số liệu bảng 9 "Thực hiện chỉ tiêu Tháng" — dùng chung cho bảng 9 và trang Báo cáo tuần (baocaotuan.html
 // nhúng iframe gọi parent.getDMSMonth()), để 2 nơi luôn cùng 1 logic, kể cả chỉ tiêu tự chỉnh tay (localStorage).
 function dmsMonthGroupData(data){
-  const {bbMap,bbGiaVonMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth}=data;
+  const {bbMap,bbGiaVonMap,dmsKhop,dmsMonthKey,today,daKyChoTien,daKyChuaXe,daKyChuaXeList,transferLogByMonth,noiBoByMonth}=data;
   const m=today.getMonth()+1;
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
@@ -3126,7 +3163,7 @@ function dmsMonthGroupData(data){
     const target=(targets[g.key]||[])[m-1]||0;
     return {g,dms,giaVon,khop,choTien,chuaXe,chuaXeList,target,total:dms+khop+choTien+chuaXe};
   });
-  return {groupData, noteText:transferNoteText(transferLogByMonth,[dmsMonthKey])};
+  return {groupData, noteText:transferNoteText(transferLogByMonth,[dmsMonthKey],noiBoByMonth)};
 }
 window.getDMSMonth=function(){
   if(!_bhData) return null;
@@ -3146,7 +3183,7 @@ function renderDMSProgressQuarter(data){
 }
 // Số liệu bảng 10 "Thực hiện chỉ tiêu Quý" — dùng chung cho bảng 10 và getDMSMonth().quy (trang Báo cáo tuần)
 function dmsQuarterGroupData(data){
-  const {bbMap,bbGiaVonMap,dmsKhopQ,qMonthKeys,daKy,today,transferLogByMonth}=data;
+  const {bbMap,bbGiaVonMap,dmsKhopQ,qMonthKeys,daKy,today,transferLogByMonth,noiBoByMonth}=data;
   const targets=loadTargets();
   const groupData=TARGET_GROUPS.map(g=>{
     const dms=(qMonthKeys||[]).reduce((s,mk)=>s+((bbMap[mk]||{})[g.key]||0),0);
@@ -3156,7 +3193,7 @@ function dmsQuarterGroupData(data){
     const target=(targets[g.key]||[]).reduce((s,v,i)=>(qMonthKeys&&qMonthKeys.includes(`${today.getFullYear()}-${String(i+1).padStart(2,'0')}`))?s+(v||0):s,0);
     return {g,dms,giaVon,khop,ky,target,total:dms+khop+ky};
   });
-  return {groupData, noteText:transferNoteText(transferLogByMonth,qMonthKeys)};
+  return {groupData, noteText:transferNoteText(transferLogByMonth,qMonthKeys,noiBoByMonth)};
 }
 function renderWeeklyGrid(data){
   const {last5,curWK}=data;
@@ -3439,7 +3476,7 @@ function closeTargetModal(){document.getElementById('target-modal').style.displa
 function renderTarget(data){
   const wrap=document.getElementById('target-wrap');
   const t=loadTargets();
-  const {bbMap,transferLogByMonth}=data;
+  const {bbMap,transferLogByMonth,noiBoByMonth}=data;
   const year=2026;
   const QUARTERS=[[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
   const BG='#f8fafc';
@@ -3466,7 +3503,7 @@ function renderTarget(data){
   const MANUAL_NOTES={1:'T3/2026 cộng xe lái thử: PY +2 (KS, Ioniq), NT +1 (KS)'}; // note tay theo quý, thêm thủ công khi cần
   const quarterNotes=QUARTERS.map((q,qi)=>{
     const mks=q.map(m=>`${year}-${String(m).padStart(2,'0')}`);
-    const txt=transferNoteText(transferLogByMonth,mks);
+    const txt=transferNoteText(transferLogByMonth,mks,noiBoByMonth);
     const manual=MANUAL_NOTES[qi+1];
     const parts=[txt,manual].filter(Boolean);
     if(!parts.length) return null;
