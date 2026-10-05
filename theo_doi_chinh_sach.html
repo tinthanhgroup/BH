@@ -301,6 +301,8 @@
     display:flex;
     align-items:center;
     justify-content:flex-start;
+    flex-wrap:wrap;
+    gap:8px;
     margin-top:4px;
   }
   .pdf-btn{
@@ -359,6 +361,42 @@ let activeCategory = ''; // '' = tất cả
 
 const policies = [
   {
+    pdfUrl: "https://drive.google.com/file/d/1XSawjvHzcHGR5TEB1-dpwk17Z4f6i-cA/view?usp=drive_link",
+    extraLinks: [
+      {url: "https://drive.google.com/file/d/1yqpJgVI3eomG64pz4JctLHOlutJYV4tV/view?usp=drive_link", label: "Xem Phụ lục 01 & 02 (định mức chi phí, khoản chi được/không được hỗ trợ)"}
+    ],
+    category: "Bán hàng - MKT",
+    code: "Số 257/2026/CV-HTV",
+    name: "Chính sách Marketing Đại lý — bản ban hành chính thức",
+    important: true,
+    updated: "05/10/2026",
+    from: new Date(2026,6,1),
+    to: null,
+    toLabel: "Đến khi có công văn điều chỉnh",
+    fromLabel: "01/07/2026",
+    summary: {
+      quyLabel: "HỖ TRỢ MARKETING THÁNG",
+      thangLabel: "NHÂN SỰ, XE LÁI THỬ & CHIẾN DỊCH RIÊNG",
+      quy: [
+        "Điều kiện: đạt đủ <b>8 KPI bắt buộc</b> + HTBH ≥60% + Data khách hàng ≥80% chỉ tiêu (data = khách tiềm năng không trùng trên CRM)",
+        "<b>Hạn mức = A × B</b> (B = số xe báo bán DMS, xuất HĐ bán lẻ trong tháng hoặc chậm nhất ngày 10 tháng sau)",
+        "Thực nhận = chi phí MKT hợp lệ thực tế, tối đa <b>100%</b> hạn mức. Cơ cấu sử dụng: ≥75% hoạt động MKT, 25% hỗ trợ quảng cáo TVBH",
+        "Mỗi kỳ bắt buộc triển khai <b>cả ATL lẫn BTL</b>, mỗi nhóm ≥1 hoạt động, phải đăng ký trước với HTV",
+        "Hạng mục thuộc Phụ lục 01 ghi nhận theo <b>đơn giá định mức</b>, không cần hóa đơn nhà cung cấp. Hồ sơ: đăng ký trước, bảng kê có chữ ký GĐ + đóng dấu, ảnh + video ≥3 phút, danh sách khách trên DMS/CRM. Kê khai chậm nhất 10 ngày sau kỳ",
+        "Giải ngân trong 15 ngày kể từ khi Đại lý xuất HĐ"
+      ],
+      quyTable: {head:["HTBH","≥90%","80–90%","70–80%","60–70%","&lt;60%"], row:["Mức A","1.5tr","1.3tr","1tr","700k","0"]},
+      thang: [
+        "<b>Nhân sự MKT:</b> ≥1 nhân viên chuyên trách, không kiêm CSKH/Bán hàng/Hành chính/Kế toán. Thiếu người được gia hạn tối đa 45 ngày. 100% nhân sự MKT (kể cả trưởng phòng) phải thi chứng chỉ (giá trị 2 năm)",
+        "<b>Xe lái thử tối thiểu</b> theo CTBH năm: ≥1000 xe → 5 xe; 500–&lt;1000 → 4 xe; &lt;500 hoặc ĐL mới → 3 xe (phải có xe thuộc Top phân khúc địa bàn, không tính xe điện). Từ 2026 <b>Ioniq 5 không tính là xe lái thử</b>",
+        "<b>Hỗ trợ xe lái thử = 10% giá bán đơn hàng kế hoạch</b> (trừ thẳng vào giá xe). Dùng ≥1 năm, nộp chứng từ trong 1 tháng sau nhận xe. Tỷ lệ khách không được mời lái thử ≤15% → 10%; 15–25% → 5%; 25–35% → không hỗ trợ (thu hồi)",
+        "<b>Chiến dịch riêng</b> (giải ngân theo quý; ≥2 ĐL cùng làm thì chia đều): FB/TikTok Message (≥80 tin nhắn) 5tr · Trưng bày Gói 1 (nơi công cộng) 5tr / Gói 2 (TTTM) 20tr / Gói 3 (kết hợp tài trợ) 15tr · Lái thử Grand (≥60 khách) 10tr / Medium (40) 8tr / Mini (20) 5tr",
+        "<b>Khen thưởng:</b> \"Chương trình MKT tốt nhất Quý\" — 20tr cho nhân viên MKT + bằng khen (60% HTV chấm, 40% bình chọn); \"Đại lý MKT tốt nhất năm\""
+      ],
+      note: "Chính thức hóa bản thông báo 23/07/2026 (giữ nguyên công thức A×B, ngưỡng 60%, trần 100%, tỷ lệ 75/25), bổ sung quy định nhân sự MKT, xe lái thử, đơn giá định mức (Phụ lục 01 — VD: standee 550k, backdrop/banner 500k/m², tea-break 100k/khách, quà 200k/khách, thuê địa điểm 5–8tr, tiết mục nhảy 4tr) và khoản chi được/không được hỗ trợ (Phụ lục 02). Hậu kiểm trong 12 tháng, lưu hồ sơ gốc 24 tháng. Sự kiện quý 3 đã làm trước ngày ban hành vẫn được giải ngân theo định mức. Văn bản không ghi rõ ngày ký — \"Ngày cập nhật\" lấy theo ngày nhận văn bản."
+    }
+  },
+  {
     pdfUrl: "https://drive.google.com/file/d/1qf-3Fveq1oset83msy3SkeC_ZrC4XBiP/view?usp=drive_link",
     category: "Bán hàng - MKT",
     code: "Số 52/2026/CV-HTV · Ký ngày 06/07/2026",
@@ -414,13 +452,12 @@ const policies = [
   {
     pdfUrl: "https://drive.google.com/file/d/1UDg9k0cS7f9WRhxshyZ9zbzsL8QP4c5Q/view?usp=drive_link",
     category: "Bán hàng - MKT",
-    code: "Thông báo điều chỉnh · Cập nhật ngày 23/07/2026",
+    code: "Thông báo điều chỉnh · Cập nhật ngày 23/07/2026 (đã thay thế)",
     name: "Chính sách Hỗ trợ Marketing Đại lý — bản 23/07",
-    important: true,
     updated: "23/07/2026",
     from: new Date(2026,6,23),
-    to: null,
-    toLabel: "Đến khi có công văn điều chỉnh",
+    to: new Date(2026,9,4),
+    toLabel: "04/10/2026 (bị thay thế)",
     fromLabel: "23/07/2026",
     summary: {
       quy: [
@@ -434,7 +471,7 @@ const policies = [
         "Giải ngân hỗ trợ tháng: trong 15 ngày kể từ khi xuất hóa đơn",
         "Chiến dịch riêng (FB/TikTok, trưng bày, lái thử): 5–20 triệu/chiến dịch, giải ngân sau khi kết quý"
       ],
-      note: "Thay thế bản 06/07/2026 — nới ngưỡng HTBH về 60% và nâng trần hỗ trợ lên 100%, quay lại giải ngân theo tháng."
+      note: "Đã được thay thế bởi văn bản chính thức Số 257/2026/CV-HTV (cập nhật 05/10/2026) — không còn áp dụng, chỉ lưu để đối chiếu lịch sử. (Bản này từng thay thế bản 06/07/2026 — nới ngưỡng HTBH về 60%, nâng trần hỗ trợ lên 100%, quay lại giải ngân theo tháng.)"
     }
   },
   {
@@ -720,6 +757,10 @@ function render(){
                      </a>`
                   : `<span class="pdf-unavailable">Chưa có file gốc đính kèm</span>`
                 }
+                ${(p.extraLinks || []).map(l => `<a class="pdf-btn" href="${l.url}" target="_blank" rel="noopener">
+                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="1.6"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="1.6"/></svg>
+                       ${l.label}
+                     </a>`).join('')}
               </div>
             </div>
           </div>

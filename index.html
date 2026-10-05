@@ -319,7 +319,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     // POLICY_LATEST_UPDATE là bản sao chép tay ngày `updated` mới nhất trong mảng đó (giống
     // cơ chế trùng lặp có chủ đích của KCK_DATE). Nhớ cập nhật hằng số này mỗi khi thêm
     // chính sách mới có ngày `updated` mới hơn ngày đang lưu.
-    var POLICY_LATEST_UPDATE = new Date(2026,8,14);
+    var POLICY_LATEST_UPDATE = new Date(2026,9,5);
     var diffDays = (new Date() - POLICY_LATEST_UPDATE) / 86400000;
     if(diffDays >= 0 && diffDays <= 3){
       document.getElementById('tab-policy-btn').innerHTML += ' <span class="tab-new-badge">🆕 Mới</span>';
