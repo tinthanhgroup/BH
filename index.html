@@ -1691,12 +1691,15 @@ var DAT_HANG_ORDERS_THUCTE = [
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
 // Mốc DH_KY_DAYS ngày gần nhất tính đến ref (mặc định fileLastModified/hôm nay) — dùng cho
-// cột 14 "SL hợp đồng (N ngày)" trong renderDatHang(). Đổi 30 → 90 ngày 06/10/2026 (yêu cầu người dùng).
+// cột 14 "SL hợp đồng TB/tháng" trong renderDatHang(): đổi 06/10/2026 từ "tổng 30 ngày" sang
+// "trung bình mỗi tháng trong 90 ngày gần nhất" (= tổng 90 ngày ÷ 3) theo yêu cầu người dùng.
 var DH_KY_DAYS=90;
 function _lastKyDaysCutoff(){
   var ref=fileLastModified instanceof Date?fileLastModified:new Date();
   return new Date(ref.getTime()-DH_KY_DAYS*86400000);
 }
+// Hiện số hợp đồng TB/tháng: 1 số lẻ, bỏ ",0" (vd. 4 → "4", 4.33 → "4,3").
+function _dhFmtKy(v){return v?(Math.round(v*10)/10).toLocaleString('vi-VN'):'0';}
 // Quy đổi tên màu đơn lẻ (như dùng trong DAT_HANG_ORDERS.orders) sang đúng key nhóm
 // màu của KCK_DATA — dùng chung bảng nhóm màu với uploadKCK() (ĐỎ/ĐỎ ĐÔ/CAM/VÀNG/
 // CAM NÓNG/ĐỎ RUBY → ĐỎ_GRP; XÁM/XÁM TITAN → XÁM_GRP) để so khớp đúng chuẩn.
@@ -1885,8 +1888,8 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<th class="dh-aux" style="'+thBase+';color:#6d28d9" title="Tổng cột 10 của tất cả phiên bản cùng Model">Tổng theo Model</th>'
     +'<th class="dh-aux" style="'+thBase+';color:var(--c-debt)">Nợ</th>'
     +'<th style="'+thBase+';color:#111" title="Tổng − Nợ">Tổng − Nợ'+subFormula+'(13=10−12)</span></th>'
-    +'<th style="'+thBase+';color:#0d7c66" title="Số xe đã ký (ngày đặt cọc) trong '+DH_KY_DAYS+' ngày gần nhất — chỉ bán lẻ, không gồm bán ngang — tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>('+DH_KY_DAYS+' ngày)</th>'
-    +'<th style="'+thBase+';color:#b45309" title="Cột 13 ÷ Cột 14 — số lần của mức bán '+DH_KY_DAYS+' ngày gần nhất mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(15=13/14)</span></th>';
+    +'<th style="'+thBase+';color:#0d7c66" title="Trung bình số xe đã ký mỗi tháng (ngày đặt cọc) trong '+DH_KY_DAYS+' ngày gần nhất = tổng ÷ '+(DH_KY_DAYS/30)+' — chỉ bán lẻ, không gồm bán ngang — tính từ '+fmtDateHH(cutoff30)+'">SL hợp đồng<br>TB/tháng ('+DH_KY_DAYS+' ngày)</th>'
+    +'<th style="'+thBase+';color:#b45309" title="Cột 13 ÷ Cột 14 — số tháng bán (theo mức bán TB/tháng trong '+DH_KY_DAYS+' ngày gần nhất) mà (Tổng − Nợ) đang đáp ứng được">Tỉ lệ'+subFormula+'(15=13/14)</span></th>';
   var rows='';
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
   var sumByBranch={NT:0,PY:0,'ĐL':0};
@@ -1910,7 +1913,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     // bán hàng" để 2 bảng không lệch (người dùng yêu cầu 04/10/2026).
     var ky30=allCoc.filter(function(r){
       return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&r.ngayCoc>=cutoff30&&_spdIsRetail(r);
-    }).length;
+    }).length/(DH_KY_DAYS/30); // TB hợp đồng/tháng trong DH_KY_DAYS ngày (06/10/2026)
     var kckColors=_kckColorsFor(o.model,o.phienBan);
     var datHang=0,giaTri=0,thieuGia=0;
     branches.forEach(function(b){
@@ -1958,7 +1961,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
       +(isFirstOfModel?'<td class="dh-aux" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
       +'<td class="dh-aux" style="'+tdBase+';color:var(--c-debt)">'+(c.debt?'+'+c.debt:'')+'</td>'
       +'<td style="'+tdBase+';font-weight:700">'+c.tongTruNo+'</td>'
-      +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+c.ky30+'</td>'
+      +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+_dhFmtKy(c.ky30)+'</td>'
       +'<td style="'+tdBase+';color:#b45309;font-weight:600">'+c.tyLe+'</td>'
       +'</tr>';
   });
@@ -1976,11 +1979,11 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<td class="dh-aux" style="'+tdBase+'"></td>'
     +'<td class="dh-aux" style="'+tdBase+';color:var(--c-debt)">'+(sumDebt?'+'+sumDebt:'')+'</td>'
     +'<td style="'+tdBase+'">'+sumTongTruNo+'</td>'
-    +'<td style="'+tdBase+';color:#0d7c66">'+sumKy30+'</td>'
+    +'<td style="'+tdBase+';color:#0d7c66">'+_dhFmtKy(sumKy30)+'</td>'
     +'<td style="'+tdBase+';color:#b45309">'+sumTyLe+'</td>'
     +'</tr>';
   var noteHtml='<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:10px;line-height:1.6">'
-    +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi. SL hợp đồng '+DH_KY_DAYS+' ngày chỉ tính bán lẻ (không gồm bán ngang).<br>'
+    +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi. SL hợp đồng = trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất, chỉ tính bán lẻ (không gồm bán ngang).<br>'
       +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>')
     +(hideKckNote?'"(...)" sau tên màu = chi nhánh đó đặt hàng <b>giúp</b> chi nhánh khác, xe vẫn tính vào nhu cầu của chi nhánh được giúp.<br>':'')
     +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).<br>'
