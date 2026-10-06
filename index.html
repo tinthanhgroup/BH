@@ -1782,11 +1782,12 @@ function renderDatHang(){
 // Hiện đủ mọi phiên bản của model có đặt hàng (thêm 05/10/2026, theo yêu cầu người
 // dùng) — true = hiện cả phiên bản không đặt; nút trên bảng (_dhToggleAll) bật/tắt,
 // áp dụng chung cho cả bảng 2, 3 (Phương án 2) và 4, giữ nguyên khi vẽ lại.
-var _dhShowAll=true;
+// Mặc định FALSE (dạng rút gọn, đổi 06/10/2026 theo yêu cầu người dùng) — bấm nút mới hiện.
+var _dhShowAll=false;
 // Ẩn/hiện cột phụ 7-12 (Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ) — thêm 05/10/2026 để bảng
 // gọn khi chụp màn hình. Chỉ ẩn hiển thị (class dh-aux + CSS .dh-hide-aux), không đổi
 // công thức; số cột đánh số giữ nguyên để tiêu đề công thức "(13=10−12)" vẫn đúng nghĩa.
-var _dhHideAux=false;
+var _dhHideAux=true; // mặc định ẩn cột 7-12 (dạng rút gọn, đổi 06/10/2026) — bấm nút mới hiện
 function _dhToggleAux(){ _dhHideAux=!_dhHideAux; _dhRedrawTables(); }
 function _dhToggleAll(){ _dhShowAll=!_dhShowAll; _dhRedrawTables(); }
 function _dhRedrawTables(){
