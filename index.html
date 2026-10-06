@@ -1649,18 +1649,17 @@ var DAT_HANG_ORDERS = [
 // L1 đã chỉnh) CỘNG THÊM đơn bổ sung lần 2 của các chi nhánh — 3 file trong
 // "2. Dat hang/T10 L2/" (sheet "ĐƠN ĐẶT HÀNG", cột "ĐỀ XUẤT ĐẶT HÀNG"). Người dùng xác
 // nhận 06/10/2026: L2 là đơn BỔ SUNG, không thay thế L1. Hiện thành bảng riêng cạnh
-// Phương án 1 để so sánh, KHÔNG ghi đè. Tổng 57 xe = 17 (L1) + 40 (L2): NT 32 · PY 12 · ĐL 13.
-// ĐL gửi lại file L2 lúc 11:51 06/10/2026: còn 7 xe (bỏ Tucson 2.0 Xăng ĐB 2 Đỏ + 3 Trắng,
-// Grand i10 giảm 2 → 1) — đã cập nhật.
+// Phương án 1 để so sánh, KHÔNG ghi đè. Cập nhật theo bản 3 file sửa lại ~13:25 06/10/2026
+// (L2 = 37 xe: NT 23 · ĐL 9 · PY 5). Tổng 54 xe = 17 (L1) + 37 (L2): NT 29 · PY 10 · ĐL 15.
 // Stargazer ĐB/CC FL 2026 chỉ tính phần L2 (phần L1 đã bỏ ở PA1 theo quyết định 05/10).
 // Dòng "I10 AT" của ĐL (đè lên ô Accent ĐB của mẫu) hiểu là Grand i10 1.2AT.
 var DAT_HANG_ORDERS_PA2 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
-    orders:{NT:[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:6},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}]}},
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[], 'ĐL':[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
