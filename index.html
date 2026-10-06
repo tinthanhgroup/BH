@@ -214,6 +214,8 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 .dh-hide-aux .dh-aux{display:none}
 /* Giả định đặt hàng: ẩn 3 cột chi nhánh 3-5 (Nha Trang/Phú Yên/Đà Lạt) — xem _dhToggleBranch() */
 .dh-hide-br .dh-br{display:none}
+/* Giả định đặt hàng: vạch kẻ đậm giữa các Model (dòng đầu mỗi Model, trừ Model đầu bảng) */
+.dh-sep>td{border-top:2px solid #94a3b8!important}
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;}
@@ -1697,10 +1699,11 @@ var DAT_HANG_ORDERS = [
   // "ĐƠN ĐẶT HÀNG"): VC037 = Nha Trang (gồm Phan Rang), VC048 = Đà Lạt (gồm Bảo Lộc),
   // VC079 = Phú Yên (PY cập nhật lại file 2 lần ngày 05/10/2026 — bản cuối 10:57: bỏ Creta
   // N Line Đỏ 1; Tucson 2.0 Xăng ĐB thành 1 Đỏ + 1 Trắng). Bỏ 3 xe Stargazer ĐB FL 2026
-  // (NT 2 + ĐL 1 Trắng) theo quyết định người dùng 05/10/2026. Tổng 17 xe: NT 6 · PY 5 · ĐL 6. Dòng Grand i10 của ĐL: file VC048
+  // (NT 2 + ĐL 1 Trắng) theo quyết định người dùng 05/10/2026. PY sửa lại lần 3 lúc 15:31 06/10/2026: Creta ĐB FL còn 1 Trắng (bỏ 1 Đỏ + 1 Trắng).
+  // Tổng 15 xe: NT 6 · PY 3 · ĐL 6. Dòng Grand i10 của ĐL: file VC048
   // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
@@ -1712,15 +1715,16 @@ var DAT_HANG_ORDERS = [
 // L1 đã chỉnh) CỘNG THÊM đơn bổ sung lần 2 của các chi nhánh — 3 file trong
 // "2. Dat hang/T10 L2/" (sheet "ĐƠN ĐẶT HÀNG", cột "ĐỀ XUẤT ĐẶT HÀNG"). Người dùng xác
 // nhận 06/10/2026: L2 là đơn BỔ SUNG, không thay thế L1. Hiện thành bảng riêng cạnh
-// Phương án 1 để so sánh, KHÔNG ghi đè. Cập nhật theo bản 3 file sửa lại ~13:25 06/10/2026
-// (L2 = 37 xe: NT 23 · ĐL 9 · PY 5). Tổng 54 xe = 17 (L1) + 37 (L2): NT 29 · PY 10 · ĐL 15.
+// Phương án 1 để so sánh, KHÔNG ghi đè. Rà lại 06/10/2026 ~16h theo bản mới nhất:
+// L1 PY sửa 15:31, L2 NT sửa 15:47 (L2 = 32 xe: NT 18 · ĐL 9 · PY 5).
+// Tổng 47 xe = 15 (L1) + 32 (L2): NT 24 · PY 8 · ĐL 15.
 // Stargazer ĐB/CC FL 2026 chỉ tính phần L2 (phần L1 đã bỏ ở PA1 theo quyết định 05/10).
 // Dòng "I10 AT" của ĐL (đè lên ô Accent ĐB của mẫu) hiểu là Grand i10 1.2AT.
 var DAT_HANG_ORDERS_PA2 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3},{mau:'Xám',sl:1}], PY:[], 'ĐL':[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
@@ -1728,13 +1732,13 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
-    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:2}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
-    orders:{NT:[{mau:'Bạc',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:8}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:4}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
@@ -1745,7 +1749,7 @@ var DAT_HANG_ORDERS_PA2 = [
 // Đợt T10/2026: chưa có thông tin đặt hộ → tạm giống hệt DAT_HANG_ORDERS.
 var DAT_HANG_ORDERS_THUCTE = [
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
-    orders:{NT:[], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}], 'ĐL':[]}},
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
@@ -2013,7 +2017,9 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var isFirstOfModel=!seenModel[o.model];
     seenModel[o.model]=true;
     var verOnly=o.label.indexOf(o.model)===0?o.label.slice(o.model.length).trim():o.label;
-    rows+='<tr'+(o.extra?' style="opacity:.5" title="Phiên bản không đặt hàng đợt này"':'')+'>'
+    // Vạch kẻ đậm phân cách giữa các Model (thêm 06/10/2026) — kẻ trên dòng đầu mỗi Model, trừ Model đầu bảng.
+    var sepCls=(isFirstOfModel&&rows)?' class="dh-sep"':'';
+    rows+='<tr'+sepCls+(o.extra?' style="opacity:.5"':'')+(o.extra?' title="Phiên bản không đặt hàng đợt này"':'')+'>'
       +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
       +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
       +branches.map(function(b){return '<td class="dh-br" style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
