@@ -1649,7 +1649,9 @@ var DAT_HANG_ORDERS = [
 // L1 đã chỉnh) CỘNG THÊM đơn bổ sung lần 2 của các chi nhánh — 3 file trong
 // "2. Dat hang/T10 L2/" (sheet "ĐƠN ĐẶT HÀNG", cột "ĐỀ XUẤT ĐẶT HÀNG"). Người dùng xác
 // nhận 06/10/2026: L2 là đơn BỔ SUNG, không thay thế L1. Hiện thành bảng riêng cạnh
-// Phương án 1 để so sánh, KHÔNG ghi đè. Tổng 63 xe = 17 (L1) + 46 (L2): NT 32 · PY 12 · ĐL 19.
+// Phương án 1 để so sánh, KHÔNG ghi đè. Tổng 57 xe = 17 (L1) + 40 (L2): NT 32 · PY 12 · ĐL 13.
+// ĐL gửi lại file L2 lúc 11:51 06/10/2026: còn 7 xe (bỏ Tucson 2.0 Xăng ĐB 2 Đỏ + 3 Trắng,
+// Grand i10 giảm 2 → 1) — đã cập nhật.
 // Stargazer ĐB/CC FL 2026 chỉ tính phần L2 (phần L1 đã bỏ ở PA1 theo quyết định 05/10).
 // Dòng "I10 AT" của ĐL (đè lên ô Accent ĐB của mẫu) hiểu là Grand i10 1.2AT.
 var DAT_HANG_ORDERS_PA2 = [
@@ -1662,7 +1664,7 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
-    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:3}]}},
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
     orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:2}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
@@ -1670,7 +1672,7 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:8}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:4},{mau:'Trắng',sl:6}]}},
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:2},{mau:'Trắng',sl:8}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
