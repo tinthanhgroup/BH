@@ -215,7 +215,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 /* Giả định đặt hàng: ẩn 3 cột chi nhánh 3-5 (Nha Trang/Phú Yên/Đà Lạt) — xem _dhToggleBranch() */
 .dh-hide-br .dh-br{display:none}
 /* Giả định đặt hàng: vạch kẻ đậm giữa các Model (dòng đầu mỗi Model, trừ Model đầu bảng) */
-.dh-sep>td{border-top:1px solid #475569!important}
+.dh-sep>td{box-shadow:inset 0 1px 0 #475569} /* dùng box-shadow, KHÔNG dùng border-top: với border-collapse, viền 1px bằng độ dày sẽ thua viền dưới nhạt #f0f0f0 của dòng trên → vạch bị mờ */
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;}
