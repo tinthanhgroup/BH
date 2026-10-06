@@ -1698,9 +1698,9 @@ var DAT_HANG_ORDERS = [
   // Đợt THÁNG 10/2026 — tổng hợp từ đề xuất 3 file trong "2. Dat hang/T10/" (sheet
   // "ĐƠN ĐẶT HÀNG"): VC037 = Nha Trang (gồm Phan Rang), VC048 = Đà Lạt (gồm Bảo Lộc),
   // VC079 = Phú Yên (PY cập nhật lại file 2 lần ngày 05/10/2026 — bản cuối 10:57: bỏ Creta
-  // N Line Đỏ 1; Tucson 2.0 Xăng ĐB thành 1 Đỏ + 1 Trắng). Bỏ 3 xe Stargazer ĐB FL 2026
-  // (NT 2 + ĐL 1 Trắng) theo quyết định người dùng 05/10/2026. PY sửa lại lần 3 lúc 15:31 06/10/2026: Creta ĐB FL còn 1 Trắng (bỏ 1 Đỏ + 1 Trắng).
-  // Tổng 15 xe: NT 6 · PY 3 · ĐL 6. Dòng Grand i10 của ĐL: file VC048
+  // N Line Đỏ 1; Tucson 2.0 Xăng ĐB thành 1 Đỏ + 1 Trắng). 3 xe Stargazer ĐB FL 2026
+  // (NT 2 + ĐL 1 Trắng): 05/10 đã bỏ, 06/10/2026 người dùng quyết định cộng lại. PY sửa lại lần 3 lúc 15:31 06/10/2026: Creta ĐB FL còn 1 Trắng (bỏ 1 Đỏ + 1 Trắng).
+  // Tổng 18 xe: NT 8 · PY 3 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
   // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
@@ -1708,6 +1708,8 @@ var DAT_HANG_ORDERS = [
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
@@ -1717,8 +1719,8 @@ var DAT_HANG_ORDERS = [
 // nhận 06/10/2026: L2 là đơn BỔ SUNG, không thay thế L1. Hiện thành bảng riêng cạnh
 // Phương án 1 để so sánh, KHÔNG ghi đè. Rà lại 06/10/2026 ~16h theo bản mới nhất:
 // L1 PY sửa 15:31, L2 NT sửa 15:47 (L2 = 32 xe: NT 18 · ĐL 9 · PY 5).
-// Tổng 47 xe = 15 (L1) + 32 (L2): NT 24 · PY 8 · ĐL 15.
-// Stargazer ĐB/CC FL 2026 chỉ tính phần L2 (phần L1 đã bỏ ở PA1 theo quyết định 05/10).
+// Tổng 50 xe = 18 (L1) + 32 (L2): NT 26 · PY 8 · ĐL 16.
+// Stargazer ĐB FL 2026 = L1 (NT 2 + ĐL 1 Trắng, cộng lại 06/10) + L2.
 // Dòng "I10 AT" của ĐL (đè lên ô Accent ĐB của mẫu) hiểu là Grand i10 1.2AT.
 var DAT_HANG_ORDERS_PA2 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
@@ -1732,7 +1734,7 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
   {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
-    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:2}]}},
   {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
     orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
@@ -1754,6 +1756,8 @@ var DAT_HANG_ORDERS_THUCTE = [
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
     orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
