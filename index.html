@@ -215,7 +215,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;}
 /* Giả định đặt hàng: ẩn 3 cột chi nhánh 3-5 (Nha Trang/Phú Yên/Đà Lạt) — xem _dhToggleBranch() */
 .dh-hide-br .dh-br{display:none}
 /* Giả định đặt hàng: vạch kẻ đậm giữa các Model (dòng đầu mỗi Model, trừ Model đầu bảng) */
-.dh-sep>td{box-shadow:inset 0 1px 0 #475569} /* dùng box-shadow, KHÔNG dùng border-top: với border-collapse, viền 1px bằng độ dày sẽ thua viền dưới nhạt #f0f0f0 của dòng trên → vạch bị mờ */
+.dh-sepb>td,td.dh-sepb{border-bottom:1px solid #475569!important} /* Vạch phân cách Model = viền DƯỚI ở dòng cuối mỗi Model (+ ô gộp dòng Model/Tổng theo Model). Không dùng box-shadow (để lại khe/vạch dọc giữa các ô khi màn hình scale 125-150%), không dùng border-top 1px ở dòng dưới (border-collapse: cùng độ dày thì viền dòng TRÊN thắng → bị viền nhạt #f0f0f0 đè, mờ) */
 .table-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;}
@@ -1718,8 +1718,8 @@ var DAT_HANG_ORDERS = [
 // "2. Dat hang/T10 L2/" (sheet "ĐƠN ĐẶT HÀNG", cột "ĐỀ XUẤT ĐẶT HÀNG"). Người dùng xác
 // nhận 06/10/2026: L2 là đơn BỔ SUNG, không thay thế L1. Hiện thành bảng riêng cạnh
 // Phương án 1 để so sánh, KHÔNG ghi đè. Rà lại 06/10/2026 theo bản mới nhất —
-// L1: PY sửa 15:31, NT sửa 15:59. L2: NT sửa 16:26, ĐL sửa 16:25 (L2 = 31 xe: NT 22 · ĐL 4 · PY 5).
-// Tổng 47 xe = 16 (L1) + 31 (L2): NT 28 · PY 8 · ĐL 11.
+// L1: PY sửa 15:31, NT sửa 15:59. L2: NT + ĐL sửa 16:35 (L2 = 31 xe: NT 24 · ĐL 2 · PY 5).
+// Tổng 47 xe = 16 (L1) + 31 (L2): NT 30 · PY 8 · ĐL 9.
 // Mọi dòng lấy đúng theo file mới nhất, không còn loại trừ nào theo quyết định cũ.
 // Dòng "I10 AT" của ĐL (đè lên ô Accent ĐB của mẫu) hiểu là Grand i10 1.2AT.
 var DAT_HANG_ORDERS_PA2 = [
@@ -1740,7 +1740,7 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
-    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:5}]}},
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:5}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
@@ -2016,15 +2016,17 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   // Pass 2: render — gộp ô "Model" và "Tổng theo Model" bằng rowspan cho các dòng
   // liên tiếp cùng Model (dữ liệu DAT_HANG_ORDERS vốn đã nhóm liền nhau theo Model).
   var seenModel={};
-  calcRows.forEach(function(c){
+  calcRows.forEach(function(c,ci){
     var o=c.o;
     var isFirstOfModel=!seenModel[o.model];
     seenModel[o.model]=true;
     var verOnly=o.label.indexOf(o.model)===0?o.label.slice(o.model.length).trim():o.label;
-    // Vạch kẻ đậm phân cách giữa các Model (thêm 06/10/2026) — kẻ trên dòng đầu mỗi Model, trừ Model đầu bảng.
-    var sepCls=(isFirstOfModel&&rows)?' class="dh-sep"':'';
+    // Vạch phân cách Model (06/10/2026): viền dưới đậm ở dòng CUỐI mỗi Model (trừ Model cuối bảng — dòng Tổng đã có viền riêng).
+    var isLastOfModel=ci<calcRows.length-1&&calcRows[ci+1].o.model!==o.model;
+    var sepCls=isLastOfModel?' class="dh-sepb"':'';
+    var sepTd=(ci<calcRows.length-1)?' dh-sepb':''; // ô gộp dòng (rowspan) kéo tới đáy Model → cũng cần viền dưới đậm
     rows+='<tr'+sepCls+(o.extra?' style="opacity:.5"':'')+(o.extra?' title="Phiên bản không đặt hàng đợt này"':'')+'>'
-      +(isFirstOfModel?'<td rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
+      +(isFirstOfModel?'<td class="'+sepTd+'" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
       +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
       +branches.map(function(b){return '<td class="dh-br" style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+(c.datHang||(o.extra?'':0))+'</td>'
@@ -2035,7 +2037,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.bo||'')+'</td>'
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.lxx||'')+'</td>'
       +'<td class="dh-aux" style="'+tdBase+';font-weight:800">'+c.tong+'</td>'
-      +(isFirstOfModel?'<td class="dh-aux" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
+      +(isFirstOfModel?'<td class="dh-aux'+sepTd+'" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+';font-weight:700;color:#6d28d9;vertical-align:middle">'+modelTongMap[o.model]+'</td>':'')
       +'<td class="dh-aux" style="'+tdBase+';color:var(--c-debt)">'+(c.debt?'+'+c.debt:'')+'</td>'
       +'<td style="'+tdBase+';font-weight:700">'+c.tongTruNo+'</td>'
       +'<td style="'+tdBase+';color:#0d7c66;font-weight:600">'+_dhFmtKy(c.ky30)+'</td>'
