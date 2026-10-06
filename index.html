@@ -1643,6 +1643,32 @@ var DAT_HANG_ORDERS = [
   {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
     orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}}
 ];
+// "Phương án 2" của đợt T10/2026 (thêm 06/10/2026) — đề xuất điều chỉnh lần 2 của các
+// chi nhánh, từ 3 file trong "2. Dat hang/T10 L2/" (sheet "ĐƠN ĐẶT HÀNG", cột "ĐỀ XUẤT
+// ĐẶT HÀNG"). Hiện thành bảng riêng bên cạnh DAT_HANG_ORDERS (Phương án 1) để so sánh,
+// KHÔNG ghi đè. Tổng 46 xe: NT 26 · ĐL 13 · PY 7. Có lại Stargazer ĐB/CC FL 2026 (PA1 đã
+// bỏ theo quyết định 05/10) vì file L2 các chi nhánh đề xuất lại. Dòng "I10 AT" của ĐL
+// (đè lên ô Accent ĐB của mẫu, như file lần 1) hiểu là Grand i10 1.2AT.
+var DAT_HANG_ORDERS_PA2 = [
+  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
+    orders:{NT:[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:6},{mau:'Xám',sl:1}], PY:[{mau:'Đỏ',sl:1}], 'ĐL':[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:2}]}},
+  {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:2}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[{mau:'Bạc',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:5}], PY:[{mau:'Trắng',sl:2}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
+  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
+];
 // Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
 // khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
 // thực tế vận hành, ví dụ hạn ngạch/đầu mối nhà máy). Field "note" ghi rõ đặt hộ ai,
@@ -1712,16 +1738,19 @@ function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
 function renderDatHang(){
-  // Đánh số 1/2/3 + giãn cách margin-top 40px giữa các bảng cho đỡ rối mắt (trước
+  // Đánh số 1/2/3/4 + giãn cách margin-top 40px giữa các bảng cho đỡ rối mắt (trước
   // đây chỉ 22px, các bảng dính sát nhau). Bảng "Tốc độ bán hàng" đưa lên đầu tiên
   // theo yêu cầu người dùng. Bảng "Thực tế thao tác" gói trong <details> — ẩn mặc
   // định, bấm vào tiêu đề (dạng dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem
   // hơn 2 bảng kia.
   return renderTocDoBanHang()
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">2. 📦 Giả định đặt hàng — chỉ model đang đặt thêm</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">2. 📦 Giả định đặt hàng — Phương án 1 (chỉ model đang đặt thêm)</summary>'
     +'<div id="dh-tbl-main">'+_datHangTableHtml(DAT_HANG_ORDERS,'')+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng — Phương án 2 (chi nhánh đề xuất điều chỉnh lần 2)</summary>'
+    +'<div id="dh-tbl-pa2">'+_datHangTableHtml(DAT_HANG_ORDERS_PA2,'')+'</div>'
+    +'</details>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">4. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +'<div id="dh-tbl-thucte">'+_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
@@ -1730,7 +1759,7 @@ function renderDatHang(){
 }
 // Hiện đủ mọi phiên bản của model có đặt hàng (thêm 05/10/2026, theo yêu cầu người
 // dùng) — true = hiện cả phiên bản không đặt; nút trên bảng (_dhToggleAll) bật/tắt,
-// áp dụng chung cho cả bảng 2 và bảng 3, giữ nguyên khi vẽ lại.
+// áp dụng chung cho cả bảng 2, 3 (Phương án 2) và 4, giữ nguyên khi vẽ lại.
 var _dhShowAll=true;
 // Ẩn/hiện cột phụ 7-12 (Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ) — thêm 05/10/2026 để bảng
 // gọn khi chụp màn hình. Chỉ ẩn hiển thị (class dh-aux + CSS .dh-hide-aux), không đổi
@@ -1739,8 +1768,10 @@ var _dhHideAux=false;
 function _dhToggleAux(){ _dhHideAux=!_dhHideAux; _dhRedrawTables(); }
 function _dhToggleAll(){ _dhShowAll=!_dhShowAll; _dhRedrawTables(); }
 function _dhRedrawTables(){
-  var a=document.getElementById('dh-tbl-main'), b=document.getElementById('dh-tbl-thucte');
+  var a=document.getElementById('dh-tbl-main'), b=document.getElementById('dh-tbl-thucte'),
+      c=document.getElementById('dh-tbl-pa2');
   if(a) a.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS,'');
+  if(c) c.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA2,'');
   if(b) b.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true);
 }
 // Bổ sung các phiên bản KHÔNG đặt của mọi model có trong ordersData — lấy phiên bản
