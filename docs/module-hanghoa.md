@@ -66,3 +66,12 @@ Bấm tile "Tổng" (`typeFilter==='tong'`) → dưới bảng drill Model/Phiê
 - `_kckColorsFor()`: khớp chính xác (không phân biệt hoa/thường) trước, không được thì bỏ đuôi năm ở cả 2 phía ("2.5 CALLIGRAPHY" = "2.5 CALLIGRAPHY 2025").
 - **"Màu" là số năm = KHÔNG KCK**: HTV đôi khi ghi năm SX vào cột Màu (Creta FACELIFT, Staria CỨU THƯƠNG 10/2026) — HTV xác nhận nghĩa là hết màu. `_kckSanitize()` (cả `index.html` lẫn `mobile.html`, gọi trong `_loadKCK()`) bỏ các key đó, bỏ phiên bản không còn màu, và lọc dòng ghi chú thay đổi tương ứng; `TinThanh_KCK_Sync.gs` cũng bỏ từ gốc khi parse.
 - **`_mauCanon()` + `MAU_ALIAS`** (03/10/2026): gộp tên màu đồng nghĩa, dùng cho CẢ so khớp KCK (`_mauToKckKey` gọi `_mauCanon` trước) LẪN bảng Màu của Tốc độ bán hàng (`_spdOptionTree`/`_spdMauCounts`/`_spdRenderResult`). Gộp: bỏ đuôi "nóc đen"/"(trần đen)"; Đỏ, Đỏ đô, Đỏ tươi → "Đỏ/Đỏ đô"; Xám, Xám titan, Xám kim loại → "Xám/Xám titan" (cùng nhãn nhóm màu của file HTV — `_mauToKckKey` nhận cả 2 tên gộp này). Người dùng xác nhận **KHÔNG gộp**: Ghi vàng ≠ Vàng cát; Trắng mờ, Vàng mờ là màu riêng; các màu Xanh khác nhau. Thêm cặp đồng nghĩa mới → thêm vào `MAU_ALIAS` (key viết HOA).
+
+## "Xe chưa báo cáo DMS" — cột đề xuất đặt hàng (`renderChuaGiao()`, thêm 06/10/2026)
+
+Bảng đánh số cột 1–8 (mọi người xem). Với nhóm `_canSeeDatHang()` có thêm cột 9–12 (bảng này vốn mở cho mọi người, nên số đặt hàng phải ẩn với nhóm khác):
+- **9 Đề xuất đặt hàng**: cộng theo Model từ `DAT_HANG_ORDERS_PA2` (Phương án 2), theo nguồn xe đang lọc (`orders[NT|PY|ĐL]`). Model có đặt nhưng không có xe chưa BC DMS (vd. Custin) vẫn được thêm dòng.
+- **10 Tổng xe sau đặt hàng** = 8 + 9.
+- **11 Tốc độ bán (T30/90)**: số hợp đồng bán lẻ (`allCoc`, theo `ngayCoc`) trung bình mỗi tháng trong `DH_KY_DAYS` ngày, chia theo Nguồn khách (`r.branch`). PR gộp vào NT, BL gộp vào ĐL, giống file đặt hàng VC037/VC048; "Tất cả" không tính ĐN (đã dừng), KHÁC (bán ngang) hay ô trống.
+- **12 Tỉ lệ** = 10 ÷ 11 (số tháng bán). Chia cho 0 thì hiện `∞` (hoặc `–` nếu cả 2 đều 0).
+Sang đợt đặt hàng mới, nếu đổi phương án làm chuẩn thì sửa nguồn ở cột 9 (hiện đang cố định `DAT_HANG_ORDERS_PA2`).

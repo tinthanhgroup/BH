@@ -1580,8 +1580,48 @@ function renderChuaGiao(){
     }).join('')
     +'</div>';
 
-  var tableHtml='<div style="max-width:760px"><div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%">'
-    +'<thead><tr>'
+  // Cột 9-12 "Đề xuất đặt hàng" (thêm 06/10/2026): lấy từ Phương án 2 (DAT_HANG_ORDERS_PA2 —
+  // đề xuất mới nhất L1 + bổ sung L2), theo đúng nguồn xe đang lọc. CHỈ hiện cho nhóm được
+  // xem "Giả định đặt hàng" (_canSeeDatHang) — bảng này vốn mở cho mọi người nên không được
+  // để lộ số đặt hàng. Tốc độ bán = SL hợp đồng bán lẻ TB/tháng trong DH_KY_DAYS ngày gần
+  // nhất (cùng cách tính cột 14 bảng đặt hàng), theo Nguồn khách: PR gộp vào NT, BL vào ĐL
+  // (giống file đặt hàng VC037/VC048); "Tất cả" = NT+PR+ĐL+BL+PY (bỏ ĐN đã dừng, bỏ bán ngang).
+  var showDH=_canSeeDatHang();
+  var datMap={},spdMap={};
+  if(showDH){
+    DAT_HANG_ORDERS_PA2.forEach(function(o){
+      ['NT','PY','ĐL'].forEach(function(b){
+        if(activeCGKho&&b!==activeCGKho) return;
+        (o.orders[b]||[]).forEach(function(x){datMap[o.model]=(datMap[o.model]||0)+x.sl;});
+      });
+    });
+    var BR_GROUP={NT:'NT',PR:'NT','ĐL':'ĐL',BL:'ĐL',PY:'PY'};
+    var cutKy=_lastKyDaysCutoff();
+    allCoc.forEach(function(r){
+      var g=BR_GROUP[(r.branch||'').trim()];
+      if(!g||(activeCGKho&&g!==activeCGKho)||!r.ngayCoc||r.ngayCoc<cutKy) return;
+      spdMap[r.model]=(spdMap[r.model]||0)+1;
+    });
+    Object.keys(spdMap).forEach(function(m){spdMap[m]=spdMap[m]/(DH_KY_DAYS/30);});
+    // Model có đặt hàng nhưng không có xe chưa BC DMS (vd. Custin) vẫn phải hiện dòng.
+    Object.keys(datMap).forEach(function(m){
+      if(!modelMap[m]) modelMap[m]={tonKho:0,daPhan:0,nmMuon:0,bo:0,lxx:0,ngapNuoc:0};
+      if(rows.indexOf(m)<0) rows.push(m);
+    });
+    rows.sort(function(a,b){
+      var ia=MODEL_ORDER.indexOf(a),ib=MODEL_ORDER.indexOf(b);
+      return (ia<0?99:ia)-(ib<0?99:ib);
+    });
+  }
+  function tyLeTxt(sau,spd){return spd>0?(sau/spd).toFixed(1):(sau>0?'∞':'–');}
+  var totDat=0,totSpd=0;
+  var thN='padding:2px 6px;text-align:center;font-size:10px;font-weight:700;color:#aaa;border-bottom:1px solid var(--border)';
+  var subF='<br><span style="font-weight:400;font-size:9px;color:#888">';
+  var nCols=showDH?12:8;
+  var numRow='<tr>'; for(var _i=1;_i<=nCols;_i++) numRow+='<th style="'+thN+'">'+_i+'</th>'; numRow+='</tr>';
+
+  var tableHtml='<div style="max-width:'+(showDH?'1100':'760')+'px"><div class="table-wrap"><div class="table-scroll"><table style="table-layout:auto;width:100%">'
+    +'<thead>'+numRow+'<tr>'
     +'<th style="padding:8px 6px;white-space:nowrap">Model</th>'
     +'<th style="padding:8px 6px;text-align:center;color:#b45309">Tồn kho</th>'
     +'<th style="padding:8px 6px;text-align:center;color:#b45309">Đã phân</th>'
@@ -1590,6 +1630,10 @@ function renderChuaGiao(){
     +'<th style="padding:8px 6px;text-align:center;color:#d97706">Xe LXX</th>'
     +'<th style="padding:8px 6px;text-align:center;color:#0d9488">Ngập nước</th>'
     +'<th style="padding:8px 6px;text-align:center">Tổng xe</th>'
+    +(showDH?'<th style="padding:8px 6px;text-align:center;color:#4f46e5" title="Số xe đề xuất đặt hàng — Phương án 2 (L1 + bổ sung L2) của mục Giả định đặt hàng">Đề xuất<br>đặt hàng</th>'
+      +'<th style="padding:8px 6px;text-align:center;color:#111" title="Tổng xe + Đề xuất đặt hàng">Tổng xe sau<br>đặt hàng'+subF+'(10=8+9)</span></th>'
+      +'<th style="padding:8px 6px;text-align:center;color:#0d7c66" title="SL hợp đồng bán lẻ trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất (tổng ÷ '+(DH_KY_DAYS/30)+') — theo Nguồn khách, PR tính vào NT, BL tính vào ĐL">Tốc độ bán<br>(T30/'+DH_KY_DAYS+')</th>'
+      +'<th style="padding:8px 6px;text-align:center;color:#b45309" title="Cột 10 ÷ Cột 11 — số tháng bán mà tổng xe sau đặt hàng đáp ứng được">Tỉ lệ'+subF+'(12=10/11)</span></th>':'')
     +'</tr></thead><tbody>';
 
   rows.forEach(function(m){
@@ -1603,8 +1647,16 @@ function renderChuaGiao(){
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#0369a1">'+d.bo+'</td>'
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#d97706">'+d.lxx+'</td>'
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#0d9488">'+(d.ngapNuoc||'—')+'</td>'
-      +'<td style="padding:6px;text-align:center;font-weight:700;color:#1e293b">'+tot+'</td>'
-      +'</tr>';
+      +'<td style="padding:6px;text-align:center;font-weight:700;color:#1e293b">'+tot+'</td>';
+    if(showDH){
+      var dat=datMap[m]||0,spd=spdMap[m]||0,sau=tot+dat;
+      totDat+=dat;totSpd+=spd;
+      tableHtml+='<td style="padding:6px;text-align:center;font-weight:700;color:#4f46e5">'+(dat||'—')+'</td>'
+        +'<td style="padding:6px;text-align:center;font-weight:800;color:#111">'+sau+'</td>'
+        +'<td style="padding:6px;text-align:center;font-weight:600;color:#0d7c66">'+_dhFmtKy(spd)+'</td>'
+        +'<td style="padding:6px;text-align:center;font-weight:600;color:#b45309">'+tyLeTxt(sau,spd)+'</td>';
+    }
+    tableHtml+='</tr>';
   });
 
   tableHtml+='<tr style="border-top:2px solid #e2e8f0;font-weight:700">'
@@ -1615,9 +1667,18 @@ function renderChuaGiao(){
     +'<td style="padding:6px;text-align:center;color:#0369a1">'+totBO+'</td>'
     +'<td style="padding:6px;text-align:center;color:#d97706">'+totLXX+'</td>'
     +'<td style="padding:6px;text-align:center;color:#0d9488">'+totNN+'</td>'
-    +'<td style="padding:6px;text-align:center;color:#1e293b">'+(totTK+totDP+totNM+totBO+totLXX+totNN)+'</td>'
-    +'</tr>';
-  tableHtml+='</tbody></table></div></div></div>';
+    +'<td style="padding:6px;text-align:center;color:#1e293b">'+(totTK+totDP+totNM+totBO+totLXX+totNN)+'</td>';
+  if(showDH){
+    var totSau=totTK+totDP+totNM+totBO+totLXX+totNN+totDat;
+    tableHtml+='<td style="padding:6px;text-align:center;color:#4f46e5">'+totDat+'</td>'
+      +'<td style="padding:6px;text-align:center;color:#111">'+totSau+'</td>'
+      +'<td style="padding:6px;text-align:center;color:#0d7c66">'+_dhFmtKy(totSpd)+'</td>'
+      +'<td style="padding:6px;text-align:center;color:#b45309">'+tyLeTxt(totSau,totSpd)+'</td>';
+  }
+  tableHtml+='</tr>';
+  tableHtml+='</tbody></table></div></div>'
+    +(showDH?'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:-6px;line-height:1.6">Cột 9 lấy theo <b>Phương án 2</b> (L1 + đơn bổ sung L2) của mục Giả định đặt hàng, theo nguồn xe đang lọc. Cột 11 = SL hợp đồng bán lẻ trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất (theo Nguồn khách: Phan Rang tính vào NT, Bảo Lộc tính vào ĐL; không gồm bán ngang). Cột 9–12 chỉ hiện với nhóm được xem Giả định đặt hàng.</div>':'')
+    +'</div>';
 
   return '<div class="sec-title" style="color:#b45309">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY</div>'
     +filterHtml+tableHtml;
