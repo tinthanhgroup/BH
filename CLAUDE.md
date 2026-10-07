@@ -122,3 +122,17 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 3. Nếu thêm 1 script `.gs` mới hoặc thêm trigger mới: nhắc người dùng kiểm tra trang **⏰ Triggers** trước, vì hạn mức ~20 trigger tính chung cả project — không giả định còn chỗ trống.
 4. Repo này chạy trong VS Code với Claude Code, có git access trực tiếp qua Bash/PowerShell. Khi sửa xong file `.html`, có thể tự `git add`/`git commit` nếu người dùng yêu cầu — GitHub Pages tự deploy lại sau khi push, không cần bước thủ công nào thêm. **Luôn hỏi xác nhận trước khi `git push`**, kể cả khi trong cùng phiên đã push trước đó.
 5. Sửa module nào thì mở đúng file chi tiết trong `docs/` của module đó trước (xem bảng File HTML phía trên) — không cần đọc hết các module khác.
+
+## Cập nhật trạng thái (STATUS.md)
+
+`STATUS.md` là nơi duy nhất ghi tiến độ của project này. README/CLAUDE.md chỉ mô tả, không ghi trạng thái.
+
+- **Đầu mỗi phiên làm việc:** đọc `STATUS.md` để biết đang ở bước nào, chờ ai.
+- **Cuối mỗi việc** (hoặc khi người dùng xác nhận thay đổi: văn bản đã ký/gửi, đã thanh toán, có quyết định mới, nhận tài liệu mới), cập nhật `STATUS.md`:
+  - Đổi ngày `Cập nhật:` thành ngày hôm nay.
+  - Sửa dòng **Trạng thái** (🟢 Đúng tiến độ / 🟡 Cần chú ý / 🔴 Bị chặn) và 1–2 câu tóm tắt nếu tình hình thay đổi.
+  - Tick `[x]` việc đã xong, thêm việc mới phát sinh; cập nhật **Đang chờ** và **Mốc sắp tới**.
+  - Thêm 1 dòng vào **Nhật ký**, dòng mới nhất ở trên cùng.
+- Giữ nguyên khung: Cập nhật → Trạng thái → Việc tiếp theo → Đang chờ → Mốc sắp tới → Nhật ký.
+- Chỉ ghi điều đã được người dùng xác nhận hoặc có tài liệu chứng minh. Ngày hoặc số liệu chưa rõ thì ghi `_cập nhật_` và hỏi người dùng.
+- Sau khi sửa `STATUS.md`, cập nhật dòng tương ứng của project này trong `../TONG_HOP.md`.
