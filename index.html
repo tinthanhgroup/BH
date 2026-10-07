@@ -1742,6 +1742,59 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
+// "Phương án 3" (thêm 07/10/2026) = Phương án 2, chỉ đổi các dòng Creta theo yêu cầu HTV:
+// xe CBU (nhập khẩu) có hạn, CKD (lắp ráp) đang dư → cứ ĐẶT 1 xe Creta CKD thì được XÁC
+// NHẬN 3 xe Creta CBU. CKD có 2 phiên bản (Đặc Biệt CKD, N Line CKD), đều màu Trắng.
+// Người dùng chốt 07/10/2026 (đều ở NT): bỏ 2 N Line CBU Đen; 6 N Line CBU Trắng → 4 CBU + 2
+// N Line CKD; 1 Creta ĐB CBU Trắng → 2 Creta ĐB CKD Trắng; PY bỏ luôn 1 ĐB CBU Trắng
+// (người dùng 07/10: đặt CBU thì cũng phải đặt kèm CKD, PY không đặt CKD).
+// → Creta CKD 4 xe (hạn mức 12 CBU) / Creta CBU 9 xe. Tổng 45 xe: NT 29 · PY 7 · ĐL 9.
+// phienBan CKD: data.json chưa có xe ĐB/N Line CKD nào; "1.5AT XĂNG ĐẶC BIỆT CKD" theo đúng
+// kiểu tên CKD của DMS (vd. "1.5AT XĂNG CAO CẤP CKD"), N Line CKD chưa có tên chuẩn → tạm đặt.
+// Kiểm tra hạn mức: _dhCkdQuotaHtml() — phiên bản Creta có chữ "CKD" là CKD, còn lại là CBU.
+var DAT_HANG_ORDERS_PA3 = [
+  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL (CBU)',
+    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5AT XĂNG ĐẶC BIỆT CKD', label:'Creta 1.5 Đặc Biệt CKD',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL (CBU)',
+    orders:{NT:[{mau:'Đỏ',sl:3},{mau:'Trắng',sl:4},{mau:'Xám',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 N LINE CKD', label:'Creta 1.5 N Line CKD',
+    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[{mau:'Bạc',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Tucson', phienBan:'1.6 TURBO 2024', label:'Tucson 1.6 Turbo',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
+    orders:{NT:[{mau:'Đen',sl:1},{mau:'Đỏ',sl:1},{mau:'Trắng',sl:5}], PY:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:3}], 'ĐL':[{mau:'Đỏ',sl:2},{mau:'Trắng',sl:3}]}},
+  {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
+];
+// Ô kiểm tra hạn mức Creta CKD/CBU dưới bảng Phương án 3 (07/10/2026): HTV xác nhận tối đa
+// 3 xe Creta CBU cho mỗi 1 xe Creta CKD đặt. Đủ khi CBU đặt ≤ 3 × CKD đặt.
+var DH_CBU_PER_CKD=3;
+function _dhCkdQuotaHtml(ordersData){
+  var ckd=0,cbu=0;
+  ordersData.forEach(function(o){
+    if(o.model!=='Creta') return;
+    var n=0; ['NT','PY','ĐL'].forEach(function(b){(o.orders[b]||[]).forEach(function(x){n+=x.sl;});});
+    if(/CKD/i.test(o.phienBan)) ckd+=n; else cbu+=n;
+  });
+  var quota=ckd*DH_CBU_PER_CKD, ok=cbu<=quota;
+  return '<div style="margin:8px 0 0;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.6;'
+    +(ok?'background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46':'background:#fef2f2;border:1px solid #fecaca;color:#991b1b')+'">'
+    +'<b>Hạn mức Creta CBU</b> (HTV: đặt 1 Creta CKD được xác nhận '+DH_CBU_PER_CKD+' Creta CBU): đặt <b>'+ckd+'</b> CKD → được tối đa <b>'+quota+'</b> CBU; đang đặt <b>'+cbu+'</b> CBU → '
+    +(ok?'<b>ĐỦ</b>'+(quota>cbu?' (còn dư '+(quota-cbu)+' suất CBU)':''):'<b>THIẾU</b> — cần thêm '+Math.ceil((cbu-quota)/DH_CBU_PER_CKD)+' xe CKD hoặc bớt '+(cbu-quota)+' xe CBU')
+    +'</div>';
+}
 // Bản "Thực tế thao tác" của DAT_HANG_ORDERS — cùng model/phiên bản/số lượng, chỉ
 // khác chi nhánh nào ĐỨNG TÊN đặt hàng (do 1 chi nhánh đặt hộ chi nhánh khác trong
 // thực tế vận hành, ví dụ hạn ngạch/đầu mối nhà máy). Field "note" ghi rõ đặt hộ ai,
@@ -1829,7 +1882,10 @@ function renderDatHang(){
     +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng — Phương án 2 (Phương án 1 + đơn bổ sung lần 2)</summary>'
     +'<div id="dh-tbl-pa2">'+_datHangTableHtml(DAT_HANG_ORDERS_PA2,'')+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">4. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">4. 📦 Giả định đặt hàng — Phương án 3 (Phương án 2 + đổi một phần Creta CBU sang CKD theo yêu cầu HTV)</summary>'
+    +'<div id="dh-tbl-pa3">'+_datHangTableHtml(DAT_HANG_ORDERS_PA3,'')+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA3)+'</div>'
+    +'</details>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">5. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +'<div id="dh-tbl-thucte">'+_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
@@ -1853,9 +1909,10 @@ function _dhToggleBranch(){ _dhHideBranch=!_dhHideBranch; _dhRedrawTables(); }
 function _dhToggleAll(){ _dhShowAll=!_dhShowAll; _dhRedrawTables(); }
 function _dhRedrawTables(){
   var a=document.getElementById('dh-tbl-main'), b=document.getElementById('dh-tbl-thucte'),
-      c=document.getElementById('dh-tbl-pa2');
+      c=document.getElementById('dh-tbl-pa2'), p3=document.getElementById('dh-tbl-pa3');
   if(a) a.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS,'');
   if(c) c.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA2,'');
+  if(p3) p3.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA3,'')+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA3);
   if(b) b.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true);
 }
 // Bổ sung các phiên bản KHÔNG đặt của mọi model có trong ordersData — lấy phiên bản
