@@ -1744,13 +1744,14 @@ var DAT_HANG_ORDERS_PA2 = [
 ];
 // "Phương án 3" (thêm 07/10/2026, viết lại cùng ngày theo người dùng) = GIỮ NGUYÊN Phương án 2,
 // chỉ đổi Creta N Line của NT theo yêu cầu HTV: xe CBU (nhập khẩu) có hạn, CKD (lắp ráp) đang
-// dư → cứ ĐẶT 1 xe Creta CKD thì được XÁC NHẬN 3 xe Creta CBU (DH_CBU_PER_CKD).
+// dư → cứ ĐẶT 1 xe Creta N Line CKD thì được XÁC NHẬN 3 xe Creta N Line CBU (DH_CBU_PER_CKD).
+// Quy định CHỈ áp cho N Line (người dùng xác nhận 07/10/2026) — Creta Đặc Biệt CBU không bị giới hạn.
 //  - 2 xe Creta N Line màu Đen của NT là CKD (không phải CBU).
 //  - 1 xe Creta N Line Trắng CBU của NT đổi thành N Line Trắng CKD.
 //  - PY và ĐL giữ nguyên như Phương án 2.
-// Tổng vẫn 47 xe như PA2: NT 30 · PY 8 · ĐL 9. Creta CKD 3 xe, Creta CBU 12 xe.
+// Tổng vẫn 47 xe như PA2: NT 30 · PY 8 · ĐL 9. N Line CKD 3 xe, N Line CBU 9 xe → vừa đủ.
 // phienBan "1.5 N LINE CKD" là tên tạm (data.json chưa có xe N Line CKD nào).
-// Kiểm tra hạn mức: _dhCkdQuotaHtml() — phiên bản Creta có chữ "CKD" là CKD, còn lại là CBU.
+// Kiểm tra hạn mức: _dhCkdQuotaHtml() — chỉ xét Creta N Line: có chữ "CKD" là CKD, còn lại là CBU.
 var DAT_HANG_ORDERS_PA3 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
@@ -1776,19 +1777,19 @@ var DAT_HANG_ORDERS_PA3 = [
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
 // Ô kiểm tra hạn mức Creta CKD/CBU dưới bảng Phương án 3 (07/10/2026): HTV xác nhận tối đa
-// 3 xe Creta CBU cho mỗi 1 xe Creta CKD đặt. Đủ khi CBU đặt ≤ 3 × CKD đặt.
+// 3 xe Creta N Line CBU cho mỗi 1 xe Creta N Line CKD đặt (chỉ N Line). Đủ khi CBU ≤ 3 × CKD.
 var DH_CBU_PER_CKD=3;
 function _dhCkdQuotaHtml(ordersData){
   var ckd=0,cbu=0;
   ordersData.forEach(function(o){
-    if(o.model!=='Creta') return;
+    if(o.model!=='Creta'||!/N LINE/i.test(o.phienBan)) return;
     var n=0; ['NT','PY','ĐL'].forEach(function(b){(o.orders[b]||[]).forEach(function(x){n+=x.sl;});});
     if(/CKD/i.test(o.phienBan)) ckd+=n; else cbu+=n;
   });
   var quota=ckd*DH_CBU_PER_CKD, ok=cbu<=quota;
   return '<div style="margin:8px 0 0;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.6;'
     +(ok?'background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46':'background:#fef2f2;border:1px solid #fecaca;color:#991b1b')+'">'
-    +'<b>Hạn mức Creta CBU</b> (HTV: đặt 1 Creta CKD được xác nhận '+DH_CBU_PER_CKD+' Creta CBU): đặt <b>'+ckd+'</b> CKD → được tối đa <b>'+quota+'</b> CBU; đang đặt <b>'+cbu+'</b> CBU → '
+    +'<b>Hạn mức Creta N Line CBU</b> (HTV: đặt 1 Creta N Line CKD được xác nhận '+DH_CBU_PER_CKD+' Creta N Line CBU; quy định chỉ áp cho N Line): đặt <b>'+ckd+'</b> CKD → được tối đa <b>'+quota+'</b> CBU; đang đặt <b>'+cbu+'</b> CBU → '
     +(ok?'<b>ĐỦ</b>'+(quota>cbu?' (còn dư '+(quota-cbu)+' suất CBU)':''):'<b>THIẾU</b> — cần thêm '+Math.ceil((cbu-quota)/DH_CBU_PER_CKD)+' xe CKD hoặc bớt '+(cbu-quota)+' xe CBU')
     +'</div>';
 }
