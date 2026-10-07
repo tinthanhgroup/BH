@@ -1742,27 +1742,24 @@ var DAT_HANG_ORDERS_PA2 = [
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
-// "Phương án 3" (thêm 07/10/2026) = Phương án 2, chỉ đổi các dòng Creta theo yêu cầu HTV:
-// xe CBU (nhập khẩu) có hạn, CKD (lắp ráp) đang dư → cứ ĐẶT 1 xe Creta CKD thì được XÁC
-// NHẬN 3 xe Creta CBU. CKD có 2 phiên bản (Đặc Biệt CKD, N Line CKD), đều màu Trắng.
-// Người dùng chốt 07/10/2026 (đều ở NT): bỏ 2 N Line CBU Đen; 6 N Line CBU Trắng → 4 CBU + 2
-// N Line CKD; 1 Creta ĐB CBU Trắng → 2 Creta ĐB CKD Trắng; PY bỏ luôn 1 ĐB CBU Trắng
-// (người dùng 07/10: đặt CBU thì cũng phải đặt kèm CKD, PY không đặt CKD).
-// → Creta CKD 4 xe (hạn mức 12 CBU) / Creta CBU 9 xe. Tổng 45 xe: NT 29 · PY 7 · ĐL 9.
-// phienBan CKD: data.json chưa có xe ĐB/N Line CKD nào; "1.5AT XĂNG ĐẶC BIỆT CKD" theo đúng
-// kiểu tên CKD của DMS (vd. "1.5AT XĂNG CAO CẤP CKD"), N Line CKD chưa có tên chuẩn → tạm đặt.
+// "Phương án 3" (thêm 07/10/2026, viết lại cùng ngày theo người dùng) = GIỮ NGUYÊN Phương án 2,
+// chỉ đổi Creta N Line của NT theo yêu cầu HTV: xe CBU (nhập khẩu) có hạn, CKD (lắp ráp) đang
+// dư → cứ ĐẶT 1 xe Creta CKD thì được XÁC NHẬN 3 xe Creta CBU (DH_CBU_PER_CKD).
+//  - 2 xe Creta N Line màu Đen của NT là CKD (không phải CBU).
+//  - 1 xe Creta N Line Trắng CBU của NT đổi thành N Line Trắng CKD.
+//  - PY và ĐL giữ nguyên như Phương án 2.
+// Tổng vẫn 47 xe như PA2: NT 30 · PY 8 · ĐL 9. Creta CKD 3 xe, Creta CBU 12 xe.
+// phienBan "1.5 N LINE CKD" là tên tạm (data.json chưa có xe N Line CKD nào).
 // Kiểm tra hạn mức: _dhCkdQuotaHtml() — phiên bản Creta có chữ "CKD" là CKD, còn lại là CBU.
 var DAT_HANG_ORDERS_PA3 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL (CBU)',
-    orders:{NT:[{mau:'Đỏ',sl:1}], PY:[], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5AT XĂNG ĐẶC BIỆT CKD', label:'Creta 1.5 Đặc Biệt CKD',
-    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL (CBU)',
-    orders:{NT:[{mau:'Đỏ',sl:3},{mau:'Trắng',sl:4},{mau:'Xám',sl:1}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đỏ',sl:3},{mau:'Trắng',sl:5},{mau:'Xám',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE CKD', label:'Creta 1.5 N Line CKD',
-    orders:{NT:[{mau:'Trắng',sl:2}], PY:[], 'ĐL':[]}},
+    orders:{NT:[{mau:'Đen',sl:2},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Grand i10', phienBan:'1.2AT', label:'Grand i10 1.2 AT',
