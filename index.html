@@ -769,7 +769,6 @@ function buildNgapNuocMap(records){
 function parseJsonRecords(records, fileDate){
   allData={stock:[],debt:[],bo:[],lxx:[],chuaXN:[],chuaGiao:[],chuaHD:[]};
   allSales=[];allCoc=[];
-  _dhGiaVon={};
 
   records.forEach(function(r){
     var tt = (r.trangThai||'').trim();
@@ -778,7 +777,6 @@ function parseJsonRecords(records, fileDate){
     var model    = normModel(r.model||'');
     var phienBan = (r.phienBan||'').trim() || '—';
     var mau      = normMau(r.mau||'');
-    _dhGhiGiaVon(model,phienBan,mau,r);
     var namSX    = r.namSX ? String(r.namSX) : '';
     var kho      = normKhoStr(r.khoXe||'');
     var soKhung  = (r.soKhung||'').trim();
@@ -1818,23 +1816,6 @@ function _kckColorsFor(model,phienBan){
 function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
-// Giá vốn mới nhất cho cột "6a · Giá trị" của bảng Giả định đặt hàng (thêm 06/10/2026):
-// _dhGiaVon[key] = {g: giaVon, d: ngày nhập kho (hoặc ngày XN đơn)} của xe nhập GẦN NHẤT,
-// key theo 2 mức "model|phienBan|MÀU" và "model|phienBan" — tra màu trước, không có thì
-// lấy theo phiên bản (một số màu/lô lệch giá vài triệu). Ghi trong parseJsonRecords().
-var _dhGiaVon={};
-function _dhGhiGiaVon(model,phienBan,mau,r){
-  var g=Number(r.giaVon)||0; if(g<=0) return;
-  var d=new Date(r.ngayNhapKho||r.ngayXacNhanDH||0).getTime()||0;
-  [model+'|'+phienBan+'|'+_mauCanon(mau).toUpperCase(), model+'|'+phienBan].forEach(function(k){
-    if(!_dhGiaVon[k]||d>=_dhGiaVon[k].d) _dhGiaVon[k]={g:g,d:d};
-  });
-}
-function _dhGiaVonFor(model,phienBan,mau){
-  var e=_dhGiaVon[model+'|'+phienBan+'|'+_mauCanon(mau).toUpperCase()]||_dhGiaVon[model+'|'+phienBan];
-  return e?e.g:0;
-}
-function _fmtTyDh(v){return (v/1e9).toLocaleString('vi-VN',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function renderDatHang(){
   // Đánh số 1/2/3/4 + giãn cách margin-top 40px giữa các bảng cho đỡ rối mắt (trước
   // đây chỉ 22px, các bảng dính sát nhau). Bảng "Tốc độ bán hàng" đưa lên đầu tiên
@@ -1944,18 +1925,12 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   var numCols=15; // Model(1) + Phiên bản(2) + 3 chi nhánh + Đặt hàng/Tồn/BO/LXX/Tổng/Tổng theo Model/Nợ/Tổng-Nợ/SL ký/Tỉ lệ(10) — nhớ sửa nếu thêm/bớt cột
   var numRow='';
   function aux(i){return i>=7&&i<=12?' class="dh-aux"':(i>=3&&i<=5?' class="dh-br"':'');} // cột phụ 7-12, xem _dhToggleAux()
-  // Cột "6a · Giá trị" chèn sau cột 6 (thêm 06/10/2026) — đánh số "6a" để KHÔNG phải
-  // đánh số lại 7-15, giữ đúng các công thức "(10=6+7+8+9)"… trên tiêu đề.
-  for(var _ni=1;_ni<=numCols;_ni++){
-    numRow+='<th'+aux(_ni)+' style="'+numBase+'">'+_ni+'</th>';
-    if(_ni===6) numRow+='<th style="'+numBase+'">6a</th>';
-  }
+  for(var _ni=1;_ni<=numCols;_ni++) numRow+='<th'+aux(_ni)+' style="'+numBase+'">'+_ni+'</th>';
   var subFormula='<br><span style="font-weight:400;text-transform:none;font-size:9px;letter-spacing:0;color:#888">';
   var thead='<th style="'+thBase+wCol1+';text-align:left">Model</th>'
     +'<th style="'+thBase+wCol2+';text-align:left">Phiên bản</th>'
     +branches.map(function(b){return '<th class="dh-br" style="'+thBase+wBranch+'">'+branchLabel[b]+'</th>';}).join('')
     +'<th style="'+thBase+';color:#4f46e5">Đặt hàng</th>'
-    +'<th style="'+thBase+';color:#4f46e5" title="Giá trị xe đặt hàng = Σ số lượng × giá vốn của xe nhập kho gần nhất cùng phiên bản (ưu tiên cùng màu) — đơn vị tỷ đồng">Giá trị'+subFormula+'(tỷ đồng)</span></th>'
     +'<th class="dh-aux" style="'+thBase+';color:var(--c-stock)">Tồn</th>'
     +'<th class="dh-aux" style="'+thBase+';color:var(--c-bo)">BO</th>'
     +'<th class="dh-aux" style="'+thBase+';color:var(--c-lxx)">LXX</th>'
@@ -1969,7 +1944,6 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
   var sumTon=0,sumBO=0,sumLXX=0,sumDebt=0,sumDat=0,sumTong=0,sumKy30=0;
   var sumByBranch={NT:0,PY:0,'ĐL':0};
   var sumKckQty=0,sumNoKckQty=0;
-  var sumGiaTri=0,sumThieuGia=0; // thieuGia = số xe không tra được giá vốn (chưa từng nhập phiên bản này)
   // Pass 1: tính từng dòng + gom sẵn tổng cột 9 (Tổng) theo Model để hiện ở cột
   // "Tổng theo Model" (pass 2) — cần biết tổng cả nhóm trước khi render dòng đầu
   // tiên của nhóm đó nên phải tách 2 pass, không gộp chung vòng lặp render.
@@ -1990,12 +1964,10 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
       return r.model===o.model&&r.phienBan===o.phienBan&&r.ngayCoc&&r.ngayCoc>=cutoff30&&_spdIsRetail(r);
     }).length/(DH_KY_DAYS/30); // TB hợp đồng/tháng trong DH_KY_DAYS ngày (06/10/2026)
     var kckColors=_kckColorsFor(o.model,o.phienBan);
-    var datHang=0,giaTri=0,thieuGia=0;
+    var datHang=0;
     branches.forEach(function(b){
       (o.orders[b]||[]).forEach(function(x){
         datHang+=x.sl;
-        var gv=_dhGiaVonFor(o.model,o.phienBan,x.mau);
-        if(gv) giaTri+=gv*x.sl; else thieuGia+=x.sl;
         sumByBranch[b]+=x.sl;
         if(_isKckAvailable(kckColors,x.mau)) sumKckQty+=x.sl; else sumNoKckQty+=x.sl;
       });
@@ -2009,9 +1981,8 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     if(o.extra&&!_dhShowAll) return;
     // Hàng "Tổng" cuối bảng chỉ cộng các dòng đang hiện.
     sumTon+=ton;sumBO+=bo;sumLXX+=lxx;sumDebt+=debt;sumDat+=datHang;sumTong+=tong;sumKy30+=ky30;
-    sumGiaTri+=giaTri;sumThieuGia+=thieuGia;
     modelRowCount[o.model]=(modelRowCount[o.model]||0)+1;
-    calcRows.push({o:o,giaTri:giaTri,thieuGia:thieuGia,ton:ton,bo:bo,lxx:lxx,debt:debt,ky30:ky30,kckColors:kckColors,datHang:datHang,tong:tong,tongTruNo:tongTruNo,tyLe:tyLe});
+    calcRows.push({o:o,ton:ton,bo:bo,lxx:lxx,debt:debt,ky30:ky30,kckColors:kckColors,datHang:datHang,tong:tong,tongTruNo:tongTruNo,tyLe:tyLe});
   });
   // Pass 2: render — gộp ô "Model" và "Tổng theo Model" bằng rowspan cho các dòng
   // liên tiếp cùng Model (dữ liệu DAT_HANG_ORDERS vốn đã nhóm liền nhau theo Model).
@@ -2030,9 +2001,6 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
       +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
       +branches.map(function(b){return '<td class="dh-br" style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+(c.datHang||(o.extra?'':0))+'</td>'
-      +'<td style="'+tdBase+';font-weight:600;color:#4f46e5;white-space:nowrap"'
-        +(c.datHang?' title="Giá vốn/xe ≈ '+_fmtTyDh(c.giaTri/Math.max(1,c.datHang-c.thieuGia))+' tỷ'+(c.thieuGia?' — '+c.thieuGia+' xe chưa có giá vốn':'')+'"':'')+'>'
-        +(c.datHang?(c.giaTri?_fmtTyDh(c.giaTri):'')+(c.thieuGia?' <span style="color:#dc2626">?</span>':''):'')+'</td>'
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.ton||'')+'</td>'
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.bo||'')+'</td>'
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.lxx||'')+'</td>'
@@ -2050,7 +2018,6 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +'<td colspan="2" style="'+tdBase+';text-align:left">Tổng</td>'
     +branches.map(function(b){return '<td class="dh-br" style="'+tdBase+wBranch+'">'+(sumByBranch[b]||'')+'</td>';}).join('')
     +'<td style="'+tdBase+';color:#4f46e5">'+sumDat+'</td>'
-    +'<td style="'+tdBase+';color:#4f46e5;white-space:nowrap">'+_fmtTyDh(sumGiaTri)+(sumThieuGia?' <span style="color:#dc2626">?</span>':'')+'</td>'
     +'<td class="dh-aux" style="'+tdBase+'">'+sumTon+'</td>'
     +'<td class="dh-aux" style="'+tdBase+'">'+sumBO+'</td>'
     +'<td class="dh-aux" style="'+tdBase+'">'+sumLXX+'</td>'
@@ -2065,9 +2032,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     +(hideKckNote?'':'⚠️ Cột Tồn/BO/LXX/Nợ/Số lượng xe ký lấy theo dữ liệu hiện tại (tự cập nhật theo data.json mới nhất); cột Đặt hàng là số liệu cố định của đợt đặt hàng này, không tự đổi. SL hợp đồng = trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất, chỉ tính bán lẻ (không gồm bán ngang).<br>'
       +'Khung <span style="display:inline-block;border:1.5px solid #eab308;background:#fef9c3;border-radius:5px;padding:0 5px;font-weight:600">vàng</span> quanh màu trong cột chi nhánh = Nhà máy đang có sẵn đúng màu đó trong KCK.<br>')
     +(hideKckNote?'"(...)" sau tên màu = chi nhánh đó đặt hàng <b>giúp</b> chi nhánh khác, xe vẫn tính vào nhu cầu của chi nhánh được giúp.<br>':'')
-    +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).<br>'
-    +'Cột 6a Giá trị = số lượng × giá vốn của xe nhập kho gần nhất cùng phiên bản (ưu tiên cùng màu), tự cập nhật theo data.json — tổng <b>'+_fmtTyDh(sumGiaTri)+' tỷ đồng</b>'
-    +(sumThieuGia?'; <span style="color:#dc2626">?</span> = '+sumThieuGia+' xe chưa tra được giá vốn (phiên bản chưa từng nhập kho), chưa tính vào tổng':'')+'.'
+    +'Trong tổng <b>'+sumDat+'</b> xe đặt hàng đợt này: <b style="color:#b45309">'+sumKckQty+'</b> xe có thể lấy từ KCK (Nhà máy đang có sẵn đúng màu), <b>'+sumNoKckQty+'</b> xe hiện Nhà máy không có sẵn (phải đặt sản xuất mới).'
     +'</div>';
   // table-layout:auto (KHÔNG fixed) để cột co giãn theo nội dung, giới hạn trong khoảng
   // min/max-width đã gắn trên từng ô (wCol1/wBranch/mặc định của thBase/tdBase ở trên).
