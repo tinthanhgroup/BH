@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 07/10/2026
+Cập nhật: 08/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 Hệ thống đang chạy, auto-sync bình thường. 06–07/10 tập trung vào module **Giả định đặt hàng T10**: đã chốt Phương án 3, tổng 47 xe (NT 30 · PY 8 · ĐL 9); Creta N Line đạt tỷ lệ hạn mức CKD/CBU (3 CKD : 9 CBU). Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
@@ -19,6 +19,7 @@ Hệ thống đang chạy, auto-sync bình thường. 06–07/10 tập trung và
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 08/10/2026 | Creta: bỏ chữ "FACELIFT" khỏi mọi phiên bản; tách phiên bản CKD theo màu có chữ "CKD" (vd. "Trắng CKD" → "1.5 ĐẶC BIỆT CKD", màu Trắng), chữ CKD tô xanh đậm — index + mobile |
 | 07/10/2026 | Giả định đặt hàng: PA3 viết lại = PA2 với Creta N Line NT có 3 CKD; ô hạn mức CKD/CBU chỉ xét N Line → 47 xe, đủ hạn mức |
 | 06/10/2026 | Giả định đặt hàng: nhiều lần cập nhật L1/L2 theo file chi nhánh; thêm cột tốc độ bán 90 ngày, nút ẩn/hiện chi nhánh |
 | 06/10/2026 | Xe chưa BC DMS: thêm cột 9–12 (đề xuất đặt hàng PA2, tốc độ bán) |
