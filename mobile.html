@@ -282,10 +282,10 @@ var KCK_DATA = [
   ['Tucson','N LINE',{'ĐEN':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 CAO CẤP FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 ĐẶC BIỆT FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
+  ['Creta','1.5 CAO CẤP',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 TIÊU CHUẨN',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 N LINE',{'ĐEN':{'n':'2026','r':0}}],
   ['Staria','CỨU THƯƠNG DẦU MỚI',{'TRẮNG':{'n':'2026','r':0}}]
 ];
 // Tóm tắt thay đổi màu so với đợt cập nhật KCK trước — trùng nội dung với index.html
@@ -307,11 +307,12 @@ function _kckIsYearKey(c){ return /^\d{4}(\.0)?$/.test((c||'').toString().trim()
 function _kckSanitize(j){
   j.data=j.data.map(function(e){
     var cols={};Object.keys(e[2]||{}).forEach(function(c){ if(!_kckIsYearKey(c)) cols[c]=e[2][c]; });
-    return [e[0],e[1],cols];
+    return [e[0],_crPb(e[0],e[1]),cols]; // Creta: bỏ FACELIFT (08/10/2026)
   }).filter(function(e){ return Object.keys(e[2]).length>0; });
   if(j.changeNote){
     ['removed','added'].forEach(function(k){
       j.changeNote[k]=(j.changeNote[k]||[]).map(function(x){
+        if(/^Creta /.test(x)) x=x.replace(/\s*FACELIFT\b/ig,''); // Creta: bỏ FACELIFT (08/10/2026)
         var i=x.indexOf(': '); if(i<0) return x;
         var tail=x.substring(i+2), suf='';
         var sm=tail.match(/\s*\(phiên bản mới\)$/); if(sm){ suf=sm[0]; tail=tail.substring(0,tail.length-suf.length); }
@@ -428,6 +429,31 @@ function normModel(m){
   if(ml.includes('palisade')) return 'Palisade';
   if(ml.includes('staria')) return 'Staria';
   return m.toString().trim();
+}
+// Chuẩn hoá phiên bản/màu Creta (08/10/2026, người dùng chốt) — CHỈ áp cho model Creta:
+//  - Bỏ chữ "FACELIFT" khỏi mọi phiên bản Creta (dòng trước facelift đã hết tồn, giữ cho gọn).
+//  - Xe Creta có màu chứa "CKD" (vd. "Trắng CKD") = xe lắp ráp trong nước: màu bỏ chữ CKD
+//    ("Trắng"), phiên bản thêm đuôi " CKD" ("1.5 ĐẶC BIỆT CKD", "1.5 N LINE CKD"...).
+//    Màu không có CKD = xe nhập khẩu (CBU), giữ nguyên phiên bản.
+//  - KHÔNG gộp phiên bản cũ kiểu DMS "1.5AT XĂNG CAO CẤP CKD" vào "1.5 CAO CẤP CKD" (người dùng 08/10).
+// Dùng ở mọi chỗ đọc dữ liệu thô (parseJsonRecords, nhánh đọc Sheet, snapshot chưa xuất HĐ) +
+// _kckSanitize (tên phiên bản KCK). bản sao y hệt của index.html — sửa 1 nơi nhớ sửa nơi kia.
+function _crPb(model,pb){
+  return model==='Creta'?(pb||'').replace(/\s*FACELIFT\b/ig,'').replace(/\s+/g,' ').trim():pb;
+}
+function _crNorm(model,pb,mau){
+  if(model!=='Creta') return [pb,mau];
+  pb=_crPb(model,pb);
+  if(/CKD/i.test(mau||'')){
+    mau=mau.replace(/[\s\-–(]*CKD\)?/ig,'').replace(/\s+/g,' ').trim()||mau;
+    if(!/CKD/i.test(pb)) pb=pb+' CKD';
+  }
+  return [pb,mau];
+}
+// Hiện chữ "CKD" trong tên phiên bản màu xanh đậm cho dễ nhận diện (08/10/2026). Chỉ dùng khi
+// ghép vào HTML (không dùng trong <option>, title, key so khớp).
+function _pbHtml(pb){
+  return (pb==null?'':String(pb)).replace(/\bCKD\b/g,'<span style="color:#1e3a8a;font-weight:800">CKD</span>');
 }
 function normMau(mau){
   if(!mau) return '—';
@@ -559,6 +585,7 @@ function parseJsonRecords(records){
     var model    = normModel(r.model||'');
     var phienBan = (r.phienBan||'').trim() || '—';
     var mau      = normMau(r.mau||'');
+    var _cn=_crNorm(model,phienBan,mau); phienBan=_cn[0]; mau=_cn[1]; // Creta: bỏ FACELIFT, tách CKD
     var namSX    = r.namSX ? String(r.namSX) : '';
     var kho      = normKho(r.khoXe||'');
     var soKhung  = (r.soKhung||'').trim();
@@ -708,7 +735,7 @@ function renderListBO(){
     tbody+='<tr>'
       +'<td class="td-num">'+(i+1)+'</td>'
       +modelTd
-      +'<td>'+r.phienBan+'</td>'
+      +'<td>'+_pbHtml(r.phienBan)+'</td>'
       +'<td><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+r.mau+'</td>'
       +'<td>'+yrBadgeHTML(r.namSX)+'</td>'
       +'<td>'+khoLabel(r.kho)+'</td>'
@@ -755,7 +782,7 @@ function renderListLXX(){
     tbody+='<tr>'
       +'<td class="td-num">'+(i+1)+'</td>'
       +modelTd
-      +'<td>'+r.phienBan+'</td>'
+      +'<td>'+_pbHtml(r.phienBan)+'</td>'
       +'<td><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+r.mau+'</td>'
       +'<td>'+yrBadgeHTML(r.namSX)+'</td>'
       +'<td>'+khoLabel(r.kho)+'</td>'
@@ -802,7 +829,7 @@ function renderListDebt(){
     tbody+='<tr>'
       +'<td class="td-num">'+(i+1)+'</td>'
       +modelTd
-      +'<td>'+r.phienBan+'</td>'
+      +'<td>'+_pbHtml(r.phienBan)+'</td>'
       +'<td><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+r.mau+'</td>'
       +'<td>'+yrBadgeHTML(r.namSX)+'</td>'
       +'<td style="font-size:11px;max-width:120px;white-space:normal;line-height:1.4">'+(r.khach||'—')+'</td>'
@@ -919,7 +946,7 @@ function renderLev2Inner(models){
     var yrCls=parseInt(v.namSX)===2025?'yr25':parseInt(v.namSX)===2024?'yr24':parseInt(v.namSX)===2026?'yr26':'';
     var yrBadge=(v.namSX&&parseInt(v.namSX)!==2026)?'<span class="yr-badge '+yrCls+'">'+v.namSX+'</span>':'';
     html+='<div class="lev2-row'+(act?' active':'')+'" onclick="clickVersion(\''+esc(vKey)+'\')">'
-      +'<div class="lev2-name">'+v.name+yrBadge+'</div>'
+      +'<div class="lev2-name">'+_pbHtml(v.name)+yrBadge+'</div>'
       +'<span class="vc vc-s">'+(v.stock?v.stock:'<span class="vc-empty">—</span>')+'</span>'
       +'<span class="vc vc-b">'+(v.bo?v.bo:'<span class="vc-empty">—</span>')+'</span>'
       +'<span class="vc vc-l">'+(v.lxx?v.lxx:'<span class="vc-empty">—</span>')+'</span>'

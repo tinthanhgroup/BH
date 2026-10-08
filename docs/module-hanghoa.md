@@ -77,3 +77,13 @@ Bảng đánh số cột 1–8 (mọi người xem). Với nhóm `_canSeeDatHang
 - **11 Tốc độ bán (T30/90)**: số hợp đồng bán lẻ (`allCoc`, theo `ngayCoc`) trung bình mỗi tháng trong `DH_KY_DAYS` ngày, chia theo Nguồn khách (`r.branch`). PR gộp vào NT, BL gộp vào ĐL, giống file đặt hàng VC037/VC048; "Tất cả" không tính ĐN (đã dừng), KHÁC (bán ngang) hay ô trống.
 - **12 Tỉ lệ** = 10 ÷ 11 (số tháng bán). Chia cho 0 thì hiện `∞` (hoặc `–` nếu cả 2 đều 0).
 Sang đợt đặt hàng mới, nếu đổi phương án làm chuẩn thì sửa nguồn ở cột 9 (hiện đang cố định `DAT_HANG_ORDERS_PA2`).
+
+## Creta: bỏ "FACELIFT", tách phiên bản CKD (08/10/2026)
+
+Chỉ áp cho model Creta, xử lý ngay lúc đọc dữ liệu bằng `_crNorm()`/`_crPb()`. Có bản sao y hệt trong `mobile.html`, sửa một nơi thì sửa cả nơi kia.
+- Bỏ chữ "FACELIFT" khỏi mọi phiên bản Creta: "1.5 ĐẶC BIỆT FACELIFT" → "1.5 ĐẶC BIỆT". Dòng trước facelift đã hết tồn.
+- Xe Creta có **màu chứa "CKD"** (vd. "Trắng CKD") là xe lắp ráp trong nước. Màu được bỏ chữ CKD ("Trắng"), phiên bản được thêm đuôi " CKD" ("1.5 ĐẶC BIỆT CKD", "1.5 CAO CẤP CKD", "1.5 N LINE CKD"). Màu không có CKD là xe nhập khẩu (CBU).
+- **Không gộp** phiên bản cũ kiểu DMS "1.5AT XĂNG CAO CẤP CKD" (3 xe đã bán) vào "1.5 CAO CẤP CKD", theo quyết định người dùng.
+- Tên phiên bản KCK (HTV) cũng bỏ FACELIFT trong `_kckSanitize()` và trong `KCK_DATA` dự phòng, để `_kckColorsFor()` vẫn khớp. KCK không có hàng CKD, nên dòng CKD không bao giờ được tô khung vàng.
+- Chữ "CKD" trong tên phiên bản hiện **xanh đậm** qua `_pbHtml()`. Chỉ dùng khi ghép vào HTML, không dùng trong `<option>`, title hay khoá so khớp.
+- Mảng đặt hàng (`DAT_HANG_ORDERS*`) phải dùng tên đã chuẩn hoá: '1.5 ĐẶC BIỆT', '1.5 N LINE', '1.5 N LINE CKD'.

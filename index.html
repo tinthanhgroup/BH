@@ -556,6 +556,31 @@ function normModel(m){
   if(ml.includes('staria')) return 'Staria';
   return m.toString().trim();
 }
+// Chuẩn hoá phiên bản/màu Creta (08/10/2026, người dùng chốt) — CHỈ áp cho model Creta:
+//  - Bỏ chữ "FACELIFT" khỏi mọi phiên bản Creta (dòng trước facelift đã hết tồn, giữ cho gọn).
+//  - Xe Creta có màu chứa "CKD" (vd. "Trắng CKD") = xe lắp ráp trong nước: màu bỏ chữ CKD
+//    ("Trắng"), phiên bản thêm đuôi " CKD" ("1.5 ĐẶC BIỆT CKD", "1.5 N LINE CKD"...).
+//    Màu không có CKD = xe nhập khẩu (CBU), giữ nguyên phiên bản.
+//  - KHÔNG gộp phiên bản cũ kiểu DMS "1.5AT XĂNG CAO CẤP CKD" vào "1.5 CAO CẤP CKD" (người dùng 08/10).
+// Dùng ở mọi chỗ đọc dữ liệu thô (parseJsonRecords, nhánh đọc Sheet, snapshot chưa xuất HĐ) +
+// _kckSanitize (tên phiên bản KCK). mobile.html có bản sao y hệt — sửa 1 nơi nhớ sửa nơi kia.
+function _crPb(model,pb){
+  return model==='Creta'?(pb||'').replace(/\s*FACELIFT\b/ig,'').replace(/\s+/g,' ').trim():pb;
+}
+function _crNorm(model,pb,mau){
+  if(model!=='Creta') return [pb,mau];
+  pb=_crPb(model,pb);
+  if(/CKD/i.test(mau||'')){
+    mau=mau.replace(/[\s\-–(]*CKD\)?/ig,'').replace(/\s+/g,' ').trim()||mau;
+    if(!/CKD/i.test(pb)) pb=pb+' CKD';
+  }
+  return [pb,mau];
+}
+// Hiện chữ "CKD" trong tên phiên bản màu xanh đậm cho dễ nhận diện (08/10/2026). Chỉ dùng khi
+// ghép vào HTML (không dùng trong <option>, title, key so khớp).
+function _pbHtml(pb){
+  return (pb==null?'':String(pb)).replace(/\bCKD\b/g,'<span style="color:#1e3a8a;font-weight:800">CKD</span>');
+}
 // Palisade Hybrid = xe phiên bản mới, mã LX3 — cần đếm riêng trong 1 số KPI
 function isPalisadeLX3(r){return r.model==='Palisade' && (r.phienBan||'').toLowerCase().includes('hybrid');}
 function khoLabel(k){return k?(KHO_LABEL[k]||k):'—';}
@@ -777,6 +802,7 @@ function parseJsonRecords(records, fileDate){
     var model    = normModel(r.model||'');
     var phienBan = (r.phienBan||'').trim() || '—';
     var mau      = normMau(r.mau||'');
+    var _cn=_crNorm(model,phienBan,mau); phienBan=_cn[0]; mau=_cn[1]; // Creta: bỏ FACELIFT, tách CKD
     var namSX    = r.namSX ? String(r.namSX) : '';
     var kho      = normKhoStr(r.khoXe||'');
     var soKhung  = (r.soKhung||'').trim();
@@ -889,7 +915,7 @@ function _lxxPhanNoteHtml(){
       +'<div class="table-wrap" style="margin-top:8px"><div class="table-scroll"><table><thead><tr>'
       +'<th>Model</th><th>Phiên bản</th><th>Màu</th><th>Chi nhánh đặt</th><th>Số khung</th><th>Khớp với</th><th>Khách hàng</th><th>TVBH</th></tr></thead><tbody>'
       +list.map(function(r){
-        return '<tr><td style="'+td+'">'+r.model+'</td><td style="'+td+'">'+r.phienBan+'</td><td style="'+td+'">'+r.mau+'</td><td style="'+td+'">'+khoLabel(r.kho)+'</td>'
+        return '<tr><td style="'+td+'">'+r.model+'</td><td style="'+td+'">'+_pbHtml(r.phienBan)+'</td><td style="'+td+'">'+r.mau+'</td><td style="'+td+'">'+khoLabel(r.kho)+'</td>'
           +'<td style="'+td+';font-family:monospace">'+r.soKhung+'</td><td style="'+td+'">'+r.khopVoi+'</td><td style="'+td+'">'+(r.khachKhop||'—')+'</td><td style="'+td+'">'+(r.tvbhKhop||'—')+'</td></tr>';
       }).join('')
       +'</tbody></table></div></div></details>';
@@ -1012,6 +1038,7 @@ function parseRawRows(rawRows,fileDate){
         var model=normModel((gc(row,'Model')||'').toString());
         var phienBan=((gc(row,'Phiênbản')||'').toString().trim())||'—';
         var mau=normMau((gc(row,'Màu')||'').toString().trim());
+        var _cn=_crNorm(model,phienBan,mau); phienBan=_cn[0]; mau=_cn[1];
         var namSXRaw=gc(row,'NĂMSX');
         var namSX=namSXRaw!=null&&namSXRaw!==''?String(Math.round(parseFloat(namSXRaw))||'').replace('NaN',''):'';
         if(!namSX||namSX==='0') namSX='';
@@ -1433,10 +1460,10 @@ var KCK_DATA = [
   ['Tucson','N LINE',{'ĐEN':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
   ['Venue','1.0 T-GDI ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0}}],
-  ['Creta','1.5 CAO CẤP FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 ĐẶC BIỆT FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 TIÊU CHUẨN FACELIFT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
-  ['Creta','1.5 N LINE FACELIFT',{'ĐEN':{'n':'2026','r':0}}],
+  ['Creta','1.5 CAO CẤP',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 ĐẶC BIỆT',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 TIÊU CHUẨN',{'ĐEN':{'n':'2026','r':0},'ĐỎ_GRP':{'n':'2026','r':0},'TRẮNG':{'n':'2026','r':0},'XÁM_GRP':{'n':'2026','r':0}}],
+  ['Creta','1.5 N LINE',{'ĐEN':{'n':'2026','r':0}}],
   ['Staria','CỨU THƯƠNG DẦU MỚI',{'TRẮNG':{'n':'2026','r':0}}]
 ];
 // Tóm tắt thay đổi màu so với đợt cập nhật KCK trước — chỉ hiện khi `date` khớp
@@ -1460,11 +1487,12 @@ function _kckIsYearKey(c){ return /^\d{4}(\.0)?$/.test((c||'').toString().trim()
 function _kckSanitize(j){
   j.data=j.data.map(function(e){
     var cols={};Object.keys(e[2]||{}).forEach(function(c){ if(!_kckIsYearKey(c)) cols[c]=e[2][c]; });
-    return [e[0],e[1],cols];
+    return [e[0],_crPb(e[0],e[1]),cols]; // Creta: bỏ FACELIFT (08/10/2026)
   }).filter(function(e){ return Object.keys(e[2]).length>0; });
   if(j.changeNote){
     ['removed','added'].forEach(function(k){
       j.changeNote[k]=(j.changeNote[k]||[]).map(function(x){
+        if(/^Creta /.test(x)) x=x.replace(/\s*FACELIFT\b/ig,''); // Creta: bỏ FACELIFT (08/10/2026)
         var i=x.indexOf(': '); if(i<0) return x;
         var tail=x.substring(i+2), suf='';
         var sm=tail.match(/\s*\(phiên bản mới\)$/); if(sm){ suf=sm[0]; tail=tail.substring(0,tail.length-suf.length); }
@@ -1700,7 +1728,7 @@ var DAT_HANG_ORDERS = [
   // lấy đúng theo file (NT sửa file 15:59 06/10/2026 bỏ 2 Trắng → còn ĐL 1 Trắng). PY sửa lại lần 3 lúc 15:31 06/10/2026: Creta ĐB FL còn 1 Trắng (bỏ 1 Đỏ + 1 Trắng).
   // Tổng 16 xe: NT 6 · PY 3 · ĐL 7. Dòng Grand i10 của ĐL: file VC048
   // ghi "I10 AT" (đè lên ô "ACCENT 1.5 AT ĐẶC BIỆT" của mẫu) — hiểu là Grand i10 1.2AT.
-  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT', label:'Creta 1.5 Đặc Biệt',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
@@ -1723,9 +1751,9 @@ var DAT_HANG_ORDERS = [
 var DAT_HANG_ORDERS_PA2 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT', label:'Creta 1.5 Đặc Biệt',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL',
+  {model:'Creta', phienBan:'1.5 N LINE', label:'Creta 1.5 N Line',
     orders:{NT:[{mau:'Đen',sl:2},{mau:'Đỏ',sl:3},{mau:'Trắng',sl:6},{mau:'Xám',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
@@ -1750,14 +1778,14 @@ var DAT_HANG_ORDERS_PA2 = [
 //  - 1 xe Creta N Line Trắng CBU của NT đổi thành N Line Trắng CKD.
 //  - PY và ĐL giữ nguyên như Phương án 2.
 // Tổng vẫn 47 xe như PA2: NT 30 · PY 8 · ĐL 9. N Line CKD 3 xe, N Line CBU 9 xe → vừa đủ.
-// phienBan "1.5 N LINE CKD" là tên tạm (data.json chưa có xe N Line CKD nào).
+// phienBan "1.5 N LINE CKD" khớp quy ước _crNorm() (xe Creta màu có chữ CKD → phiên bản + " CKD").
 // Kiểm tra hạn mức: _dhCkdQuotaHtml() — chỉ xét Creta N Line: có chữ "CKD" là CKD, còn lại là CBU.
 var DAT_HANG_ORDERS_PA3 = [
   {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL (CBU)',
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT', label:'Creta 1.5 Đặc Biệt (CBU)',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
-  {model:'Creta', phienBan:'1.5 N LINE FACELIFT', label:'Creta 1.5 N Line FL (CBU)',
+  {model:'Creta', phienBan:'1.5 N LINE', label:'Creta 1.5 N Line (CBU)',
     orders:{NT:[{mau:'Đỏ',sl:3},{mau:'Trắng',sl:5},{mau:'Xám',sl:1}], PY:[], 'ĐL':[]}},
   {model:'Creta', phienBan:'1.5 N LINE CKD', label:'Creta 1.5 N Line CKD',
     orders:{NT:[{mau:'Đen',sl:2},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}},
@@ -1799,7 +1827,7 @@ function _dhCkdQuotaHtml(ordersData){
 // vd. {mau:'Trắng',sl:2,note:'cho PY'}.
 // Đợt T10/2026: chưa có thông tin đặt hộ → tạm giống hệt DAT_HANG_ORDERS.
 var DAT_HANG_ORDERS_THUCTE = [
-  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT FACELIFT', label:'Creta 1.5 Đặc Biệt FL',
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT', label:'Creta 1.5 Đặc Biệt',
     orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
   {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
     orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
@@ -2053,7 +2081,7 @@ function _datHangTableHtml(ordersData,titleHtml,hideKckNote){
     var sepTd=(ci<calcRows.length-1)?' dh-sepb':''; // ô gộp dòng (rowspan) kéo tới đáy Model → cũng cần viền dưới đậm
     rows+='<tr'+sepCls+(o.extra?' style="opacity:.5"':'')+(o.extra?' title="Phiên bản không đặt hàng đợt này"':'')+'>'
       +(isFirstOfModel?'<td class="'+sepTd+'" rowspan="'+modelRowCount[o.model]+'" style="'+tdBase+wCol1+';text-align:left;font-weight:700;vertical-align:middle" title="Tổng Đặt hàng của cả Model">'+o.model+' <span style="font-weight:600;color:#4f46e5">('+modelDatHangMap[o.model]+')</span></td>':'')
-      +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+verOnly+'</td>'
+      +'<td style="'+tdBase+wCol2+';text-align:left;font-weight:'+(o.extra?'400':'600')+'">'+_pbHtml(verOnly)+'</td>'
       +branches.map(function(b){return '<td class="dh-br" style="'+tdBase+wBranch+'">'+fmtOrder(o.orders[b],c.kckColors)+'</td>';}).join('')
       +'<td style="'+tdBase+';font-weight:700;color:#4f46e5">'+(c.datHang||(o.extra?'':0))+'</td>'
       +'<td class="dh-aux" style="'+tdBase+'">'+(c.ton||'')+'</td>'
@@ -2443,7 +2471,7 @@ function renderKCK(){
     var mtd='';
     if(!done[m]){mtd='<td class="model" rowspan="'+mc[m]+'" style="vertical-align:middle;white-space:nowrap;width:74px">'+m+'</td>';done[m]=true;}
     tbody+='<tr><td style="color:#aaa;font-size:11px;width:24px">'+(i+1)+'</td>'+mtd
-      +'<td style="font-size:11px;color:#475569;white-space:nowrap;width:174px">'+pb+'</td>';
+      +'<td style="font-size:11px;color:#475569;white-space:nowrap;width:174px">'+_pbHtml(pb)+'</td>';
     COLS.forEach(function(k){
       var info=c[k];
       var w=COL_W[k];
@@ -4124,8 +4152,9 @@ function buildChuaHDFromRecords(records){
     var ttHoSo=hasTTField ? (r.ttHoSo===true) : true; // snapshot cũ chưa có field này → tạm bỏ qua điều kiện
     var fromHistory=r.fromHistory===true;
     if(kho!==''&&soKhung!==''&&!xuatHoSo&&ttHoSo&&!fromHistory&&(daly==='NT'||daly==='ĐL'||daly==='PY')){
+      var _m=normModel(r.model||''), _cn=_crNorm(_m,r.phienBan||'',r.mau||'');
       result.push({
-        model:normModel(r.model||''),phienBan:r.phienBan||'',mau:r.mau||'',
+        model:_m,phienBan:_cn[0],mau:_cn[1],
         kho:kho,daly:daly,giaVon:r.giaVon||0,soKhung:soKhung,
         nguonKhach:(r.nguonKhach||'').trim(),khach:(r.khDatCoc||'').trim(),tvbh:(r.tvbh||'').trim(),
         xuatHoSo:xuatHoSo
@@ -4227,7 +4256,7 @@ function renderHH(){
       }
       var yBadges=yBadge;
       var dm2=esc(drillModel), vk2=esc(vKey);
-      lv2+=`<div class="drill-row${act?' active':''}" onclick="setDrill('${dm2}','${vk2}')"><div class="dr-name">${v.name}${yBadges}</div>${barHTML(v.stock,v.bo,v.lxx,mx2)}<div class="dr-tot">${tot}</div>${v.debt?'<div class="dr-debt">+'+v.debt+'</div>':'<div class="dr-debt"></div>'}</div>`;
+      lv2+=`<div class="drill-row${act?' active':''}" onclick="setDrill('${dm2}','${vk2}')"><div class="dr-name">${_pbHtml(v.name)}${yBadges}</div>${barHTML(v.stock,v.bo,v.lxx,mx2)}<div class="dr-tot">${tot}</div>${v.debt?'<div class="dr-debt">+'+v.debt+'</div>':'<div class="dr-debt"></div>'}</div>`;
     });
     if(!lv2) lv2='<div class="empty-panel">Không có dữ liệu</div>';
   }
@@ -4423,7 +4452,7 @@ function renderHH(){
         dtbody+='<tr>'
           +'<td style="color:#aaa;font-size:11px;white-space:nowrap">'+(i+1)+'</td>'
           +modelTd
-          +'<td>'+(r.phienBan||'—')+'</td>'
+          +'<td>'+_pbHtml(r.phienBan||'—')+'</td>'
           +'<td style="white-space:nowrap"><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+(r.mau||'—')+'</td>'
           +yrCell(r.namSX)
           +'<td style="white-space:nowrap">'+khoLabel(r.kho)+'</td>'
@@ -4444,7 +4473,7 @@ function renderHH(){
       if(doMerge){if(r.model!==prevModel){var span=modelSpanMap[r.model];var modelLabel=r.model+(showModelCount?' <span style="font-weight:700;color:#666">('+span+')</span>':'');modelTd='<td class="model" rowspan="'+span+'" style="vertical-align:middle;border-right:1px solid #e8e8e8">'+modelLabel+'</td>';prevModel=r.model;}}
       else modelTd='<td class="model">'+r.model+'</td>';
       var nmBadge=r.isNhaMay?'<span style=\"font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;margin-left:4px;white-space:nowrap\">Nhà máy</span>':'';
-      dtbody+='<tr><td style="color:#aaa;font-size:11px;white-space:nowrap">'+(i+1)+'</td>'+modelTd+'<td>'+(r.phienBan||'—')+nmBadge+'</td><td style="white-space:nowrap"><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+(r.mau||'—')+'</td>'+yrCell(r.namSX)+'<td style="white-space:nowrap">'+khoLabel(r.kho)+'</td>';
+      dtbody+='<tr><td style="color:#aaa;font-size:11px;white-space:nowrap">'+(i+1)+'</td>'+modelTd+'<td>'+_pbHtml(r.phienBan||'—')+nmBadge+'</td><td style="white-space:nowrap"><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+(r.mau||'—')+'</td>'+yrCell(r.namSX)+'<td style="white-space:nowrap">'+khoLabel(r.kho)+'</td>';
       if(isDebt){var dd=daysSince(r.ngayCoc);var ds=dd>90?'color:#a32d2d;font-weight:700':dd>30?'color:#b8860b':'';dtbody+='<td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayCoc)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+ds+'">'+(dd!==null?dd+'n':'—')+'</span></td>';}
       else if(isDaPhan){var dp=daysSince(r.ngayPhan);var dsp=dp>30?'color:#a32d2d;font-weight:700':dp>15?'color:#b8860b':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayPhan)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsp+'">'+(dp!==null?dp+'n':'—')+'</span></td>';}
       else if(isLxx) dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayXN)+'</td>';
@@ -4529,7 +4558,7 @@ function renderInventoryTab(){
       tbody+=`<tr>
         <td style="color:#aaa;font-size:11px">${i+1}</td>
         ${modelTd}
-        <td>${r.phienBan||'—'}</td>
+        <td>${_pbHtml(r.phienBan||'—')}</td>
         <td><span class="cdot" style="background:${colorDot(r.mau)}"></span>${r.mau||'—'}</td>
         ${yrCell(r.namSX)}
         <td>${khoLabel(r.kho)}</td>
