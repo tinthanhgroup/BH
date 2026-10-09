@@ -1,6 +1,7 @@
 # Quy tắc đặt hàng xe
 
 Cập nhật: 09/10/2026. Dùng khi lập đề xuất cho một đợt đặt hàng hoặc khi HTV yêu cầu đặt bổ sung.
+Bản dễ đọc cho GĐBH/chi nhánh (trang web riêng tư): https://claude.ai/artifact/VZnNwVdwA357a6pA7v6eN2 — nguồn `2. Dat hang/Quy tac dat hang.html`; sửa quy tắc ở đây thì nhớ sửa và đăng lại trang đó.
 Quy định điều chuyển xe và công nợ nội bộ: xem file Word "Quy dinh xu ly kho ton lau" (folder `2. Dat hang/`), tóm tắt ở mục 7.
 
 ## Tóm tắt
