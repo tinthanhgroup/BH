@@ -71,11 +71,11 @@ Bấm tile "Tổng" (`typeFilter==='tong'`) → dưới bảng drill Model/Phiê
 
 ## "Xe chưa báo cáo DMS" — cột đề xuất đặt hàng (`renderChuaGiao()`, thêm 06/10/2026)
 
-Bảng đánh số cột 1–8 (mọi người xem). Với nhóm `_canSeeDatHang()` có thêm cột 9–12 (bảng này vốn mở cho mọi người, nên số đặt hàng phải ẩn với nhóm khác):
-- **9 Đề xuất đặt hàng**: cộng theo Model từ `DAT_HANG_ORDERS_PA2` (Phương án 2), theo nguồn xe đang lọc (`orders[NT|PY|ĐL]`). Model có đặt nhưng không có xe chưa BC DMS (vd. Custin) vẫn được thêm dòng.
-- **10 Tổng xe sau đặt hàng** = 8 + 9.
-- **11 Tốc độ bán (T30/90)**: số hợp đồng bán lẻ (`allCoc`, theo `ngayCoc`) trung bình mỗi tháng trong `DH_KY_DAYS` ngày, chia theo Nguồn khách (`r.branch`). PR gộp vào NT, BL gộp vào ĐL, giống file đặt hàng VC037/VC048; "Tất cả" không tính ĐN (đã dừng), KHÁC (bán ngang) hay ô trống.
-- **12 Tỉ lệ** = 10 ÷ 11 (số tháng bán). Chia cho 0 thì hiện `∞` (hoặc `–` nếu cả 2 đều 0).
+Bảng đánh số cột 1–7 (mọi người xem; cột "Ngập nước" đã bỏ 09/10/2026 vì xe ngập nước đã xử lý hết, số trên nút "Xe chưa BC DMS" cũng không cộng nữa). Với nhóm `_canSeeDatHang()` có thêm cột 8–11 (bảng này vốn mở cho mọi người, nên số đặt hàng phải ẩn với nhóm khác):
+- **8 Đề xuất đặt hàng (Chờ XN)** (đổi 09/10/2026): đếm xe trạng thái "Chờ XN" (`allData.chuaXN`) theo Model và Đại lý đặt hàng, theo nguồn xe đang lọc, **bỏ Palisade**. Lý do: đơn đã đặt và HTV đã xác nhận gần hết; xe đã xác nhận chuyển sang BO, đã đếm ở cột 5. Trước đó cộng từ `DAT_HANG_ORDERS_PA2` (Phương án 2). Model có xe Chờ XN nhưng không có xe chưa BC DMS vẫn được thêm dòng.
+- **9 Tổng xe sau đặt hàng** = 7 + 8.
+- **10 Tốc độ bán (T30/90)**: số hợp đồng bán lẻ (`allCoc`, theo `ngayCoc`) trung bình mỗi tháng trong `DH_KY_DAYS` ngày, chia theo Nguồn khách (`r.branch`). PR gộp vào NT, BL gộp vào ĐL, giống file đặt hàng VC037/VC048; "Tất cả" không tính ĐN (đã dừng), KHÁC (bán ngang) hay ô trống.
+- **11 Tỉ lệ** = 9 ÷ 10 (số tháng bán). Chia cho 0 thì hiện `∞` (hoặc `–` nếu cả 2 đều 0).
 Sang đợt đặt hàng mới, nếu đổi phương án làm chuẩn thì sửa nguồn ở cột 9 (hiện đang cố định `DAT_HANG_ORDERS_PA2`).
 
 ## Creta: bỏ "FACELIFT", tách phiên bản CKD (08/10/2026)
