@@ -1802,6 +1802,35 @@ var DAT_HANG_ORDERS_PA3 = [
   {model:'Tucson', phienBan:'N LINE', label:'Tucson N Line',
     orders:{NT:[{mau:'Đỏ',sl:1},{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}}
 ];
+// "Phương án 4" (thêm 09/10/2026) = đợt ĐẶT BỔ SUNG theo yêu cầu HTV: HTV báo còn thiếu
+// NT 11 · ĐL 7 · PY 5 (hạn 12h 10/10/2026), trừ 3 xe Creta ĐB đang Chờ XN (NT 2, PY 1 — giữ
+// nguyên, không đổi) → đặt thêm 20 xe: NT 9 · ĐL 7 · PY 4. Tính theo docs/quy-tac-dat-hang.md
+// (xe rẻ + bán nhanh trước, bỏ phiên bản tồn >90 ngày, trần 2,5 tháng; KCK 09/10/2026, dữ liệu
+// 17:10 09/10/2026). Không đặt Creta (N Line đủ ~2,4 tháng; Creta ĐB có xe CKD tồn >90 ngày) và
+// Venue (Venue ĐB tồn lâu). Cột chi nhánh = đại lý ĐẶT; note "thả ở NT" = xe về NT (ĐL đặt thả
+// NT/PY được, NT đặt thả PY được). Bảng độc lập, KHÔNG cộng dồn PA1-3.
+var DAT_HANG_ORDERS_PA4 = [
+  {model:'Accent', phienBan:'1.5 AT', label:'Accent 1.5 AT',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:2}], 'ĐL':[]}},
+  {model:'Creta', phienBan:'1.5 ĐẶC BIỆT', label:'Creta 1.5 Đặc Biệt (đang Chờ XN)',
+    orders:{NT:[{mau:'Đỏ',sl:1,note:'chờ XN'},{mau:'Trắng',sl:1,note:'chờ XN'}], PY:[{mau:'Trắng',sl:1,note:'chờ XN'}], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T CAO CẤP', label:'Custin 1.5T Cao Cấp',
+    orders:{NT:[{mau:'Đen',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T TIÊU CHUẨN', label:'Custin 1.5T Tiêu Chuẩn',
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Custin', phienBan:'1.5T ĐẶC BIỆT', label:'Custin 1.5T Đặc Biệt',
+    orders:{NT:[], PY:[{mau:'Trắng',sl:1}], 'ĐL':[]}},
+  {model:'Grand i10', phienBan:'SEDAN 1.2AT', label:'Grand i10 Sedan 1.2 AT',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:2}]}},
+  {model:'Stargazer', phienBan:'CAO CẤP FL 2026', label:'Stargazer Cao Cấp FL 2026',
+    orders:{NT:[{mau:'Trắng',sl:2},{mau:'Đỏ',sl:1}], PY:[{mau:'Trắng',sl:1}], 'ĐL':[{mau:'Trắng',sl:2}]}},
+  {model:'Stargazer', phienBan:'ĐẶC BIỆT FL 2026', label:'Stargazer Đặc Biệt FL 2026',
+    orders:{NT:[{mau:'Trắng',sl:1}], PY:[], 'ĐL':[]}},
+  {model:'Stargazer', phienBan:'TIÊU CHUẨN', label:'Stargazer Tiêu Chuẩn',
+    orders:{NT:[{mau:'Trắng',sl:3}], PY:[], 'ĐL':[{mau:'Trắng',sl:1}]}},
+  {model:'Tucson', phienBan:'2.0 XĂNG ĐẶC BIỆT 2024', label:'Tucson 2.0 Xăng Đặc Biệt',
+    orders:{NT:[], PY:[], 'ĐL':[{mau:'Trắng',sl:2,note:'thả ở NT'}]}}
+];
 // Ô kiểm tra hạn mức Creta CKD/CBU dưới bảng Phương án 3 (07/10/2026): HTV xác nhận tối đa
 // 3 xe Creta N Line CBU cho mỗi 1 xe Creta N Line CKD đặt (chỉ N Line). Đủ khi CBU ≤ 3 × CKD.
 var DH_CBU_PER_CKD=3;
@@ -1909,7 +1938,11 @@ function renderDatHang(){
     +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">4. 📦 Giả định đặt hàng — Phương án 3 (Phương án 2 + đổi một phần Creta CBU sang CKD theo yêu cầu HTV)</summary>'
     +'<div id="dh-tbl-pa3">'+_datHangTableHtml(DAT_HANG_ORDERS_PA3,'')+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA3)+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">5. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">5. 📦 Giả định đặt hàng — Phương án 4 (đặt bổ sung theo yêu cầu HTV: 20 xe + 3 Creta đang chờ XN)</summary>'
+    +'<div style="font-size:12px;color:#4b5563;line-height:1.6;margin:6px 0 8px">HTV báo còn thiếu NT 11 · ĐL 7 · PY 5; trừ 3 Creta ĐB đang chờ XN (NT 2, PY 1) → đặt thêm <b>20 xe: NT 9 · ĐL 7 · PY 4</b>. Chọn xe rẻ, bán nhanh trước; không đặt phiên bản có xe tồn trên 90 ngày; không vượt 2,5 tháng. Cột chi nhánh là đại lý <b>đặt</b>; "thả ở NT" = xe về kho Nha Trang. Bảng độc lập, không cộng các phương án trên.</div>'
+    +'<div id="dh-tbl-pa4">'+_datHangTableHtml(DAT_HANG_ORDERS_PA4,'',true)+'</div>'
+    +'</details>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">6. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +'<div id="dh-tbl-thucte">'+_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
@@ -1937,6 +1970,8 @@ function _dhRedrawTables(){
   if(a) a.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS,'');
   if(c) c.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA2,'');
   if(p3) p3.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA3,'')+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA3);
+  var p4=document.getElementById('dh-tbl-pa4');
+  if(p4) p4.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_PA4,'',true);
   if(b) b.innerHTML=_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true);
 }
 // Bổ sung các phiên bản KHÔNG đặt của mọi model có trong ordersData — lấy phiên bản
