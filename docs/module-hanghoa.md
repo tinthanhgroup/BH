@@ -52,6 +52,8 @@ Bảng tạm thời cho **1 đợt đặt hàng cụ thể** — chỉ liệt k�
 
 Trong view `old60` (tile "Tồn >60 ngày"), hàng nút **Trên 60 / 90 / 150 ngày** (kèm số xe) lọc danh sách theo biến `oldMinDays` (`setOldMinDays(n)`), tiêu đề đổi theo mốc đang chọn. Màu cột "Số ngày tồn": > 90 vàng, > 150 đỏ (trước là > 120; áp dụng chung cho view Chi tiết tồn kho `inventory`). Đây là danh sách các chi nhánh theo dõi theo Quy định xử lý kho tồn lâu (file Word trong `2. Dat hang/`).
 
+Nút thứ tư **"Trên 2 xe cùng phiên bản"** (`toggleOldDup()`, biến `oldDupOnly`, bật/tắt, kết hợp được với mốc 60/90/150): chỉ giữ các xe thuộc nhóm **kho + Model + Phiên bản** có **trên 2 xe** trong danh sách đang lọc — điều kiện "tồn trên 02 xe cùng phiên bản" ở Điều 3 của Quy định. **Đếm theo từng kho (`r.kho`): NT, PR, ĐL, BL, PY là 5 điểm bán khác nhau** — không gộp PR vào NT, BL vào ĐL (người dùng đính chính 09/10/2026: PR, BL là điểm bán không chính thức nhưng kho riêng). Creta CKD và CBU là 2 phiên bản khác nhau (sau `_crNorm`). Khi bật, danh sách xếp theo Model → kho + phiên bản → số ngày tồn giảm dần. 09/10/2026 chưa có kho nào trên 2 xe cùng phiên bản (nhiều nhất 2 xe, vd. Creta 1.5 Tiêu chuẩn ở ĐL).
+
 ## "LXX đã phân khách" (`_khopLxxPhanKhach()`, thêm 04/10/2026)
 
 Người dùng **không muốn sửa dữ liệu Sheet**, nên việc khớp làm ở frontend, gọi cuối `parseJsonRecords()` (cả `index.html` lẫn bản sao trong `mobile.html` — sửa 1 nơi nhớ sửa nơi kia). Khớp theo **số khung** của xe LXX (sheet ĐƠN HÀNG):
