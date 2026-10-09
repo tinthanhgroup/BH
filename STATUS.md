@@ -7,7 +7,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Việc tiếp theo
 - [x] Chốt phương án đặt hàng T10 với HTV (đã đặt, HTV xác nhận gần hết)
 - [ ] Chốt và đặt bổ sung T10 theo yêu cầu HTV (20 xe: NT 9 · ĐL 7 · PY 4) trước 12h 10/10/2026
-- [ ] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v7.docx`)
+- [ ] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v8.docx`)
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [ ] Báo cáo tuần: mở quyền cho PGĐ (hiện chỉ Admin + GĐ)
 - [ ] Báo cáo tuần: chuyển từ nhập tay Excel → Google Sheet + Apps Script

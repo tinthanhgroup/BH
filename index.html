@@ -949,7 +949,7 @@ function toggleType(t){
 }
 function setBoDateFilter(dk){boDateFilter=(boDateFilter===dk?null:dk);renderHH();}
 function setOldMinDays(n){oldMinDays=n;renderHH();}
-var oldDupOnly=false; // view "Tồn >60 ngày": chỉ hiện phiên bản mà 1 kho tồn TRÊN 2 xe (theo Quy định xử lý kho tồn lâu, Điều 3)
+var oldDupOnly=false; // view "Tồn >60 ngày": chỉ hiện phiên bản mà 1 kho tồn TỪ 2 xe trở lên (đổi từ "trên 2" 09/10/2026 theo người dùng)
 function toggleOldDup(){oldDupOnly=!oldDupOnly;renderHH();}
 function setDrill(model,version){
   drillModel=model;
@@ -4410,12 +4410,12 @@ function renderHH(){
         }).join('')
         +'</div>';
       if(oldMinDays>60) dRows=dRows.filter(function(r){return daysSince(r.ngayNhap)>oldMinDays;});
-      // Nút "Trên 2 xe cùng phiên bản": đếm theo KHO (NT, PR, ĐL, BL, PY là 5 điểm bán riêng — KHÔNG gộp PR vào NT, BL vào ĐL) + Model + Phiên bản, trong các xe đang lọc theo mốc ngày
+      // Nút "Từ 2 xe cùng phiên bản": đếm theo KHO (NT, PR, ĐL, BL, PY là 5 điểm bán riêng — KHÔNG gộp PR vào NT, BL vào ĐL) + Model + Phiên bản, trong các xe đang lọc theo mốc ngày
       var dupKey=function(r){return (r.kho||'?')+'|'+r.model+'|'+(r.phienBan||'');};
       var dupCnt={};dRows.forEach(function(r){var k=dupKey(r);dupCnt[k]=(dupCnt[k]||0)+1;});
-      var dupRows=dRows.filter(function(r){return dupCnt[dupKey(r)]>2;});
+      var dupRows=dRows.filter(function(r){return dupCnt[dupKey(r)]>=2;});
       oldDayBtns=oldDayBtns.replace(/<\/div>$/,'<span style="width:1px;background:#e0e0e0;height:20px;display:inline-block;margin:0 4px"></span>'
-        +'<button class="fbtn'+(oldDupOnly?' active-kho':'')+'" onclick="toggleOldDup()" title="Phiên bản mà 1 kho (NT, PR, ĐL, BL, PY tính riêng) đang tồn trên 2 xe — nên xem xét điều chuyển"><span class="fbtn-dot" style="background:#a32d2d;'+(oldDupOnly?'':'opacity:.35')+'"></span>Trên 2 xe cùng phiên bản <span style="font-weight:700;opacity:.85">('+dupRows.length+')</span></button></div>');
+        +'<button class="fbtn'+(oldDupOnly?' active-kho':'')+'" onclick="toggleOldDup()" title="Phiên bản mà 1 kho (NT, PR, ĐL, BL, PY tính riêng) đang tồn từ 2 xe trở lên — nên xem xét điều chuyển"><span class="fbtn-dot" style="background:#a32d2d;'+(oldDupOnly?'':'opacity:.35')+'"></span>Từ 2 xe cùng phiên bản <span style="font-weight:700;opacity:.85">('+dupRows.length+')</span></button></div>');
       if(oldDupOnly){
         dRows=dupRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;var ka=dupKey(a),kb=dupKey(b);return ia-ib||(ka<kb?-1:ka>kb?1:0)||(daysSince(b.ngayNhap)||0)-(daysSince(a.ngayNhap)||0);}); // model trước (để gộp ô Model), rồi kho + phiên bản
       }
@@ -4506,7 +4506,7 @@ function renderHH(){
     });
     var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
-    if(isOld60) titles.old60='Xe tồn trên '+oldMinDays+' ngày'+(oldDupOnly?' — kho có trên 2 xe cùng phiên bản':'');
+    if(isOld60) titles.old60='Xe tồn trên '+oldMinDays+' ngày'+(oldDupOnly?' — kho có từ 2 xe cùng phiên bản':'');
     if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+oldDayBtns+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
       +(isLxx||isDebt?_lxxPhanNoteHtml():''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
   }

@@ -98,7 +98,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 - **Tuyến điều chuyển giữa đại lý** (2 chiều): **NT ↔ ĐL**, **NT ↔ PY**. Không chuyển thẳng ĐL ↔ PY.
 - **Vận chuyển**: ưu tiên **xe cứu hộ nội bộ** (tính chi phí thực tế của chuyến), ưu tiên **ghép chuyến 2 chiều** để giảm chi phí; chỉ thuê ngoài khi xe nội bộ không kịp (tham khảo ~3 triệu/xe).
 - **Nội bộ chi nhánh** (ĐL ↔ BL, NT ↔ PR): chi nhánh tự quyết.
-- **Khi nào chuyển**: phiên bản bán rất chậm mà một **kho** tồn > 2 xe cùng phiên bản (NT, PR, ĐL, BL, PY tính riêng), nhất là cùng màu.
+- **Khi nào chuyển**: phiên bản bán rất chậm mà một **kho** tồn từ 2 xe trở lên cùng phiên bản (NT, PR, ĐL, BL, PY tính riêng), nhất là cùng màu.
 - **Ai làm**: danh sách xe tồn trên 60/90/150 ngày cập nhật hằng ngày trên trang (mục Hàng hóa → Tồn >60 ngày); đề xuất điều chuyển bất kỳ lúc nào, GĐBH các chi nhánh tự làm việc với nhau rồi trình Giám đốc hai chi nhánh quyết định (loại A, B1); loại B2, B3 trình TGĐ. Điều chuyển nội bộ chi nhánh (ĐL↔BL, NT↔PR) do Giám đốc chi nhánh quyết định.
 - **Chia chi phí** (lãi trước khi chuyển luôn do bên giao chịu; mỗi xe chỉ chuyển 1 lần):
 
