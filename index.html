@@ -1548,7 +1548,9 @@ function renderChuaGiao(){
   var KHO_LIST=[{k:'NT',label:'Nha Trang'},{k:'ĐL',label:'Đà Lạt'},{k:'PY',label:'Phú Yên'}];
   var activeCGKho=window._chuaGiaoKho||null; // null = tất cả
 
-  // Lọc theo kho
+  // Lọc theo kho. Palisade VẪN hiện dòng riêng nhưng KHÔNG cộng vào hàng Tổng (09/10/2026, người dùng yêu cầu):
+  // chỉ tiêu HTV không gồm Palisade (LX3), và hợp đồng Palisade Hybrid làm sai tỉ lệ chung.
+  var CG_NOTOT={Palisade:1};
   var src=allData.chuaGiao||[];
   var filtered=activeCGKho?src.filter(function(r){
     if(r.isNhaMayMuon) return r.kho===activeCGKho;
@@ -1591,7 +1593,7 @@ function renderChuaGiao(){
   });
 
   var totTK=0,totDP=0,totNM=0,totBO=0,totLXX=0;
-  rows.forEach(function(m){totTK+=modelMap[m].tonKho;totDP+=modelMap[m].daPhan;totNM+=modelMap[m].nmMuon;totBO+=modelMap[m].bo;totLXX+=modelMap[m].lxx;});
+  rows.forEach(function(m){if(CG_NOTOT[m])return;totTK+=modelMap[m].tonKho;totDP+=modelMap[m].daPhan;totNM+=modelMap[m].nmMuon;totBO+=modelMap[m].bo;totLXX+=modelMap[m].lxx;});
 
   // Bộ lọc nguồn xe
   var filterHtml='<div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">'
@@ -1628,8 +1630,9 @@ function renderChuaGiao(){
       spdMap[r.model]=(spdMap[r.model]||0)+1;
     });
     Object.keys(spdMap).forEach(function(m){spdMap[m]=spdMap[m]/(DH_KY_DAYS/30);});
-    // Model có đặt hàng nhưng không có xe chưa BC DMS (vd. Custin) vẫn phải hiện dòng.
-    Object.keys(datMap).forEach(function(m){
+    // Model có đặt hàng hoặc có hợp đồng (tốc độ bán > 0) nhưng không có xe chưa BC DMS vẫn phải hiện dòng —
+    // nếu không, hàng Tổng cột 10 (cộng theo dòng) thiếu tốc độ bán của model đó (sửa 09/10/2026: lọc NT từng ra 28,7 thay vì 35,7 do thiếu Palisade).
+    Object.keys(datMap).concat(Object.keys(spdMap)).forEach(function(m){
       if(!modelMap[m]) modelMap[m]={tonKho:0,daPhan:0,nmMuon:0,bo:0,lxx:0,ngapNuoc:0};
       if(rows.indexOf(m)<0) rows.push(m);
     });
@@ -1663,8 +1666,9 @@ function renderChuaGiao(){
   rows.forEach(function(m){
     var d=modelMap[m];
     var tot=d.tonKho+d.daPhan+d.nmMuon+d.bo+d.lxx;
-    tableHtml+='<tr>'
-      +'<td style="padding:6px;font-weight:600;white-space:nowrap">'+m+'</td>'
+    var noTot=!!CG_NOTOT[m];
+    tableHtml+='<tr'+(noTot?' style="color:#94a3b8;font-style:italic" title="Không cộng vào hàng Tổng"':'')+'>'
+      +'<td style="padding:6px;font-weight:600;white-space:nowrap">'+m+(noTot?' <span style="font-size:10px;font-weight:400">(không tính tổng)</span>':'')+'</td>'
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#b45309">'+(d.tonKho||'—')+'</td>'
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#b45309">'+(d.daPhan||'—')+'</td>'
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#64748b">'+(d.nmMuon||'—')+'</td>'
@@ -1673,7 +1677,7 @@ function renderChuaGiao(){
       +'<td style="padding:6px;text-align:center;font-weight:700;color:#1e293b">'+tot+'</td>';
     if(showDH){
       var dat=datMap[m]||0,spd=spdMap[m]||0,sau=tot+dat;
-      totDat+=dat;totSpd+=spd;
+      if(!noTot){totDat+=dat;totSpd+=spd;}
       tableHtml+='<td style="padding:6px;text-align:center;font-weight:700;color:#4f46e5">'+(dat||'—')+'</td>'
         +'<td style="padding:6px;text-align:center;font-weight:800;color:#111">'+sau+'</td>'
         +'<td style="padding:6px;text-align:center;font-weight:600;color:#0d7c66">'+_dhFmtKy(spd)+'</td>'
@@ -1702,7 +1706,7 @@ function renderChuaGiao(){
     +(showDH?'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:-6px;line-height:1.6">Cột 8 = xe đã đặt đang <b>chờ HTV xác nhận</b> (trạng thái Chờ XN, không tính Palisade); xe đã xác nhận nằm ở cột 5 Xe BO. Cột 10 = SL hợp đồng bán lẻ trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất (theo Nguồn khách: Phan Rang tính vào NT, Bảo Lộc tính vào ĐL; không gồm bán ngang). Cột 8–11 chỉ hiện với nhóm được xem Giả định đặt hàng.</div>':'')
     +'</div>';
 
-  return '<div class="sec-title" style="color:#b45309">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY</div>'
+  return '<div class="sec-title" style="color:#b45309">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY <span style="font-weight:400;font-size:11px;color:#64748b">(hàng Tổng không tính Palisade)</span></div>'
     +filterHtml+tableHtml;
 }
 // ═══════════════════════════════════════════════════════════
@@ -3815,9 +3819,9 @@ function mkHHFilters(){
   var isCG=typeFilter==='chuaGiao';
   var isHD=typeFilter==='chuaHD';
   var totChuaHD=(allData.chuaHD||[]).length;
-  var totChuaGiao=(allData.chuaGiao?allData.chuaGiao.length:0)
-    +(allData.bo||[]).filter(function(r){return r.daly==='NT'||r.daly==='ĐL'||r.daly==='PY';}).length
-    +(allData.lxx||[]).filter(function(r){return r.daly==='NT'||r.daly==='ĐL'||r.daly==='PY';}).length;
+  var totChuaGiao=(allData.chuaGiao||[]).filter(function(r){return r.model!=='Palisade';}).length // không tính Palisade, khớp bảng renderChuaGiao()
+    +(allData.bo||[]).filter(function(r){return r.model!=='Palisade'&&(r.daly==='NT'||r.daly==='ĐL'||r.daly==='PY');}).length
+    +(allData.lxx||[]).filter(function(r){return r.model!=='Palisade'&&(r.daly==='NT'||r.daly==='ĐL'||r.daly==='PY');}).length;
   var cgBtn=`<span style="width:1px;background:#e0e0e0;height:20px;display:inline-block;margin:0 2px"></span><button class="fbtn${isCG?' active-kho':''}" onclick="toggleType('chuaGiao')" style="${isCG?'border-color:#b45309;color:#92400e;background:#fef3c7':''}"><span class="fbtn-dot" style="background:#b45309;${isCG?'':'opacity:.35'}"></span>Xe chưa BC DMS <span style="font-size:10px;background:${isCG?'#b45309':'#fef3c7'};color:${isCG?'#fff':'#92400e'};border-radius:8px;padding:1px 5px;margin-left:2px">${totChuaGiao}</span></button>`;
   var canSeeChuaHD=_canSeeChuaHD();
   var hdBtn = canSeeChuaHD

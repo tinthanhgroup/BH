@@ -81,8 +81,10 @@ Bấm tile "Tổng" (`typeFilter==='tong'`) → dưới bảng drill Model/Phiê
 
 ## "Xe chưa báo cáo DMS" — cột đề xuất đặt hàng (`renderChuaGiao()`, thêm 06/10/2026)
 
+**Hàng Tổng không tính Palisade** (biến `CG_NOTOT`, 09/10/2026, người dùng yêu cầu): dòng Palisade vẫn hiện như cũ (chữ xám nghiêng, ghi "không tính tổng") nhưng không cộng vào hàng Tổng ở mọi cột (tồn, BO, LXX, Chờ XN, tốc độ bán) — chỉ tiêu HTV không gồm Palisade (LX3), và hợp đồng Palisade Hybrid (xe chủ yếu đang Chờ XN) làm sai tỉ lệ chung. Số trên nút "Xe chưa BC DMS" cũng bỏ Palisade cho khớp hàng Tổng. Cột 8 (Chờ XN) vẫn luôn bỏ Palisade.
+
 Bảng đánh số cột 1–7 (mọi người xem; cột "Ngập nước" đã bỏ 09/10/2026 vì xe ngập nước đã xử lý hết, số trên nút "Xe chưa BC DMS" cũng không cộng nữa). Với nhóm `_canSeeDatHang()` có thêm cột 8–11 (bảng này vốn mở cho mọi người, nên số đặt hàng phải ẩn với nhóm khác):
-- **8 Đề xuất đặt hàng (Chờ XN)** (đổi 09/10/2026): đếm xe trạng thái "Chờ XN" (`allData.chuaXN`) theo Model và Đại lý đặt hàng, theo nguồn xe đang lọc, **bỏ Palisade**. Lý do: đơn đã đặt và HTV đã xác nhận gần hết; xe đã xác nhận chuyển sang BO, đã đếm ở cột 5. Trước đó cộng từ `DAT_HANG_ORDERS_PA2` (Phương án 2). Model có xe Chờ XN nhưng không có xe chưa BC DMS vẫn được thêm dòng.
+- **8 Đề xuất đặt hàng (Chờ XN)** (đổi 09/10/2026): đếm xe trạng thái "Chờ XN" (`allData.chuaXN`) theo Model và Đại lý đặt hàng, theo nguồn xe đang lọc, **bỏ Palisade**. Lý do: đơn đã đặt và HTV đã xác nhận gần hết; xe đã xác nhận chuyển sang BO, đã đếm ở cột 5. Trước đó cộng từ `DAT_HANG_ORDERS_PA2` (Phương án 2). Model có xe Chờ XN **hoặc có hợp đồng trong kỳ (tốc độ bán > 0)** nhưng không có xe chưa BC DMS vẫn được thêm dòng (sửa 09/10/2026: trước đó hàng Tổng cột tốc độ bán khi lọc theo đại lý bị thiếu tốc độ của model không còn xe, vd. NT 28,7 thay vì 35,7 do thiếu Palisade).
 - **9 Tổng xe sau đặt hàng** = 7 + 8.
 - **10 Tốc độ bán (T30/90)**: số hợp đồng bán lẻ (`allCoc`, theo `ngayCoc`) trung bình mỗi tháng trong `DH_KY_DAYS` ngày, chia theo Nguồn khách (`r.branch`). PR gộp vào NT, BL gộp vào ĐL, giống file đặt hàng VC037/VC048; "Tất cả" không tính ĐN (đã dừng), KHÁC (bán ngang) hay ô trống.
 - **11 Tỉ lệ** = 9 ÷ 10 (số tháng bán). Chia cho 0 thì hiện `∞` (hoặc `–` nếu cả 2 đều 0).
