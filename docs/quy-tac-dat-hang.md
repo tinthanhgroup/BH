@@ -50,6 +50,7 @@ Tính **theo phiên bản, gộp mọi màu, gộp toàn công ty** (Creta gộp
 - Số tháng nằm kho = (Xe có + số xe đã thêm, gồm cả xe này) ÷ Tốc độ bán.
 - Giá vốn = trung bình giá vốn các xe cùng phiên bản nhập trong năm.
 - Lãi bắt đầu khi xe về đại lý và hồ sơ về ngân hàng (~5 ngày sau khi xe về).
+- 8%/năm là lãi suất tạm tính (10/2026) để so sánh phương án; khi cần số chính xác dùng tiền lãi Ngân hàng tính cho từng xe.
 - Chọn lần lượt xe có chi phí lãi thấp nhất cho đến đủ số phải đặt.
 
 Thứ tự ưu tiên khi hai lựa chọn gần nhau:
@@ -93,7 +94,8 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 ## 7. Điều chuyển kho (tóm tắt)
 
 - **Kho chung**: xe nằm kho chi nhánh này có thể bán cho khách chi nhánh khác; ưu tiên giải kho hơn đặt mới.
-- **Tuyến điều chuyển giữa đại lý** (2 chiều): **NT ↔ ĐL**, **NT ↔ PY**, phí ~3 triệu/xe. Không chuyển thẳng ĐL ↔ PY.
+- **Tuyến điều chuyển giữa đại lý** (2 chiều): **NT ↔ ĐL**, **NT ↔ PY**. Không chuyển thẳng ĐL ↔ PY.
+- **Vận chuyển**: ưu tiên **xe cứu hộ nội bộ** (tính chi phí thực tế của chuyến), ưu tiên **ghép chuyến 2 chiều** để giảm chi phí; chỉ thuê ngoài khi xe nội bộ không kịp (tham khảo ~3 triệu/xe).
 - **Nội bộ chi nhánh** (ĐL ↔ BL, NT ↔ PR): chi nhánh tự quyết.
 - **Khi nào chuyển**: phiên bản bán rất chậm mà một chi nhánh tồn > 2 xe, nhất là cùng phiên bản, cùng màu.
 - **Chia chi phí** (lãi trước khi chuyển luôn do bên giao chịu; mỗi xe chỉ chuyển 1 lần):
@@ -105,6 +107,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 | B2 | 91–180 ngày | Công ty có thể chỉ định | Bên giao | Bên giao 30 ngày đầu, sau đó bên nhận |
 | B3 | > 180 ngày | Công ty chỉ định | Bên giao | Bên giao đến khi bán |
 
+- **Chi phí lãi** chia theo **tiền lãi Ngân hàng tính thực tế cho đúng xe đó**; 8%/năm chỉ là mức tạm tính (10/2026) khi chưa có số ngân hàng.
 - Các chi nhánh **hạch toán riêng** → mọi lần điều chuyển phải **ghi nhận công nợ nội bộ** (chi tiết trong file Word).
 
 ## Phụ lục: lấy số liệu từ `data.json`

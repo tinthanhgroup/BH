@@ -48,6 +48,10 @@ Bảng tạm thời cho **1 đợt đặt hàng cụ thể** — chỉ liệt k�
 
 Đã tách sang file riêng: [quy-tac-dat-hang.md](quy-tac-dat-hang.md) (cập nhật 09/10/2026). Đọc file đó trước khi lập hoặc rà soát đề xuất đặt hàng.
 
+## "Tồn >60 ngày" — nút lọc mốc ngày tồn (thêm 09/10/2026)
+
+Trong view `old60` (tile "Tồn >60 ngày"), hàng nút **Trên 60 / 90 / 150 ngày** (kèm số xe) lọc danh sách theo biến `oldMinDays` (`setOldMinDays(n)`), tiêu đề đổi theo mốc đang chọn. Màu cột "Số ngày tồn": > 90 vàng, > 150 đỏ (trước là > 120; áp dụng chung cho view Chi tiết tồn kho `inventory`). Đây là danh sách các chi nhánh theo dõi theo Quy định xử lý kho tồn lâu (file Word trong `2. Dat hang/`).
+
 ## "LXX đã phân khách" (`_khopLxxPhanKhach()`, thêm 04/10/2026)
 
 Người dùng **không muốn sửa dữ liệu Sheet**, nên việc khớp làm ở frontend, gọi cuối `parseJsonRecords()` (cả `index.html` lẫn bản sao trong `mobile.html` — sửa 1 nơi nhớ sửa nơi kia). Khớp theo **số khung** của xe LXX (sheet ĐƠN HÀNG):

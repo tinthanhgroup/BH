@@ -513,6 +513,7 @@ var currentTab = 'hh';
 var _nsActiveSub = 'ns'; // sub-tab đang chọn trong tab gộp "Nhân sự & Chấm công": 'ns' hoặc 'cc'
 var _mktActiveSub = 'fbads'; // sub-tab đang chọn trong tab "MKT": 'fbads' (Quảng cáo Facebook, mặc định) hoặc 'mkt' (Bài viết thương hiệu) — cả 2 dùng chung quyền xem tab 'mkt', không khoá riêng như tab 4
 var hhFilters = {q:'',kho:[],nam:''};
+var oldMinDays=60; // mốc lọc trong view "Tồn >60 ngày": 60 / 90 / 150 (nút bấm, thêm 09/10/2026 — khớp mốc Quy định xử lý kho tồn lâu)
 var boDateFilter=null; // lọc theo "Ngày xác nhận đơn hàng" trong KPI BO — xem mkStats()/toggleType()/renderHH()
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
 function khoMatch(k){return !khoActive()||hhFilters.kho.indexOf(k)!==-1;}
@@ -947,6 +948,7 @@ function toggleType(t){
   typeFilter=(typeFilter===t?null:t);drillModel=null;drillVersion=null;renderHH();
 }
 function setBoDateFilter(dk){boDateFilter=(boDateFilter===dk?null:dk);renderHH();}
+function setOldMinDays(n){oldMinDays=n;renderHH();}
 function setDrill(model,version){
   drillModel=model;
   if(version){
@@ -4390,6 +4392,19 @@ function renderHH(){
         +'</div>';
       if(boDateFilter) dRows=dRows.filter(function(r){return fmtDateHH(r.ngayXN)===boDateFilter;});
     }
+    // Nút lọc mốc ngày tồn trong view "Tồn >60 ngày": >60 (tất cả) / >90 / >150
+    var oldDayBtns='';
+    if(typeFilter==='old60'){
+      oldDayBtns='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px">'
+        +'<span class="filter-group-label">Số ngày tồn</span>'
+        +[60,90,150].map(function(n){
+          var cnt=dRows.filter(function(r){return daysSince(r.ngayNhap)>n;}).length;
+          var isAct=oldMinDays===n;
+          return '<button class="fbtn'+(isAct?' active-kho':'')+'" onclick="setOldMinDays('+n+')"><span class="fbtn-dot" style="background:'+(n>=150?'#a32d2d':n>=90?'#b8860b':'#7b2d8b')+';'+(isAct?'':'opacity:.35')+'"></span>Trên '+n+' ngày <span style="font-weight:700;opacity:.85">('+cnt+')</span></button>';
+        }).join('')
+        +'</div>';
+      if(oldMinDays>60) dRows=dRows.filter(function(r){return daysSince(r.ngayNhap)>oldMinDays;});
+    }
     if(typeFilter==='old60') dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||(daysSince(b.ngayNhap)||0)-(daysSince(a.ngayNhap)||0);});
     else dRows.sort(function(a,b){var ia=MODEL_ORDER.indexOf(a.model),ib=MODEL_ORDER.indexOf(b.model);if(ia<0)ia=999;if(ib<0)ib=999;return ia-ib||a.phienBan.localeCompare(b.phienBan);});
     var isDebt=typeFilter==='debt',isDaPhan=typeFilter==='daphan',isLxx=typeFilter==='lxx',is2025t=typeFilter==='yr2025',isInvT=typeFilter==='inventory',isOld60=typeFilter==='old60',isNM=typeFilter==='nhamay',isCXN=typeFilter==='chuaXN';
@@ -4467,7 +4482,7 @@ function renderHH(){
       else if(isDaPhan){var dp=daysSince(r.ngayPhan);var dsp=dp>30?'color:#a32d2d;font-weight:700':dp>15?'color:#b8860b':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayPhan)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsp+'">'+(dp!==null?dp+'n':'—')+'</span></td>';}
       else if(isLxx) dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayXN)+'</td>';
       else if(is2025t){var d25=daysSince(r.ngayNhap);var ds25=d25>90?'color:#a32d2d;font-weight:700':d25>60?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="text-align:center;white-space:nowrap"><span style="'+ds25+'">'+(d25!==null?d25+'n':'—')+'</span></td>';}
-      else if(isInvT||isOld60){var dInv=daysSince(r.ngayNhap);var dsInv=dInv>120?'color:#a32d2d;font-weight:700':dInv>90?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayNhap)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsInv+'">'+(dInv!==null?dInv+'n':'—')+'</span></td><td style="text-align:center;font-size:11px;color:#888;white-space:nowrap">'+getLCBaoLanh(r.model,r.phienBan)+'</td>';}
+      else if(isInvT||isOld60){var dInv=daysSince(r.ngayNhap);var dsInv=dInv>150?'color:#a32d2d;font-weight:700':dInv>90?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayNhap)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsInv+'">'+(dInv!==null?dInv+'n':'—')+'</span></td><td style="text-align:center;font-size:11px;color:#888;white-space:nowrap">'+getLCBaoLanh(r.model,r.phienBan)+'</td>';}
       else if(isNM){var dNM=daysSince(r.ngayNhap);var dsNM=dNM>120?'color:#a32d2d;font-weight:700':dNM>90?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayNhap)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsNM+'">'+(dNM!==null?dNM+'n':'—')+'</span></td>';}
       else if(isCXN) dtbody+=''; // handled above
       else dtbody+='<td style="white-space:nowrap">'+fmtDateHH(r.ngayXN)+'</td>';
@@ -4475,7 +4490,8 @@ function renderHH(){
     });
     var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
-    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
+    if(isOld60) titles.old60='Xe tồn trên '+oldMinDays+' ngày';
+    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+oldDayBtns+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
       +(isLxx||isDebt?_lxxPhanNoteHtml():''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
   }
   } else {
