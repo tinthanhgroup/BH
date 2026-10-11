@@ -121,6 +121,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 | Tồn chưa BC DMS | `trangThai` = "Xe đã về kho", `baoCaoDMS` = false |
 | Xe tồn lâu | Tồn chưa phân khách (`ngayPhanXe` trống), `ngayNhapKho` quá 90 ngày; kho thực tế ở `khoXe` |
 | Hợp đồng | `ngayDatCoc`, nguồn khách `nguonKhach` |
+| Báo bán DMS của từng đại lý (số HTV thấy) | Theo `ngayBaoBan`, đại lý = `chuyenChiTieu` nếu có ghi, không thì `nguonKhach` (PR→NT, BL/ĐN→ĐL) — giống bảng 9/10/11 BC Bán hàng. **Không** theo `daiLyDatHang`. Công ty chủ động chuyển chỉ tiêu giữa 3 đại lý (vd. NT bán nhưng ĐL khai báo) nên số báo bán từng đại lý bám sát chỉ tiêu; tốc độ bán thật của từng đại lý xem theo hợp đồng, tổng công ty mới so được với HTV |
 | Giá vốn | `giaVon` |
 | KCK | `kck.json` (xét theo phiên bản + màu; nhóm màu theo `_mauToKckKey`) |
 
@@ -131,3 +132,4 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 - Tính theo màu → sai: bỏ sót xe tồn ở màu khác (Elantra Trắng "0 xe" trong khi tồn 2 xe Đen từ 05/2026).
 - Tính DS nợ vào nhu cầu → không cần (xem Bước 2).
 - Chỉ tính số tháng chung toàn công ty → thiếu: phải tính thêm từng đại lý để biết thả xe về đâu.
+- Tính số báo bán DMS của từng đại lý theo đại lý đặt xe → sai: HTV ghi nhận theo đại lý khai báo (cột Chuyển chỉ tiêu / nguồn khách).

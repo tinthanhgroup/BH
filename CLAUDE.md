@@ -2,6 +2,8 @@
 
 Hướng dẫn ngữ cảnh dự án cho Claude Code khi làm việc trong repo này.
 
+Repo này là một project con của **Project A** (thư mục theo dõi công việc chung, nằm ở `G:\My Drive\1. Project A`), nhưng đặt ở `C:\Data\BH` để git không bị Google Drive đồng bộ. **Đầu mỗi phiên làm việc, đọc `G:\My Drive\1. Project A\CLAUDE.md`** (lãnh đạo, quy định nội bộ, quy trình STATUS/TONG_HOP, trang tiến độ) và làm theo như thể repo này vẫn nằm trong Project A.
+
 ## Tổng quan
 
 Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyundai, các chi nhánh Nha Trang/Đà Lạt/Phú Yên/Phan Rang/Bảo Lộc). Kiến trúc: **file HTML tĩnh host trên GitHub Pages** tự `fetch()` dữ liệu từ các file `.json` trong cùng repo, dữ liệu các file `.json` đó được **Google Apps Script** (`.gs`, chạy trên Google Sheet nội bộ của công ty) tự động đồng bộ và push lên GitHub qua Contents API theo lịch (trigger).
@@ -136,4 +138,4 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
   - Thêm 1 dòng vào **Nhật ký**, dòng mới nhất ở trên cùng.
 - Giữ nguyên khung: Cập nhật → Trạng thái → Việc tiếp theo → Đang chờ → Mốc sắp tới → Nhật ký.
 - Chỉ ghi điều đã được người dùng xác nhận hoặc có tài liệu chứng minh. Ngày hoặc số liệu chưa rõ thì ghi `_cập nhật_` và hỏi người dùng.
-- Sau khi sửa `STATUS.md`, cập nhật dòng tương ứng của project này trong `../TONG_HOP.md`, rồi làm mới trang tiến độ online theo hướng dẫn trong `../CLAUDE.md` (chạy `../dashboard/build.py`, đăng lại đúng link cũ).
+- Sau khi sửa `STATUS.md`, cập nhật dòng tương ứng của project này trong `G:\My Drive\1. Project A\TONG_HOP.md`, rồi làm mới trang tiến độ online theo hướng dẫn trong CLAUDE.md của Project A (chạy `G:\My Drive\1. Project A\dashboard\build.py`, đăng lại đúng link cũ).
