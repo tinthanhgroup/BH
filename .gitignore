@@ -1,2 +1,14 @@
 apps-script/
 .claude/settings.local.json
+
+# Du lieu noi bo lam viec tai cho (Excel, Word, script chuyen doi) - khong dua len GitHub
+1. TTG - MKT thuong hieu/
+2. Dat hang/
+Bao cao tuan/
+KCK/
+NCC/
+PBI DV/
+
+# Cau hinh VS Code tren may
+.vscode/
+*.code-workspace
