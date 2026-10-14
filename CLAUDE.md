@@ -128,14 +128,4 @@ Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`
 
 ## Cập nhật trạng thái (STATUS.md)
 
-`STATUS.md` là nơi duy nhất ghi tiến độ của project này. README/CLAUDE.md chỉ mô tả, không ghi trạng thái.
-
-- **Đầu mỗi phiên làm việc:** đọc `STATUS.md` để biết đang ở bước nào, chờ ai.
-- **Cuối mỗi việc** (hoặc khi người dùng xác nhận thay đổi: văn bản đã ký/gửi, đã thanh toán, có quyết định mới, nhận tài liệu mới), cập nhật `STATUS.md`:
-  - Đổi ngày `Cập nhật:` thành ngày hôm nay.
-  - Sửa dòng **Trạng thái** (🟢 Đúng tiến độ / 🟡 Cần chú ý / 🔴 Bị chặn) và 1–2 câu tóm tắt nếu tình hình thay đổi.
-  - Tick `[x]` việc đã xong, thêm việc mới phát sinh; cập nhật **Đang chờ** và **Mốc sắp tới**.
-  - Thêm 1 dòng vào **Nhật ký**, dòng mới nhất ở trên cùng.
-- Giữ nguyên khung: Cập nhật → Trạng thái → Việc tiếp theo → Đang chờ → Mốc sắp tới → Nhật ký.
-- Chỉ ghi điều đã được người dùng xác nhận hoặc có tài liệu chứng minh. Ngày hoặc số liệu chưa rõ thì ghi `_cập nhật_` và hỏi người dùng.
-- Sau khi sửa `STATUS.md`, cập nhật dòng tương ứng của project này trong `G:\My Drive\1. Project A\TONG_HOP.md`, rồi làm mới trang tiến độ online theo hướng dẫn trong CLAUDE.md của Project A (chạy `G:\My Drive\1. Project A\dashboard\build.py`, đăng lại đúng link cũ).
+`STATUS.md` là nơi duy nhất ghi tiến độ của project này. Khung STATUS và cách cập nhật (gồm chạy `G:\My Drive\1. Project A\dashboard\build.py` rồi đăng lại trang tiến độ): mục "Cập nhật trạng thái" trong `G:\My Drive\1. Project A\CLAUDE.md`. Không sửa tay bảng trong `TONG_HOP.md`.
