@@ -1,131 +1,60 @@
 # CLAUDE.md
 
-Hướng dẫn ngữ cảnh dự án cho Claude Code khi làm việc trong repo này.
+Repo này là project con của **Project A** (`G:\My Drive\1. Project A`), đặt ở `C:\Data\BH` để git không bị Google Drive đồng bộ. **Đầu mỗi phiên, đọc `G:\My Drive\1. Project A\CLAUDE.md`** (lãnh đạo, quy định nội bộ, ranh giới nội dung các file, cập nhật STATUS, trang tiến độ) và làm theo như thể repo này vẫn nằm trong Project A.
 
-Repo này là một project con của **Project A** (thư mục theo dõi công việc chung, nằm ở `G:\My Drive\1. Project A`), nhưng đặt ở `C:\Data\BH` để git không bị Google Drive đồng bộ. **Đầu mỗi phiên làm việc, đọc `G:\My Drive\1. Project A\CLAUDE.md`** (lãnh đạo, quy định nội bộ, quy trình STATUS/TONG_HOP, trang tiến độ) và làm theo như thể repo này vẫn nằm trong Project A.
+Chỉ ghi những gì đang áp dụng. Chi tiết kỹ thuật ở `docs/` (bảng dưới); tiến độ ở `STATUS.md`; nhật ký cũ ở `NHAT_KY.md`.
 
 ## Tổng quan
 
-Hệ thống báo cáo nội bộ của **Hyundai Tín Thanh** (đại lý Hyundai, các chi nhánh Nha Trang/Đà Lạt/Phú Yên/Phan Rang/Bảo Lộc). Kiến trúc: **file HTML tĩnh host trên GitHub Pages** tự `fetch()` dữ liệu từ các file `.json` trong cùng repo, dữ liệu các file `.json` đó được **Google Apps Script** (`.gs`, chạy trên Google Sheet nội bộ của công ty) tự động đồng bộ và push lên GitHub qua Contents API theo lịch (trigger).
+Hệ thống báo cáo nội bộ **Hyundai Tín Thanh** (chi nhánh Nha Trang/Đà Lạt/Phú Yên/Phan Rang/Bảo Lộc): **file HTML tĩnh trên GitHub Pages** (`tinthanhgroup/BH`, nhánh `main`) tự `fetch()` các file `.json` trong repo; `.json` do **Google Apps Script** (`.gs`, chạy trên Google Sheet nội bộ) đồng bộ và push lên GitHub theo trigger.
 
-**Không có backend/server riêng.** Toàn bộ "logic server" nằm ở các script `.gs` chạy trên hạ tầng Google Apps Script — không sửa được trực tiếp qua Git, phải copy-paste thủ công vào trình soạn thảo Apps Script (script.google.com) rồi chạy tay 1 lần để áp dụng. Bản sao các file `.gs` được lưu local ở `apps-script/` (xem mục riêng bên dưới) để tiện chỉnh sửa, nhưng **không đại diện cho bản đang chạy thật** cho tới khi bạn tự dán lại vào script.google.com.
+- **Không có backend, không build step:** mỗi `.html` là single-file, JS/CSS inline. Sửa xong là dùng được.
+- **Code, comment, tên biến tiếng Việt có dấu** (kể cả string, key object) — chủ ý, giữ nguyên convention.
+- `.gs` **không deploy qua git**: bản sao local ở `apps-script/` (gitignored, có token thật) chỉ có hiệu lực khi người dùng dán vào script.google.com.
 
-- **Repo GitHub:** `tinthanhgroup/BH`, nhánh `main`, host qua GitHub Pages.
-- **Ngôn ngữ:** toàn bộ code, comment, tên biến tiếng Việt có dấu (kể cả trong string literal, key object) — đây là chủ ý, không phải lỗi encoding. Giữ nguyên convention này khi sửa/thêm code.
-- **Không có build step.** Tất cả file `.html` là single-file, JS/CSS inline, không bundler, không npm. Sửa xong là dùng được ngay.
+## Bản đồ tài liệu
 
-## File HTML (đều ở root repo, host qua GitHub Pages)
+| Việc đang làm | Đọc |
+|---|---|
+| Sửa một trang/tab module | `docs/module-<tên>.md` của module đó: hanghoa (tab 1 Hàng hóa, KCK, Creta), chamcong, nhansu, nhacungcap, mkt, fbads, chinhsach, quydinh, crm, baocaotuan |
+| Tab/sub-tab, lazy-load, style dùng chung giữa các trang, phân quyền | `docs/giao-dien-va-phan-quyen.md` |
+| Sửa / thêm script `.gs`, trigger | `docs/apps-script.md` |
+| Cập nhật tay: chỉ tiêu, KCK dự phòng, chính sách HTV, quy định nội bộ, nhà cung cấp | `docs/cap-nhat-thu-cong.md` |
+| Đặt hàng xe với HTV | `docs/quy-tac-dat-hang.md` |
 
-| File | Vai trò | Auth | Chi tiết |
-|---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (2 sub-tab, thêm 09/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
-| `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (HCNS) lẫn tab 5 (MKT/FB Ads) | — | — |
-| `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "2. Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
-| `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "1. Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
-| `nhacungcap.html` | Danh bạ đầu mối Nhà cung cấp sửa chữa/bảo trì CSVC, nhúng iframe trong sub-tab "3. Nhà cung cấp CSVC" của tab 4 | Không tự có auth, nhưng **sub-tab này mở tự do** — xem chi tiết ngay dưới bảng | [docs/module-nhacungcap.md](docs/module-nhacungcap.md) |
-| `mkt.html` | Báo cáo tổng hợp Bài viết thương hiệu (Nhật ký đăng bài Fanpage), nhúng iframe trong sub-tab "5.2. Bài viết thương hiệu" của tab 5 | Không tự có auth (như trên) | [docs/module-mkt.md](docs/module-mkt.md) |
-| `fbads.html` | Dashboard Quảng cáo Facebook (chi phí, kết quả Messenger, cảnh báo chiến dịch kém hiệu quả), nhúng iframe trong sub-tab "5.1. Quảng cáo Facebook" của tab 5 (thêm 09/2026, **mặc định mở khi vào tab từ 09/2026**) | Không tự có auth (như trên) — dùng chung quyền với sub 5.2, khoá ở cấp tab 5 | [docs/module-fbads.md](docs/module-fbads.md) |
-| `theo_doi_chinh_sach.html` | Tra cứu chính sách HTV theo hiệu lực áp dụng, nhúng iframe trong tab 6 | **Không khoá** — mở cho mọi nhóm kể cả chưa đăng nhập | [docs/module-chinhsach.md](docs/module-chinhsach.md) |
-| `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong sub-tab "4. Quy định nội bộ" của tab 4 (**chuyển từ tab 7 riêng vào đây 09/2026** — không còn là tab cấp cao nhất) | Không tự có auth, nhưng **sub-tab này mở tự do** — xem chi tiết ngay dưới bảng | [docs/module-quydinh.md](docs/module-quydinh.md) |
-| `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 7 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
-| `baocaotuan.html` | Báo cáo tuần chi nhánh (quá trình điều hành của GĐCN gửi TGĐ: đề xuất cần quyết, trọng tâm tuần, cải tiến, TCT giao, cảnh báo quá hạn/chưa cập nhật), nhúng iframe trong tab 8 (thêm 25/09/2026). Dữ liệu `baocaotuan.json` — **giai đoạn đầu chuyển tay từ Excel** bằng `Bao cao tuan/xlsx_to_json.ps1`, sau này Google Sheet + Apps Script ghi cùng cấu trúc | Không tự có auth (như trên) — khoá cấp tab key `bct`: **Admin + GĐ thường** (mở cho GĐ 28/09/2026, PGĐ chưa có; nút tab ẩn hẳn với nhóm không có quyền) | [docs/module-baocaotuan.md](docs/module-baocaotuan.md) |
+Chỉ mở file `docs/` của phần đang sửa, không đọc hết.
 
-Tab 4 **nhãn hiển thị là "HCNS"** (đổi tên từ "Nhân sự & Chấm công" 09/2026, xem `_tabLabel()`/`_pwModalTitle()` — nội bộ code vẫn dùng key `ns`, không đổi) — gộp 4 báo cáo vào 1 tab (ban đầu 2 tab riêng "Báo cáo Nhân sự"/"Chấm công", sau đó lần lượt thêm "Nhà cung cấp CSVC" và "Quy định nội bộ" — cái sau vốn là tab 7 riêng, chuyển hẳn vào đây 09/2026). Bên trong dùng "sub-tab" (`.subtabs`/`.subtab`/`.subtab-panel` trong `index.html`, khác với `.tabs`/`.tab` cấp cao nhất), **đánh số 1-4** ngay trong nhãn sub-tab ("1. Báo cáo Nhân sự", "2. Chấm công", "3. Nhà cung cấp CSVC", "4. Quy định nội bộ"), chuyển qua hàm `switchNsSub('ns'|'cc'|'ncc'|'noiquy')`, mỗi sub-tab lazy-load iframe riêng khi mở lần đầu (giống cơ chế lazy-load ở cấp tab).
+## Trang HTML (root repo)
 
-**Khoá theo từng sub-tab, không khoá cả tab 4** (thêm 09/2026, khác các tab khác): sub 1 "Báo cáo Nhân sự" và sub 2 "Chấm công" vẫn đòi quyền `_allowedTabs.has('ns')` như cũ; sub 3 "Nhà cung cấp CSVC" và sub 4 "Quy định nội bộ" **mở tự do, không cần đăng nhập** — giữ đúng tính chất mở-cho-mọi-người mà "Quy định nội bộ" từng có khi còn là tab 7 riêng. Cơ chế: `switchTab('ns')` không còn chặn ở cấp tab (vào `_doSwitchTab('ns')` thẳng luôn, giống `hh`/`policy`/`admin`); việc kiểm tra quyền chuyển hẳn vào bên trong `switchNsSub(sub, silent)` — nếu `sub` là `ns`/`cc` mà chưa đủ quyền thì chặn (hiện popup mật khẩu nếu `!_authenticated`, hoặc `alert` nếu đã đăng nhập nhưng sai nhóm), còn `ncc`/`noiquy` luôn cho qua. Vào tab 4 lần đầu khi chưa đủ quyền sẽ **tự động rơi vào sub 3** (không tự bật popup mật khẩu — tham số `silent=true` khi `_doSwitchTab` gọi mặc định); chỉ khi người dùng **chủ động bấm** đúng sub 1/2 mới yêu cầu xác thực. `_nsActiveSub` được cập nhật ngay cả khi bị chặn (ghi nhớ ý định), để sau khi nhập đúng mật khẩu, `_doSwitchTab('ns')` mở lại **đúng sub vừa định xem** thay vì luôn rơi về sub 3.
+`index.html` (desktop, các tab + Admin), `mobile.html` (rút gọn, không có HCNS/MKT), và các trang module nhúng iframe, lazy-load khi mở: `chamcong`, `nhansu`, `nhacungcap`, `quy_dinh_noi_bo` (sub-tab của tab 4 HCNS), `fbads`, `mkt` (sub-tab của tab 5 MKT), `theo_doi_chinh_sach` (tab 6, mở tự do), `crm` (tab 7), `baocaotuan` (tab 8). Bảng đầy đủ: `docs/giao-dien-va-phan-quyen.md`.
 
-**Tab 5 "MKT" có 2 sub-tab** (thêm 09/2026, cơ chế tương tự tab 4 nhưng đơn giản hơn — **không khoá riêng từng sub**; tab tự đổi tên từ "MKT Thương hiệu" → "MKT" và đảo thứ tự 2 sub-tab 09/2026): "5.1. Quảng cáo Facebook" (`fbads.html`, **mặc định mở khi vào tab** từ 09/2026) và "5.2. Bài viết thương hiệu" (`mkt.html`, tên hiển thị cũ "Nhật ký đăng bài" — nội bộ vẫn dùng key `mkt`), chuyển qua hàm `switchMktSub('mkt'|'fbads')`, mỗi sub lazy-load iframe riêng khi mở lần đầu. Khác tab 4: cả 2 sub dùng chung đúng 1 quyền xem tab `mkt` — `switchTab('mkt')` vẫn khoá ở **cấp tab** như cũ (không đẩy việc kiểm tra quyền xuống từng sub như tab 4), nên `switchMktSub()` không cần tham số `silent`/kiểm tra quyền riêng.
+- `index.html` và `mobile.html` **trùng dữ liệu có chủ đích** (`KCK_DATA`, `KCK_DATE`): sửa một file thì kiểm tra file kia.
+- Trang module **không có `<h1>`**, theo chuẩn style chung (màu `--navy:#1B4F8C`, `.wrap` 1280px, font Inter, badge `.chart-num`) — chi tiết trong docs.
+- Phân quyền là khoá **client-side** (ẩn hiển thị), không phải bảo mật thật; không tự nâng cấp. Mục "Xe chưa xuất HĐ" dùng cờ `_isAdmin`/`_isGD` riêng, giữ tách biệt với quyền tab Nhân sự.
 
-Các trang nhúng iframe (`chamcong/nhansu/nhacungcap/mkt/fbads/theo_doi_chinh_sach/quy_dinh_noi_bo/crm.html`) đều **lazy-load** — chỉ set `iframe.src` khi người dùng thực sự bấm vào tab/sub-tab đó lần đầu (xem `_doSwitchTab()`/`switchNsSub()` trong `index.html`), tránh tải dữ liệu thừa.
+## Bẫy bắt buộc nhớ khi sửa `.gs`
 
-**Mở file `docs/module-*.md` tương ứng khi thực sự đang sửa module đó** — các file này không tự động nạp vào context, chỉ đọc khi cần để đỡ tốn context cho các module không liên quan.
+1. `TinThanh_Auth.gs` (và `TinThanh_DichVu_Sync.gs` phần `doGet`) là **Web App**: sửa xong phải Deploy → Manage deployments → **New version**; chỉ Save thì URL đang chạy không đổi.
+2. Giới hạn **~20 trigger/project**: luôn dùng 1 trigger lặp (`.everyHours(n)`), **không** dùng vòng lặp `.atHour(h).create()`. Thêm script/trigger mới → nhắc người dùng kiểm tra trang ⏰ Triggers trước.
+3. File `.gs` gửi người dùng chỉ có **placeholder** (`"NHAP_GITHUB_TOKEN"`…), nhắc họ tự điền; không xóa/thay giá trị thật trong `apps-script/`.
+4. Cài/xóa trigger: dùng cặp hàm có sẵn `setupXxxTrigger()` / `removeXxxTrigger()`.
+5. FBAds, Báo cáo tuần, Dịch vụ: **GET JSON cũ → gộp → PUT** (Sheet không giữ lịch sử); các script khác ghi đè thẳng.
 
-## File Apps Script (`.gs` — KHÔNG deploy tự động, phải copy tay)
+## Khái niệm nghiệp vụ hay nhầm
 
-Bản sao lưu ở thư mục local `apps-script/` (đã thêm vào `.gitignore`, **không** push lên GitHub vì chứa token/ID thật). Các file này **không nằm cùng 1 Apps Script project** — mỗi file (trừ ChamCong_Sync) tự chứa `CONFIG`/`GITHUB_CONFIG` riêng (token, owner, repo, branch) để không phụ thuộc biến toàn cục của file khác. Lý do lịch sử: từng bị lỗi `CONFIG is not defined` khi tách file ra project khác nhau.
-
-| File | Việc làm | Trigger | Ghi vào |
-|---|---|---|---|
-| `TinThanh_AutoSync.gs` | Đồng bộ Sheet "DATA TỔNG" → `data.json`. Chứa cả `weeklySnapshot()` + `monthlySnapshot()` | `autoSync`: 1 trigger `everyMinutes(30)` (24/7) · `weeklySnapshot`: Thứ 6 21h · `monthlySnapshot`: hàng ngày 21h (tự bỏ qua nếu chưa phải ngày cuối tháng — xem `isLastDayOfMonth_()`) | `data.json`, `data_weekly.json`, `data_monthly.json` |
-| `TinThanh_ChamCong_Sync.gs` | Đọc Excel chấm công (admin từng chi nhánh tự upload lên Drive) → `chamcong.json` — chi tiết [docs/module-chamcong.md](docs/module-chamcong.md) | 9h & 10h hàng ngày | `chamcong.json` |
-| `TinThanh_NhanSu_Sync.gs` | Đọc Sheet Nhân sự (2 tab: đang làm / đã nghỉ) → `nhansu.json` — chi tiết [docs/module-nhansu.md](docs/module-nhansu.md) | 12h hàng ngày | `nhansu.json` |
-| `TinThanh_MKT_Sync.gs` | Đọc Sheet "Nhật ký đăng bài" Fanpage → `mkt.json` — chi tiết [docs/module-mkt.md](docs/module-mkt.md) | `mktSync`: 1 trigger `everyHours(4)` (~6 lần/ngày) | `mkt.json` |
-| `TinThanh_Auth.gs` | `checkPassword()` xác thực mật khẩu + phân quyền, deploy riêng thành **Web App** (`AUTH_URL` gọi từ `index.html`) | — (gọi qua HTTP, không có trigger) | — |
-| `TinThanh_CRM_Sync.gs` | Đọc Sheet CRM Bizfly (log sự kiện, dedup theo SĐT lấy dòng mới nhất) → `crm.json` — chi tiết [docs/module-crm.md](docs/module-crm.md) | `crmSync`: 1 trigger `everyMinutes(30)` (24/7) | `crm.json` |
-| `TinThanh_KCK_Sync.gs` | **(thêm 25/09/2026)** Tải file Excel HTV chia sẻ công khai trên SharePoint (`KCK_CONFIG.SHARE_URL`, sheet "KCK") — phải giữ cookie `FedAuth` qua bước 302, không có sẽ 403 — tự giải nén + parse XML (đọc được màu chữ) → `kck.json` (`date`, `data` cùng định dạng `KCK_DATA`, `changeNote` tự tính so với dữ liệu ngày HTV cập nhật trước, `baseData`, `checked_at` = giờ quét link HTV gần nhất, hiện "Quét link HTV lúc … (1h20p trước)" cạnh tiêu đề KCK **chỉ ở `index.html`** — `mobile.html` dành cho người dùng cuối, không hiện thông tin vận hành kiểu này; tô đỏ nếu quá 9h). Dữ liệu không đổi vẫn push lại để cập nhật `checked_at` (`updated_at` chỉ đổi khi dữ liệu đổi) | `kckSync`: 1 trigger `everyHours(4)` | `kck.json` |
-| `TinThanh_FBAds_Sync.gs` | **(đổi 22/09/2026)** Tự gọi thẳng Facebook Graph API lấy snapshot chi phí/kết quả **hôm nay** theo chiến dịch, ghi đè vào Sheet (không còn phụ thuộc tool ngoài Zapier/Make như trước), rồi đọc lại Sheet → `fbads.json` — chi tiết [docs/module-fbads.md](docs/module-fbads.md). ⚠️ **Khác mọi script sync khác trong repo**: Sheet chỉ chứa snapshot của **hôm nay** (bị ghi đè mỗi lần chạy, không tự cộng dồn lịch sử) — script phải tự **GET fbads.json hiện có trên GitHub, upsert theo khoá `ngày+tên chiến dịch`, rồi mới PUT lại** để không mất lịch sử các ngày trước (khác hẳn kiểu "Sheet là nguồn đầy đủ, ghi đè thẳng" của các script kia) | `fbAdsSync`: 1 trigger `everyHours(1)` (24 lần/ngày, 24/7) | `fbads.json` |
-| `TinThanh_BaoCaoTuan_Sync.gs` | **(thêm 29/09/2026)** Đọc Google Sheet báo cáo tuần (mỗi chi nhánh 1 file, `BCT_CONFIG.SHEET_IDS`, cùng mẫu `Bao cao tuan.xlsx`, tên sheet có số "2. Ban hang" — bỏ số khi tra) → `baocaotuan.json`, thay bước chạy tay `xlsx_to_json.ps1`, ghi đúng cấu trúc đó. **Gộp** như FBAds: GET JSON cũ → giữ lịch sử `nhanDinhBP` → PUT; không đổi gì thì không push. Trigger `bctOnEdit` (installable, `forSpreadsheet`) ghi giờ sửa từng khối nhận định vào Script Properties → gắn tuần: BP = tuần T2–CN lúc sửa, GĐCN = tuần báo cáo lúc sửa (đổi lúc 10h T7) — chi tiết [docs/module-baocaotuan.md](docs/module-baocaotuan.md) | `syncBaoCaoTuan`: 1 trigger `everyHours(1)` + 1 trigger onEdit mỗi file | `baocaotuan.json` |
-| `TinThanh_DichVu_Sync.gs` | **(thêm 28/09/2026)** Đọc file .xlsx lệnh sửa chữa (bảng "1. PBI" của Power BI dịch vụ) admin tự lọc và tải lên 1 folder Drive hằng ngày → đếm RO không trùng theo **ngày × chi nhánh × phân loại** (chỉ số đếm, không biển số/tên khách) → `dichvu.json`; `baocaotuan.html` tự tính "Lượt xe TB/ngày" (thay ô nhập tay). **Gộp** như FBAds: GET JSON cũ → thay ngày × chi nhánh có trong file mới → PUT (giữ 400 ngày). Có `doGet()` → deploy **Web App riêng** làm nút "Cập nhật số Dịch vụ" (URL dán vào `DV_SYNC_URL` trong `baocaotuan.html`; sửa code phải Deploy → New version). Cần bật Advanced Service **Drive API** | `dichVuSync`: 1 trigger `everyDays(1).atHour(11)` | `dichvu.json` |
-
-### ⚠️ Bẫy quan trọng khi sửa `.gs`
-
-1. **`TinThanh_Auth.gs` là Web App** — sửa code xong **PHẢI** vào Deploy → Manage deployments → **New version** thì mới có hiệu lực. Chỉ bấm Save (Ctrl+S) sẽ KHÔNG cập nhật URL đang chạy.
-2. **Giới hạn ~20 trigger/project của Google Apps Script.** Đã từng bị lỗi "This script has too many triggers" 2 lần (do tạo vòng lặp N trigger cố định từng giờ thay vì 1 trigger lặp). Quy tắc bắt buộc từ giờ: **luôn dùng `.everyHours(n)` (1 trigger lặp)**, KHÔNG BAO GIỜ dùng vòng lặp `for` gọi `.atHour(h).create()` nhiều lần để giả lập chạy nhiều lần/ngày.
-3. Mỗi file `.gs` khi gửi cho người dùng đều chỉ có **placeholder** cho Token/Sheet ID/Folder ID (`"NHAP_GITHUB_TOKEN"` v.v.) — luôn nhắc người dùng tự điền giá trị thật trước khi chạy, không tự bịa giá trị. Với bản sao trong `apps-script/` (local, gitignored) có thể chứa giá trị thật nếu người dùng tự dán vào — không tự ý xóa/thay giá trị thật đó trừ khi được yêu cầu.
-4. Muốn cài trigger mới/xoá trigger cũ: mỗi file đều có sẵn cặp hàm `setupXxxTrigger()` / `removeXxxTrigger()` tự dọn trigger cũ (theo tên hàm) trước khi tạo mới — không tự viết `ScriptApp.newTrigger()` tay, gọi đúng các hàm có sẵn.
-5. Muốn test snapshot cuối tuần/cuối tháng ngay lập tức (không đợi đúng ngày): dùng `testWeeklySnapshot()` / `testMonthlySnapshot()` — các hàm này **bỏ qua điều kiện ngày**, gọi thẳng phần lõi.
-
-## Quy ước giao diện chung giữa các trang module
-
-`chamcong.html`, `nhansu.html`, `mkt.html`, `fbads.html`, `theo_doi_chinh_sach.html`, `quy_dinh_noi_bo.html`, `crm.html` là 7 trang độc lập (nhúng iframe riêng trong `index.html`), **không dùng chung 1 file CSS** — mỗi file tự khai báo style riêng, nên rất dễ bị lệch nhau khi sửa từng file một cách rời rạc (từng xảy ra nhiều lần: header nhỏ hơn/màu khác, `.wrap` rộng khác nhau, số thứ tự mục 2 kiểu khác nhau, màu hover bảng lệch hex — đã rà soát và đồng bộ 09/2026). Khi sửa hoặc thêm style dùng chung giữa các trang này, nhân bản đúng theo chuẩn hiện có thay vì tự chọn giá trị mới:
-- Màu tiêu đề: `--navy:#1B4F8C` (khai báo trong `:root` của từng file — nếu file chưa có biến này, thêm vào thay vì hardcode hex lặp lại).
-- Tiêu đề `<h1>` đầu trang: cỡ chữ `24px`, `font-weight:800` khi CÓ dùng — nhưng **từ 09/2026, không trang module nào (nhúng iframe) còn `<h1>` nữa**, kể cả trang nhúng thẳng ở tab cấp cao nhất chứ không riêng sub-tab (đổi 09/2026, theo yêu cầu người dùng — ban đầu chỉ bỏ ở 6 sub-tab của tab 4/5 vì trùng nhãn sub-tab, sau đó người dùng yêu cầu bỏ nốt ở `theo_doi_chinh_sach.html`/tab 6 và `crm.html`/tab 7 dù 2 trang này không phải sub-tab — vậy nên coi đây là quy ước áp dụng cho **toàn bộ 8 trang module**, không còn ngoại lệ theo sub-tab/tab nữa). Áp dụng luôn cho module mới thêm sau này — **trang module mới không cần `<h1>` ngay từ đầu**, không cần đợi được yêu cầu bỏ riêng. Các phần tử khác trong header (dòng "Cập nhật lúc...", mô tả ngắn dạng `<p>`, nút hành động như "Xem tất cả bài đăng Facebook", tag ngày/giờ) **vẫn giữ nguyên**, chỉ bỏ đúng `<h1>`. Quy tắc `24px`/`font-weight:800` ở trên giờ chỉ còn ý nghĩa lịch sử/tham khảo nếu sau này có lý do phải thêm lại `<h1>` ở 1 trang cụ thể.
-- Container chính `.wrap`: `max-width:1280px`.
-- Màu hover cho dòng bảng (`tr:hover`): `#F7F9FC`.
-- Font: `'Inter', sans-serif` cho toàn bộ trang, kể cả bảng/mô tả — không để fallback stack (`-apple-system`...) đứng trước Inter, sẽ khiến chữ hiển thị bằng font hệ điều hành thay vì Inter.
-- **Đánh số mục/panel**: dùng badge tròn `<span class="chart-num">N</span>` (nền `--navy`, chữ trắng, tròn 20px) đặt trước tiêu đề trong `<h3>`/`<summary>` — không dùng kiểu số thường `"3. Tiêu đề"`. CSS class `.chart-num` cần khai báo riêng trong từng file (copy nguyên khối từ 1 trong 4 file trên).
-- **Panel nào luôn hiện, panel nào thu gọn**: theo nguyên tắc "1-2 mục quan trọng/tổng quan nhất luôn hiện (`<div class="panel">`), các mục còn lại thu gọn mặc định (`<details class="panel"><summary>...`)" — áp dụng khi 1 trang có nhiều panel/bảng để tránh rối mắt. Panel có logic tự ẩn khi rỗng (`style.display='none'` khi không có dữ liệu, ví dụ các mục cảnh báo trong `chamcong.html`) không tính vào quy tắc này.
-
-## Hệ thống phân quyền (`index.html`)
-
-- Nguồn: cột "Nhóm" trong Sheet Users, nhận diện theo **từ khoá chứa trong chuỗi** (không cần khớp tuyệt đối, không phân biệt hoa/thường/dấu — xem `_stripDiacritics()`), hoặc cờ `isAdmin=TRUE`.
-- Bảng quyền (hàm `_classifyGroup()`):
-
-  | Nhóm (chứa từ khoá) | Xem được tab |
-  |---|---|
-  | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần) |
-  | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM |
-  | `gd` / `giam doc` (Giám Đốc thường — gồm cả "Tổng Giám đốc" nếu không có cờ Admin) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026) |
-  | `hcns` / `nhan su` | Chỉ HCNS |
-  | `mkt` / `marketing` | Bán hàng, MKT, CRM |
-  | `ban hang` (không khớp `mkt`/`marketing`) | Bán hàng, MKT, CRM |
-  | `dich vu` | Chỉ Dịch vụ |
-  | Không khớp gì | Không xem được tab khoá nào (an toàn theo mặc định) |
-
-  **CRM tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026, mở nốt cho GĐ thường 28/09/2026** — hiện Admin/PGĐ/GĐ/MKT/Bán hàng thường đều xem được CRM.
-
-  Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
-
-- **Bảng phân quyền hiển thị ở đầu tab Admin** (`_permMatrixHTML()` trong `index.html`, thêm 26/09/2026) — tự tính từ `_classifyGroup()` với tên nhóm mẫu, sửa quyền là bảng tự đúng; chỉ cần sửa hàm này khi **thêm nhóm hoặc tab mới** (thêm dòng/cột).
-- Đây là khoá **client-side** (ẩn hiển thị), KHÔNG phải bảo mật dữ liệu thật — dữ liệu vẫn tải hết về trình duyệt. Không tự ý nâng cấp thành "bảo mật thật" trừ khi được yêu cầu (đổi kiến trúc lớn).
-- Mục "Xe chưa xuất HĐ" dùng cờ riêng `_isAdmin`/`_isGD`, **không dùng chung** điều kiện với quyền xem tab Nhân sự (2 thứ này từng bị gộp chung gây lộ dữ liệu ngoài ý muốn cho nhóm HCNS — đã tách hẳn, giữ nguyên tách biệt).
-
-## Vài khái niệm nghiệp vụ hay gây nhầm
-
-- **"Xuất hồ sơ" = "Xuất hóa đơn" = "Xuất HĐ"** — 3 cách gọi cho cùng 1 field/cột (`xuatHoSo` trong code). Không phải 3 khái niệm khác nhau.
-- **"Bán ngang"** = bán xe cho đại lý khác (không phải khách lẻ) — nhận diện qua cột "Nguồn khách" = `"Khác"`.
-- **Xe ngập nước** (ô "KH đặt cọc" chứa "ngập nước") bị `_initFromRecords()` trong `index.html` loại khỏi **mọi** báo cáo. Ngoại lệ (05/10/2026): xe ngập nước **có Ngày báo bán** = đã sửa xong, **bán nội bộ làm xe công vụ** — không phải bán lẻ, nhưng HTV vẫn tính là xe đã bán khi đánh giá chỉ tiêu → chỉ cộng vào **bảng 9/10/11 "Thực hiện chỉ tiêu"** (`window._banNoiBo` → `noiBoByMonth`/`bbMap` trong `prepareBH()`, kèm ghi chú "Gồm xe bán nội bộ…"). Không tính vào tốc độ bán hàng, SL hợp đồng, doanh số bán lẻ, tồn kho.
-- **Creta CKD/CBU** (08/10/2026): xe Creta có **màu chứa "CKD"** (vd. "Trắng CKD") là xe lắp ráp trong nước, được tách thành phiên bản riêng có đuôi " CKD"; màu không có CKD là xe nhập khẩu (CBU). Mọi phiên bản Creta đã bỏ chữ "FACELIFT". Chi tiết ở [docs/module-hanghoa.md](docs/module-hanghoa.md).
-- **Kho hàng hóa** (NT/ĐL/PY/PR/BL — 5 chi nhánh) ≠ **Kho MKT Fanpage** (chỉ NT/PY/ĐL — 3 chi nhánh). Đừng giả định 2 danh sách chi nhánh này giống nhau.
-- **KCK** = "Kho hàng sẵn Nhà máy" (Hyundai Thành Công, gọi tắt **HTV**). Cờ "sắp hết" (`r:1`) nhận diện theo **màu chữ ĐỎ của ô "Năm SX"** trong file Excel HTV (đã kiểm tra lại 25/09/2026 trên cả file cũ lẫn file HTV — chữ đỏ nằm ở ô Năm SX, không phải cột "Màu ngoại thất") — **không phải** suy theo giá trị năm (xe 2022/2023 như Ioniq/Custo không tô đỏ, vẫn `r:0`). Đoạn code cũ trong nút Admin `uploadKCK()` suy theo năm SX là sai, chưa dọn — biết vậy để không nhầm là "đúng chuẩn".
-- **Chỉ tiêu tháng** (`DEFAULT_TARGETS` trong `index.html`) là mảng 12 số theo tháng, đây chỉ là **giá trị mặc định**. Người dùng có thể tự sửa qua nút "✏️ Chỉnh sửa chỉ tiêu" → lưu vào `localStorage` riêng máy đó, **ghi đè** `DEFAULT_TARGETS`. Sửa `DEFAULT_TARGETS` trong code không ảnh hưởng người đã từng tự chỉnh tay.
-
-## Quy trình cập nhật dữ liệu thủ công (không qua Apps Script)
-
-- **Chỉ tiêu tháng**: sửa mảng `DEFAULT_TARGETS` trong `index.html`.
-- **KCK — TỰ ĐỘNG từ 25/09/2026** qua `TinThanh_KCK_Sync.gs` → `kck.json`; `index.html`/`mobile.html` gọi `_loadKCK()` ghi đè `KCK_DATA`/`KCK_DATE`/`KCK_CHANGE_NOTE` lúc tải trang. Mảng hardcode trong 2 file chỉ còn là **bản dự phòng** khi tải `kck.json` lỗi — không cần cập nhật tay nữa. Quy trình thủ công bên dưới chỉ dùng khi script hỏng/HTV khoá link: người dùng bỏ file vào **folder `KCK/` ở root repo (untracked, cố ý giữ làm chỗ dự phòng — đừng xoá)**. Máy này không có Python/`openpyxl` → cách nhanh nhất là chạy chính hàm `parseKckWorkbook_()` trong `apps-script/TinThanh_KCK_Sync.gs` qua Edge headless trên XML giải nén từ file (đã làm 25/09/2026), rồi ghi `kck.json`. Cách cũ: nhận file `KCK.xlsx` → đọc bằng `openpyxl` (không dùng `pandas`, cần đọc **font color** của cell, `pandas` không đọc được) → forward-fill cột "Đặc tả xe"/"Năm SX" (dữ liệu gốc dạng merged-cell) → bỏ dòng "Total"/subtotal → group theo Model+Phiên bản → ghi đè `KCK_DATA`/`KCK_DATE` trong **cả** `index.html` và `mobile.html`. Xử lý trường hợp trùng màu 2 năm SX khác nhau trong cùng Model+Phiên bản: ưu tiên giữ bản ghi có cờ "sắp hết" (không để năm mới ghi đè mất cảnh báo).
-- **Chính sách HTV** (`theo_doi_chinh_sach.html`): người dùng gửi PDF → Claude đọc, tóm tắt nội dung chính/thêm/ghi chú → người dùng duyệt lại → thêm object mới vào mảng `policies` (hardcode, KHÔNG dùng Google Sheet — quyết định có chủ đích). PDF gốc để trên Google Drive (link chia sẻ công khai), gán vào field `pdfUrl` — không nhúng base64 (từng làm vậy, khiến file nặng >6MB, đã bỏ).
-- **Quy định nội bộ** (`quy_dinh_noi_bo.html`, xem chi tiết [docs/module-quydinh.md](docs/module-quydinh.md)): người dùng gửi file Word (`.docx`) hoặc link thư mục Google Drive → Claude đọc (file `.docx` là binary, không đọc trực tiếp được — trích xuất bằng PowerShell mở file như ZIP, đọc `word/document.xml`, bóc tag XML) → tóm tắt thành các block nội dung → người dùng duyệt lại → thêm object mới vào mảng `quyDinh` (hardcode, giống hệt cơ chế `policies` của Chính sách HTV). File Word gốc để trên Google Drive (link chia sẻ công khai), gán vào field `docUrl`.
-- **Nhà cung cấp CSVC** (`nhacungcap.html`, xem chi tiết [docs/module-nhacungcap.md](docs/module-nhacungcap.md); đổi phương án 09/2026, **không còn Google Sheet/Apps Script**): chi nhánh gửi thông tin đầu mối trực tiếp cho người dùng (không qua Sheet nữa) → người dùng gom vào 1 folder trên máy, báo đường dẫn cho Claude → Claude đọc folder, tổng hợp lại đúng 7 field cũ (`chiNhanh`/`nhom`/`hangMuc`/`lienHe`/`sdt`/`congTy`/`ghiChu`) → người dùng duyệt lại → ghi đè mảng `NCC_DATA` (hardcode) + cập nhật `NCC_UPDATED` (chuỗi `"dd/MM/yyyy"`, chỉ ngày không giờ) trong `nhacungcap.html`. Định kỳ ~6 tháng/lần. Trang tự cảnh báo (banner đỏ) nếu `NCC_UPDATED` đã quá `NCC_STALE_MONTHS` (=6) tháng — nhớ cập nhật `NCC_UPDATED` mỗi lần tổng hợp lại để banner tự tắt.
+- **"Xuất hồ sơ" = "Xuất hóa đơn" = "Xuất HĐ"** — cùng một field (`xuatHoSo`).
+- **"Bán ngang"** = bán xe cho đại lý khác — cột "Nguồn khách" = `"Khác"`.
+- **Xe ngập nước** (ô "KH đặt cọc" chứa "ngập nước") bị loại khỏi **mọi** báo cáo (`_initFromRecords()`). Ngoại lệ: xe ngập nước **có Ngày báo bán** = bán nội bộ làm xe công vụ → chỉ cộng vào bảng 9/10/11 "Thực hiện chỉ tiêu" (`window._banNoiBo`); không tính tốc độ bán, SL hợp đồng, doanh số bán lẻ, tồn kho.
+- **Creta CKD/CBU:** màu chứa "CKD" = lắp ráp trong nước, tách phiên bản có đuôi " CKD"; không có = nhập khẩu (CBU). Đã bỏ chữ "FACELIFT".
+- **Kho hàng hóa** (NT/ĐL/PY/PR/BL — 5 chi nhánh) ≠ **Kho MKT Fanpage** (NT/PY/ĐL — 3 chi nhánh).
+- **KCK** = "Kho hàng sẵn Nhà máy" (Hyundai Thành Công — **HTV**). Cờ "sắp hết" (`r:1`) theo **màu chữ ĐỎ ở ô "Năm SX"** trong file HTV, không theo giá trị năm. Code cũ của nút Admin `uploadKCK()` suy theo năm là sai, chưa dọn.
+- **Chỉ tiêu tháng** `DEFAULT_TARGETS` chỉ là mặc định; người dùng chỉnh qua nút "✏️ Chỉnh sửa chỉ tiêu" lưu `localStorage`, ghi đè giá trị trong code.
 
 ## Trước khi sửa bất kỳ file nào
 
-1. Luôn kiểm tra cú pháp JS sau khi sửa `<script>` inline trong file `.html` (dùng `node --check`), vì không có type-check/lint tự động nào khác. **Máy này không có sẵn `node`** (đã xác nhận `node`/`npx` không tồn tại trong cả Bash lẫn PowerShell) — dùng cách thay thế: chạy Edge headless dump DOM (`msedge.exe --headless=new --disable-gpu --no-sandbox --virtual-time-budget=5000 --enable-logging=stderr --dump-dom <file URL>`), kiểm tra `stderr` không có `SyntaxError`/`Uncaught` và DOM sau khi render có đúng nội dung mong đợi (ví dụ text/class cụ thể) — coi như bằng chứng script chạy được, không chỉ là parse được cú pháp suông.
-2. `index.html` và `mobile.html` có 1 số phần dữ liệu **trùng lặp có chủ đích** (KCK_DATA, KCK_DATE) — sửa 1 file thì luôn kiểm tra có cần sửa file kia không.
-3. Nếu thêm 1 script `.gs` mới hoặc thêm trigger mới: nhắc người dùng kiểm tra trang **⏰ Triggers** trước, vì hạn mức ~20 trigger tính chung cả project — không giả định còn chỗ trống.
-4. Repo này chạy trong VS Code với Claude Code, có git access trực tiếp qua Bash/PowerShell. Khi sửa xong file `.html`, có thể tự `git add`/`git commit` nếu người dùng yêu cầu — GitHub Pages tự deploy lại sau khi push, không cần bước thủ công nào thêm. **Luôn hỏi xác nhận trước khi `git push`**, kể cả khi trong cùng phiên đã push trước đó.
-5. Sửa module nào thì mở đúng file chi tiết trong `docs/` của module đó trước (xem bảng File HTML phía trên) — không cần đọc hết các module khác.
+1. Sau khi sửa `<script>` inline: máy **không có `node`** → kiểm tra bằng Edge headless (`msedge.exe --headless=new --disable-gpu --no-sandbox --virtual-time-budget=5000 --enable-logging=stderr --dump-dom <file URL>`): `stderr` không có `SyntaxError`/`Uncaught`, DOM có đúng nội dung mong đợi.
+2. Có thể `git add`/`git commit` khi người dùng yêu cầu (GitHub Pages tự deploy sau push). **Luôn hỏi xác nhận trước khi `git push`**, kể cả khi đã push trong cùng phiên.
 
-## Cập nhật trạng thái (STATUS.md)
+## Cập nhật trạng thái
 
-`STATUS.md` là nơi duy nhất ghi tiến độ của project này. Khung STATUS và cách cập nhật (gồm chạy `G:\My Drive\1. Project A\dashboard\build.py` rồi đăng lại trang tiến độ): mục "Cập nhật trạng thái" trong `G:\My Drive\1. Project A\CLAUDE.md`. Không sửa tay bảng trong `TONG_HOP.md`.
+`STATUS.md` là nơi duy nhất ghi tiến độ. Khung và cách cập nhật (gồm chạy `G:\My Drive\1. Project A\dashboard\build.py` rồi đăng lại trang tiến độ): mục "Cập nhật trạng thái" trong `G:\My Drive\1. Project A\CLAUDE.md`. Không sửa tay bảng trong `TONG_HOP.md`.
