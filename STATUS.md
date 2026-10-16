@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 13/10/2026
+Cập nhật: 16/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -28,6 +28,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 16/10/2026 | Thêm 5 chính sách HTV vào trang Chính sách (CV 45, 72, 86 chương trình T7–T9; CV 114 T10 gồm chương trình riêng Creta; CV 113 Venue), link thư mục Drive `Chinh sach ho tro HTV`; chưa commit/push, chờ anh Khanh xem |
 | 13/10/2026 | HTV đồng ý tạm dừng đặt bổ sung T10 theo công văn ngày 10/10; vẫn rà soát bán hàng 20/10 như đã cam kết |
 | 10/10/2026 | Đã gửi công văn cho HTV xin tạm dừng đặt bổ sung T10 (`CV de nghi tam dung dat hang bo sung T10.pdf`); chờ HTV phản hồi |
 | 10/10/2026 | Soạn công văn gửi HTV xin tạm dừng đặt bổ sung T10 (thị trường chưa tăng: HĐ ký mới Q2 57, Q3 54 xe/tháng; tồn + đã đặt 112 xe ≈ 2,1 tháng), cam kết rà soát 20/10. Giả định đặt hàng: thêm PA4 (20 xe + 3 Creta chờ XN) |
