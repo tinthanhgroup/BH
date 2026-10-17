@@ -27,7 +27,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [x] Bỏ khối nhập tay lượt xe ở sheet 6 (17/10/2026)
 - [x] Chia sẻ thư mục `13. DV - Master Data` cho admin (17/10/2026)
 - [ ] Kiểm tra admin chạy .bat có dòng "Da chep Master Data len Google Drive" và `dichvu.json` cập nhật ngày mới
-- [ ] Báo cáo tuần lịch mới (từ tuần 42): dán script, chạy `apDungLichMoi`; push `baocaotuan.html`
+- [x] Báo cáo tuần lịch mới (từ tuần 42): đã chạy `apDungLichMoi` (ngày báo cáo chuyển 10/10 lúc 18:10), push `baocaotuan.html` (17/10/2026)
+- [ ] Kiểm tra log `apDungLichMoi`: câu chữ hạn chót trong Hướng dẫn / sheet 6 / sheet 7 đã đổi hết
 - [ ] 19/10/2026: kiểm tra số liệu tự động tuần 42 lên web; 20/10 sau 17h: kiểm tra bản chốt tuần 42
 
 ## Đang chờ
