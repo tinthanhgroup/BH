@@ -510,7 +510,7 @@ const CS_WEEKS = 10;   // số tuần gần nhất của biểu đồ HĐ ký B�
 // index.html (parent.getDMSMonth()) để cùng 1 logic + chỉ tiêu tự chỉnh tay. Mở trang này riêng lẻ thì không có.
 function getDMS(){ try{ return (window.parent!==window && typeof window.parent.getDMSMonth==='function') ? window.parent.getDMSMonth() : null; }catch(e){ return null; } }
 function csDMSTable(a){
-  if(VIEW_KEY) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">Bản đã chốt không lưu bảng báo bán (số tháng/quý luôn là số hiện tại) — xem tab BC Bán hàng.</div>';
+  if(laBanChot()) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">Bản đã chốt không lưu bảng báo bán (số tháng/quý luôn là số hiện tại) — xem tab BC Bán hàng.</div>';
   var d=getDMS();
   if(!d) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">'+(window.parent!==window?'Đang chờ dữ liệu tab BC Bán hàng…':'Chỉ hiện khi mở trong trang chính (tab BC tuần).')+'</div>';
   // Nhóm chỉ tiêu của chi nhánh đang xem: PR tính chung NT, BL/ĐN tính chung ĐL (như TARGET_GROUPS ở index.html)
@@ -737,7 +737,7 @@ function csLeadTable(a, sec){
     var k=stripVN(x.nhan), isLead=/lead/.test(k), isHot=/hot/.test(k);
     var tay=iTay>=0?(x.giaTri||[])[iTay]:null, tuSheet=iTu>=0?(x.giaTri||[])[iTu]:null;
     // Bản đã chốt: khách hot CRM chỉ có trạng thái HIỆN TẠI, không phải lúc chốt → không hiện (Lead tính lại được theo ngày tạo)
-    var crm=au?(isLead?au.lead:(isHot&&!VIEW_KEY)?au.hot:null):null;
+    var crm=au?(isLead?au.lead:(isHot&&!laBanChot())?au.hot:null):null;
     var gcTay=iGc>=0&&x.chu?(x.chu[iGc]||''):'';
     var v, nguon, gc;
     if(tay!=null){ v=tay; nguon='Nhập tay'+(crm!=null&&crm!==tay?' <span class="cs-muted">(CRM: '+fmtN(crm)+')</span>':''); gc=esc(gcTay); }
@@ -1048,14 +1048,27 @@ function renderViewBar(){
   var liveWk=liveRef?weekNum(liveRef):'';
   var h='<div class="toolbar view-bar">Xem <select onchange="chonBan(this.value)">';
   h+='<option value=""'+(!VIEW_KEY?' selected':'')+'>Đang cập nhật — Tuần '+liveWk+(LUU_IDX.some(function(x){ return liveRef && x.key===weekKey(liveRef); })?' (sau giờ chốt)':' (chưa chốt)')+'</option>';
+  var nowSat=thu7TuanNay();
+  if(!liveRef || weekKey(nowSat)!==weekKey(liveRef))
+    h+='<option value="__now"'+(VIEW_KEY==='__now'?' selected':'')+'>Tuần hiện tại — Tuần '+weekNum(nowSat)+' (đang diễn ra, số tạm tính)</option>';
   LUU_IDX.forEach(function(x){ h+='<option value="'+esc(x.key)+'"'+(x.key===VIEW_KEY?' selected':'')+'>Tuần '+x.tuan+'/'+x.nam+' — bản chốt '+esc(fmtLuc(x.luc))+'</option>'; });
   h+='</select>';
-  h+= VIEW_KEY ? ' <span class="view-note">📌 Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
+  h+= VIEW_KEY==='__now' ? ' <span class="view-note">⏳ Tuần đang diễn ra: số tự động (HĐ, lượt xe, nhân sự, lead) tính tới lúc này; công việc và nhận định là bản đang cập nhật.</span>'
+    : VIEW_KEY ? ' <span class="view-note">📌 Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
                : ' <span class="view-note">Số liệu đang cập nhật. Bản chốt lưu tự động lúc 17h thứ 3.</span>';
   return h+'</div>';
 }
+// Thứ 7 của tuần (T2–CN) đang diễn ra — "Tuần hiện tại" xem trước số tự động trước khi tuần báo cáo chuyển (0h T2)
+function thu7TuanNay(){ var d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+5-(d.getDay()+6)%7); return d; }
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function laBanChot(){ return !!VIEW_KEY && VIEW_KEY!=='__now'; }
 async function chonBan(key){
   if(!key){ VIEW_KEY=null; VIEW_DATA=null; BR=(DATA.branches||[]).map(analyze); render(); return; }
+  if(key==='__now'){
+    var s=ymd(thu7TuanNay()); VIEW_KEY='__now'; VIEW_DATA=null;
+    BR=(DATA.branches||[]).map(function(b){ return analyze(Object.assign({}, b, {ngayBaoCao:s})); });
+    render(); return;
+  }
   try{
     var r=await fetch(LUU_DIR+key+'.json?t='+Date.now()); if(!r.ok) throw new Error('HTTP '+r.status);
     VIEW_DATA=await r.json(); VIEW_KEY=key;
