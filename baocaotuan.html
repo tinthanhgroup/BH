@@ -154,6 +154,18 @@
   .leg-btn.off{color:#9aa6b2;text-decoration:line-through;}
   .leg-btn.off i{background:transparent !important;box-shadow:inset 0 0 0 1.5px #b8c2cc;}
   .leg-btn.leg-all{color:var(--navy);font-weight:600;}
+  .cs-hit{fill:transparent;cursor:pointer;}
+  .cs-band{fill:transparent;}
+  .cs-band.on{fill:#EEF3FA;}
+  .cs-tip{position:fixed;z-index:50;display:none;pointer-events:none;background:#fff;border:1px solid var(--line, #dde3eb);border-radius:8px;box-shadow:0 6px 18px rgba(23,33,46,.14);padding:8px 10px;font-size:12px;color:var(--ink);min-width:200px;}
+  .cs-tip .tip-h{font-weight:700;color:var(--navy, #1B4F8C);margin-bottom:5px;}
+  .cs-tip .tip-h span{font-weight:400;color:var(--ink-soft);}
+  .cs-tip .tip-r{display:grid;grid-template-columns:12px 1fr auto auto;gap:6px;align-items:center;padding:1px 0;}
+  .cs-tip .tip-r i{width:10px;height:10px;border-radius:3px;display:inline-block;}
+  .cs-tip .tip-r b{text-align:right;font-variant-numeric:tabular-nums;}
+  .cs-tip .tip-r em{font-style:normal;color:var(--ink-soft);text-align:right;min-width:62px;font-variant-numeric:tabular-nums;}
+  .cs-tip .tip-t{border-top:1px solid var(--line, #dde3eb);margin-top:3px;padding-top:4px;font-weight:700;}
+  .cs-tip .tip-u{color:var(--ink-soft);font-size:11px;margin-top:4px;}
   .cs-note{color:var(--ink-soft);}
   .cs-svg{width:100%;height:auto;display:block;}
   .cs-svg rect:hover{opacity:.8;}
@@ -577,7 +589,9 @@ function csBHData(sec, a){
   });
   return {series:series, rows:rows, auto:!!SALES};
 }
-// Cột chồng theo tuần, nhãn tổng trên đỉnh cột; rê chuột vào từng đoạn xem số
+// Cột chồng theo tuần, nhãn tổng trên đỉnh cột. Rê chuột (hoặc chạm) vào CẢ VÙNG cột của 1 tuần → khung số liệu
+// từng loại (17/10/2026): giá trị + đơn vị, thêm r.ext[j] (vd tổng lượt xe trong tuần) và r.sub (vd số ngày làm việc).
+// Bề rộng cột = 80% bản cũ (17/10/2026, anh Khanh: cột hơi to).
 function svgStacked(series, rows, donVi){
   donVi = donVi || 'HĐ';
   var W=560, H=200, pl=30, pr=10, pt=22, pb=28, iw=W-pl-pr, ih=H-pt-pb;
@@ -586,19 +600,44 @@ function svgStacked(series, rows, donVi){
   var y=function(v){ return pt+ih-(v/nice)*ih; };
   var s='<svg viewBox="0 0 '+W+' '+H+'" class="cs-svg" role="img">';
   for(var g=0; g<=nice+1e-9; g+=step){ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="#E4EAF3"/><text x="'+(pl-6)+'" y="'+(y(g)+3.5)+'" text-anchor="end" class="cs-ax">'+fmtN(g)+'</text>'; }
-  var bw=Math.min(56, iw/rows.length*0.62);
+  var slot=iw/rows.length, bw=Math.min(56, slot*0.62)*0.8;
   rows.forEach(function(r,i){
-    var cx=pl+iw*(i+0.5)/rows.length, acc=0;
+    var cx=pl+slot*(i+0.5), acc=0;
+    s+='<rect class="cs-band" x="'+(cx-slot/2+2)+'" y="'+(pt-14)+'" width="'+(slot-4)+'" height="'+(ih+14)+'" rx="6"/>';
     series.forEach(function(se,j){
       var v=r.vals[j]||0; if(!v) return;
       var y0=y(acc), y1=y(acc+v); acc+=v;
-      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+(se.mau||CS_COLORS[j%CS_COLORS.length])+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' '+donVi)+'</title></rect>';
+      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+(se.mau||CS_COLORS[j%CS_COLORS.length])+'"/>';
     });
     s+='<text x="'+cx+'" y="'+(y(r.tong||0)-6)+'" text-anchor="middle" class="cs-tot">'+fmtN(r.tong)+'</text>';
     s+='<text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle" class="cs-ax">'+esc(r.nhan)+'</text>';
+    // Khung số liệu: loại trên cùng của cột đứng đầu (đúng thứ tự nhìn thấy)
+    var tip='<div class="tip-h">'+esc(r.nhan)+(r.sub?' <span>'+esc(r.sub)+'</span>':'')+'</div>';
+    series.slice().reverse().forEach(function(se){ var j=series.indexOf(se), v=r.vals[j];
+      tip+='<div class="tip-r"><i style="background:'+(se.mau||CS_COLORS[j%CS_COLORS.length])+'"></i><span>'+esc(se.name)+'</span><b>'+fmtN(v)+'</b>'+(r.ext&&r.ext[j]!=null?'<em>'+esc(r.ext[j])+'</em>':'')+'</div>'; });
+    tip+='<div class="tip-r tip-t"><i></i><span>Tổng</span><b>'+fmtN(r.tong)+'</b>'+(r.extTong!=null?'<em>'+esc(r.extTong)+'</em>':'')+'</div><div class="tip-u">Số đậm: '+esc(donVi)+(r.ext?' · số mờ: cả tuần':'')+'</div>';
+    s+='<rect class="cs-hit" x="'+(cx-slot/2)+'" y="'+(pt-14)+'" width="'+slot+'" height="'+(ih+14+pb)+'" data-tip="'+esc(tip)+'"/>';
   });
   return s+'</svg>';
 }
+// Khung số liệu dùng chung cho mọi biểu đồ cột (1 div, định vị theo chuột; chạm trên điện thoại cũng hiện)
+(function(){
+  var box=null, cur=null;
+  function show(el, x, y){
+    if(!box){ box=document.createElement('div'); box.className='cs-tip'; document.body.appendChild(box); }
+    if(cur!==el){ box.innerHTML=el.getAttribute('data-tip'); cur=el; }
+    var band=el.parentNode.querySelectorAll('.cs-band')[Array.prototype.indexOf.call(el.parentNode.querySelectorAll('.cs-hit'), el)];
+    el.parentNode.querySelectorAll('.cs-band.on').forEach(function(b){ if(b!==band) b.classList.remove('on'); }); if(band) band.classList.add('on');
+    box.style.display='block';
+    var w=box.offsetWidth, h=box.offsetHeight, vx=window.innerWidth, vy=window.innerHeight;
+    var left=x+14+w>vx-8 ? x-14-w : x+14, top=Math.min(Math.max(8, y-h/2), vy-h-8);
+    box.style.left=Math.max(8,left)+'px'; box.style.top=top+'px';
+  }
+  function hide(){ if(box) box.style.display='none'; document.querySelectorAll('.cs-band.on').forEach(function(b){ b.classList.remove('on'); }); cur=null; }
+  document.addEventListener('mousemove', function(e){ var t=e.target; if(t && t.classList && t.classList.contains('cs-hit')) show(t, e.clientX, e.clientY); else if(cur) hide(); });
+  document.addEventListener('click', function(e){ var t=e.target; if(t && t.classList && t.classList.contains('cs-hit')) show(t, e.clientX, e.clientY); else if(cur) hide(); });
+  window.addEventListener('scroll', hide, {passive:true});
+})();
 // ── Nhân sự (thêm 28/09/2026) — tự tính từ nhansu.json + chamcong.json theo chi nhánh đang xem và tuần báo cáo.
 // Chưa có dữ liệu đơn "xin đi muộn" / "nghỉ phép" → đếm theo máy chấm công: Đi muộn = quẹt vào sau giờ quy định
 // (quy tắc sao y mặc định chamcong.html), Nghỉ/vắng = ngày làm việc có dòng chấm công nhưng không có công.
@@ -710,9 +749,12 @@ function dvTuanData(a){
   var series=DV_LOAI_BD.map(function(l,i){ return {name:l[1], i:i}; });
   var rows=tuan.map(function(x){
     var ok=x.ngay.filter(function(n){ return n.t>=med*0.3; });
-    var vals=DV_LOAI_BD.map(function(l){ return ok.length ? Math.round(ok.reduce(function(s,n){ return s+(n.v[l[0]]||0); },0)/ok.length*10)/10 : null; });
+    var luot=DV_LOAI_BD.map(function(l){ return ok.reduce(function(s,n){ return s+(n.v[l[0]]||0); },0); });   // tổng lượt xe trong tuần
+    var vals=luot.map(function(t){ return ok.length ? Math.round(t/ok.length*10)/10 : null; });
     var tong=ok.length ? Math.round(vals.reduce(function(s,v){ return s+(v||0); },0)*10)/10 : null;
-    return {nhan:'T'+weekNum(x.mon), vals:vals, tong:tong, n:ok.length};
+    var sun=new Date(x.mon); sun.setDate(x.mon.getDate()+6);
+    var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
+    return {nhan:'T'+weekNum(x.mon), vals:vals, luot:luot, tong:tong, n:ok.length, khoang:dm(x.mon)+'–'+dm(sun)};
   });
   return {series:series, rows:rows};
 }
@@ -735,8 +777,11 @@ function dvTuanChart(a){
     '<span class="cs-note">Số trên cột = Tổng '+(dangLoc?'các loại đang chọn':'lượt/ngày')+' · bấm từng loại để lọc</span></div>';
   // Chỉ vẽ loại đang chọn; tổng = cộng các loại đang chọn
   var chon=d.series.filter(function(se){ return !DV_AN[se.i]; });
-  var rows=d.rows.map(function(r){ var v=chon.map(function(se){ return r.vals[se.i]; });
-    return {nhan:r.nhan, n:r.n, vals:v, tong:r.n?Math.round(v.reduce(function(s,x){ return s+(x||0); },0)*10)/10:null}; });
+  var rows=d.rows.map(function(r){ var v=chon.map(function(se){ return r.vals[se.i]; }), l=chon.map(function(se){ return r.luot[se.i]; });
+    var tl=l.reduce(function(s,x){ return s+(x||0); },0);
+    return {nhan:r.nhan, n:r.n, vals:v, tong:r.n?Math.round(v.reduce(function(s,x){ return s+(x||0); },0)*10)/10:null,
+      // khung số liệu khi rê chuột: TB/ngày + tổng lượt xe cả tuần của từng loại
+      ext:l.map(function(x){ return fmtN(x)+' lượt'; }), extTong:fmtN(tl)+' lượt', sub:r.khoang+' · '+r.n+' ngày làm việc'}; });
   // Bảng số: tiêu đề ngắn để không tràn ngang trong thẻ nửa trang; số ngày làm việc ghi kèm tuần
   var ngan=['Bảo dưỡng','Bảo hiểm','ĐS tiền mặt','SCC','Bảo hành'];
   var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Tuần (ngày LV)</th>'+chon.map(function(se){ return '<th class="num">'+esc(ngan[se.i])+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
