@@ -1,11 +1,11 @@
 {
- "updated_at": "2026-10-17T17:30:02+07:00",
+ "updated_at": "2026-10-17T18:10:43+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
-   "ngayBaoCao": "2026-10-17",
+   "ngayBaoCao": "2026-10-10",
    "ngayDuLieu": "2026-10-17",
    "canhBao": [],
    "viec": [
@@ -136,6 +136,14 @@
      ],
      "dong": [
       {
+       "nhan": "Tuần 37",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
        "nhan": "Tuần 38",
        "giaTri": [
         null,
@@ -161,14 +169,6 @@
       },
       {
        "nhan": "Tuần 41",
-       "giaTri": [
-        null,
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 42",
        "giaTri": [
         null,
         null,
@@ -218,7 +218,7 @@
   {
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
-   "ngayBaoCao": "2026-10-17",
+   "ngayBaoCao": "2026-10-10",
    "ngayDuLieu": "2026-10-17",
    "canhBao": [],
    "viec": [],
@@ -234,6 +234,13 @@
       "Tổng"
      ],
      "dong": [
+      {
+       "nhan": "Tuần 37",
+       "giaTri": [
+        null,
+        null
+       ]
+      },
       {
        "nhan": "Tuần 38",
        "giaTri": [
@@ -257,13 +264,6 @@
       },
       {
        "nhan": "Tuần 41",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 42",
        "giaTri": [
         null,
         null
