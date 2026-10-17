@@ -149,6 +149,11 @@
   .cs-title{font-size:13px;font-weight:800;color:var(--navy);margin-bottom:6px;}
   .cs-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink);margin-bottom:4px;}
   .cs-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+  .leg-btn{font:inherit;color:var(--ink);background:none;border:1px solid transparent;border-radius:6px;padding:2px 6px;margin:-2px -4px;cursor:pointer;}
+  .leg-btn:hover{border-color:var(--line);background:#f5f8fc;}
+  .leg-btn.off{color:#9aa6b2;text-decoration:line-through;}
+  .leg-btn.off i{background:transparent !important;box-shadow:inset 0 0 0 1.5px #b8c2cc;}
+  .leg-btn.leg-all{color:var(--navy);font-weight:600;}
   .cs-note{color:var(--ink-soft);}
   .cs-svg{width:100%;height:auto;display:block;}
   .cs-svg rect:hover{opacity:.8;}
@@ -587,7 +592,7 @@ function svgStacked(series, rows, donVi){
     series.forEach(function(se,j){
       var v=r.vals[j]||0; if(!v) return;
       var y0=y(acc), y1=y(acc+v); acc+=v;
-      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+CS_COLORS[j%CS_COLORS.length]+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' '+donVi)+'</title></rect>';
+      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+(se.mau||CS_COLORS[j%CS_COLORS.length])+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' '+donVi)+'</title></rect>';
     });
     s+='<text x="'+cx+'" y="'+(y(r.tong||0)-6)+'" text-anchor="middle" class="cs-tot">'+fmtN(r.tong)+'</text>';
     s+='<text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle" class="cs-ax">'+esc(r.nhan)+'</text>';
@@ -711,14 +716,32 @@ function dvTuanData(a){
   });
   return {series:series, rows:rows};
 }
+// Bấm chú giải để lọc phân loại (17/10/2026): ẩn/hiện từng loại, tổng + trục tính lại theo loại đang chọn,
+// màu giữ theo loại (không đổi khi lọc). Nhớ lựa chọn trên máy (localStorage) — dùng chung cho mọi chi nhánh.
+const DV_AN_KEY = '_bctDvAn';
+let DV_AN = (function(){ try{ return JSON.parse(lsGet(DV_AN_KEY)||'{}')||{}; }catch(e){ return {}; } })();
+function dvLoc(i){
+  if(i<0) DV_AN={};
+  else { var con=DV_LOAI_BD.filter(function(l,j){ return !DV_AN[j]; }).length;
+    if(DV_AN[i]) delete DV_AN[i]; else if(con>1) DV_AN[i]=1; }   // không cho ẩn hết
+  lsSet(DV_AN_KEY, JSON.stringify(DV_AN)); render();
+}
 function dvTuanChart(a){
   var d=dvTuanData(a); if(!d) return '';
-  var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng lượt/ngày</span></div>';
+  var dangLoc=Object.keys(DV_AN).length>0;
+  var leg='<div class="cs-leg">'+d.series.map(function(se){ var an=!!DV_AN[se.i];
+      return '<button type="button" class="leg-btn'+(an?' off':'')+'" onclick="dvLoc('+se.i+')" title="Bấm để '+(an?'hiện':'ẩn')+' '+esc(se.name)+'"><i style="background:'+CS_COLORS[se.i]+'"></i>'+esc(se.name)+'</button>'; }).join('')+
+    (dangLoc?'<button type="button" class="leg-btn leg-all" onclick="dvLoc(-1)">Hiện tất cả</button>':'')+
+    '<span class="cs-note">Số trên cột = Tổng '+(dangLoc?'các loại đang chọn':'lượt/ngày')+' · bấm từng loại để lọc</span></div>';
+  // Chỉ vẽ loại đang chọn; tổng = cộng các loại đang chọn
+  var chon=d.series.filter(function(se){ return !DV_AN[se.i]; });
+  var rows=d.rows.map(function(r){ var v=chon.map(function(se){ return r.vals[se.i]; });
+    return {nhan:r.nhan, n:r.n, vals:v, tong:r.n?Math.round(v.reduce(function(s,x){ return s+(x||0); },0)*10)/10:null}; });
   // Bảng số: tiêu đề ngắn để không tràn ngang trong thẻ nửa trang; số ngày làm việc ghi kèm tuần
   var ngan=['Bảo dưỡng','Bảo hiểm','ĐS tiền mặt','SCC','Bảo hành'];
-  var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Tuần (ngày LV)</th>'+ngan.map(function(n){ return '<th class="num">'+esc(n)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
-    d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+' ('+r.n+')</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
-  return '<div class="cs-sub">'+DV_TUAN+' tuần gần nhất</div>'+leg+svgStacked(d.series, d.rows, 'lượt/ngày')+tbl;
+  var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Tuần (ngày LV)</th>'+chon.map(function(se){ return '<th class="num">'+esc(ngan[se.i])+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
+    rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+' ('+r.n+')</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
+  return '<div class="cs-sub">'+DV_TUAN+' tuần gần nhất</div>'+leg+svgStacked(chon.map(function(se){ return {name:se.name, i:se.i, mau:CS_COLORS[se.i]}; }), rows, 'lượt/ngày')+tbl;
 }
 const DV_CN = {'NT':'NT','PR':'NT','ĐL':'ĐL','ĐN':'ĐL','BL':'BL','PY':'PY'};   // Phan Rang/Đắk Nông không có xưởng riêng
 function dvLuotXe(a){
