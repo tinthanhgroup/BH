@@ -504,7 +504,9 @@ function renderChiSoPanel(a){
 // Bán hàng: số HĐ ký TỰ ĐỘNG từ data.json (weekBH, cùng cách đếm với biểu đồ Chốt cọc tab BC Bán hàng) — cột tên
 // chi nhánh → đếm theo mã, cột "Tổng" = cộng các cột; không tải được data.json thì dùng số điền tay trong sheet.
 // Các bộ phận khác: lấy nguyên số trong sheet (vd Dịch vụ: Chỉ tiêu / Thực hiện).
-const CS_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#8E6BBF'];
+// Thứ tự màu cố định (không xoay vòng). Đã chạy kiểm tra bảng màu dataviz 17/10/2026 (nền sáng): đạt độ sáng, độ đậm,
+// tách biệt cho người mù màu (ΔE ≥ 8,9) và mắt thường (≥ 16); cam/xanh lá tương phản < 3:1 → luôn kèm số tổng, chú giải, bảng số.
+const CS_COLORS = ['#2F6FB5','#E0793C','#1FA97A','#8E6BBF','#B5475E'];
 const CS_WEEKS = 10;   // số tuần gần nhất của biểu đồ HĐ ký Bán hàng
 // Báo bán tháng so với chỉ tiêu = bảng 9 "Thực hiện chỉ tiêu Tháng" của tab BC Bán hàng, lấy thẳng từ trang cha
 // index.html (parent.getDMSMonth()) để cùng 1 logic + chỉ tiêu tự chỉnh tay. Mở trang này riêng lẻ thì không có.
@@ -571,7 +573,8 @@ function csBHData(sec, a){
   return {series:series, rows:rows, auto:!!SALES};
 }
 // Cột chồng theo tuần, nhãn tổng trên đỉnh cột; rê chuột vào từng đoạn xem số
-function svgStacked(series, rows){
+function svgStacked(series, rows, donVi){
+  donVi = donVi || 'HĐ';
   var W=560, H=200, pl=30, pr=10, pt=22, pb=28, iw=W-pl-pr, ih=H-pt-pb;
   var max=Math.max(1, Math.max.apply(null, rows.map(function(r){ return r.tong||0; })));
   var step=Math.pow(10, Math.floor(Math.log10(max))), nice=Math.ceil(max/step)*step; if(nice/step<=2) step/=2;
@@ -584,7 +587,7 @@ function svgStacked(series, rows){
     series.forEach(function(se,j){
       var v=r.vals[j]||0; if(!v) return;
       var y0=y(acc), y1=y(acc+v); acc+=v;
-      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+CS_COLORS[j%CS_COLORS.length]+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' HĐ')+'</title></rect>';
+      s+='<rect x="'+(cx-bw/2)+'" y="'+(y1+1)+'" width="'+bw+'" height="'+Math.max(0,y0-y1-2)+'" rx="3" fill="'+CS_COLORS[j%CS_COLORS.length]+'"><title>'+esc(r.nhan+' · '+se.name+': '+fmtN(v)+' '+donVi)+'</title></rect>';
     });
     s+='<text x="'+cx+'" y="'+(y(r.tong||0)-6)+'" text-anchor="middle" class="cs-tot">'+fmtN(r.tong)+'</text>';
     s+='<text x="'+cx+'" y="'+(H-8)+'" text-anchor="middle" class="cs-ax">'+esc(r.nhan)+'</text>';
@@ -677,6 +680,46 @@ const DV_JSON_URL = 'dichvu.json';
 const DV_SYNC_URL = '';   // URL Web App TinThanh_DichVu_Sync.gs (doGet) — điền sau khi Deploy thì hiện nút "Cập nhật số Dịch vụ"
 let DVX = null;           // null nếu tải lỗi
 const DV_LOAI = [['BD','Bảo dưỡng'],['Bảo hiểm','Bảo hiểm'],['Đồng sơn tiền mặt','Đồng sơn tiền mặt']];
+// Biểu đồ 6 tuần (17/10/2026, anh Khanh chốt): TB lượt xe / ngày làm việc, cột chồng đủ 5 phân loại, bảng so sánh 90 ngày giữ bên dưới
+const DV_LOAI_BD = [['BD','Bảo dưỡng'],['Bảo hiểm','Bảo hiểm'],['Đồng sơn tiền mặt','Đồng sơn tiền mặt'],['SCC','SCC (sửa chữa chung)'],['Bảo hành','Bảo hành']];
+const DV_TUAN = 6;
+function dvTuanData(a){
+  if(!DVX || !DVX.ngay) return null;
+  var cn=DV_CN[branchCode(a.b.chiNhanh)]; if(!cn) return null;
+  var ref=new Date(a.ref); ref.setHours(0,0,0,0);
+  var mon0=new Date(ref); mon0.setDate(ref.getDate()-(ref.getDay()+6)%7);
+  var tot=function(o){ return Object.keys(o).reduce(function(s,k){ return s+(o[k]||0); },0); };
+  var tuan=[];
+  for(var w=DV_TUAN-1; w>=0; w--){
+    var mon=new Date(mon0); mon.setDate(mon0.getDate()-7*w);
+    var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    var ngay=[];
+    Object.keys(DVX.ngay).forEach(function(k){ var d=parseD(k), v=DVX.ngay[k][cn];
+      if(d && d>=mon && d<=sun && d.getDay()!==0 && v) ngay.push({v:v, t:tot(v)}); });
+    tuan.push({mon:mon, ngay:ngay});
+  }
+  // Ngày làm việc: bỏ ngày có quá ít lệnh (< 30% trung vị — nghỉ lễ), như bảng so sánh 90 ngày
+  var all=[]; tuan.forEach(function(x){ x.ngay.forEach(function(n){ all.push(n.t); }); });
+  if(!all.length) return null;
+  all.sort(function(x,y){ return x-y; }); var med=all[Math.floor(all.length/2)];
+  var series=DV_LOAI_BD.map(function(l,i){ return {name:l[1], i:i}; });
+  var rows=tuan.map(function(x){
+    var ok=x.ngay.filter(function(n){ return n.t>=med*0.3; });
+    var vals=DV_LOAI_BD.map(function(l){ return ok.length ? Math.round(ok.reduce(function(s,n){ return s+(n.v[l[0]]||0); },0)/ok.length*10)/10 : null; });
+    var tong=ok.length ? Math.round(vals.reduce(function(s,v){ return s+(v||0); },0)*10)/10 : null;
+    return {nhan:'T'+weekNum(x.mon), vals:vals, tong:tong, n:ok.length};
+  });
+  return {series:series, rows:rows};
+}
+function dvTuanChart(a){
+  var d=dvTuanData(a); if(!d) return '';
+  var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng lượt/ngày</span></div>';
+  // Bảng số: tiêu đề ngắn để không tràn ngang trong thẻ nửa trang; số ngày làm việc ghi kèm tuần
+  var ngan=['Bảo dưỡng','Bảo hiểm','ĐS tiền mặt','SCC','Bảo hành'];
+  var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Tuần (ngày LV)</th>'+ngan.map(function(n){ return '<th class="num">'+esc(n)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
+    d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+' ('+r.n+')</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
+  return '<div class="cs-sub">'+DV_TUAN+' tuần gần nhất</div>'+leg+svgStacked(d.series, d.rows, 'lượt/ngày')+tbl;
+}
 const DV_CN = {'NT':'NT','PR':'NT','ĐL':'ĐL','ĐN':'ĐL','BL':'BL','PY':'PY'};   // Phan Rang/Đắk Nông không có xưởng riêng
 function dvLuotXe(a){
   if(!DVX || !DVX.ngay) return null;
@@ -699,7 +742,8 @@ function dvLuotXe(a){
   wk=wk.filter(ok); base=base.filter(ok);
   var avg=function(arr,cat){ return arr.length ? arr.reduce(function(s,x){ return s+(x.v[cat]||0); },0)/arr.length : null; };
   return { boPhan:'DV', nhanCot:'Loại', _auto:{nW:wk.length, nB:base.length},
-    tieuDe:'Lượt xe TB/ngày làm việc: Tuần '+a.refWeek+' ('+dm(mon)+'–'+dm(sun)+') so với 90 ngày trước ('+dm(b0)+'–'+dm(b1)+')',
+    tieuDe:'Lượt xe TB/ngày làm việc',
+    _ss:'Tuần '+a.refWeek+' ('+dm(mon)+'–'+dm(sun)+') so với 90 ngày trước ('+dm(b0)+'–'+dm(b1)+')',
     cot:['Tuần '+a.refWeek+' (lượt/ngày)','TB 90 ngày (lượt/ngày)'],
     dong:DV_LOAI.map(function(l){ return {nhan:l[1], giaTri:[avg(wk,l[0]), avg(base,l[0])]}; }) };
 }
@@ -796,6 +840,7 @@ function renderChiSo(a){
            '<td class="num'+cls+'">'+(dp==null?'—':sgn(dp,dp.toLocaleString('vi-VN',{maximumFractionDigits:1}))+'%')+'</td></tr>';
       });
       t+='</tbody></table>';
+      if(sec._auto) t=dvTuanChart(a)+'<div class="cs-sub" style="margin-top:12px">'+esc(sec._ss||'')+'</div>'+t;
       if(sec._auto) t+=(DV_SYNC_URL?'<a class="cs-btn" href="'+esc(DV_SYNC_URL)+'" target="_blank" rel="noopener">🔄 Cập nhật số Dịch vụ</a>':'')+
         csNote('Tự động từ dichvu.json — file lệnh sửa chữa admin tải lên Drive hằng ngày'+(DVX.updated_vn?' · cập nhật '+esc(DVX.updated_vn):'')+(DVX.nguon_cap_nhat?' (file nguồn lưu lúc '+esc(DVX.nguon_cap_nhat)+')':'')+
           '. Đếm RO không trùng theo Phân loại; ngày làm việc = trừ Chủ nhật và ngày có quá ít lệnh (nghỉ lễ): tuần này '+sec._auto.nW+' ngày, 90 ngày trước '+sec._auto.nB+' ngày.');
