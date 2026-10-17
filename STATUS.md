@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 16/10/2026
+Cập nhật: 17/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -17,7 +17,15 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v8.docx`)
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [ ] Báo cáo tuần: mở quyền cho PGĐ (hiện chỉ Admin + GĐ)
-- [ ] Báo cáo tuần: chuyển từ nhập tay Excel → Google Sheet + Apps Script
+- [x] Báo cáo tuần: đưa Nha Trang + Phú Yên lên Google Sheet (17/10/2026; file mẫu DEMO giữ riêng, không đồng bộ)
+- [x] Báo cáo tuần: đặt múi giờ GMT+7 cho 2 file (file mẫu để GMT+0 → tuần đổi lúc 17h); đã ra tuần 42
+- [ ] Báo cáo tuần: sửa múi giờ file mẫu (tinthanhgroup123) trước khi nhân bản cho ĐL, PR, BL
+- [ ] Báo cáo tuần: chia sẻ file + hướng dẫn cho GĐCN, trưởng BP Nha Trang và Phú Yên
+- [ ] Báo cáo tuần: đưa các chi nhánh còn lại (ĐL, PR, BL) lên Google Sheet
+- [ ] Báo cáo tuần sheet 6: chạy `capNhatNhanTuanSheet6` (nhãn tuần tự tính)
+- [x] Lượt xe DV tự động: thư mục Drive `13. DV - Master Data` (tinthanhgroup123), cài `TinThanh_DichVu_Sync.gs`, `dichvu.json` có dữ liệu đến 17/10 (17/10/2026)
+- [ ] Chạy `boNhapTayLuotXeDV` (bỏ khối nhập tay lượt xe ở sheet 6)
+- [ ] Chia sẻ thư mục `13. DV - Master Data` cho admin, admin thêm lối tắt vào My Drive → kiểm tra .bat có dòng "Da chep Master Data len Google Drive"
 
 ## Đang chờ
 - TGĐ: duyệt dự thảo Quy định xử lý kho tồn lâu (mốc ngày, lãi suất nội bộ, thời hạn thanh toán công nợ)
@@ -28,6 +36,9 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 17/10/2026 | Lượt xe DV tự động chạy: `dichvu.json` từ Master Data (49.136 lệnh, 12/09/2025–17/10/2026, NT/PY/ĐL/BL); NT T39 khớp số nhập tay (BD 18,0 so với 18,17) |
+| 17/10/2026 | Báo cáo tuần sheet 6: nhãn tuần tự tính; lượt xe DV chuyển sang tự động từ Master Data (cap_nhat.vbs tự chép lên Drive, `TinThanh_DichVu_Sync.gs` đọc sheet PBI mỗi giờ); xem `docs/apps-script.md` |
+| 17/10/2026 | Báo cáo tuần: tạo Google Sheet Nha Trang + Phú Yên từ file mẫu, xoá dữ liệu DEMO, đặt lại `baocaotuan.json`, sửa múi giờ GMT+7 (tuần báo cáo đổi đúng 10h T7); xem `docs/module-baocaotuan.md` |
 | 16/10/2026 | Trang Chính sách: 5 công văn CV 45, 72, 86, 113, 114 chuyển sang thư mục chung `1. Chinh sach 2026` trên Drive, đổi link sang từng file |
 | 16/10/2026 | Thêm 5 chính sách HTV vào trang Chính sách (CV 45, 72, 86 chương trình T7–T9; CV 114 T10 gồm chương trình riêng Creta; CV 113 Venue), link thư mục Drive `Chinh sach ho tro HTV`; chưa commit/push, chờ anh Khanh xem |
 | 13/10/2026 | HTV đồng ý tạm dừng đặt bổ sung T10 theo công văn ngày 10/10; vẫn rà soát bán hàng 20/10 như đã cam kết |
