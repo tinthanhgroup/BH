@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-17T16:30:02+07:00",
+ "updated_at": "2026-10-17T17:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -136,30 +136,6 @@
      ],
      "dong": [
       {
-       "nhan": "Tuần 35",
-       "giaTri": [
-        null,
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 36",
-       "giaTri": [
-        null,
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 37",
-       "giaTri": [
-        null,
-        null,
-        null
-       ]
-      },
-      {
        "nhan": "Tuần 38",
        "giaTri": [
         null,
@@ -174,6 +150,30 @@
         null,
         null
        ]
+      },
+      {
+       "nhan": "Tuần 40",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 41",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 42",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
       }
      ]
     },
@@ -183,38 +183,6 @@
      "nhanCot": "",
      "cot": [],
      "dong": []
-    },
-    {
-     "boPhan": "DV",
-     "tieuDe": "Lượt xe TB/ngày làm việc: Tuần 39 (21–26/09) so với 90 ngày trước (23/06–20/09)",
-     "nhanCot": "Loại",
-     "cot": [
-      "Tuần 39 (lượt/ngày)",
-      "TB 90 ngày (lượt/ngày)"
-     ],
-     "dong": [
-      {
-       "nhan": "Bảo dưỡng",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Bảo hiểm",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Đồng sơn tiền mặt",
-       "giaTri": [
-        null,
-        null
-       ]
-      }
-     ]
     },
     {
      "boPhan": "BH",
@@ -267,27 +235,6 @@
      ],
      "dong": [
       {
-       "nhan": "Tuần 35",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 36",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Tuần 37",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
        "nhan": "Tuần 38",
        "giaTri": [
         null,
@@ -296,6 +243,27 @@
       },
       {
        "nhan": "Tuần 39",
+       "giaTri": [
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 40",
+       "giaTri": [
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 41",
+       "giaTri": [
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 42",
        "giaTri": [
         null,
         null
@@ -309,38 +277,6 @@
      "nhanCot": "",
      "cot": [],
      "dong": []
-    },
-    {
-     "boPhan": "DV",
-     "tieuDe": "Lượt xe TB/ngày làm việc: Tuần 39 (21–26/09) so với 90 ngày trước (23/06–20/09)",
-     "nhanCot": "Loại",
-     "cot": [
-      "Tuần 39 (lượt/ngày)",
-      "TB 90 ngày (lượt/ngày)"
-     ],
-     "dong": [
-      {
-       "nhan": "Bảo dưỡng",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Bảo hiểm",
-       "giaTri": [
-        null,
-        null
-       ]
-      },
-      {
-       "nhan": "Đồng sơn tiền mặt",
-       "giaTri": [
-        null,
-        null
-       ]
-      }
-     ]
     },
     {
      "boPhan": "BH",
