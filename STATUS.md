@@ -20,22 +20,30 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [x] Báo cáo tuần: đưa Nha Trang + Phú Yên lên Google Sheet (17/10/2026; file mẫu DEMO giữ riêng, không đồng bộ)
 - [x] Báo cáo tuần: đặt múi giờ GMT+7 cho 2 file (file mẫu để GMT+0 → tuần đổi lúc 17h); đã ra tuần 42
 - [ ] Báo cáo tuần: sửa múi giờ file mẫu (tinthanhgroup123) trước khi nhân bản cho ĐL, PR, BL
-- [ ] Báo cáo tuần: chia sẻ file + hướng dẫn cho GĐCN, trưởng BP Nha Trang và Phú Yên
+- [x] Báo cáo tuần: chia sẻ file + hướng dẫn cho GĐCN, trưởng BP Nha Trang và Phú Yên (17/10/2026)
 - [ ] Báo cáo tuần: đưa các chi nhánh còn lại (ĐL, PR, BL) lên Google Sheet
-- [ ] Báo cáo tuần sheet 6: chạy `capNhatNhanTuanSheet6` (nhãn tuần tự tính)
+- [x] Báo cáo tuần sheet 6: nhãn tuần tự tính (17/10/2026)
 - [x] Lượt xe DV tự động: thư mục Drive `13. DV - Master Data` (tinthanhgroup123), cài `TinThanh_DichVu_Sync.gs`, `dichvu.json` có dữ liệu đến 17/10 (17/10/2026)
-- [ ] Chạy `boNhapTayLuotXeDV` (bỏ khối nhập tay lượt xe ở sheet 6)
-- [ ] Chia sẻ thư mục `13. DV - Master Data` cho admin, admin thêm lối tắt vào My Drive → kiểm tra .bat có dòng "Da chep Master Data len Google Drive"
+- [x] Bỏ khối nhập tay lượt xe ở sheet 6 (17/10/2026)
+- [x] Chia sẻ thư mục `13. DV - Master Data` cho admin (17/10/2026)
+- [ ] Kiểm tra admin chạy .bat có dòng "Da chep Master Data len Google Drive" và `dichvu.json` cập nhật ngày mới
+- [ ] Báo cáo tuần lịch mới (từ tuần 42): dán script, chạy `apDungLichMoi`; push `baocaotuan.html`
+- [ ] 19/10/2026: kiểm tra số liệu tự động tuần 42 lên web; 20/10 sau 17h: kiểm tra bản chốt tuần 42
 
 ## Đang chờ
 - TGĐ: duyệt dự thảo Quy định xử lý kho tồn lâu (mốc ngày, lãi suất nội bộ, thời hạn thanh toán công nợ)
 
 ## Mốc sắp tới
 - 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
+- 19/10/2026: trưởng BP Nha Trang, Phú Yên chốt Báo cáo tuần 42
+- 20/10/2026: 17h chốt Báo cáo tuần 42 (GĐCN), hệ thống lưu bản chốt
+- 21/10/2026: họp giao ban thứ 4 theo bản chốt tuần 42
 
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 17/10/2026 | Báo cáo tuần đổi lịch (anh chốt, từ tuần 42): tuần T2–CN số tuần ISO, đổi 0h thứ 2; thứ 2 BP chốt, 17h thứ 3 chốt + lưu bản chốt (`bct_luu/`), thứ 4 họp; web có ô chọn bản đã chốt. Xem `docs/module-baocaotuan.md` mục "Lịch tuần báo cáo & bản chốt" |
+| 17/10/2026 | Báo cáo tuần: đã chia sẻ file cho Nha Trang, Phú Yên và gửi hướng dẫn; sheet 6 nhãn tuần tự tính, bỏ khối nhập tay lượt xe; Nha Trang đã nhập 4 việc |
 | 17/10/2026 | Lượt xe DV tự động chạy: `dichvu.json` từ Master Data (49.136 lệnh, 12/09/2025–17/10/2026, NT/PY/ĐL/BL); NT T39 khớp số nhập tay (BD 18,0 so với 18,17) |
 | 17/10/2026 | Báo cáo tuần sheet 6: nhãn tuần tự tính; lượt xe DV chuyển sang tự động từ Master Data (cap_nhat.vbs tự chép lên Drive, `TinThanh_DichVu_Sync.gs` đọc sheet PBI mỗi giờ); xem `docs/apps-script.md` |
 | 17/10/2026 | Báo cáo tuần: tạo Google Sheet Nha Trang + Phú Yên từ file mẫu, xoá dữ liệu DEMO, đặt lại `baocaotuan.json`, sửa múi giờ GMT+7 (tuần báo cáo đổi đúng 10h T7); xem `docs/module-baocaotuan.md` |

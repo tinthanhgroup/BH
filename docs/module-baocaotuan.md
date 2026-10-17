@@ -17,8 +17,8 @@ powershell -ExecutionPolicy Bypass -File "Bao cao tuan\xlsx_to_json.ps1"
 → ghi `baocaotuan.json` ở root → commit/push. Script mở .xlsx như ZIP, đọc XML trực tiếp (máy không có Python/node). File `.ps1` **phải lưu UTF-8 có BOM** (PowerShell 5.1).
 
 **Giai đoạn Google Sheet (từ 29/09/2026):** `apps-script/TinThanh_BaoCaoTuan_Sync.gs` đọc các file Google Sheet (`BCT_CONFIG.SHEET_IDS`; từ 17/10/2026: Nha Trang `1vzneCcK…`, Phú Yên `12PMMFSU…`, tạo bằng cách sao chép file mẫu rồi chạy `lamSachFileChiNhanh()`). **File mẫu** `1SYRz8jrqWjauPj85lQ1W6JL7cY_WfG555bx6Qu7poYg` (dữ liệu DEMO, chủ file tinthanhgroup123) dùng để hướng dẫn, **không đồng bộ**. `datLaiBaoCaoTuan()` = đồng bộ bỏ toàn bộ dữ liệu + lịch sử nhận định cũ trong JSON (chỉ chạy tay khi đổi bộ file) → ghi **đúng cấu trúc JSON bên dưới** (`nguon:'sheet'`), đồng bộ mỗi giờ, không đổi gì thì không push. Chi nhánh có trong JSON cũ mà không nằm trong `SHEET_IDS` vẫn được giữ nguyên.
-- **Gắn tuần nhận định theo giờ sửa** (giải quyết điểm ⚠ ở mục "Tuần báo cáo & hạn chót"): trigger `bctOnEdit` ghi giờ sửa cột D từng khối (`bct_nd|<sheetId>|<GDCN|BH|DV|VP>` trong Script Properties). BP → tuần T2–CN chứa lúc sửa; GĐCN → tuần báo cáo lúc sửa; chưa có giờ sửa → tuần báo cáo lúc đồng bộ. Nội dung khối **giống hệt** bản mới nhất đã lưu (ở tuần khác) thì không tạo bản mới. Hàm `xemGioSuaNhanDinh()` in giờ sửa + tuần sẽ gắn.
-- Web: nhận định có tuần **mới hơn** tuần báo cáo (BP viết cho tuần sau trong lúc GĐCN chưa chốt) chưa hiện, kể cả ở "các tuần trước".
+- **Gắn tuần nhận định theo giờ sửa**: trigger `bctOnEdit` ghi giờ sửa cột D từng khối (`bct_nd|<sheetId>|<GDCN|BH|DV|VP>` trong Script Properties) → tuần theo `kySat_` (xem mục "Lịch tuần báo cáo & bản chốt"); chưa có giờ sửa → kỳ lúc đồng bộ. Nội dung khối **giống hệt** bản mới nhất đã lưu (ở tuần khác) thì không tạo bản mới. Hàm `xemGioSuaNhanDinh()` in giờ sửa + tuần sẽ gắn.
+- Web: nhận định có tuần **mới hơn** tuần báo cáo (viết sau giờ chốt cho tuần hiện tại) chưa hiện, kể cả ở "các tuần trước".
 
 Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống thì lấy **tên file** (nên đặt tên file theo chi nhánh, vd `Nha Trang.xlsx`) và hiện cảnh báo.
 
@@ -26,13 +26,25 @@ Tên chi nhánh lấy từ ô `B3` sheet bộ phận/TCT/Bao cao GDCN; trống t
 
 File làm việc duy nhất: `Bao cao tuan/Bao cao tuan.xlsx` (trước là `Bao cao tuan 39.xlsx`, chuẩn bị đưa lên Google Sheet). Sheet đã đổi tên + sắp lại: `1. Huong dan` · `2. Ban hang` · `3. Dich vu` · `4. Van phong` · `5. Ke hoach TCT giao` · `6. Chi so trong yeu` · `7. Nhan dinh tong the` · `8. Bao cao GDCN` · `9. Trong tam thang` · `10. Achievement` · `11. Nhan dinh tuan` (cũ) (sheet nháp `Ghi chu` đã xoá 29/09/2026; + sheet `foxz` veryHidden do add-in chèn, để nguyên). Converter **bỏ số đầu tên sheet** trước khi tra (`^\d+[.)] `) nên bảng dưới vẫn ghi tên gốc; Apps Script sau này cũng phải tra kiểu đó. Đổi thứ tự sheet → bỏ `calcChain.xml` + đặt `fullCalcOnLoad` (Excel tự dựng lại).
 
-## Tuần báo cáo & hạn chót (29/09/2026, người dùng chốt)
+## Lịch tuần báo cáo & bản chốt (17/10/2026, người dùng chốt — áp dụng từ tuần 42)
 
-- **Trưởng BP** cập nhật xong trước **10h sáng thứ 7** (sheet bộ phận, ô cam sheet 6, khối nhận định BP ở sheet 7). **GĐCN** không có giờ cố định, nhưng phải chốt tuần N **trước 10h thứ 7 tuần N+1** (nghỉ phép vẫn kịp); quá mốc → tuần N để trống phần GĐCN.
-- **Tuần báo cáo** tự tính: từ 10h T7 tuần N đến trước 10h T7 tuần N+1 = tuần N. `8. Bao cao GDCN!G3` (Ngày báo cáo) giờ là **công thức** = thứ 7 đó: `INT(NOW())-MOD(WEEKDAY(NOW(),2)-6,7)-IF(NOW()<INT(NOW())-MOD(WEEKDAY(NOW(),2)-6,7)+10/24,7,0)`; `E3 = WEEKNUM(G3,2)`. Hết nhập tay → hết lỗi "G3 cũ của tuần trước".
-- Sheet 2/3/4/5: thêm `F4` "Tuần báo cáo" / `G4 = '8. Bao cao GDCN'!$E$3`. Tô VÀNG "chưa cập nhật" đổi từ `Tuần CN <> WEEKNUM(TODAY())` sang `N(Tuần CN) < $G$4` → chỉ vàng khi **trễ hạn 10h T7**, GĐCN mở file muộn (giữa tuần sau) không thấy vàng oan. `E3` "Tuần hiện tại" giữ `WEEKNUM(TODAY())` để trưởng BP biết ghi số tuần nào vào cột Tuần CN. Tô ĐỎ quá hạn vẫn theo TODAY.
-- Trên Google Sheet: đặt múi giờ file GMT+7 và Tính toán lại = "Khi thay đổi và mỗi giờ" (NOW() mới tự đổi tuần lúc 10h T7 khi không ai sửa). ⚠ File mẫu để GMT+0 → G3 đổi lúc 17h (phát hiện 17/10/2026); file mới chạy `caiDatFileChiNhanh()` (đặt múi giờ + tính lại mỗi giờ cho mọi file trong `SHEET_IDS`, rồi đồng bộ). File để vùng Việt Nam: công thức gõ tay dùng dấu `;`; script **không tự viết công thức** (bị "Lỗi phân tích cú pháp") mà chép công thức có sẵn bằng `copyTo`.
-- ⚠ Chưa giải quyết (để Apps Script khi lên Google Sheet): khối nhận định sheet 7 bị ghi đè hằng tuần, converter gắn tuần theo G3 lúc chạy → giữa tuần N+1 (trước 10h T7) trưởng BP đã viết nhận định tuần N+1 mà tuần báo cáo vẫn là N → nếu chạy converter lúc đó sẽ ghi đè lịch sử tuần N của BP. Hướng giải: Apps Script onEdit ghi giờ sửa từng khối → BP gắn tuần theo hạn chót kế tiếp, GĐCN theo tuần báo cáo. Giai đoạn Excel: chạy converter ngay sau khi GĐCN chốt.
+Báo cáo dùng cho **họp giao ban thứ 4** và để TGĐ nắm công việc. Kỳ báo cáo = **tuần ISO thứ 2 → chủ nhật**.
+
+| Thời điểm (tuần N+1) | Việc |
+|---|---|
+| 0h thứ 2 | Tuần báo cáo tự chuyển sang tuần N; **số liệu tự động** (HĐ, báo bán, lượt xe DV, nhân sự/chấm công, CRM) lên web ngay, không chờ chốt |
+| Thứ 2 | Trưởng BP chốt tuần N: việc, ô cam sheet 6, nhận định BP (quy định quản lý — không khoá file; file tô VÀNG dòng chưa cập nhật) |
+| Thứ 3, trước 17h | GĐCN chốt: cột Q/R/S, nhận định GĐCN |
+| **17h thứ 3 = giờ chốt** | Lần đồng bộ kế tiếp (≤ 1 giờ) lưu **bản chốt** tuần N; nội dung viết sau giờ chốt tính cho tuần N+1 |
+| Thứ 4 | Họp giao ban — web mặc định mở bản chốt |
+
+- **"Chốt" không khoá file**: là mốc (1) lưu bản báo cáo cố định, (2) chuyển kỳ ghi nhận định. Sửa sau giờ chốt vẫn được, chỉ không vào bản đã lưu.
+- **Công thức trong file** (hàm `apDungLichMoi()`, ghi công thức tự đổi `,`→`;` theo vùng): `8. Bao cao GDCN!G3` = thứ 7 tuần vừa qua `=INT(NOW())-WEEKDAY(NOW();2)-1`, `E3 = ISOWEEKNUM(G3)`; sheet 2/3/4/5 `D3` "Tuần ghi cập nhật", `E3 = ISOWEEKNUM(NOW()-41/24)` (trước 17h T3 → tuần vừa qua) — trưởng BP ghi số này vào Tuần CN và "T42: …". `G4` (tuần báo cáo) và tô VÀNG `N(Tuần CN) < $G$4` giữ nguyên → từ 0h T2 dòng chưa cập nhật tuần vừa qua tự vàng. Sheet 6 nhãn B6:B10 `ISOWEEKNUM(G3-7k)`. Hàm cũng sửa câu chữ hạn chót ở sheet Hướng dẫn / 6 / 7 (log báo câu nào không tìm thấy).
+- **Script** (`TinThanh_BaoCaoTuan_Sync.gs`): `reportingSat_` = thứ 7 tuần vừa qua; `kySat_(t)` = tuần chứa `t − 41 giờ` (gắn tuần cho MỌI khối nhận định, GĐCN và BP cùng quy tắc); `isoWeek_` thay `WEEKNUM(…,2)` (cũ tách đôi tuần 28/12/2026–03/01/2027 và lệch +1 cả năm 2027).
+- **Bản chốt**: `bct_luu/<năm>-W<tuần>.json` (nguyên payload + `chot:{key,nam,tuan,ngayBaoCao,luc}`) + `bct_luu/index.json` (`tuan:[{key,nam,tuan,ngayBaoCao,luc,chiNhanh}]`, mới nhất trước). Chỉ lưu khi tuần báo cáo = tuần vừa qua giờ chốt (17h T3 → hết CN), mỗi tuần 1 lần (Script Properties `bct_chot|<key>`), từ `LUU_TU_TUAN` (2026-W42). `chotLaiTuanBaoCao()` = chạy tay lưu lại bản chốt tuần báo cáo hiện tại (vd TGĐ cho GĐCN chốt muộn).
+- **Web**: ô **"Xem"** đầu trang: "Đang cập nhật — Tuần N" + các bản chốt. Mặc định mở bản chốt nếu tuần báo cáo hiện tại đã có. Khi xem bản chốt: việc/nhận định/chỉ số nhập tay lấy từ bản chốt; số tự động có lịch sử (HĐ ký, lượt xe, nhân sự, chấm công, lead CRM) tính lại theo tuần đó; **không hiện** bảng báo bán tháng/quý và khách hot CRM (chỉ có số hiện tại).
+- Múi giờ file phải GMT+7, Tính toán lại "Khi thay đổi và mỗi giờ" (`caiDatFileChiNhanh()`); file mẫu cũ để GMT+0 (phát hiện 17/10/2026). File để vùng Việt Nam: công thức gõ tay dùng `;`; cột STT chép bằng `copyTo` (`suaSTT()`).
+- Lịch cũ (29/09–17/10/2026: hạn 10h thứ 7, tuần đổi 10h T7, `WEEKNUM(…,2)`): xem lịch sử git của file này.
 
 ## Sheet được đọc (chỉ dữ liệu gốc, KHÔNG đọc các sheet tổng hợp FILTER)
 

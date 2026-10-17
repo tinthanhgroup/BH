@@ -132,6 +132,9 @@
   .wk{font-weight:700;color:var(--navy);}
   .empty{color:var(--ink-soft);font-size:12.5px;padding:6px 0 10px;font-style:italic;}
   .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;font-size:12px;color:var(--ink-soft);}
+  .view-bar{background:#fff;border:1px solid var(--line, #dde3eb);border-radius:8px;padding:8px 12px;font-size:13px;}
+  .view-bar select{font:inherit;font-weight:600;color:var(--navy, #1B4F8C);padding:3px 6px;}
+  .view-note{color:var(--ink-soft);}
   select{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:6px 10px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
   .kpi.clickable{cursor:pointer;transition:border-color .15s, box-shadow .15s;}
   .kpi.clickable:hover{border-color:var(--navy);box-shadow:0 2px 8px rgba(27,79,140,.12);}
@@ -202,7 +205,7 @@
   </div>
   <div id="app"><div class="loading">Đang tải dữ liệu báo cáo tuần…</div></div>
   <div class="footnote">
-    Tuần báo cáo tự đổi lúc 10h sáng thứ 7 (hạn chót cập nhật của trưởng bộ phận; GĐCN chốt trước 10h thứ 7 tuần sau). Mốc tính "quá hạn" và "chưa cập nhật" = thứ 7 của tuần báo cáo.<br>
+    Tuần báo cáo = tuần vừa qua (T2–CN, số tuần ISO), tự đổi lúc 0h thứ 2: số liệu tự động lên ngay; thứ 2 trưởng bộ phận chốt, thứ 3 GĐCN chốt; <b>17h thứ 3</b> hệ thống lưu bản chốt (chọn xem lại ở ô "Xem" đầu trang); thứ 4 họp giao ban. Mốc tính "quá hạn" và "chưa cập nhật" = thứ 7 của tuần báo cáo.<br>
     Dữ liệu tổng hợp từ Google Sheet báo cáo tuần của các chi nhánh (tự đồng bộ mỗi giờ) — xem hướng dẫn nhập ở sheet "1. Huong dan".
   </div>
 </div>
@@ -234,19 +237,23 @@ const ND_NAME = {GDCN:'Giám đốc chi nhánh', BH:'Bán hàng · BH-000', DV:'
 const SEL_KEY = '_bctBranch';
 
 let DATA = null, BR = [], selIdx = 0, monthSel = null, achMonthSel = null;
+// Bản chốt hằng tuần (17/10/2026): Apps Script lưu bct_luu/<năm>-W<tuần>.json lúc 17h thứ 3 + bct_luu/index.json.
+// VIEW_KEY = null → xem số liệu ĐANG CẬP NHẬT (baocaotuan.json); = '2026-W42' → xem bản đã chốt (giữ nguyên như lúc chốt).
+// Mặc định: tuần báo cáo hiện tại đã có bản chốt (từ 17h T3 đến hết CN) → mở bản chốt (họp thứ 4 xem đúng bản này).
+const LUU_DIR = 'bct_luu/';
+let LUU_IDX = [], VIEW_KEY = null, VIEW_DATA = null;
+function weekKey(d){ return weekYear(d)+'-W'+String(weekNum(d)).padStart(2,'0'); }
 
 // ── Tiện ích ────────────────────────────────────────────────
 function esc(s){ return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function parseD(s){ if(!s) return null; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s); return m? new Date(+m[1],+m[2]-1,+m[3]) : null; }
 function fmtD(s){ var d=parseD(s); return d? String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear() : ''; }
 function fmtDShort(s){ var d=parseD(s); return d? String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0') : ''; }
-// Giống Excel WEEKNUM(date,2): tuần bắt đầu Thứ 2, tuần 1 là tuần chứa ngày 01/01 — khớp ô "Tuần hiện tại" trong file.
-function weekNum(d){
-  var jan1=new Date(d.getFullYear(),0,1);
-  var off=(jan1.getDay()+6)%7; // Thứ 2 = 0
-  var doy=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-jan1)/86400000);
-  return Math.floor((doy+off)/7)+1;
-}
+// Tuần ISO (đổi 17/10/2026, trước là WEEKNUM(…,2)): tuần Thứ 2 → Chủ nhật, tuần 1 chứa thứ 5 đầu tiên của năm
+// — khớp ISOWEEKNUM trong file. Tuần 28/12/2026–03/01/2027 là 53/2026 (WEEKNUM cũ tách đôi tuần này).
+function isoThu(d){ var t=new Date(d.getFullYear(),d.getMonth(),d.getDate()); t.setDate(t.getDate()+3-(t.getDay()+6)%7); return t; }
+function weekNum(d){ var t=isoThu(d); return Math.floor(Math.round((t-new Date(t.getFullYear(),0,1))/864e5)/7)+1; }
+function weekYear(d){ return isoThu(d).getFullYear(); }
 function isDone(t){ return t.trangThai==='Hoàn thành'; }
 // Loại hoạt động đánh số từ 28/09/2026 ("4. Cải tiến") — bỏ số thứ tự đầu chuỗi khi so sánh, vẫn nhận giá trị cũ không số
 function loaiHD(t){ return String(t.loaiHD||'').replace(/^\s*\d+\s*[.)]\s*/,''); }
@@ -271,7 +278,7 @@ function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 function analyze(b){
   var refStr = b.ngayBaoCao || b.ngayDuLieu;
   var ref = parseD(refStr) || new Date();
-  var refWeek = weekNum(ref), refYear = ref.getFullYear();
+  var refWeek = weekNum(ref), refYear = weekYear(ref);
   var viec = b.viec||[], tct = b.tct||[];
   viec.forEach(function(t){
     var h=parseD(t.han);
@@ -294,7 +301,7 @@ function analyze(b){
   deXuat.sort(function(a,b){ return rank(a)-rank(b); });
 
   // Nhận định: lấy đúng tuần báo cáo; các tuần khác đưa vào lịch sử
-  var nd = (b.nhanDinh||[]).map(function(n){ var d=parseD(n.ngay); return Object.assign({_d:d,_w:d?weekNum(d):null,_y:d?d.getFullYear():null},n); });
+  var nd = (b.nhanDinh||[]).map(function(n){ var d=parseD(n.ngay); return Object.assign({_d:d,_w:d?weekNum(d):null,_y:d?weekYear(d):null},n); });
   nd.sort(function(a,b){ return (b._d||0)-(a._d||0); });
   var ndCur = nd.filter(function(n){ return n._w===refWeek && n._y===refYear; });
 
@@ -338,7 +345,7 @@ function analyze(b){
     tctOpen: tct.filter(function(t){ return !isDone(t); }),
     // Ngày hoàn thành không bắt buộc → dòng không có ngày thì tính theo cột Tháng
     doneMonth: viec.filter(function(t){ if(!isDone(t)) return false; var d=parseD(t.ngayHT);
-      return d ? (d.getMonth()===ref.getMonth() && d.getFullYear()===refYear) : t.thang===ref.getMonth()+1; }).length,
+      return d ? (d.getMonth()===ref.getMonth() && d.getFullYear()===ref.getFullYear()) : t.thang===ref.getMonth()+1; }).length,
     ndCur:ndCur[0]||null, ndHist:nd.filter(function(n){ return n!==ndCur[0]; }),
     // Nhận định tổng thể (sheet "Nhan dinh tong the"): tuần báo cáo + các tuần trước (script tự tích luỹ lịch sử)
     ndBP: (function(){
@@ -503,6 +510,7 @@ const CS_WEEKS = 10;   // số tuần gần nhất của biểu đồ HĐ ký B�
 // index.html (parent.getDMSMonth()) để cùng 1 logic + chỉ tiêu tự chỉnh tay. Mở trang này riêng lẻ thì không có.
 function getDMS(){ try{ return (window.parent!==window && typeof window.parent.getDMSMonth==='function') ? window.parent.getDMSMonth() : null; }catch(e){ return null; } }
 function csDMSTable(a){
+  if(VIEW_KEY) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">Bản đã chốt không lưu bảng báo bán (số tháng/quý luôn là số hiện tại) — xem tab BC Bán hàng.</div>';
   var d=getDMS();
   if(!d) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">'+(window.parent!==window?'Đang chờ dữ liệu tab BC Bán hàng…':'Chỉ hiện khi mở trong trang chính (tab BC tuần).')+'</div>';
   // Nhóm chỉ tiêu của chi nhánh đang xem: PR tính chung NT, BL/ĐN tính chung ĐL (như TARGET_GROUPS ở index.html)
@@ -728,7 +736,8 @@ function csLeadTable(a, sec){
   (sec.dong||[]).forEach(function(x){
     var k=stripVN(x.nhan), isLead=/lead/.test(k), isHot=/hot/.test(k);
     var tay=iTay>=0?(x.giaTri||[])[iTay]:null, tuSheet=iTu>=0?(x.giaTri||[])[iTu]:null;
-    var crm=au?(isLead?au.lead:isHot?au.hot:null):null;
+    // Bản đã chốt: khách hot CRM chỉ có trạng thái HIỆN TẠI, không phải lúc chốt → không hiện (Lead tính lại được theo ngày tạo)
+    var crm=au?(isLead?au.lead:(isHot&&!VIEW_KEY)?au.hot:null):null;
     var gcTay=iGc>=0&&x.chu?(x.chu[iGc]||''):'';
     var v, nguon, gc;
     if(tay!=null){ v=tay; nguon='Nhập tay'+(crm!=null&&crm!==tay?' <span class="cs-muted">(CRM: '+fmtN(crm)+')</span>':''); gc=esc(gcTay); }
@@ -1032,11 +1041,36 @@ function renderAchievement(a){
 
 function selectBranch(i){ selIdx=i; lsSet(SEL_KEY, BR[i].b.chiNhanh); render(); }
 
+// ── Chọn xem: đang cập nhật / bản đã chốt ─────────────────
+function fmtLuc(s){ var d=s?new Date(s):null; return d&&!isNaN(d)? String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+' '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0') : ''; }
+function renderViewBar(){
+  var liveRef=parseD(((DATA.branches||[])[0]||{}).ngayBaoCao);
+  var liveWk=liveRef?weekNum(liveRef):'';
+  var h='<div class="toolbar view-bar">Xem <select onchange="chonBan(this.value)">';
+  h+='<option value=""'+(!VIEW_KEY?' selected':'')+'>Đang cập nhật — Tuần '+liveWk+(LUU_IDX.some(function(x){ return liveRef && x.key===weekKey(liveRef); })?' (sau giờ chốt)':' (chưa chốt)')+'</option>';
+  LUU_IDX.forEach(function(x){ h+='<option value="'+esc(x.key)+'"'+(x.key===VIEW_KEY?' selected':'')+'>Tuần '+x.tuan+'/'+x.nam+' — bản chốt '+esc(fmtLuc(x.luc))+'</option>'; });
+  h+='</select>';
+  h+= VIEW_KEY ? ' <span class="view-note">📌 Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
+               : ' <span class="view-note">Số liệu đang cập nhật. Bản chốt lưu tự động lúc 17h thứ 3.</span>';
+  return h+'</div>';
+}
+async function chonBan(key){
+  if(!key){ VIEW_KEY=null; VIEW_DATA=null; BR=(DATA.branches||[]).map(analyze); render(); return; }
+  try{
+    var r=await fetch(LUU_DIR+key+'.json?t='+Date.now()); if(!r.ok) throw new Error('HTTP '+r.status);
+    VIEW_DATA=await r.json(); VIEW_KEY=key;
+    BR=(VIEW_DATA.branches||[]).map(analyze);
+  }catch(e){ alert('Không tải được bản chốt '+key+' ('+e.message+')'); VIEW_KEY=null; VIEW_DATA=null; BR=(DATA.branches||[]).map(analyze); }
+  var saved=lsGet(SEL_KEY); BR.forEach(function(a,i){ if(a.b.chiNhanh===saved) selIdx=i; });
+  render();
+}
+
 function render(){
   var app=document.getElementById('app');
   if(!BR.length){ app.innerHTML='<div class="error">Chưa có dữ liệu chi nhánh nào trong baocaotuan.json.</div>'; return; }
+  if(selIdx>=BR.length) selIdx=0;
   var a=BR[selIdx];
-  var h=renderOverview(BR);
+  var h=renderViewBar()+renderOverview(BR);
   // Chỉ 1 chi nhánh thì nút chọn trùng với bảng mục 0 → ẩn
   if(BR.length>1) h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
   h+=renderBranchCard(a)+renderBranchNotes(a)+renderCanTGD(a)+renderChiSoPanel(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
@@ -1078,14 +1112,15 @@ async function load(){
     document.getElementById('updatedTag').textContent='Lỗi tải dữ liệu';
     return;
   }
-  BR=(DATA.branches||[]).map(analyze);
-  var saved=lsGet(SEL_KEY);
-  BR.forEach(function(a,i){ if(a.b.chiNhanh===saved) selIdx=i; });
   var u=DATA.updated_at?new Date(DATA.updated_at):null;
   document.getElementById('updatedTag').textContent = u && !isNaN(u)
     ? 'Tổng hợp lúc '+String(u.getHours()).padStart(2,'0')+':'+String(u.getMinutes()).padStart(2,'0')+' '+String(u.getDate()).padStart(2,'0')+'/'+String(u.getMonth()+1).padStart(2,'0')+'/'+u.getFullYear()+(DATA.nguon==='excel'?' (từ file Excel)':'')
     : 'Chưa rõ thời điểm tổng hợp';
-  render();
+  // Danh sách bản chốt — lỗi / chưa có thì chỉ xem số đang cập nhật
+  try{ var ri=await fetch(LUU_DIR+'index.json?t='+Date.now()); if(ri.ok) LUU_IDX=((await ri.json()).tuan)||[]; }catch(e){ LUU_IDX=[]; }
+  var liveRef=parseD(((DATA.branches||[])[0]||{}).ngayBaoCao);
+  var macDinh=liveRef && LUU_IDX.some(function(x){ return x.key===weekKey(liveRef); }) ? weekKey(liveRef) : '';
+  await chonBan(macDinh);
   // Bảng báo bán (bảng 9) lấy từ trang cha — trang cha có thể chưa tải xong data.json lúc iframe này chạy:
   // thử lại mỗi giây trong 60s, có số thì vẽ lại 1 lần.
   if(window.parent!==window && !getDMS()){
