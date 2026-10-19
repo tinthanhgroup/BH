@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-19T00:30:02+07:00",
+ "updated_at": "2026-10-19T12:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -9,6 +9,34 @@
    "ngayDuLieu": "2026-10-19",
    "canhBao": [],
    "viec": [
+    {
+     "boPhan": "DV",
+     "dong": 9,
+     "ma": "",
+     "nguon": "Trọng tâm tháng",
+     "thang": 10,
+     "linhVuc": "xử lý các xe tồn ngập nước",
+     "noiDung": "Hoàn thiện hồ sơ trình BGĐ phương án xử lý phần chi phí bảo hiểm không chi trả",
+     "phuTrach": "GĐV",
+     "han": "2026-10-30",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "",
+     "tuanCN": null,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
     {
      "boPhan": "VP",
      "dong": 9,
