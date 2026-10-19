@@ -135,4 +135,4 @@ Ngày luôn `yyyy-MM-dd`. `xxxRaw` = chữ gốc khi người nhập **gõ ngày
 
 ## Phân quyền
 
-Key tab `bct`, khoá cấp tab: **Admin + GĐ thường** (ban đầu chỉ Admin 25/09/2026; mở cho GĐ 28/09/2026 — nhóm "Tổng Giám đốc" bỏ dấu chứa "giam doc" nên cũng thuộc nhánh GĐ; PGĐ chưa có), nút tab ẩn với người khác (xem `_classifyGroup()` trong `index.html`). Không có trong `mobile.html`.
+Key tab `bct`, khoá cấp tab: **mọi tài khoản đã đăng nhập** (19/10/2026, anh Khanh: trưởng BP cùng xem để họp giao ban; trước đó Admin + GĐ). Nhóm không khớp quy tắc nào (Văn phòng, Kế toán…) chỉ thấy tab này. Chưa đăng nhập: nút tab ẩn (xem `_classifyGroup()` trong `index.html`). Không có trong `mobile.html`.
