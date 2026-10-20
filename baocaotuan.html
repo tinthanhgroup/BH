@@ -225,7 +225,7 @@
   </div>
   <div id="app"><div class="loading">Đang tải dữ liệu báo cáo tuần…</div></div>
   <div class="footnote">
-    Tuần báo cáo = tuần vừa qua (T2–CN, số tuần ISO), tự đổi lúc 0h thứ 2: số liệu tự động lên ngay; thứ 2 trưởng bộ phận chốt, thứ 3 GĐCN chốt; <b>17h thứ 3</b> hệ thống lưu bản chốt (chọn xem lại ở ô "Xem" đầu trang); thứ 4 họp giao ban. Mốc tính "quá hạn" và "chưa cập nhật" = thứ 7 của tuần báo cáo.<br>
+    Tuần báo cáo = tuần vừa qua (T2–CN, số tuần ISO), tự đổi lúc 0h thứ 2: số liệu tự động lên ngay; thứ 2 trưởng bộ phận chốt, thứ 3 trước 17h GĐCN chốt; <b>17h15 thứ 3</b> hệ thống lưu bản chốt (chọn xem lại ở ô "Xem" đầu trang); thứ 4 họp giao ban. Mốc tính "quá hạn" và "chưa cập nhật" = thứ 7 của tuần báo cáo.<br>
     Dữ liệu tổng hợp từ Google Sheet báo cáo tuần của các chi nhánh (tự đồng bộ mỗi giờ) — xem hướng dẫn nhập ở sheet "1. Huong dan".
   </div>
 </div>
@@ -257,7 +257,7 @@ const ND_NAME = {GDCN:'Giám đốc chi nhánh', BH:'Bán hàng · BH-000', DV:'
 const SEL_KEY = '_bctBranch';
 
 let DATA = null, BR = [], selIdx = 0, monthSel = null, achMonthSel = null;
-// Bản chốt hằng tuần (17/10/2026): Apps Script lưu bct_luu/<năm>-W<tuần>.json lúc 17h thứ 3 + bct_luu/index.json.
+// Bản chốt hằng tuần (17/10/2026): Apps Script lưu bct_luu/<năm>-W<tuần>.json lúc 17h15 thứ 3 (trigger riêng ~17h15–17h45) + bct_luu/index.json.
 // VIEW_KEY = null → xem số liệu ĐANG CẬP NHẬT (baocaotuan.json); = '2026-W42' → xem bản đã chốt (giữ nguyên như lúc chốt).
 // Mặc định: tuần báo cáo hiện tại đã có bản chốt (từ 17h T3 đến hết CN) → mở bản chốt (họp thứ 4 xem đúng bản này).
 const LUU_DIR = 'bct_luu/';
@@ -1173,7 +1173,7 @@ function renderViewBar(){
   h+='</select>';
   h+= VIEW_KEY==='__now' ? ' <span class="view-note">⏳ Tuần đang diễn ra: số tự động (HĐ, lượt xe, nhân sự, lead) tính tới lúc này; công việc và nhận định là bản đang cập nhật.</span>'
     : VIEW_KEY ? ' <span class="view-note">📌 Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
-               : ' <span class="view-note">Số liệu đang cập nhật. Bản chốt lưu tự động lúc 17h thứ 3.</span>';
+               : ' <span class="view-note">Số liệu đang cập nhật. GĐCN chốt trước 17h thứ 3; bản chốt lưu tự động sau 17h15.</span>';
   return h+'</div>';
 }
 // Thứ 7 của tuần (T2–CN) đang diễn ra — "Tuần hiện tại" xem trước số tự động trước khi tuần báo cáo chuyển (0h T2)
