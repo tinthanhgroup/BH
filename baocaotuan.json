@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T15:30:03+07:00",
+ "updated_at": "2026-10-20T16:15:01+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -150,6 +150,34 @@
      "nguoiCapNhat": ""
     },
     {
+     "boPhan": "DV",
+     "dong": 10,
+     "ma": "",
+     "nguon": "Trọng tâm tháng",
+     "thang": 10,
+     "linhVuc": "Xe mới ngập nước",
+     "noiDung": "Chốt phụ tùng cần thay thế sửa chữa",
+     "phuTrach": "",
+     "han": "",
+     "hanRaw": "",
+     "trangThai": "",
+     "capNhat": "",
+     "tuanCN": null,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
      "boPhan": "VP",
      "dong": 9,
      "ma": "VP-001",
@@ -174,7 +202,7 @@
      "gdXuLy": "",
      "duyetTT": "",
      "loaiHD": "5. Tuân thủ - TCT giao",
-     "maTCT": "",
+     "maTCT": "TCT-001",
      "nguoiCapNhat": ""
     },
     {
@@ -311,7 +339,7 @@
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "",
+     "gdXuLy": "GĐCN đã có ý kiến chỉ đạo",
      "duyetTT": "",
      "loaiHD": "",
      "maTCT": "",
@@ -395,7 +423,7 @@
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "",
+     "gdXuLy": "GĐCN đã có ý kiến chỉ đạo",
      "duyetTT": "",
      "loaiHD": "",
      "maTCT": "",
@@ -410,7 +438,7 @@
      "linhVuc": "CSVC",
      "noiDung": "- Thống kê và đề xuất phân công nhân sự phụ trách các hạng mục chỉnh trang, chăm sóc cây xanh",
      "phuTrach": "Thúy",
-     "han": "2026-05-24",
+     "han": "2026-10-24",
      "hanRaw": "",
      "trangThai": "Đang làm",
      "capNhat": "Lên xong bảng kê các hạng mục công việc, yêu cầu công việc, nhân sự phụ trách và mức hỗ trợ tại từng vị trí công việc",
@@ -451,7 +479,7 @@
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "",
+     "gdXuLy": "GĐCN đã có ý kiến chỉ đạo",
      "duyetTT": "",
      "loaiHD": "",
      "maTCT": "",
@@ -703,7 +731,7 @@
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "",
+     "gdXuLy": "GĐCN đã có ý kiến chỉ đạo",
      "duyetTT": "",
      "loaiHD": "",
      "maTCT": "",
@@ -766,7 +794,27 @@
      "nguoiCapNhat": ""
     }
    ],
-   "tct": [],
+   "tct": [
+    {
+     "dong": 9,
+     "ma": "TCT-001",
+     "ngayGiao": "",
+     "ngayGiaoRaw": "",
+     "noiDung": "Xử lý sổ Thuế 22-25",
+     "boPhan": "",
+     "trangThai": "",
+     "capNhat": "",
+     "tuanCN": 42,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "ghiChuGD": "",
+     "gdXuLy": ""
+    }
+   ],
    "nhanDinh": [],
    "chiSo": [
     {
@@ -937,6 +985,69 @@
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
        "traLoi": "Khó đạt mốc báo bán 60% tháng 10 nếu không đẩy nhanh xe đã phân và xe chờ đóng tiền. Tuần tới dự báo chốt 4 Creta. Cần hỗ trợ: chính sách giá Creta cạnh tranh, ưu tiên nguồn xe, HTV xác nhận đơn Palisade đúng hạn."
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 42,
+     "ngay": "2026-10-17",
+     "boPhan": "DV",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Lượt xe",
+       "cauHoi": "Lượt xe vào xưởng tăng hay giảm, đánh giá thế nào, vì sao?",
+       "traLoi": "Lượt xe trong tuần có xu hướng giảm, lượt xe bảo hiểm đồng sơn tiền mặt ổn định"
+      },
+      {
+       "stt": 2,
+       "nhan": "Doanh thu – LN",
+       "cauHoi": "Doanh thu DV/PT và lợi nhuận so với kế hoạch, mảng nào kéo xuống?",
+       "traLoi": "Doanh thu dịch vụ  đạt 77% chỉ tiêu"
+      },
+      {
+       "stt": 3,
+       "nhan": "Khách hàng",
+       "cauHoi": "Có khiếu nại, xe làm lại (comeback) hay phản hồi xấu không?",
+       "traLoi": "không có xe phản tu khiếu nại, đang xử lý thay thế phụ tùng 02 xe sửa chữa ngập ở Đà Lạt"
+      },
+      {
+       "stt": 4,
+       "nhan": "Năng suất xưởng",
+       "cauHoi": "Khoang và KTV có quá tải hay dư, xe chờ lâu, xe tồn xưởng quá hạn?",
+       "traLoi": "Số khoang và KTV đảm bảo tiến độ và thời gian CVDV bàn giao xe với khách hàng, tiến độ đồng sơn đang đẩy nhanh"
+      },
+      {
+       "stt": 5,
+       "nhan": "Phụ tùng",
+       "cauHoi": "Thiếu hàng, chờ đặt lâu, tồn kho chậm luân chuyển?",
+       "traLoi": "Một số phụ tùng chờ đặt lâu do đời xe cũ ( sonata 2011 -Acc 2011)"
+      },
+      {
+       "stt": 6,
+       "nhan": "Bảo hiểm – đồng sơn",
+       "cauHoi": "Số hồ sơ, phối hợp với hãng bảo hiểm, công nợ bảo hiểm?",
+       "traLoi": ""
+      },
+      {
+       "stt": 7,
+       "nhan": "Khách quay lại",
+       "cauHoi": "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
+       "traLoi": ""
+      },
+      {
+       "stt": 8,
+       "nhan": "Nhân sự xưởng",
+       "cauHoi": "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 9,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": ""
       }
      ]
     }
