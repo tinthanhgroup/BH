@@ -710,19 +710,17 @@ function nsData(a){
 function renderNS(a){
   var o=nsData(a); if(!o) return '';
   var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
-  var avg=function(n){ return o.ngay? (n||0)/o.ngay : null; };
-  var f1=function(v){ return v==null?'—':Number(v).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1}); };
   var keys=['BH','DV','VP'].concat(Object.keys(o.bp).filter(function(k){ return ['BH','DV','VP'].indexOf(k)<0; }));
   var tot={ns:0,muon:0,nghi:0};
   var h='<div class="cs-block cs-full"><div class="cs-title">Nhân sự — '+esc(o.name)+'</div><div class="cs-ns"><div>';
   if(o.tong!=null) h+='<div class="cs-pct">'+o.tong+'<span> nhân sự đang làm việc</span></div>';
   h+='<div class="cs-sub">Đi muộn & nghỉ trong tuần '+dm(o.mon)+'–'+dm(o.sun)+(CC?' · '+o.ngay+' ngày làm việc':'')+'</div>';
   if(CC){
-    h+='<table class="cs-cmp"><thead><tr><th>Bộ phận</th><th class="num">Nhân sự</th><th class="num">Đi muộn (lượt)</th><th class="num">TB/ngày</th><th class="num">Nghỉ/vắng (lượt)</th><th class="num">TB/ngày</th></tr></thead><tbody>';
+    h+='<table class="cs-cmp"><thead><tr><th>Bộ phận</th><th class="num">Nhân sự</th><th class="num">Đi muộn (lượt)</th><th class="num">Nghỉ/vắng (lượt)</th></tr></thead><tbody>';
     keys.forEach(function(k){ var b=o.bp[k]; if(k==='Khác' && !b.ns && !b.muon && !b.nghi) return;
       tot.ns+=b.ns||0; tot.muon+=b.muon||0; tot.nghi+=b.nghi||0;
-      h+='<tr><td>'+esc(BP_NAME[k]||k)+'</td><td class="num">'+fmtN(b.ns||0)+'</td><td class="num"><b>'+fmtN(b.muon||0)+'</b></td><td class="num">'+f1(avg(b.muon))+'</td><td class="num"><b>'+fmtN(b.nghi||0)+'</b></td><td class="num">'+f1(avg(b.nghi))+'</td></tr>'; });
-    h+='<tr class="tot"><td>Tổng</td><td class="num">'+fmtN(tot.ns)+'</td><td class="num">'+fmtN(tot.muon)+'</td><td class="num">'+f1(avg(tot.muon))+'</td><td class="num">'+fmtN(tot.nghi)+'</td><td class="num">'+f1(avg(tot.nghi))+'</td></tr></tbody></table>';
+      h+='<tr><td>'+esc(BP_NAME[k]||k)+'</td><td class="num">'+fmtN(b.ns||0)+'</td><td class="num"><b>'+fmtN(b.muon||0)+'</b></td><td class="num"><b>'+fmtN(b.nghi||0)+'</b></td></tr>'; });
+    h+='<tr class="tot"><td>Tổng</td><td class="num">'+fmtN(tot.ns)+'</td><td class="num">'+fmtN(tot.muon)+'</td><td class="num">'+fmtN(tot.nghi)+'</td></tr></tbody></table>';
     h+=csNote('Đếm theo máy chấm công (chưa có dữ liệu đơn xin đi muộn / nghỉ phép): Đi muộn = quẹt vào sau 07:35 hoặc '+(o.chieu===795?'13:20':'13:35')+' (giờ vào + 5 phút, mỗi buổi 1 lượt, như tab Chấm công); Nghỉ/vắng = ngày làm việc không có công. Không tính Chủ nhật và ngày nghỉ lễ.');
   } else h+='<div class="cs-src">Không tải được chamcong.json.</div>';
   h+='</div><div>';
