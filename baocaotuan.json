@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T16:15:01+07:00",
+ "updated_at": "2026-10-20T16:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -774,7 +774,7 @@
      "linhVuc": "Nhân sự",
      "noiDung": "Thực hiện các công việc liên quan đến lịch công tác của CBNV\n- KTV SCC: 22- 23/10\n- TVBH: 22-23/10\n- IT: 21-23/10",
      "phuTrach": "Thúy",
-     "han": "2026-10-23",
+     "han": "2026-10-24",
      "hanRaw": "",
      "trangThai": "Đang làm",
      "capNhat": "Đặt vé xe, khách sạn và up đề xuất",
@@ -1005,7 +1005,7 @@
        "stt": 2,
        "nhan": "Doanh thu – LN",
        "cauHoi": "Doanh thu DV/PT và lợi nhuận so với kế hoạch, mảng nào kéo xuống?",
-       "traLoi": "Doanh thu dịch vụ  đạt 77% chỉ tiêu"
+       "traLoi": "Doanh thu dịch vụ  đạt 77% chỉ tiêu - doanh sô phụ tùng T10 đạt 56% chỉ tiêu, doanh thu T10 chốt thêm được 2-3xe ngập nước, tai nạn"
       },
       {
        "stt": 3,
@@ -1023,13 +1023,13 @@
        "stt": 5,
        "nhan": "Phụ tùng",
        "cauHoi": "Thiếu hàng, chờ đặt lâu, tồn kho chậm luân chuyển?",
-       "traLoi": "Một số phụ tùng chờ đặt lâu do đời xe cũ ( sonata 2011 -Acc 2011)"
+       "traLoi": "Một số phụ tùng chờ đặt lâu do đời xe cũ ( sonata 2011 -Acc 2011), tổng quan hoạt động phụ tùng ổn định đáp ứng yêu cầu khách hàng - Đảm bảo đạt chỉ hoạt động phụ tùng  năm  2026"
       },
       {
        "stt": 6,
        "nhan": "Bảo hiểm – đồng sơn",
        "cauHoi": "Số hồ sơ, phối hợp với hãng bảo hiểm, công nợ bảo hiểm?",
-       "traLoi": ""
+       "traLoi": "Công nợ bảo hiểm đã có chuyển biến tích cực các công nợ quá hạn ( tồn tại bảo hiểm AAA và Pjico của xe 79C22286), hồ sơ bảo hiểm được chuyển giao từ CV--> kế toán - các đơn vị bào hiểm kịp thời có xác nhận"
       },
       {
        "stt": 7,
@@ -1041,12 +1041,81 @@
        "stt": 8,
        "nhan": "Nhân sự xưởng",
        "cauHoi": "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
-       "traLoi": ""
+       "traLoi": "Nhân sự xưởng đảm bảo và phân công phù hợp với công việc được giao, 15/10 có tuyển bổ sung 01 KTV sơn"
       },
       {
        "stt": 9,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 42,
+     "ngay": "2026-10-17",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 16/10/2026: 224.775.053đ (trong đó quá hạn trên 03 tháng là 72.485.363đ). Công nợ quá hạn KD: 430.800.000  gồm Sở XD KH 34.100.000đ + khách Nguyễn Thị Ngọc 396.700.000đ (khách vay VP, đang chờ lấy giấy độc thân để giải ngân,công an hẹn 20/10 mới trả kết quả)"
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
        "traLoi": ""
       }
      ]
