@@ -1,14 +1,42 @@
 {
- "updated_at": "2026-10-19T17:30:02+07:00",
+ "updated_at": "2026-10-20T12:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
    "ngayBaoCao": "2026-10-17",
-   "ngayDuLieu": "2026-10-19",
+   "ngayDuLieu": "2026-10-20",
    "canhBao": [],
    "viec": [
+    {
+     "boPhan": "BH",
+     "dong": 9,
+     "ma": "BH-001",
+     "nguon": "",
+     "thang": null,
+     "linhVuc": "",
+     "noiDung": "ABC",
+     "phuTrach": "",
+     "han": "2026-10-28",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "",
+     "tuanCN": 42,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "Chuyển thông tin TGĐ",
+     "duyetTT": "",
+     "loaiHD": "5. Tuân thủ - TCT giao",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
     {
      "boPhan": "DV",
      "dong": 9,
@@ -711,10 +739,23 @@
     },
     {
      "boPhan": "DV",
-     "tieuDe": "Thực hiện",
+     "tieuDe": "",
      "nhanCot": "",
      "cot": [],
-     "dong": []
+     "dong": [
+      {
+       "nhan": "Chỉ tiêu",
+       "giaTri": [
+        3689
+       ]
+      },
+      {
+       "nhan": "Thực hiện",
+       "giaTri": [
+        2859
+       ]
+      }
+     ]
     },
     {
      "boPhan": "BH",
@@ -751,7 +792,7 @@
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
    "ngayBaoCao": "2026-10-17",
-   "ngayDuLieu": "2026-10-19",
+   "ngayDuLieu": "2026-10-20",
    "canhBao": [],
    "viec": [
     {
