@@ -46,6 +46,14 @@ Báo cáo dùng cho **họp giao ban thứ 4** và để TGĐ nắm công việc
 - Múi giờ file phải GMT+7, Tính toán lại "Khi thay đổi và mỗi giờ" (`caiDatFileChiNhanh()`); file mẫu cũ để GMT+0 (phát hiện 17/10/2026). File để vùng Việt Nam: công thức gõ tay dùng `;`; cột STT chép bằng `copyTo` (`suaSTT()`).
 - Lịch cũ (29/09–17/10/2026: hạn 10h thứ 7, tuần đổi 10h T7, `WEEKNUM(…,2)`): xem lịch sử git của file này.
 
+## Gọn file nhập (20/10/2026, anh Khanh duyệt — hàm `donGianHoaFile()`)
+
+Căn cứ: đối chiếu 48 việc NT + PY (bản đồng bộ 20/10) với những gì web dùng.
+- **Ẩn** sheet tổng hợp trùng nội dung web: `8. Bao cao GDCN` (vẫn giữ để tính G3/E3 — script, G4 sheet bộ phận, nhãn sheet 6 dùng), `9. Trong tam thang`, `10. Achievement`, `11. Nhan dinh tuan` (cũ, đã thay bằng khối GĐCN sheet 7). Không xoá.
+- Sheet bộ phận: **ẩn cột E Lĩnh vực** (web không dùng) và **T GĐCN duyệt TT tháng** (bỏ duyệt — trọng tâm tháng chốt ở họp tháng; web bỏ cảnh báo "chưa duyệt"); xoá ô "Người cập nhật" (I3:J3, không ai điền, web không dùng). Script vẫn đọc cột cũ (trống) → JSON không đổi.
+- **Hướng chỉ đạo gộp vào Ghi chú GĐCN**: cột S (TCT: O) chỉ còn `Chuyển thông tin TGĐ`; **có Ghi chú GĐCN = đã có ý kiến chỉ đạo** (`daCoChiDao(t)`). Giá trị cũ "GĐCN đã có ý kiến chỉ đạo" bị xoá trong file (lý do: NT chọn 5 việc nhưng không ghi chỉ đạo nào); web vẫn nhận giá trị cũ cho bản chốt các tuần trước. Tô vàng cột S thêm điều kiện R trống.
+- Loại hoạt động bỏ lựa chọn `5. Tuân thủ - TCT giao` (trùng Nguồn "TCT giao" + Mã TCT). Cột P Kết quả hoàn thành giữ nguyên.
+
 ## Sheet được đọc (chỉ dữ liệu gốc, KHÔNG đọc các sheet tổng hợp FILTER)
 
 | Sheet | Dòng dữ liệu | Cột |
