@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T16:30:02+07:00",
+ "updated_at": "2026-10-20T16:41:12+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -79,7 +79,7 @@
      "trangThai": "Đang làm",
      "capNhat": "T42: Phát hiện nhiều khách Hot không cập nhật; 2/4 khách Creta đang so giá đại lý khác",
      "tuanCN": 42,
-     "vuongMac": "Đối thủ giảm giá sâu Creta",
+     "vuongMac": "_ Đối thủ giảm giá sâu Creta, \n_ Các đại lý Hyundai khu vực Miền Nam giảm giá sâu , LN dưới 1% cho Creta",
      "deXuat": "Xin chính sách giá/quà Creta để giữ khách",
      "keHoach": "",
      "ngayHT": "",
@@ -90,34 +90,6 @@
      "gdXuLy": "",
      "duyetTT": "",
      "loaiHD": "3. Xử lý sự cố",
-     "maTCT": "",
-     "nguoiCapNhat": ""
-    },
-    {
-     "boPhan": "BH",
-     "dong": 12,
-     "ma": "BH-004",
-     "nguon": "Bộ phận bổ sung",
-     "thang": 10,
-     "linhVuc": "MKT",
-     "noiDung": "Fanpage Nha Trang đăng ≥ 1 bài thương hiệu/tuần (dùng video kịch bản đã hoàn thành)",
-     "phuTrach": "MKT Nha Trang",
-     "han": "2026-10-31",
-     "hanRaw": "",
-     "trangThai": "Kế hoạch",
-     "capNhat": "T42: 0 bài thương hiệu tuần 40–42, chưa đạt quy định",
-     "tuanCN": 42,
-     "vuongMac": "",
-     "deXuat": "",
-     "keHoach": "",
-     "ngayHT": "",
-     "ngayHTRaw": "",
-     "ketQua": "",
-     "trongTamTuan": "",
-     "ghiChuGD": "",
-     "gdXuLy": "",
-     "duyetTT": "",
-     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -936,7 +908,7 @@
        "stt": 2,
        "nhan": "Lợi nhuận gộp",
        "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
-       "traLoi": "Rủi ro: phải giảm giá sâu Creta để giữ khách đang so sánh đại lý khác."
+       "traLoi": "Rủi ro: cần chính sách giảm giá  Creta để giữ khách đang so sánh đại lý khác. LN đề xuất 1,5% , LN : 1% khi gặp cạnh tranh giá với đại lý khác ( có bằng chứng cụ thể)"
       },
       {
        "stt": 3,
@@ -999,7 +971,7 @@
        "stt": 1,
        "nhan": "Lượt xe",
        "cauHoi": "Lượt xe vào xưởng tăng hay giảm, đánh giá thế nào, vì sao?",
-       "traLoi": "Lượt xe trong tuần có xu hướng giảm, lượt xe bảo hiểm đồng sơn tiền mặt ổn định"
+       "traLoi": "Lượt xe trong tuần có xu hướng giảm, lượt xe bảo hiểm đồng sơn tiền mặt ổn định, chi hí nhiên liệu tăng cao khách hàng hạn chế đi lại cũng góp phần lượt xe làm dịch vụ giảm"
       },
       {
        "stt": 2,
@@ -1035,7 +1007,7 @@
        "stt": 7,
        "nhan": "Khách quay lại",
        "cauHoi": "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
-       "traLoi": ""
+       "traLoi": "chưa có chính hỗ trợ khuyến khích lượt xe hết hiệu lực bảo hành quay lại làm dịch vụ"
       },
       {
        "stt": 8,
@@ -1047,7 +1019,7 @@
        "stt": 9,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": ""
+       "traLoi": "Bộ phận IT hỗ trợ gửi tin nhăn kên ZALO để mời lượng khách hàng Ninh Thuận , tham gia CTSCLĐ"
       }
      ]
     },
