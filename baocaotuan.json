@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T16:41:12+07:00",
+ "updated_at": "2026-10-20T16:57:52+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -77,17 +77,17 @@
      "han": "2026-10-25",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "T42: Phát hiện nhiều khách Hot không cập nhật; 2/4 khách Creta đang so giá đại lý khác",
+     "capNhat": "T42: Phát hiện nhiều khách Hot không cập nhật; nhiều TVBH chưa tuần thủ quy trình nhập dữ liệu CRM nội bộ . Khách hot Creta đang đụng báo giá giảm sâu khu vực Miền Nam , LN < 1%",
      "tuanCN": 42,
      "vuongMac": "_ Đối thủ giảm giá sâu Creta, \n_ Các đại lý Hyundai khu vực Miền Nam giảm giá sâu , LN dưới 1% cho Creta",
-     "deXuat": "Xin chính sách giá/quà Creta để giữ khách",
+     "deXuat": "Xin chính sách giá/quà Creta để giữ khách . Cập nhật CRM nội bộ",
      "keHoach": "",
      "ngayHT": "",
      "ngayHTRaw": "",
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "",
+     "gdXuLy": "GĐCN đã có ý kiến chỉ đạo",
      "duyetTT": "",
      "loaiHD": "3. Xử lý sự cố",
      "maTCT": "",
@@ -96,7 +96,7 @@
     {
      "boPhan": "DV",
      "dong": 9,
-     "ma": "",
+     "ma": "DV-001",
      "nguon": "Trọng tâm tháng",
      "thang": 10,
      "linhVuc": "xử lý các xe tồn ngập nước",
@@ -105,7 +105,7 @@
      "han": "2026-10-30",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "Đã gửi cho Bảo Minh, phương án hỗ trợ 30%",
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
@@ -117,14 +117,14 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
     {
      "boPhan": "DV",
      "dong": 10,
-     "ma": "",
+     "ma": "DV-002",
      "nguon": "Trọng tâm tháng",
      "thang": 10,
      "linhVuc": "Xe mới ngập nước",
@@ -134,7 +134,7 @@
      "hanRaw": "",
      "trangThai": "",
      "capNhat": "",
-     "tuanCN": null,
+     "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -145,7 +145,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -896,7 +896,7 @@
      "tuan": 42,
      "ngay": "2026-10-17",
      "boPhan": "BH",
-     "nguoiViet": "Nguyễn Ngọc Duy – Trưởng phòng Kinh doanh",
+     "nguoiViet": "Nguyễn Ngọc Duy – Giám đốc bán hàng",
      "items": [
       {
        "stt": 1,
@@ -920,13 +920,13 @@
        "stt": 4,
        "nhan": "KH tiềm năng",
        "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
-       "traLoi": "Lead mới đi ngang so với tuần trước, nguồn chính là quảng cáo Facebook, chi phí/khách tốt. Chăm sóc chậm: nhiều khách Hot trên CRM không được cập nhật từ tháng 9 → chuyển đổi thấp."
+       "traLoi": "Lead mới đi ngang so với tuần trước, nguồn chính là quảng cáo Facebook, chi phí/khách tốt. Chăm sóc chậm: nhiều khách Hot trên CRM không được cập nhật từ tháng 9 → chuyển đổi thấp.=> ĐỀ XUẤT : ưu tiên cập nhật , điều chỉnh CRM nội bộ để cải thiện"
       },
       {
        "stt": 5,
        "nhan": "Đối thủ",
        "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
-       "traLoi": "Đại lý khác giảm giá sâu Creta (theo phản hồi khách của nhóm Tài). Ảnh hưởng trực tiếp tới các khách Creta đang dự báo chốt."
+       "traLoi": ""
       },
       {
        "stt": 6,
@@ -944,7 +944,7 @@
        "stt": 8,
        "nhan": "Đội ngũ TVBH",
        "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
-       "traLoi": "Hoàng nổi bật nhất tháng. Tài và Tỵ (top năm) chưa có HĐ tháng 10 → cần kèm cặp, rà lại khách hot."
+       "traLoi": "Hoàng nổi bật nhất tháng."
       },
       {
        "stt": 9,
@@ -956,7 +956,7 @@
        "stt": 10,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": "Khó đạt mốc báo bán 60% tháng 10 nếu không đẩy nhanh xe đã phân và xe chờ đóng tiền. Tuần tới dự báo chốt 4 Creta. Cần hỗ trợ: chính sách giá Creta cạnh tranh, ưu tiên nguồn xe, HTV xác nhận đơn Palisade đúng hạn."
+       "traLoi": "Khó đạt mốc báo bán 60% tháng 10 , cần chính sách hỗ trợ điều chỉnh giá Creta. Tuần tới dự báo chốt 4 Creta. Cần hỗ trợ: chính sách giá Creta cạnh tranh, ưu tiên nguồn xe."
       }
      ]
     },
@@ -1019,7 +1019,7 @@
        "stt": 9,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": "Bộ phận IT hỗ trợ gửi tin nhăn kên ZALO để mời lượng khách hàng Ninh Thuận , tham gia CTSCLĐ"
+       "traLoi": "Bộ phận IT hỗ trợ gửi tin nhắn kênh ZALO để mời lượng khách hàng Ninh Thuận , tham gia CTSCLĐ"
       }
      ]
     },
