@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-20T12:30:02+07:00",
+ "updated_at": "2026-10-20T14:30:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -13,15 +13,15 @@
      "boPhan": "BH",
      "dong": 9,
      "ma": "BH-001",
-     "nguon": "",
-     "thang": null,
-     "linhVuc": "",
-     "noiDung": "ABC",
-     "phuTrach": "",
-     "han": "2026-10-28",
+     "nguon": "Trọng tâm tháng",
+     "thang": 10,
+     "linhVuc": "Doanh số",
+     "noiDung": "Đạt chỉ tiêu báo bán DMS T10 (NT+PR), tối thiểu mốc 60%",
+     "phuTrach": "Duy + TVBH",
+     "han": "2026-10-31",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "T42: Tiến độ chậm; họp giao chỉ tiêu chốt từng TVBH, rà xe đã phân + chờ đóng tiền để báo bán sớm",
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
@@ -31,9 +31,93 @@
      "ketQua": "",
      "trongTamTuan": "",
      "ghiChuGD": "",
-     "gdXuLy": "Chuyển thông tin TGĐ",
+     "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "5. Tuân thủ - TCT giao",
+     "loaiHD": "1. Vận hành thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "BH",
+     "dong": 10,
+     "ma": "BH-002",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "Nguồn xe",
+     "noiDung": "Đặt hàng Palisade Hybrid LX3 theo quy trình mới HTV: ĐH1 = số khách cọc (XN 20/10), ĐH2 = BO còn lại (XN 08/11)",
+     "phuTrach": "Duy + Admin",
+     "han": "2026-11-08",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "T42: HTV thông báo quy trình mới; đã đối chiếu khách cọc NT+PR, lập xong đơn ĐH1/ĐH2",
+     "tuanCN": 42,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "BH",
+     "dong": 11,
+     "ma": "BH-003",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "Khách hàng",
+     "noiDung": "Chăm sóc lại khách Hot tồn trên CRM (cập nhật cuối từ tháng 9), giữ 4 khách Creta dự báo chốt tuần 43",
+     "phuTrach": "TVBH (Tài, Hoàng, Tuấn, Giang)",
+     "han": "2026-10-25",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "T42: Phát hiện nhiều khách Hot không cập nhật; 2/4 khách Creta đang so giá đại lý khác",
+     "tuanCN": 42,
+     "vuongMac": "Đối thủ giảm giá sâu Creta",
+     "deXuat": "Xin chính sách giá/quà Creta để giữ khách",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "3. Xử lý sự cố",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "BH",
+     "dong": 12,
+     "ma": "BH-004",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "MKT",
+     "noiDung": "Fanpage Nha Trang đăng ≥ 1 bài thương hiệu/tuần (dùng video kịch bản đã hoàn thành)",
+     "phuTrach": "MKT Nha Trang",
+     "han": "2026-10-31",
+     "hanRaw": "",
+     "trangThai": "Kế hoạch",
+     "capNhat": "T42: 0 bài thương hiệu tuần 40–42, chưa đạt quy định",
+     "tuanCN": 42,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -786,7 +870,77 @@
      ]
     }
    ],
-   "nhanDinhBP": []
+   "nhanDinhBP": [
+    {
+     "nam": 2026,
+     "tuan": 42,
+     "ngay": "2026-10-17",
+     "boPhan": "BH",
+     "nguoiViet": "Nguyễn Ngọc Duy – Trưởng phòng Kinh doanh",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Hợp đồng",
+       "cauHoi": "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
+       "traLoi": "Thấp, giảm mạnh so với tuần trước: Nha Trang ký ít, Phan Rang không ký được HĐ nào. Lý do chính: khách Creta so giá với đại lý khác (có nơi giảm sâu); nhiều khách hot chưa được chăm sóc lại. Tiến độ tháng đang chậm so với chỉ tiêu."
+      },
+      {
+       "stt": 2,
+       "nhan": "Lợi nhuận gộp",
+       "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
+       "traLoi": "Rủi ro: phải giảm giá sâu Creta để giữ khách đang so sánh đại lý khác."
+      },
+      {
+       "stt": 3,
+       "nhan": "Mất deal",
+       "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
+       "traLoi": "Lý do chính ghi nhận: giá (đối thủ giảm sâu Creta), xe Palisade chờ HTV lâu."
+      },
+      {
+       "stt": 4,
+       "nhan": "KH tiềm năng",
+       "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
+       "traLoi": "Lead mới đi ngang so với tuần trước, nguồn chính là quảng cáo Facebook, chi phí/khách tốt. Chăm sóc chậm: nhiều khách Hot trên CRM không được cập nhật từ tháng 9 → chuyển đổi thấp."
+      },
+      {
+       "stt": 5,
+       "nhan": "Đối thủ",
+       "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
+       "traLoi": "Đại lý khác giảm giá sâu Creta (theo phản hồi khách của nhóm Tài). Ảnh hưởng trực tiếp tới các khách Creta đang dự báo chốt."
+      },
+      {
+       "stt": 6,
+       "nhan": "Nguồn xe & tồn kho",
+       "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
+       "traLoi": "Đáng lo: tồn kho thấp, nguy cơ thiếu xe; còn khách báo bán chưa có xe. Palisade Hybrid: HTV đổi quy trình đặt hàng LX3, khách cọc phải chờ lâu → rủi ro khách hủy cọc. Đã lập đơn đặt hàng theo đúng số khách cọc (ĐH1 xác nhận 20/10, ĐH2 xác nhận 08/11)."
+      },
+      {
+       "stt": 7,
+       "nhan": "Hồ sơ – giao xe",
+       "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
+       "traLoi": "Xuất hồ sơ và bảo hiểm tuần qua đều đặn, tỷ lệ mua bảo hiểm cao. Còn xe chờ khách đóng tiền."
+      },
+      {
+       "stt": 8,
+       "nhan": "Đội ngũ TVBH",
+       "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
+       "traLoi": "Hoàng nổi bật nhất tháng. Tài và Tỵ (top năm) chưa có HĐ tháng 10 → cần kèm cặp, rà lại khách hot."
+      },
+      {
+       "stt": 9,
+       "nhan": "MKT – sự kiện",
+       "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
+       "traLoi": "Quảng cáo hiệu quả về chi phí nhưng ngân sách tháng mới dùng ít, cần đẩy mạnh. Fanpage Nha Trang không có bài thương hiệu 3 tuần liền, chưa đạt quy định. Video kịch bản hoàn thành chậm (dưới 1/3)."
+      },
+      {
+       "stt": 10,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": "Khó đạt mốc báo bán 60% tháng 10 nếu không đẩy nhanh xe đã phân và xe chờ đóng tiền. Tuần tới dự báo chốt 4 Creta. Cần hỗ trợ: chính sách giá Creta cạnh tranh, ưu tiên nguồn xe, HTV xác nhận đơn Palisade đúng hạn."
+      }
+     ]
+    }
+   ]
   },
   {
    "chiNhanh": "Phú Yên",
