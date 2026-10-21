@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T15:30:02+07:00",
+ "updated_at": "2026-10-21T16:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1281,11 +1281,11 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "",
-     "capNhat": "",
+     "capNhat": "Carpla Phú Yên đồng ý cung cấp phụ tùng Vinfast",
      "tuanCN": 42,
-     "vuongMac": "",
-     "deXuat": "Lợi nhuận phụ tùng thấp, mức chiết khấu 5% phụ tùng",
-     "keHoach": "",
+     "vuongMac": "Chiết khấu phụ tùng thấp, thời gian đặt hàng 5 ngày",
+     "deXuat": "Lợi nhuận phụ tùng thấp, mức chiết khấu 5% phụ tùng \nTính toán cân đối hỗ trợ 1 phần  chế tài/Miễn thường (Nếu cần)",
+     "keHoach": "Tiếp tục tìm kiếm nguồn cung cấp phụ tùng Vinfast",
      "ngayHT": "2026-10-31",
      "ngayHTRaw": "",
      "ketQua": "",
@@ -1385,7 +1385,7 @@
      "boPhan": "DV",
      "dong": 15,
      "ma": "DV-007",
-     "nguon": "TCT giao",
+     "nguon": "Trọng tâm tháng",
      "thang": 10,
      "linhVuc": "Gia tăng lượt xe",
      "noiDung": "Thu hút thêm lượt xe đồng sơn khác hãng.",
@@ -1453,8 +1453,8 @@
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
-     "keHoach": "",
-     "ngayHT": "",
+     "keHoach": "Admin DV theo dõi và liên hệ GĐV hỏi tình trạng hồ sơ, ngày dự kiến thanh toán và báo cáo GDDV",
+     "ngayHT": "2026-10-31",
      "ngayHTRaw": "",
      "ketQua": "",
      "trongTamTuan": "",
@@ -1477,8 +1477,36 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "Rà soát danh sách Khách hàng bán mới Quý 3 (45 khách) nhắc bảo dưởng 1,000 km đầu",
-     "tuanCN": null,
+     "capNhat": "Rà soát danh sách Khách hàng bán mới Quý 3 (45 khách) nhắc bảo dưởng 1,000 km đầu \n300 Khách hàng đến hạn bảo dưỡng ( Đã gửi tin nhắn OA)",
+     "tuanCN": 42,
+     "vuongMac": "Việc CSKH tạm dừng gọi điện nhắc bảo dưỡng và chuyển sang nhắn tin OA dẫn đến thiếu sự kết nối với khách hàng, chưa có sự kiểm chứng hiệu quả chăm sóc",
+     "deXuat": "Ngoài việc gửi tin nhắn, CSKH tiếp tục gọi điện nhắc bảo dưỡng",
+     "keHoach": "MKT đang ký  thay đổi tempelate nhắc bảo dưỡng",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "DV",
+     "dong": 19,
+     "ma": "DV -011",
+     "nguon": "TCT giao",
+     "thang": 10,
+     "linhVuc": "",
+     "noiDung": "Đánh giá định kỳ cơ sở bảo hành bảo dưỡng NĐ 116",
+     "phuTrach": "Đỉnh",
+     "han": "2026-10-31",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "",
+     "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -1966,6 +1994,69 @@
        "stt": 10,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 43,
+     "ngay": "2026-10-24",
+     "boPhan": "DV",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Lượt xe",
+       "cauHoi": "Lượt xe vào xưởng tăng hay giảm, đánh giá thế nào, vì sao?",
+       "traLoi": "Lượt xe vào xưởng đang có xu hướng giảm: Tỷ lệ xe hết bảo hành ngày càng tăng do tình hình bán mới giảm."
+      },
+      {
+       "stt": 2,
+       "nhan": "Doanh thu – LN",
+       "cauHoi": "Doanh thu DV/PT và lợi nhuận so với kế hoạch, mảng nào kéo xuống?",
+       "traLoi": ""
+      },
+      {
+       "stt": 3,
+       "nhan": "Khách hàng",
+       "cauHoi": "Có khiếu nại, xe làm lại (comeback) hay phản hồi xấu không?",
+       "traLoi": "Việc HTV tạm dừng chăm sóc 24h chuyển sang khảo sát qua tin nhắn dẫn đến thiếu sự phản hồi từ khách hàng"
+      },
+      {
+       "stt": 4,
+       "nhan": "Năng suất xưởng",
+       "cauHoi": "Khoang và KTV có quá tải hay dư, xe chờ lâu, xe tồn xưởng quá hạn?",
+       "traLoi": ""
+      },
+      {
+       "stt": 5,
+       "nhan": "Phụ tùng",
+       "cauHoi": "Thiếu hàng, chờ đặt lâu, tồn kho chậm luân chuyển?",
+       "traLoi": ""
+      },
+      {
+       "stt": 6,
+       "nhan": "Bảo hiểm – đồng sơn",
+       "cauHoi": "Số hồ sơ, phối hợp với hãng bảo hiểm, công nợ bảo hiểm?",
+       "traLoi": "Công nợ bảo hiểm ít, các hồ sơ quá hạn chậm thanh toán tồn tại ở 1 số bảo hiểm ( Số lượng ít)"
+      },
+      {
+       "stt": 7,
+       "nhan": "Khách quay lại",
+       "cauHoi": "Khai thác khách hết bảo hành và khách lâu không quay lại thế nào?",
+       "traLoi": "Đã tiếp cận khách hàng qua Zalo OA, tuy nhiên mức ưu đãi chưa đủ sức hấp dẫn"
+      },
+      {
+       "stt": 8,
+       "nhan": "Nhân sự xưởng",
+       "cauHoi": "Có thiếu KTV, người nghỉ việc, vấn đề an toàn lao động không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 9,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
        "traLoi": ""
       }
      ]
