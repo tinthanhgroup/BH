@@ -1,16 +1,17 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 19/10/2026
+Cập nhật: 21/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
-- **Việc gấp nhất:** Trình TGĐ dự thảo Quy định xử lý kho tồn lâu
-- **Đang chờ:** TGĐ: duyệt Quy định xử lý kho tồn lâu
+- **Việc gấp nhất:** 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
+- **Đang chờ:** Không có
 
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). HTV yêu cầu đặt bổ sung để tuân thủ CV157 (thiếu NT 11 · ĐL 7 · PY 5, hạn 12h 10/10/2026); Công ty chọn **xin tạm dừng đặt bổ sung**: đã gửi công văn cho HTV ngày 10/10/2026, **HTV đã đồng ý tạm dừng (ghi nhận 13/10/2026)**; phương án 20 xe giữ làm dự phòng (bảng Giả định đặt hàng PA4). Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
 - [ ] 20/10/2026: rà soát bán hàng; nếu thị trường tăng thì đặt bổ sung ngay (dự phòng: PA4 20 xe)
-- [ ] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v8.docx`)
+- [x] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v8.docx`) (20/10/2026)
+- [x] Quy định xử lý xe tồn kho lâu: TGĐ duyệt nguyên văn v8, ban hành Số 03.26 ngày 21/10/2026; đưa lên Drive và trang Quy định nội bộ (21/10/2026)
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [x] Báo cáo tuần: mở tab BC tuần cho mọi tài khoản đã đăng nhập (19/10/2026)
 - [ ] Báo cáo tuần: sửa múi giờ file mẫu (tinthanhgroup123) trước khi nhân bản cho ĐL, PR, BL
@@ -21,7 +22,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] Trang Chính sách: xác nhận IONIQ 5 còn áp dụng (đang hiện Active); tìm bản có số của T2, IONIQ 5, Bổ sung T1; bổ sung CV 160/161 (thưởng quý 2) nếu cần
 
 ## Đang chờ
-- TGĐ: duyệt dự thảo Quy định xử lý kho tồn lâu (mốc ngày, lãi suất nội bộ, thời hạn thanh toán công nợ)
+- Không có
 
 ## Mốc sắp tới
 - 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
@@ -32,6 +33,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 21/10/2026 | Ban hành Quy định xử lý xe tồn kho lâu và điều chuyển xe, Số 03.26, hiệu lực 21/10/2026 (TGĐ duyệt nguyên văn v8); bản gốc `3. Chính sách nội bộ/23. QD 03.26 Xu ly xe ton kho lau.docx`, đã thêm vào trang Quy định nội bộ; xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
+| 20/10/2026 | Đã gửi TGĐ dự thảo Quy định xử lý kho tồn lâu v8 (sửa 17/10: lãi và vận chuyển tính khi bán xe theo số ngân hàng, 8%/năm chỉ để minh họa; phụ lục số liệu 17/10); xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 19/10/2026 | Tab BC tuần mở cho mọi tài khoản đã đăng nhập (trưởng BP cùng xem để họp giao ban); xem `docs/giao-dien-va-phan-quyen.md` |
 | 17/10/2026 | Trang Chính sách: thêm 11 mục từ 12 công văn HTV T1–T6/2026 (722+723+bổ sung T1, T2, IONIQ 5, 73, 143 Custin, 151 Stargazer FL, 162, 3, 26, 27), PDF ở thư mục Drive `1. Chinh sach 2026`; đã push |
 | 17/10/2026 | Báo cáo tuần đổi lịch (anh chốt, từ tuần 42): tuần T2–CN số tuần ISO, đổi 0h thứ 2; thứ 2 BP chốt, 17h thứ 3 chốt + lưu bản chốt (`bct_luu/`), thứ 4 họp; web có ô chọn bản đã chốt. Xem `docs/module-baocaotuan.md` mục "Lịch tuần báo cáo & bản chốt" |

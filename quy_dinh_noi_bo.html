@@ -344,6 +344,79 @@ function stripDiacritics(s){
 // trước khi đăng lên (xem docs/module-quydinh.md để biết quy trình cập nhật).
 const quyDinh = [
   {
+    docUrl: "https://drive.google.com/file/d/1mAsvJgTNLmcn4sxR5Dl9TrQiavUHx5Ju/view",
+    category: "Bán hàng - Kho xe",
+    code: "Số 03.26",
+    name: "Quy định xử lý xe tồn kho lâu và điều chuyển xe giữa các chi nhánh",
+    updated: "21/10/2026",
+    from: new Date(2026,9,21),
+    to: null,
+    fromLabel: "21/10/2026",
+    toLabel: "Đến khi có quy định mới",
+    summary: {
+      blocks: [
+        {
+          title: "MỤC TIÊU",
+          items: [
+            "Giảm số xe tồn kho lâu và chi phí lãi vay của công ty",
+            "Dùng kho xe chung: xe đang tồn ở chi nhánh này được ưu tiên bán cho khách chi nhánh khác <b>trước khi đặt xe mới</b>",
+            "Phân định rõ chi phí giữa bên giao và bên nhận xe, ghi nhận công nợ nội bộ giữa các chi nhánh"
+          ]
+        },
+        {
+          title: "PHẠM VI",
+          items: [
+            "Xe mới đã về kho, chưa phân khách, của Nha Trang, Đà Lạt, Phú Yên (gồm xe để tại Phan Rang, Bảo Lộc)",
+            "Tuyến điều chuyển (hai chiều): <b>Nha Trang ↔ Đà Lạt</b>, <b>Nha Trang ↔ Phú Yên</b>. Không điều chuyển trực tiếp Đà Lạt ↔ Phú Yên",
+            "Trong nội bộ chi nhánh (Đà Lạt ↔ Bảo Lộc, Nha Trang ↔ Phan Rang): Giám đốc chi nhánh tự quyết, không áp dụng cách chia chi phí này",
+            "Số ngày tồn tính từ ngày nhập kho đến ngày điều chuyển. <b>Xe tồn lâu</b>: tồn trên 90 ngày"
+          ]
+        },
+        {
+          title: "KHI NÀO ĐIỀU CHUYỂN",
+          items: [
+            "Phiên bản bán rất chậm mà một kho (NT, PR, ĐL, BL, PY tính riêng) tồn <b>từ 02 xe cùng phiên bản</b> trở lên, nhất là cùng màu: bắt buộc xem xét điều chuyển",
+            "Xe tồn lâu không bán được, trong khi chi nhánh khác có hợp đồng phiên bản đó trong 90–180 ngày gần nhất",
+            "Có nhu cầu xe (có khách hoặc trước khi đặt hàng): ưu tiên điều chuyển xe đang tồn thay vì đặt mới",
+            "Điều kiện: bên nhận có hợp đồng phiên bản đó trong 90–180 ngày gần nhất; <b>mỗi xe chỉ điều chuyển 1 lần</b>",
+            "Vận chuyển: ưu tiên xe cứu hộ nội bộ, ghép chuyến hai chiều (chi phí chia đều cho các xe); chỉ thuê ngoài khi xe nội bộ không bố trí kịp"
+          ]
+        },
+        {
+          title: "PHÂN LOẠI VÀ CHIA CHI PHÍ",
+          table: {
+            head: ["Loại","Trường hợp","Người quyết định","Chi phí vận chuyển","Chi phí lãi sau điều chuyển"],
+            rows: [
+              ["A","Bên nhận đã có khách ký hợp đồng","Giám đốc hai chi nhánh (GĐBH đề xuất)","Bên nhận","Bên nhận"],
+              ["B1","Xe tồn đến 90 ngày","Giám đốc hai chi nhánh (GĐBH đề xuất)","Bên giao","Bên giao 15 ngày đầu, sau đó bên nhận"],
+              ["B2","Xe tồn 91–180 ngày","Tổng Giám đốc có thể chỉ định","Bên giao","Bên giao 30 ngày đầu, sau đó bên nhận"],
+              ["B3","Xe tồn trên 180 ngày","Tổng Giám đốc chỉ định","Bên giao","Bên giao đến khi bán được xe"]
+            ]
+          }
+        },
+        {
+          title: "CHI PHÍ VÀ CÔNG NỢ NỘI BỘ",
+          items: [
+            "Chi phí lãi <b>trước khi điều chuyển</b>: bên giao chịu. Doanh số tính cho chi nhánh bán được xe",
+            "Khi điều chuyển: xe chuyển sang tồn kho bên nhận theo <b>giá vốn</b> (bên nhận phải trả, bên giao phải thu)",
+            "Chi phí lãi và vận chuyển của xe điều chuyển được <b>tính và chia khi xe được bán</b>, theo số tiền lãi Ngân hàng tính thực tế cho xe; không tạm tính trước",
+            "Chi nhánh đã trả thay phần chi phí của chi nhánh kia thì ghi nhận phải thu chi nhánh đó. Kế toán đối chiếu công nợ nội bộ hằng tháng"
+          ]
+        },
+        {
+          title: "TRÌNH TỰ",
+          items: [
+            "Danh sách xe tồn trên 60/90/150 ngày cập nhật hằng ngày trên hệ thống báo cáo nội bộ (mục Hàng hóa); chi nhánh đề xuất điều chuyển bất kỳ lúc nào",
+            "Loại A, B1: GĐBH hai chi nhánh thống nhất, trình Giám đốc hai chi nhánh quyết định. Loại B2, B3: trình Tổng Giám đốc chỉ định",
+            "Lập <b>Phiếu điều chuyển xe nội bộ</b> (số khung, phiên bản, màu, ngày nhập kho/điều chuyển, số ngày tồn, loại, giá vốn, phương tiện và chi phí vận chuyển, số ngày bên giao chịu lãi); xác nhận: GĐBH và Giám đốc chi nhánh hai bên, Kế toán",
+            "Kế toán ghi nhận công nợ khi điều chuyển; khi bán xe, quyết toán chi phí nội bộ của xe"
+          ]
+        }
+      ],
+      note: "Ví dụ trong quy định (lãi suất 8%/năm chỉ là giả định để minh họa): xe giá vốn 600 triệu tồn 120 ngày ở Nha Trang (B2), chuyển lên Đà Lạt bằng xe thuê, bán sau 50 ngày → Nha Trang chịu 22.726.027 đồng, Đà Lạt chịu 2.630.137 đồng. Trường hợp ngoài quy định được xem xét sau khi có phê duyệt của Tổng Giám đốc."
+    }
+  },
+  {
     docUrl: "https://drive.google.com/file/d/1ihPz-L3dY3wR3U9sOZuumi91y2DBfHuW/view",
     category: "Tài chính - Chi phí",
     code: "Số 01.26",

@@ -109,7 +109,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 | B2 | 91–180 ngày | Công ty có thể chỉ định | Bên giao | Bên giao 30 ngày đầu, sau đó bên nhận |
 | B3 | > 180 ngày | Công ty chỉ định | Bên giao | Bên giao đến khi bán |
 
-- **Chi phí lãi** chia theo **tiền lãi Ngân hàng tính thực tế cho đúng xe đó**; 8%/năm chỉ là mức tạm tính (10/2026) khi chưa có số ngân hàng.
+- **Chi phí lãi** chia theo **tiền lãi Ngân hàng tính thực tế cho đúng xe đó**, tính và chia **khi xe được bán** (không tạm tính trước; 8%/năm chỉ dùng trong ví dụ của quy định, chốt 17/10/2026).
 - Các chi nhánh **hạch toán riêng** → mọi lần điều chuyển phải **ghi nhận công nợ nội bộ** (chi tiết trong file Word).
 
 ## Phụ lục: lấy số liệu từ `data.json`
@@ -120,7 +120,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 | Đã xác nhận / chưa | `trangThai` = `BO` / `Chờ XN` |
 | Tồn chưa BC DMS | `trangThai` = "Xe đã về kho", `baoCaoDMS` = false |
 | Xe tồn lâu | Tồn chưa phân khách (`ngayPhanXe` trống), `ngayNhapKho` quá 90 ngày; kho thực tế ở `khoXe` |
-| Hợp đồng | `ngayDatCoc`, nguồn khách `nguonKhach` |
+| Hợp đồng | `ngayDatCoc`, nguồn khách `nguonKhach`. Số HĐ dùng cho đặt hàng (tốc độ bán, công văn gửi HTV): **bỏ Palisade** (đơn riêng) và nguồn KHÁC — vd. công văn 10/10/2026: Q2 57, Q3 54 HĐ/tháng. Tổng HĐ ký của công ty (Báo cáo tuần, biểu đồ HĐ ký) **tính cả Palisade** → Q3 64 HĐ/tháng; hai số khác nhau là đúng |
 | Báo bán DMS của từng đại lý (số HTV thấy) | Theo `ngayBaoBan`, đại lý = `chuyenChiTieu` nếu có ghi, không thì `nguonKhach` (PR→NT, BL/ĐN→ĐL) — giống bảng 9/10/11 BC Bán hàng. **Không** theo `daiLyDatHang`. Công ty chủ động chuyển chỉ tiêu giữa 3 đại lý (vd. NT bán nhưng ĐL khai báo) nên số báo bán từng đại lý bám sát chỉ tiêu; tốc độ bán thật của từng đại lý xem theo hợp đồng, tổng công ty mới so được với HTV |
 | Giá vốn | `giaVon` |
 | KCK | `kck.json` (xét theo phiên bản + màu; nhóm màu theo `_mauToKckKey`) |
