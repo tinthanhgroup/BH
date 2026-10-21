@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-21T09:30:02+07:00",
+ "updated_at": "2026-10-21T12:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1817,6 +1817,75 @@
     }
    ],
    "nhanDinhBP": [
+    {
+     "nam": 2026,
+     "tuan": 43,
+     "ngay": "2026-10-24",
+     "boPhan": "BH",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Hợp đồng",
+       "cauHoi": "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
+       "traLoi": "Tuần 42 Kí 3 HĐ tăng so với tuần 41, thấp so với kế hoạch lý do khách đụng giá, mua hãng khác có chính sách giá tốt hơn"
+      },
+      {
+       "stt": 2,
+       "nhan": "Lợi nhuận gộp",
+       "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
+       "traLoi": "LN gộp thấp, Tucson đang phải giảm sâu về ~1%,"
+      },
+      {
+       "stt": 3,
+       "nhan": "Mất deal",
+       "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
+       "traLoi": "Tháng 10 tổng hợp báo cáo rớt Deal qua Thaco và Toyota khoảng 10 xe: chủ yếu giá bán, thương hiệu CTKM đối thủ tốt hơn"
+      },
+      {
+       "stt": 4,
+       "nhan": "KH tiềm năng",
+       "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
+       "traLoi": "khách tiềm năng mới phát sinh chậm,"
+      },
+      {
+       "stt": 5,
+       "nhan": "Đối thủ",
+       "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
+       "traLoi": ""
+      },
+      {
+       "stt": 6,
+       "nhan": "Nguồn xe & tồn kho",
+       "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 7,
+       "nhan": "Hồ sơ – giao xe",
+       "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 8,
+       "nhan": "Đội ngũ TVBH",
+       "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 9,
+       "nhan": "MKT – sự kiện",
+       "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
     {
      "nam": 2026,
      "tuan": 42,
