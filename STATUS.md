@@ -4,7 +4,7 @@ Cập nhật: 25/10/2026
 ## Trạng thái: 🟢 Đúng tiến độ
 
 - **Việc gấp nhất:** 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
-- **Đang chờ:** Không có
+- **Đang chờ:** Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
 
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). HTV yêu cầu đặt bổ sung để tuân thủ CV157 (thiếu NT 11 · ĐL 7 · PY 5, hạn 12h 10/10/2026); Công ty chọn **xin tạm dừng đặt bổ sung**: đã gửi công văn cho HTV ngày 10/10/2026, **HTV đã đồng ý tạm dừng (ghi nhận 13/10/2026)**; phương án 20 xe giữ làm dự phòng (bảng Giả định đặt hàng PA4). Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
@@ -12,6 +12,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] 20/10/2026: rà soát bán hàng; nếu thị trường tăng thì đặt bổ sung ngay (dự phòng: PA4 20 xe)
 - [x] Trình TGĐ dự thảo "Quy định xử lý kho tồn lâu" (`2. Dat hang/Quy dinh xu ly kho ton lau v8.docx`) (20/10/2026)
 - [x] Quy định xử lý xe tồn kho lâu: TGĐ duyệt nguyên văn v8, ban hành Số 03.26 ngày 21/10/2026; đưa lên Drive và trang Quy định nội bộ (21/10/2026)
+- [ ] Nhận quy định cũ từ Loan (nếu có): rà soát trùng lặp với cách tính lãi nội bộ hằng tuần của PKT; cần thì đề xuất chị Đào sửa đổi QĐ 03.26
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [x] Báo cáo tuần: mở tab BC tuần cho mọi tài khoản đã đăng nhập (19/10/2026)
 - [ ] Báo cáo tuần: sửa múi giờ file mẫu (tinthanhgroup123) trước khi nhân bản cho ĐL, PR, BL
@@ -19,10 +20,11 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] Kiểm tra admin chạy .bat có dòng "Da chep Master Data len Google Drive" và `dichvu.json` cập nhật ngày mới
 - [ ] Kiểm tra log `apDungLichMoi`: câu chữ hạn chót trong Hướng dẫn / sheet 6 / sheet 7 đã đổi hết
 - [ ] 19/10/2026: kiểm tra số liệu tự động tuần 42 lên web; 20/10 sau 17h: kiểm tra bản chốt tuần 42
+- [ ] Palisade LX3 (CV 126): rà khách đặt xe đến 16/10, ký HĐ chính thức trước 31/10/2026 để được tặng bảo hiểm PVI và thưởng TVBH
 - [ ] Trang Chính sách: xác nhận IONIQ 5 còn áp dụng (đang hiện Active); tìm bản có số của T2, IONIQ 5, Bổ sung T1; bổ sung CV 160/161 (thưởng quý 2) nếu cần
 
 ## Đang chờ
-- Không có
+- Loan (KTT): góp ý 22/10 – PKT đang đối chiếu công nợ nội bộ và tính lãi nội bộ hằng tuần (cả xe bán ngang), cho rằng phần lãi sau điều chuyển của QĐ 03.26 bị trùng. Anh đã trả lời: đối chiếu định kỳ PKT tự sắp xếp; QĐ quy định chi phí thuộc chi nhánh nào trong 4 trường hợp; nhờ Loan gửi quy định trước đó (nếu có) để anh rà soát
 
 ## Mốc sắp tới
 - 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
@@ -37,6 +39,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 | 23/10/2026 | Đổi thẻ 12 thành ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2); bấm mở cửa sổ nổi chứa danh sách (loinhuan.html?tab=ky); vẫn quyền `ln` |
 | 23/10/2026 | Chuyển "Lợi nhuận xe" từ tab 9 riêng thành thẻ 12 trong tab 2 BC Bán hàng (`#ln-card`, vẫn quyền `ln`: Admin, GĐ/PGĐ, Bán hàng; MKT thấy tab 2 nhưng không thấy thẻ); gỡ tab 9 |
 | 23/10/2026 | Thêm tab 9 "Lợi nhuận xe" (`loinhuan.html` + `loinhuan.json`): bản đồ lợi nhuận gộp từng xe 2026, 2 tab con theo báo bán / theo ngày ký; khoá quyền `ln` chỉ Admin, GĐ/PGĐ, Bán hàng (xem docs/module-loinhuan.md; dữ liệu nhạy cảm nằm trong repo công khai, anh Khanh chấp nhận) |
+| 23/10/2026 | Trang Chính sách: thêm All New Palisade CKD (CV 125 giá/thanh toán, CV 126 tặng bảo hiểm PVI, TVBH 2,5tr; hạn ký HĐ 31/10), CV 159 thanh toán Q2 (Inactive); CV 125 xác nhận LX3 không tính thưởng kinh doanh; đã push |
+| 22/10/2026 | Đã thông báo QĐ 03.26 cho nhóm GĐBH (nhấn mạnh chia chi phí) và nhóm Kế toán; trả lời góp ý của Loan về trùng lãi nội bộ, chờ Loan gửi quy định cũ (nếu có) để rà soát |
 | 21/10/2026 | Ban hành Quy định xử lý xe tồn kho lâu và điều chuyển xe, Số 03.26, hiệu lực 21/10/2026 (TGĐ duyệt nguyên văn v8); bản gốc `3. Chính sách nội bộ/23. QD 03.26 Xu ly xe ton kho lau.docx`, đã thêm vào trang Quy định nội bộ; xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 20/10/2026 | Đã gửi TGĐ dự thảo Quy định xử lý kho tồn lâu v8 (sửa 17/10: lãi và vận chuyển tính khi bán xe theo số ngân hàng, 8%/năm chỉ để minh họa; phụ lục số liệu 17/10); xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 19/10/2026 | Tab BC tuần mở cho mọi tài khoản đã đăng nhập (trưởng BP cùng xem để họp giao ban); xem `docs/giao-dien-va-phan-quyen.md` |
