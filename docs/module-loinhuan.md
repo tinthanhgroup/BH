@@ -22,7 +22,7 @@ Lợi nhuận gộp = giá bán − giá vốn − chi phí KM − hoa hồng m�
 - **Chi phí KM:** cột CHI PHÍ KM của sheet; xe có ghi quà nhưng chưa có chi phí tính theo định mức tạm tính (anh Khanh chốt dùng tạm 23/10/2026, sẽ chỉnh): dán phim 2,0 (3M 2,5), camera HT 1,5, camera Miox 2,0, phủ gầm 2,7, lót sàn 0,5 triệu; BHTX 0,9–1,2% giá bán tùy dòng xe, BHTV 0,85%, BHVC 1,0%; bảo hiểm "HTV tặng" tính 0.
 - **Hoa hồng môi giới:** sổ 641 TK 6418.12 của kế toán Nha Trang (7 xe, 58 triệu, ghép theo số khung hoặc tên khách). Chưa có sổ Đà Lạt, Bảo Lộc T1–T8.
 - **Hỗ trợ HTV:** theo chương trình tháng báo bán (CV 722/2025 đến CV 114/2026), cùng mức cho xe tồn và xe mới mua, còn nhận = mức − phần đã giảm vào giá vốn; Palisade tồn trước 23/04 được bù chênh giá theo CV 177; xe nội bộ/ngang đại lý không có hỗ trợ.
-- **Xe nội bộ:** nhận diện theo file lãi gộp kế toán (NT, PR, PY cả năm; ĐL–BL chỉ T9) và tên khách; xe nội bộ ĐL, BL T1–T8 chưa biết nên chưa đánh dấu. Xe chuyển giữa chi nhánh (vd Phú Yên chuyển sang Nha Trang) có dòng "Bán nội bộ" ở một file và "Bán lẻ" ở file kia: chỉ lần bán lẻ cuối tính, không coi là nội bộ (sửa 23/10/2026, vd Creta 022832).
+- **Xe nội bộ:** xe là nội bộ khi chính chi nhánh bán cho khách ghi "Bán nội bộ" trong file lãi gộp kế toán (NT–PR, PY cả năm; ĐL–BL chỉ T9) hoặc tên khách là Hyundai/Tín Thanh. Dòng "Bán nội bộ" ở chi nhánh khác chỉ là lần chuyển xe giữa chi nhánh, lần bán lẻ cuối mới tính (sửa 23/10/2026, vd Creta 022832). Hiện 2026 không có xe nào bị đánh dấu nội bộ; xe nội bộ thật của ĐL, BL T1–T8 chưa biết vì chưa có file.
 
 ## Dữ liệu và cách làm mới
 
