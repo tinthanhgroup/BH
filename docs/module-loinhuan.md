@@ -26,6 +26,6 @@ Lợi nhuận gộp = giá bán − giá vốn − chi phí KM − hoa hồng m�
 
 ## Dữ liệu và cách làm mới
 
-`loinhuan.json` (khoá `bb` và `ky`, mỗi khoá gồm `xe[]`, `loai`, `updated`) là **ảnh chụp tạo tay**, không tự đồng bộ: được dựng từ `data.json` (cột QUÀ KM, CHI PHÍ KM… do `TinThanh_AutoSync.gs` xuất từ 23/10/2026) cộng bảng mức hỗ trợ HTV, định mức KM và hoa hồng môi giới. Muốn làm mới phải chạy lại bộ script tính rồi ghi đè `loinhuan.json`. Bộ script nằm ở Project A: `G:\My Drive. Project A\9. KQKD\scripts\loi_nhuan_xe\` (README trong thư mục: cách chạy, nơi sửa định mức KM, mức hỗ trợ HTV tháng mới, hoa hồng môi giới, các điểm còn tạm tính). Không lưu script trong repo BH này.
+`loinhuan.json` (khoá `bb` và `ky`, mỗi khoá gồm `xe[]`, `loai`, `updated`) là **ảnh chụp tạo tay**, không tự đồng bộ: được dựng từ `data.json` (cột QUÀ KM, CHI PHÍ KM… do `TinThanh_AutoSync.gs` xuất từ 23/10/2026) cộng bảng mức hỗ trợ HTV, định mức KM và hoa hồng môi giới. Muốn làm mới phải chạy lại bộ script tính rồi ghi đè `loinhuan.json`. Bộ script nằm ở Project A: `G:\My Drive\1. Project A\9. KQKD\scripts\loi_nhuan_xe\` (README trong thư mục: cách chạy, nơi sửa định mức KM, mức hỗ trợ HTV tháng mới, hoa hồng môi giới, các điểm còn tạm tính). Không lưu script trong repo BH này.
 
 Trang đứng riêng, không có `<h1>` và chỉ nền sáng (theo quy ước các trang module nhúng iframe); tải `loinhuan.json` cùng thư mục bằng `fetch`.
