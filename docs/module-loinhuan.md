@@ -1,10 +1,10 @@
-# Module Lợi nhuận xe (`loinhuan.html`, tab 9 "Lợi nhuận xe")
+# Module Lợi nhuận xe (`loinhuan.html`, thẻ 12 "Lợi nhuận gộp từng xe" trong tab 2 BC Bán hàng)
 
-Thêm 23/10/2026 theo yêu cầu anh Khanh. Mục đích: nhìn nhanh tỷ lệ lợi nhuận gộp từng chiếc xe, theo phiên bản, tháng và chi nhánh; mỗi xe là một ô vuông tô màu (6 mức: dưới 0%, 0–1, 1–2, 2–3, 3–4, từ 4%).
+Thêm 23/10/2026 theo yêu cầu anh Khanh (ban đầu làm tab 9 riêng, cùng ngày chuyển thành thẻ 12 trong tab 2). Trang nhúng iframe `#ln-iframe` trong `#ln-card`, lazy-load khi mở tab 2 nếu có quyền. Mục đích: nhìn nhanh tỷ lệ lợi nhuận gộp từng chiếc xe, theo phiên bản, tháng và chi nhánh; mỗi xe là một ô vuông tô màu (6 mức: dưới 0%, 0–1, 1–2, 2–3, 3–4, từ 4%).
 
 ## Quyền xem
 
-Quyền `ln` trong `_classifyGroup()` (`index.html`): chỉ **Admin, GĐ/PGĐ (gồm Tổng GĐ), Bán hàng thường**. MKT không xem. Chi tiết và giới hạn của khoá client-side: `docs/giao-dien-va-phan-quyen.md`. File `loinhuan.json` chứa giá vốn, lợi nhuận, tên khách, số khung từng xe và **nằm trong repo công khai**, anh Khanh đã chấp nhận (23/10/2026). Không đưa thêm dữ liệu nhạy cảm vào file này khi chưa hỏi lại.
+Quyền `ln` trong `_classifyGroup()` (`index.html`): chỉ **Admin, GĐ/PGĐ (gồm Tổng GĐ), Bán hàng thường**. MKT vẫn vào được tab 2 nhưng thẻ 12 bị ẩn. Chi tiết và giới hạn của khoá client-side: `docs/giao-dien-va-phan-quyen.md`. File `loinhuan.json` chứa giá vốn, lợi nhuận, tên khách, số khung từng xe và **nằm trong repo công khai**, anh Khanh đã chấp nhận (23/10/2026). Không đưa thêm dữ liệu nhạy cảm vào file này khi chưa hỏi lại.
 
 ## Hai tab con
 
