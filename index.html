@@ -313,6 +313,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
     <div class="tab" id="tab-bct-btn" style="display:none" onclick="switchTab('bct')">8. BC tuần 🔒</div>
+    <div class="tab" id="tab-ln-btn" style="display:none" onclick="switchTab('ln')">9. Lợi nhuận xe 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -432,6 +433,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-bct" class="tab-panel" style="padding:0;">
     <iframe id="bct-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+  </div>
+  <div id="tab-ln" class="tab-panel" style="padding:0;">
+    <iframe id="ln-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
 
   <!-- TAB HÀNG HÓA -->
@@ -1176,6 +1180,10 @@ function _applyAuthSession(pass, res){
     var bctBtn=document.getElementById('tab-bct-btn');
     if(bctBtn) bctBtn.style.display='';
   }
+  if(_allowedTabs.has('ln')){
+    var lnBtn=document.getElementById('tab-ln-btn');
+    if(lnBtn) lnBtn.style.display='';
+  }
   _allowedTabs.forEach(function(t){ _unlockTabUI(t); });
 }
 function _restoreAuthSession(){
@@ -1196,23 +1204,24 @@ function _classifyGroup(nhomRaw, isAdmin){
   // mở nốt cho GĐ thường 28/09/2026 — hiện Admin/PGĐ/GĐ/MKT/Bán hàng đều xem được.
   // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN — mở cho MỌI nhóm đã đăng nhập (19/10/2026,
   // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" bỏ dấu cũng chứa "giam doc" → rơi vào nhánh GĐ.
-  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct']);
+  // Tab 9 "Lợi nhuận xe" (ln, thêm 23/10/2026, anh Khanh): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) và Bán hàng — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
+  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
   var n = _stripDiacritics(nhomRaw);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
   // (pho giam doc, có dấu cách nên không chứa liền "pgd").
-  if(n.indexOf('pgd')>=0 || n.indexOf('pho giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct']);
-  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct']);
+  if(n.indexOf('pgd')>=0 || n.indexOf('pho giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
+  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns','bct']);
   if(n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt','crm','bct']);
-  if(n.indexOf('ban hang')>=0) return new Set(['bh','mkt','crm','bct']);
+  if(n.indexOf('ban hang')>=0) return new Set(['bh','mkt','crm','bct','ln']);
   if(n.indexOf('dich vu')>=0) return new Set(['dv','bct']);
   // Nhóm khác (Văn phòng, Kế toán…): chỉ tab BC tuần (19/10/2026) — các tab báo cáo khác vẫn khoá
   return new Set(['bct']);
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'BC tuần'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'BC tuần', ln:'Lợi nhuận xe'}[t];
 }
 // "Giả định đặt hàng" (dathang) — mở cho Admin + đúng nhóm được xem CRM (PGĐ, Bán
 // hàng thường, MKT — 3 nhóm này dùng chung 1 bộ quyền ['bh','mkt','crm'] nên không
@@ -1224,7 +1233,7 @@ function _canSeeDatHang(){
   return _isAdmin || _allowedTabs.has('crm') || _isGD;
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'Báo cáo tuần chi nhánh'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'Báo cáo tuần chi nhánh', ln:'Lợi nhuận gộp từng xe'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1269,12 +1278,14 @@ function _fixEmbedPanelHeights(){
   var policy=document.getElementById('tab-policy');
   var crm=document.getElementById('tab-crm');
   var bct=document.getElementById('tab-bct');
+  var ln=document.getElementById('tab-ln');
   if(ns) ns.style.height=h;
   if(dv) dv.style.height=h;
   if(mkt) mkt.style.height=h;
   if(policy) policy.style.height=h;
   if(crm) crm.style.height=h;
   if(bct) bct.style.height=h;
+  if(ln) ln.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
 
@@ -1283,7 +1294,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','bct','admin'];
+  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','bct','ln','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1333,6 +1344,14 @@ function _doSwitchTab(t){
     if(!bctIframe.getAttribute('data-loaded')){
       bctIframe.src='https://tinthanhgroup.github.io/BH/baocaotuan.html';
       bctIframe.setAttribute('data-loaded','1');
+    }
+  }
+  // Lazy load iframe Lợi nhuận xe
+  if(t==='ln'){
+    var lnIframe=document.getElementById('ln-iframe');
+    if(!lnIframe.getAttribute('data-loaded')){
+      lnIframe.src='https://tinthanhgroup.github.io/BH/loinhuan.html';
+      lnIframe.setAttribute('data-loaded','1');
     }
   }
   if(t==='hh') renderHH();
@@ -5017,6 +5036,7 @@ function _permMatrixHTML(){
     {lbl:'6. Chính sách<br>HTV', f:function(){ return FREE; }},
     {lbl:'7. CRM', f:function(s){ return s.has('crm'); }},
     {lbl:'8. BC tuần', f:function(s){ return s.has('bct'); }},
+    {lbl:'9. Lợi nhuận<br>xe', f:function(s){ return s.has('ln'); }},
     {lbl:'Tab Admin', f:function(s,a){ return a; }},
     {lbl:'Tab 1 · Xe<br>chưa xuất HĐ', f:function(s,a,gd,known){ return known && (a||gd); }},
     {lbl:'Tab 1 · Đặt<br>hàng giả định', f:function(s,a,gd,known){ return known && (a||s.has('crm')||gd); }}

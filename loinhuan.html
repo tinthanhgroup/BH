@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lợi nhuận gộp từng xe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Bố cục: thanh tóm tắt + chú giải ở trên, bên dưới là bảng cuộn ngang (hàng = phiên bản, cột = tháng × chi nhánh), mỗi xe một ô vuông. */
+:root{
+  color-scheme:light;
+  --bg:#F4F6F9; --panel:#FFFFFF; --ink:#16212E; --muted:#5C6B7C; --line:#DDE3EA; --line-soft:#EBEFF4;
+  --navy:#1B4F8C; --navy-soft:#E3ECF7;
+  --b0:#B3261E; --b1:#E6795E; --b2:#EAC673; --b3:#9ECBDB; --b4:#4F9EBF; --b5:#1B5F8C;
+  --nogia:#C9D1DA; --dot:#16212E; --ring:rgba(255,255,255,.75);
+  --tip-bg:#16212E; --tip-ink:#F4F6F9;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45;
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-size:22px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;max-width:72ch}
+.stats{display:flex;flex-wrap:wrap;gap:10px 28px;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat span{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12.5px;padding:5px 11px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;cursor:pointer}
+.chip:hover{border-color:var(--navy)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip:focus-visible,.sq:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--muted)}
+.lg{display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums}
+.lg i{width:12px;height:12px;border-radius:2px;display:block}
+.board{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:auto;max-height:76vh}
+table{border-collapse:separate;border-spacing:0;font-size:12px}
+th,td{padding:0;background:var(--panel)}
+thead th{position:sticky;z-index:3;font-weight:600;text-align:center;border-bottom:1px solid var(--line)}
+thead tr.r1 th{top:0;height:28px;color:var(--ink);font-size:12.5px}
+thead tr.r2 th{top:28px;height:26px;color:var(--muted);font-weight:500;font-size:12px}
+thead tr.r3 th{top:54px;height:26px;font-weight:500;font-size:12px;font-variant-numeric:tabular-nums}
+.mstart{border-left:1px solid var(--line)}
+.lab{position:sticky;left:0;z-index:2;min-width:214px;max-width:214px;text-align:left;padding:6px 12px;border-right:1px solid var(--line);background:var(--panel)}
+thead th.lab{z-index:4}
+.lab .t{font-weight:600;display:block;line-height:1.3}
+.lab .m{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+tr.mh td,tr.mh th{background:var(--navy-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+tr.mh .lab{background:var(--navy-soft);color:var(--navy);font-weight:700;font-size:12.5px;letter-spacing:.02em;text-transform:uppercase}
+tr.mh .lab .m{text-transform:none;letter-spacing:0;font-weight:500}
+td.cell{vertical-align:top;padding:6px 4px 6px 5px;width:62px;min-width:62px;border-bottom:1px solid var(--line-soft)}
+td.cell.mstart{border-left:1px solid var(--line)}
+tr.vr .lab{border-bottom:1px solid var(--line-soft)}
+.grid{display:flex;flex-wrap:wrap;gap:2px;width:50px}
+.sq{width:11px;height:11px;border-radius:2px;display:block;position:relative;cursor:pointer;padding:0;border:0}
+.sq.b0{background:var(--b0)}.sq.b1{background:var(--b1)}.sq.b2{background:var(--b2)}
+.sq.b3{background:var(--b3)}.sq.b4{background:var(--b4)}.sq.b5{background:var(--b5)}
+.sq.cx{background:transparent;border:1.5px dashed var(--muted)}
+.sq.cxe{outline:1.5px dashed var(--ink);outline-offset:1px;z-index:1}
+.sq.tam{border-bottom:3px solid var(--dot)}
+.sq.nogia{background:repeating-linear-gradient(135deg,var(--nogia) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--nogia)}
+.sq.nbr{outline:1.5px solid var(--ink);outline-offset:1px;z-index:1}
+.lg i.nbr{background:transparent}
+.sq.noht::before{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 5px 5px 0;border-color:transparent var(--dot) transparent transparent}
+.sq.nokm::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--dot)}
+td.agg{text-align:center;font-variant-numeric:tabular-nums;font-size:11px;padding:3px 0;border-bottom:1px solid var(--line)}
+td.agg span{display:inline-block;min-width:38px;padding:2px 4px;border-radius:3px}
+.sw{color:#fff}.sw.b2,.sw.b3{color:#16212E}
+.dim{color:var(--muted)}
+.notes{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;max-width:96ch}
+.notes b{color:var(--ink);font-weight:600}
+#tip{position:fixed;z-index:50;pointer-events:none;background:var(--tip-bg);color:var(--tip-ink);border-radius:6px;padding:9px 11px;font-size:12px;line-height:1.5;max-width:300px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:opacity .08s}
+#tip.on{opacity:1}
+#tip .h{font-weight:700;font-size:12.5px;margin-bottom:3px}
+#tip .row{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+#tip .row span:first-child{opacity:.7}
+#tip .big{font-size:15px;font-weight:700;margin-top:4px}
+#tip .warn{margin-top:4px;opacity:.85}
+@media (max-width:560px){.lab{min-width:150px;max-width:150px}.stat b{font-size:17px}}
+
+/* tab */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line)}
+.tab{font:inherit;text-align:left;padding:9px 18px 8px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;color:var(--muted);cursor:pointer;border-radius:6px 6px 0 0}
+.tab b{display:block;font-weight:600;font-size:14px}
+.tab small{font-size:11.5px}
+.tab:hover{background:var(--navy-soft)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--navy)}
+.tab:focus-visible{outline:2px solid var(--navy);outline-offset:-2px}
+#panel{display:flex;flex-direction:column;gap:16px}
+.stat.main b{color:var(--navy)}
+.lg i.sq{width:12px;height:12px}
+.lg i.sq.small{width:9px;height:9px;margin:0 2px}
+.sw{display:inline-block;min-width:38px;padding:2px 4px;border-radius:3px}
+.sq.cxe.b3{background:var(--b3)}
+.sq.b2{box-shadow:inset 0 0 0 1px rgba(120,90,20,.28)}
+.sq.nokm::after{box-shadow:0 0 0 1px var(--ring)}
+.sq.noht::before{border-width:0 6px 6px 0;filter:drop-shadow(0 0 1px var(--ring)) drop-shadow(0 0 .5px var(--ring))}
+.tw{display:block;width:max-content;min-width:100%}
+.lgrow{gap:4px 14px}
+.sq.tam{box-shadow:0 1px 0 var(--ring)}
+/* thanh tóm tắt: nhóm chính + nhóm phụ */
+.stats{flex-direction:column;gap:8px}
+.stats-main{display:flex;flex-wrap:wrap;gap:10px 32px}
+.stats-sub{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:12px;color:var(--muted);padding-top:8px;border-top:1px solid var(--line-soft)}
+.stats-sub b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.stat.neg b{color:var(--b0)}
+/* chú giải 2 hàng: màu, rồi ký hiệu phụ */
+.toolbar{flex-direction:column;align-items:flex-start;gap:10px}
+.legend{flex-direction:column;align-items:flex-start;gap:6px;width:100%}
+.lgrow{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center}
+.lgrow.aux{padding-top:6px;border-top:1px solid var(--line-soft);width:100%}
+@media (prefers-reduced-motion:reduce){#tip{transition:none}}
+
+.err{padding:24px;color:var(--b0);font-weight:600}
+.loading{padding:24px;color:var(--muted)}
+</style>
+</head>
+<body>
+<!-- Trang module nhúng iframe trong index.html (tab 9, khóa cho Admin, GĐ/PGĐ, Bán hàng). Dữ liệu: loinhuan.json (tạo tay, không tự đồng bộ). Xem docs/module-loinhuan.md -->
+<div class="wrap">
+  <p class="sub" id="sub"></p>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Cách xếp xe"></div>
+  <div id="panel" role="tabpanel">
+    <section class="stats" id="stats" aria-label="Tóm tắt"></section>
+    <div class="toolbar">
+      <div class="chips" id="chips" role="group" aria-label="Lọc theo dòng xe"></div>
+      <div class="legend" id="legend" aria-label="Chú giải màu"></div>
+    </div>
+    <div class="board" id="board" role="region" aria-label="Bảng lợi nhuận gộp từng xe" tabindex="0"></div>
+    <section class="notes" id="notes"></section>
+  </div>
+</div>
+<div id="tip" role="tooltip"></div>
+<script>
+
+let SETS = null;
+const TABS = {
+  bb: {label:'Theo xe báo bán', hint:'rà hỗ trợ của HTV', prefix:'Tháng', unit:'xe báo bán',
+       sub:'Mỗi ô vuông là một xe đã báo bán DMS trong năm 2026, xếp theo phiên bản, tháng báo bán và chi nhánh. Tháng báo bán cũng là tháng tính chương trình hỗ trợ của HTV, nên bảng này dùng để rà hỗ trợ HTV phải nhận.'},
+  ky: {label:'Theo xe ký', hint:'dự kiến lợi nhuận', prefix:'Ký tháng', unit:'xe ký mới',
+       sub:'Mỗi ô vuông là một xe khách đã ký hợp đồng (đặt cọc) trong năm 2026, xếp theo phiên bản, tháng ký và chi nhánh. Xe hiện ra sớm hơn bản báo bán khoảng một tuần, nên dùng để dự kiến lợi nhuận.'}
+};
+const CNS = ['NT','ĐL','PY','BL','PR'];
+const CN_FULL = {NT:'Nha Trang',ĐL:'Đà Lạt',PY:'Phú Yên',BL:'Bảo Lộc',PR:'Phan Rang'};
+const BINS = [
+  {k:'b0', lo:-Infinity, hi:0, t:'dưới 0%'},
+  {k:'b1', lo:0, hi:1, t:'0% đến 1%'},
+  {k:'b2', lo:1, hi:2, t:'1% đến 2%'},
+  {k:'b3', lo:2, hi:3, t:'2% đến 3%'},
+  {k:'b4', lo:3, hi:4, t:'3% đến 4%'},
+  {k:'b5', lo:4, hi:Infinity, t:'từ 4%'}
+];
+const fmt = n => n.toLocaleString('vi-VN');
+const tr = n => (n/1e6).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+' tr';
+const pct = v => v===null ? '–' : v.toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dmy = s => s ? s.split('-').reverse().join('/') : '';
+function agg(list){
+  const c = list.filter(x=>x.gb>0);
+  const gb = c.reduce((a,x)=>a+x.gb,0), ln = c.reduce((a,x)=>a+x.ln,0);
+  return {n:list.length, nc:c.length, p: gb? ln/gb*100 : null};
+}
+function binOf(p){ return p===null ? null : BINS.find(b=>p>=b.lo && p<b.hi).k; }
+function prepare(list){
+  return list.map((x,i)=>{
+    const ok = x.gb>0;
+    const htx = x.nb ? 0 : x.ht;
+    const ln = ok ? x.gb - x.gv - x.km - (x.hh||0) + htx : null;
+    const p = ok ? ln/x.gb*100 : null;
+    const noht = !x.nb && (x.hl==='ngang' || x.hl==='chua');
+    const bin = x.cx && !x.gb ? 'cx' : p===null ? 'nogia' : BINS.find(b=>p>=b.lo && p<b.hi).k;
+    return {...x, i, ln, p, bin, noht};
+  });
+}
+
+let tab = 'bb', DATA = null, xe = [], MONTHS = [], models = [], filter = 'Tất cả';
+try{ const s = localStorage.getItem('bdln_tab'); if(s && TABS[s]) tab = s; }catch(e){}
+
+function setTab(t, keepFocus){
+  tab = t; DATA = SETS[t]; xe = prepare(DATA.xe);
+  const maxM = Math.max(...xe.map(x=>x.m));
+  MONTHS = Array.from({length:maxM},(_,i)=>i+1);           // giữ thứ tự T1 → T mới nhất
+  models = [...new Set(xe.map(x=>x.mo))].sort((a,b)=>xe.filter(x=>x.mo===b).length - xe.filter(x=>x.mo===a).length);
+  if(filter!=='Tất cả' && !models.includes(filter)) filter = 'Tất cả';
+  try{ localStorage.setItem('bdln_tab', t); }catch(e){}
+  renderTabs(keepFocus); renderHead(); renderChips(); renderBoard(); renderNotes();
+  snapScroll();                                             // mở ra là thấy các tháng gần nhất bên phải; cột phiên bản vẫn dính bên trái
+}
+function renderTabs(keepFocus){
+  const el = document.getElementById('tabs');
+  el.innerHTML = Object.entries(TABS).map(([k,v])=>
+    `<button type="button" role="tab" id="tab-${k}" class="tab" data-tab="${k}" aria-selected="${k===tab}" aria-controls="panel" tabindex="${k===tab?0:-1}"><b>${v.label}</b><small>${v.hint}</small></button>`).join('');
+  if(keepFocus) document.getElementById('tab-'+tab).focus();
+  document.getElementById('panel').setAttribute('aria-labelledby','tab-'+tab);
+}
+function renderHead(){ document.getElementById('sub').textContent = TABS[tab].sub; }
+
+function renderStats(list){
+  const a = agg(list);
+  const lo = list.filter(x=>x.p!==null && x.p<0).length;
+  const nb = list.filter(x=>x.nb).length;
+  const nogia = list.filter(x=>x.p===null && !x.cx).length;
+  const cxn = list.filter(x=>x.cx).length, cxno = list.filter(x=>x.cx && !x.gb).length;
+  const nokm = list.filter(x=>x.miss).length, noht = list.filter(x=>x.noht).length;
+  const htSum = list.reduce((s,x)=>s+(x.nb?0:x.ht),0);
+  document.getElementById('stats').innerHTML =
+    `<div class="stats-main">`+
+      `<div class="stat"><b>${fmt(list.length)}</b><span>${TABS[tab].unit}</span></div>`+
+      `<div class="stat main"><b>${pct(a.p)}</b><span>lợi nhuận gộp bình quân gia quyền</span></div>`+
+      `<div class="stat"><b>${(htSum/1e9).toLocaleString('vi-VN',{minimumFractionDigits:2,maximumFractionDigits:2})} tỷ</b><span>hỗ trợ HTV đã cộng vào</span></div>`+
+      `<div class="stat${lo?' neg':''}"><b>${fmt(lo)}</b><span>xe lỗ gộp (dưới 0%)</span></div>`+
+    `</div>`+
+    `<div class="stats-sub">`+
+      `<span><b>${fmt(nb)}</b> xe nội bộ/ngang, không có hỗ trợ HTV</span>`+
+      `<span><b>${fmt(nogia)}</b> xe chưa có giá bán</span>`+
+      (cxn?`<span><b>${fmt(cxn)}</b> khách ký chưa có xe (${fmt(cxn-cxno)} đã ước, ${fmt(cxno)} chưa ước được)</span>`:'')+
+      `<span><b>${fmt(nokm+noht)}</b> xe có số ước tính (chi phí KM theo định mức hoặc hỗ trợ HTV chưa chắc)</span>`+
+    `</div>`;
+}
+function renderLegend(list){
+  const cnt = {}; list.forEach(x=>cnt[x.bin]=(cnt[x.bin]||0)+1);
+  const nEst = list.filter(x=>x.cx&&x.gb).length;
+  const n = f => list.filter(f).length;
+  const aux = [
+    [`<i class="sq b2 nbr small"></i>`, 'viền đen: nội bộ/ngang', n(x=>x.nb)],
+    [`<i class="sq b2 nokm"></i>`, 'chấm giữa: KM theo định mức', n(x=>x.dm)],
+    [`<i class="sq b2 noht"></i>`, 'tam giác góc: HTV chưa chắc', n(x=>x.noht)],
+    [`<i class="sq b2 tam"></i>`, 'vạch dưới: chưa báo bán', n(x=>x.tam)],
+    [`<i class="sq nogia"></i>`, 'sọc xám: chưa có giá', cnt.nogia||0],
+    [`<i class="sq cxe small b3"></i>`, 'viền đứt: ký chưa xe, đã ước', nEst],
+    [`<i class="sq cx"></i>`, 'chưa ước được', cnt.cx||0]
+  ].filter(a=>a[2]>0).map(a=>`<span class="lg">${a[0]}${a[1]} (${a[2]})</span>`).join('');
+  document.getElementById('legend').innerHTML =
+    `<div class="lgrow">`+BINS.map(b=>`<span class="lg"><i class="sq ${b.k}"></i>${b.t} (${cnt[b.k]||0})</span>`).join('')+`</div>`+
+    (aux?`<div class="lgrow aux">${aux}</div>`:'');
+}
+function renderChips(){
+  document.getElementById('chips').innerHTML = ['Tất cả',...models].map(m=>
+    `<button class="chip" type="button" data-m="${esc(m)}" aria-pressed="${m===filter}">${esc(m)}</button>`).join('');
+}
+function cellHTML(list){
+  if(!list.length) return '';
+  const s = [...list].sort((a,b)=>(a.p===null)-(b.p===null) || (a.p??0)-(b.p??0));
+  return '<div class="grid">'+s.map(x=>`<button type="button" class="sq ${x.bin}${x.miss?' nokm':''}${x.noht?' noht':''}${x.nb?' nbr':''}${x.tam?' tam':''}${x.cx&&x.gb?' cxe':''}" data-i="${x.i}" aria-label="${esc(x.mo+' '+x.pb+', '+CN_FULL[x.c]+', '+pct(x.p))}"></button>`).join('')+'</div>';
+}
+function renderBoard(){
+  const list = filter==='Tất cả' ? xe : xe.filter(x=>x.mo===filter);
+  renderStats(list); renderLegend(list);
+  const ms = filter==='Tất cả' ? models : [filter];
+  const pre = TABS[tab].prefix;
+  let h = '<table><thead><tr class="r1"><th class="lab" rowspan="3">Phiên bản</th>';
+  MONTHS.forEach(m=>{h += `<th class="mstart" colspan="${CNS.length}">${pre} ${m}</th>`;});
+  h += '</tr><tr class="r2">';
+  MONTHS.forEach(()=>CNS.forEach((c,j)=>{h += `<th class="${j===0?'mstart':''}" title="${CN_FULL[c]}">${c}</th>`;}));
+  h += '</tr><tr class="r3">';
+  MONTHS.forEach(m=>CNS.forEach((c,j)=>{
+    const a = agg(list.filter(x=>x.m===m && x.c===c));
+    const k = binOf(a.p);
+    h += `<th class="${j===0?'mstart':''}">${k?`<span class="sw ${k}" style="background:var(--${k})" title="${a.n} xe">${pct(a.p)}</span>`:'<span class="dim">–</span>'}</th>`;
+  }));
+  h += '</tr></thead><tbody>';
+  ms.forEach(mo=>{
+    const lm = list.filter(x=>x.mo===mo); if(!lm.length) return;
+    const am = agg(lm);
+    h += `<tr class="mh"><th class="lab">${esc(mo)} <span class="m">${lm.length} xe · ${pct(am.p)}</span></th><td colspan="${MONTHS.length*CNS.length}"></td></tr>`;
+    const pbs = [...new Set(lm.map(x=>x.pb))].sort((a,b)=>lm.filter(x=>x.pb===b).length - lm.filter(x=>x.pb===a).length);
+    pbs.forEach(pb=>{
+      const lp = lm.filter(x=>x.pb===pb); const ap = agg(lp);
+      h += `<tr class="vr"><th class="lab"><span class="t">${esc(pb)}</span><span class="m">${lp.length} xe · ${pct(ap.p)}</span></th>`;
+      MONTHS.forEach(m=>CNS.forEach((c,j)=>{
+        h += `<td class="cell ${j===0?'mstart':''}">${cellHTML(lp.filter(x=>x.m===m && x.c===c))}</td>`;
+      }));
+      h += '</tr>';
+    });
+  });
+  h += '</tbody></table>';
+  document.getElementById('board').innerHTML = '<div class="tw">'+h+'</div>';
+}
+// Mở ra thấy các tháng gần nhất: cuộn sang phải, căn đầu cột tháng cho khỏi bị cắt giữa chừng.
+function snapScroll(){
+  const bd = document.getElementById('board'), tw = bd.querySelector('.tw');
+  if(!tw) return;
+  tw.style.paddingRight = '0px'; bd.scrollLeft = 0;
+  const ths = [...bd.querySelectorAll('thead tr.r1 th.mstart')];
+  const labR = bd.querySelector('th.lab').getBoundingClientRect(), twL = tw.getBoundingClientRect().left;
+  const lab = labR.width;
+  const max = bd.scrollWidth - bd.clientWidth;
+  const stops = ths.map(t=>t.getBoundingClientRect().left - twL - lab);    // vị trí cuộn để đầu cột tháng nằm sát cột phiên bản
+  const k = stops.find(p=>p >= max - 1);
+  if(k === undefined || k - max > 0.6*(ths.length>1 ? stops[1]-stops[0] : 310)){ bd.scrollLeft = max; return; }   // chừa trống quá nhiều thì thôi, để cuộn hết cỡ
+  tw.style.paddingRight = Math.max(0, k - max) + 'px';
+  bd.scrollLeft = k;
+}
+function renderNotes(){
+  const ex = DATA.loai, nEx = Object.values(ex).reduce((a,v)=>a+v,0);
+  const exTxt = `Không gồm ${nEx} xe thuộc nhóm khác: `+Object.entries(ex).map(([k,v])=>`${k} ${v}`).join(', ')+'.';
+  const ky = tab==='ky';
+  document.getElementById('notes').innerHTML =
+    `<div><b>Cách tính:</b> (giá bán − giá vốn − chi phí KM − hoa hồng môi giới + hỗ trợ HTV còn nhận) / giá bán. Giá bán đã gồm hỗ trợ CT HTV nên không cộng lại phần này.</div>`+
+    (ky?`<div><b>Theo ngày ký:</b> tháng của ô là tháng ký hợp đồng (ngày đặt cọc). Hỗ trợ HTV vẫn tính theo chương trình của tháng báo bán thực tế; xe chưa báo bán tạm tính theo chương trình gần nhất (T10, CV 114). Từ ký đến báo bán trung vị 8 ngày.</div>`
+       :`<div><b>Theo xe báo bán:</b> tháng của ô là tháng báo bán DMS. Xe báo bán cuối tháng và xuất hóa đơn chậm nhất 10 ngày sau vẫn thuộc chương trình tháng báo bán.</div>`)+
+    `<div><b>Hỗ trợ HTV còn nhận:</b> theo chương trình thúc đẩy bán hàng của tháng báo bán (CV 722/2025 đến CV 114/2026), mức theo phiên bản và năm SX, nhóm Nam Trung Bộ &amp; ĐNB. HTV áp dụng cùng mức cho xe tồn sẵn và xe mới mua. Còn nhận = mức − phần HTV đã giảm vào giá vốn khi xuất xe, chỉ cho xe bán lẻ. Palisade tồn trước 23/04: HTV bù phần chênh giá theo CV 177. Chưa gồm thưởng kinh doanh tháng/quý và thưởng TVBH. Mức T1–T6 tính theo tóm tắt chính sách, chưa đối chiếu được với số HTV thực trả theo từng xe.</div>`+
+    `<div><b>Chi phí KM:</b> lấy từ cột CHI PHÍ KM của sheet. Xe có ghi quà nhưng chưa có chi phí tính theo định mức tạm tính (dán phim 2,0–2,5 triệu, camera HT 1,5, camera Miox 2,0, phủ gầm 2,7, lót sàn 0,5; BHTX 0,9–1,2% giá bán tùy dòng xe, BHTV 0,85%, BHVC 1,0%; bảo hiểm ghi "HTV tặng" tính 0), đang chờ duyệt.</div>`+
+    `<div><b>Hoa hồng môi giới:</b> lấy từ sổ 641 (TK 6418.12) của kế toán Nha Trang, khoản chi cho người giới thiệu xe bán cho cơ quan nhà nước, ghi theo từng xe (7 xe, 58 triệu). Chưa có sổ Đà Lạt, Bảo Lộc T1–T8 nên các khoản tương tự ở đó chưa tính.</div>`+
+    `<div><b>Phạm vi:</b> xe ${ky?'có ngày ký trong năm 2026, gồm cả khách chưa có xe':'báo bán trong năm 2026'}, 5 chi nhánh theo nguồn khách (NT, ĐL, PY, BL, PR). ${exTxt}</div>`+
+    `<div><b>Ký hiệu:</b> ô sọc xám: chưa có giá bán. Ô viền đen: xe bán nội bộ hoặc ngang đại lý, không có hỗ trợ HTV (xe nội bộ Đà Lạt, Bảo Lộc T1–T8 chưa biết nên chưa đánh dấu). Chấm giữa ô: chi phí KM tính theo định mức. Tam giác ở góc ô: xe mua ngang hoặc chưa xác định giá gốc, hỗ trợ HTV chưa chắc.`+
+    (ky?` Vạch đen dưới ô: đã ký, đã phân xe nhưng chưa báo bán. Ô viền đứt có màu: khách đã ký chưa có xe, giá ước theo trung vị xe cùng phiên bản ký từ giữa tháng 7. Ô viền đứt rỗng: chưa ước được (chủ yếu Palisade Hybrid).`:'')+`</div>`+
+    `<div><b>Dữ liệu:</b> sheet NEW ADMIN - BÁO CÁO NGÀY, cập nhật ${esc(DATA.updated)}. Chưa đối chiếu với KQKD kế toán.</div>`;
+}
+
+const tip = document.getElementById('tip');
+function showTip(btn){
+  const x = xe[+btn.dataset.i];
+  tip.innerHTML =
+    `<div class="h">${esc(x.mo)} ${esc(x.pb)}${x.mau?' · '+esc(x.mau):''}</div>`+
+    `<div class="row"><span>Số khung</span><span>${esc(x.sk)||'–'}</span></div>`+
+    `<div class="row"><span>Khách</span><span>${esc(x.kh)||'–'}</span></div>`+
+    `<div class="row"><span>Chi nhánh · TVBH</span><span>${x.c} · ${esc(x.tv)||'–'}</span></div>`+
+    `<div class="row"><span>Ngày ký</span><span>${esc(dmy(x.ky))}</span></div>`+
+    `<div class="row"><span>Báo bán</span><span>${x.d? esc(dmy(x.d)) : 'chưa báo bán'}</span></div>`+
+    `<div class="row"><span>Giá bán</span><span>${x.gb? tr(x.gb) : 'chưa có'}</span></div>`+
+    `<div class="row"><span>Giá vốn</span><span>${tr(x.gv)}</span></div>`+
+    `<div class="row"><span>Chi phí KM</span><span>${x.km? tr(x.km)+(x.dm?' (định mức)':'') : (x.miss?'chưa có':'0')}</span></div>`+
+    (x.hh?`<div class="row"><span>Hoa hồng môi giới</span><span>${tr(x.hh)}</span></div>`:'')+
+    `<div class="row"><span>Hỗ trợ HTV còn nhận</span><span>${x.nb?'không có':(x.ht? tr(x.ht) : (x.noht?'chưa tính':'0'))}</span></div>`+
+    (x.qua?`<div class="row"><span>Quà KM</span><span style="text-align:right">${esc(x.qua)}</span></div>`:'')+
+    (x.cx && x.gb ? `<div class="warn">Khách đã ký nhưng chưa có xe. Giá bán, giá vốn và chi phí KM là số ước theo các xe cùng phiên bản ký gần đây; hỗ trợ HTV theo chương trình T10.</div>`
+    : x.cx ? `<div class="warn">Khách đã ký nhưng chưa có xe, phiên bản này chưa có xe nào bán để làm mốc nên chưa ước được.</div>`
+    : x.p===null ? `<div class="warn">Chưa có giá bán, không tính tỷ lệ.</div>`
+      : `<div class="big">${tr(x.ln)} · ${pct(x.p)}</div>`)+
+    (x.tam?`<div class="warn">Chưa báo bán: hỗ trợ HTV tạm tính theo chương trình gần nhất (T10, CV 114); giá bán, giá vốn là số hiện có trong sheet.</div>`:'')+
+    (x.dm?`<div class="warn">Sheet chưa có chi phí KM, đang tính theo định mức tạm tính${x.dmPart?' (còn món chưa có định mức nên có thể thấp hơn thực tế)':''}.</div>`:(x.miss?`<div class="warn">Có quà KM nhưng chưa có chi phí và chưa tính được định mức.</div>`:''))+
+    (x.noht?`<div class="warn">${x.hl==='ngang'?'Xe mua ngang: hỗ trợ ước theo cùng công thức, cần đối chiếu số HTV chi thật.':'Chưa xác định được giá gốc của phiên bản nên chưa cộng hỗ trợ, tỷ lệ có thể thấp hơn thực tế.'}</div>`:'');
+  const r = btn.getBoundingClientRect();
+  tip.classList.add('on');
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  let left = r.right + 8, top = r.top - 4;
+  if(left + tw > innerWidth - 8) left = r.left - tw - 8;
+  if(left < 8) left = Math.max(8, Math.min(innerWidth - tw - 8, r.left));
+  if(top + th > innerHeight - 8) top = innerHeight - th - 8;
+  tip.style.left = left+'px'; tip.style.top = Math.max(8, top)+'px';
+}
+const hideTip = ()=>tip.classList.remove('on');
+const board = document.getElementById('board');
+board.addEventListener('mouseover',e=>{const b=e.target.closest('.sq'); if(b) showTip(b);});
+board.addEventListener('mouseout',e=>{if(e.target.closest('.sq')) hideTip();});
+board.addEventListener('focusin',e=>{const b=e.target.closest('.sq'); if(b) showTip(b);});
+board.addEventListener('focusout',hideTip);
+board.addEventListener('click',e=>{const b=e.target.closest('.sq'); if(b) showTip(b);});
+board.addEventListener('scroll',hideTip);
+document.addEventListener('click',e=>{if(!e.target.closest('.sq')) hideTip();});
+document.getElementById('chips').addEventListener('click',e=>{
+  const b = e.target.closest('.chip'); if(!b) return;
+  filter = b.dataset.m; renderChips(); renderBoard();
+});
+const tabsEl = document.getElementById('tabs');
+tabsEl.addEventListener('click',e=>{const b=e.target.closest('.tab'); if(b && b.dataset.tab!==tab) setTab(b.dataset.tab);});
+tabsEl.addEventListener('keydown',e=>{
+  const keys = Object.keys(TABS), i = keys.indexOf(tab);
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ setTab(keys[(i+(e.key==='ArrowRight'?1:keys.length-1))%keys.length], true); e.preventDefault(); }
+});
+document.getElementById('board').innerHTML = '<div class="loading">Đang tải dữ liệu…</div>';
+fetch('loinhuan.json', {cache:'no-store'})
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(d=>{ SETS = d; setTab(tab); })
+  .catch(e=>{ document.getElementById('board').innerHTML = '<div class="err">Không tải được dữ liệu ('+e.message+'). Tải lại trang hoặc báo admin.</div>'; });
+
+</script>
+</body>
+</html>

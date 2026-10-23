@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 21/10/2026
+Cập nhật: 23/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -33,6 +33,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 23/10/2026 | Thêm tab 9 "Lợi nhuận xe" (`loinhuan.html` + `loinhuan.json`): bản đồ lợi nhuận gộp từng xe 2026, 2 tab con theo báo bán / theo ngày ký; khoá quyền `ln` chỉ Admin, GĐ/PGĐ, Bán hàng (xem docs/module-loinhuan.md; dữ liệu nhạy cảm nằm trong repo công khai, anh Khanh chấp nhận) |
 | 21/10/2026 | Ban hành Quy định xử lý xe tồn kho lâu và điều chuyển xe, Số 03.26, hiệu lực 21/10/2026 (TGĐ duyệt nguyên văn v8); bản gốc `3. Chính sách nội bộ/23. QD 03.26 Xu ly xe ton kho lau.docx`, đã thêm vào trang Quy định nội bộ; xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 20/10/2026 | Đã gửi TGĐ dự thảo Quy định xử lý kho tồn lâu v8 (sửa 17/10: lãi và vận chuyển tính khi bán xe theo số ngân hàng, 8%/năm chỉ để minh họa; phụ lục số liệu 17/10); xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 19/10/2026 | Tab BC tuần mở cho mọi tài khoản đã đăng nhập (trưởng BP cùng xem để họp giao ban); xem `docs/giao-dien-va-phan-quyen.md` |

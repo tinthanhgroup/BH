@@ -16,7 +16,7 @@ Hệ thống báo cáo nội bộ **Hyundai Tín Thanh** (chi nhánh Nha Trang/�
 
 | Việc đang làm | Đọc |
 |---|---|
-| Sửa một trang/tab module | `docs/module-<tên>.md` của module đó: hanghoa (tab 1 Hàng hóa, KCK, Creta), chamcong, nhansu, nhacungcap, mkt, fbads, chinhsach, quydinh, crm, baocaotuan |
+| Sửa một trang/tab module | `docs/module-<tên>.md` của module đó: hanghoa (tab 1 Hàng hóa, KCK, Creta), chamcong, nhansu, nhacungcap, mkt, fbads, chinhsach, quydinh, crm, baocaotuan, loinhuan |
 | Tab/sub-tab, lazy-load, style dùng chung giữa các trang, phân quyền | `docs/giao-dien-va-phan-quyen.md` |
 | Sửa / thêm script `.gs`, trigger | `docs/apps-script.md` |
 | Cập nhật tay: chỉ tiêu, KCK dự phòng, chính sách HTV, quy định nội bộ, nhà cung cấp | `docs/cap-nhat-thu-cong.md` |

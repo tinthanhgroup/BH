@@ -17,6 +17,7 @@ Chuyển nguyên văn từ `CLAUDE.md` ngày 15/10/2026. Đọc khi sửa tab/su
 | `quy_dinh_noi_bo.html` | Tra cứu quy định/quy chế nội bộ (file Word gốc trên Drive + tóm tắt), nhúng iframe trong sub-tab "4. Quy định nội bộ" của tab 4 (**chuyển từ tab 7 riêng vào đây 09/2026** — không còn là tab cấp cao nhất) | Không tự có auth, nhưng **sub-tab này mở tự do** — xem chi tiết ngay dưới bảng | [docs/module-quydinh.md](docs/module-quydinh.md) |
 | `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 7 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
 | `baocaotuan.html` | Báo cáo tuần chi nhánh (quá trình điều hành của GĐCN gửi TGĐ: đề xuất cần quyết, trọng tâm tuần, cải tiến, TCT giao, cảnh báo quá hạn/chưa cập nhật), nhúng iframe trong tab 8 (thêm 25/09/2026). Dữ liệu `baocaotuan.json` — **giai đoạn đầu chuyển tay từ Excel** bằng `Bao cao tuan/xlsx_to_json.ps1`, sau này Google Sheet + Apps Script ghi cùng cấu trúc | Không tự có auth (như trên) — khoá cấp tab key `bct`: **mọi tài khoản đã đăng nhập** (mở cho tất cả 19/10/2026; trước đó Admin + GĐ). Chưa đăng nhập: nút tab ẩn | [docs/module-baocaotuan.md](docs/module-baocaotuan.md) |
+| `loinhuan.html` | Bản đồ lợi nhuận gộp từng xe 2026 (mỗi xe một ô vuông tô màu; 2 tab con: theo xe báo bán để rà hỗ trợ HTV, theo xe ký để dự kiến lợi nhuận), nhúng iframe trong tab 9 (thêm 23/10/2026). Dữ liệu `loinhuan.json` (tạo tay, không tự đồng bộ) | Không tự có auth — `index.html` gác cổng bằng quyền `ln` (chỉ Admin, GĐ/PGĐ, Bán hàng; **MKT không xem**) | [docs/module-loinhuan.md](docs/module-loinhuan.md) |
 
 ## Tab 4 (HCNS), tab 5 (MKT) và lazy-load
 
@@ -56,6 +57,8 @@ Các trang nhúng iframe (`chamcong/nhansu/nhacungcap/mkt/fbads/theo_doi_chinh_s
   | Không khớp gì (Văn phòng, Kế toán…) | Chỉ BC tuần |
 
   **BC tuần mở cho mọi tài khoản đã đăng nhập từ 19/10/2026** (trưởng BP cùng xem để họp giao ban).
+
+  **Tab 9 "Lợi nhuận xe" (`ln`, thêm 23/10/2026, anh Khanh): chỉ Admin, GĐ/PGĐ (gồm Tổng GĐ) và Bán hàng thường.** Nhóm MKT/Marketing không xem được dù xem được tab Bán hàng (nhánh `mkt` được xét trước nhánh `ban hang`, nhóm ghi cả "MKT - Bán hàng" cũng rơi vào nhánh `mkt`). Vì là khoá client-side nên file `loinhuan.json` (giá vốn, lợi nhuận, tên khách từng xe) vẫn tải được bằng đường dẫn trực tiếp trên GitHub Pages — anh Khanh biết và chấp nhận (23/10/2026).
 
   **CRM tạm ẩn bớt từ 09/2026, mở lại cho Bán hàng thường và PGĐ từ 09/2026, mở nốt cho GĐ thường 28/09/2026** — hiện Admin/PGĐ/GĐ/MKT/Bán hàng thường đều xem được CRM.
 
