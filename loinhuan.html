@@ -179,6 +179,7 @@ function prepare(list){
 
 let tab = 'bb', DATA = null, xe = [], MONTHS = [], models = [], filter = 'Tất cả';
 try{ const s = localStorage.getItem('bdln_tab'); if(s && TABS[s]) tab = s; }catch(e){}
+try{ const q = new URLSearchParams(location.search).get('tab'); if(q && TABS[q]) tab = q; }catch(e){}   // ?tab=ky|bb: mở thẳng tab (ô KPI trong index.html mở tab ký)
 
 function setTab(t, keepFocus){
   tab = t; DATA = SETS[t]; xe = prepare(DATA.xe);

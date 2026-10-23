@@ -33,6 +33,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 23/10/2026 | Đổi thẻ 12 thành ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2); bấm mở cửa sổ nổi chứa danh sách (loinhuan.html?tab=ky); vẫn quyền `ln` |
 | 23/10/2026 | Chuyển "Lợi nhuận xe" từ tab 9 riêng thành thẻ 12 trong tab 2 BC Bán hàng (`#ln-card`, vẫn quyền `ln`: Admin, GĐ/PGĐ, Bán hàng; MKT thấy tab 2 nhưng không thấy thẻ); gỡ tab 9 |
 | 23/10/2026 | Thêm tab 9 "Lợi nhuận xe" (`loinhuan.html` + `loinhuan.json`): bản đồ lợi nhuận gộp từng xe 2026, 2 tab con theo báo bán / theo ngày ký; khoá quyền `ln` chỉ Admin, GĐ/PGĐ, Bán hàng (xem docs/module-loinhuan.md; dữ liệu nhạy cảm nằm trong repo công khai, anh Khanh chấp nhận) |
 | 21/10/2026 | Ban hành Quy định xử lý xe tồn kho lâu và điều chuyển xe, Số 03.26, hiệu lực 21/10/2026 (TGĐ duyệt nguyên văn v8); bản gốc `3. Chính sách nội bộ/23. QD 03.26 Xu ly xe ton kho lau.docx`, đã thêm vào trang Quy định nội bộ; xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |

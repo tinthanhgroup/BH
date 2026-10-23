@@ -384,10 +384,6 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
         <div class="card-title">11. Thực hiện chỉ tiêu 2026</div>
         <div id="target-wrap" style="overflow-x:auto;"></div>
       </div>
-      <div class="card" id="ln-card" style="grid-column:1/-1;display:none;">
-        <div class="card-title">12. Lợi nhuận gộp từng xe <span class="badge">Chỉ BGĐ, Bán hàng</span></div>
-        <iframe id="ln-iframe" src="" style="width:100%;height:880px;border:none;display:block;" allowfullscreen></iframe>
-      </div>
     </div>
   </div>
 
@@ -1181,9 +1177,8 @@ function _applyAuthSession(pass, res){
     if(bctBtn) bctBtn.style.display='';
   }
   if(_allowedTabs.has('ln')){
-    // Thẻ 12 "Lợi nhuận gộp từng xe" trong tab 2 BC Bán hàng — ẩn với nhóm không có quyền 'ln' (vd MKT, vẫn xem được tab 2)
-    var lnCard=document.getElementById('ln-card');
-    if(lnCard) lnCard.style.display='';
+    // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2) — ẩn với nhóm không có quyền 'ln' (vd MKT, vẫn xem được tab 2)
+    _lnKpiLoad();
   }
   _allowedTabs.forEach(function(t){ _unlockTabUI(t); });
 }
@@ -1205,7 +1200,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   // mở nốt cho GĐ thường 28/09/2026 — hiện Admin/PGĐ/GĐ/MKT/Bán hàng đều xem được.
   // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN — mở cho MỌI nhóm đã đăng nhập (19/10/2026,
   // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" bỏ dấu cũng chứa "giam doc" → rơi vào nhánh GĐ.
-  // Thẻ 12 "Lợi nhuận gộp từng xe" trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu là tab 9 riêng, chuyển vào tab 2 cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) và Bán hàng — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
+  // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu tab 9 riêng, rồi thẻ 12, cuối cùng là ô KPI cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) và Bán hàng — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
   var n = _stripDiacritics(nhomRaw);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
@@ -1343,14 +1338,6 @@ function _doSwitchTab(t){
     if(!bctIframe.getAttribute('data-loaded')){
       bctIframe.src='https://tinthanhgroup.github.io/BH/baocaotuan.html';
       bctIframe.setAttribute('data-loaded','1');
-    }
-  }
-  // Lazy load iframe thẻ 12 "Lợi nhuận gộp từng xe" (tab 2) — chỉ khi có quyền 'ln'
-  if(t==='bh' && _allowedTabs.has('ln')){
-    var lnIframe=document.getElementById('ln-iframe');
-    if(lnIframe && !lnIframe.getAttribute('data-loaded')){
-      lnIframe.src='https://tinthanhgroup.github.io/BH/loinhuan.html';
-      lnIframe.setAttribute('data-loaded','1');
     }
   }
   if(t==='hh') renderHH();
@@ -3078,6 +3065,61 @@ function renderMonthlyByModel(){
   el.setAttribute('viewBox','0 0 '+W+' '+H);el.setAttribute('width',W);el.setAttribute('height',H);el.innerHTML=s;
 }
 
+// Ô KPI "Lợi nhuận gộp" (cạnh Bảo Lộc, tab 2): chỉ nhóm có quyền 'ln' (Admin, GĐ/PGĐ, Bán hàng); bấm mở danh sách
+// (loinhuan.html trong cửa sổ nổi). Con số lấy từ loinhuan.json (bộ "ky": theo xe ký) — tháng ký mới nhất, so với tháng trước.
+var _lnKpi=null, _lnKpiLoading=false;
+function _lnKpiHTML(){
+  if(!(_authenticated && _allowedTabs && _allowedTabs.has('ln'))) return '';
+  var val='…', sub='<span style="color:var(--muted);">đang tải</span>';
+  if(_lnKpi){
+    val=_lnKpi.cur.toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+    if(_lnKpi.prev!==null){
+      var dl=_lnKpi.cur-_lnKpi.prev, cls=dl>0.05?'up':dl<-0.05?'down':'same', sg=dl>0.05?'▲':dl<-0.05?'▼':'—';
+      sub='<span class="delta '+cls+'">'+sg+Math.abs(dl).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})+' điểm</span>&nbsp;vs tháng trước';
+    } else sub='';
+  }
+  return '<div class="kpi-card" id="kpi-ln" onclick="_openLnModal()" title="Bấm để xem danh sách từng xe">'
+    +'<div class="kpi-label">Lợi nhuận gộp'+(_lnKpi?' · ký T'+_lnKpi.m:'')+'</div>'
+    +'<div class="kpi-value">'+val+'</div>'
+    +'<div class="kpi-sub">'+sub+'</div>'
+    +'<div class="kpi-sub" style="margin-top:3px;color:#2563eb;font-weight:600;">Bấm xem từng xe ›</div>'
+    +'</div>';
+}
+function _lnKpiEnsure(){
+  var row=document.getElementById('kpi-row');
+  if(!row||!row.children.length) return;           // chưa render hàng KPI: renderKPI() sẽ tự chèn ô này
+  var html=_lnKpiHTML(), ex=document.getElementById('kpi-ln');
+  if(!html){ if(ex) ex.remove(); return; }
+  if(ex){ ex.outerHTML=html; return; }
+  var tmp=document.createElement('div'); tmp.innerHTML=html;
+  row.insertBefore(tmp.firstChild,row.lastElementChild);
+}
+function _lnKpiLoad(){
+  if(_lnKpi){ _lnKpiEnsure(); return; }
+  if(_lnKpiLoading) return;
+  _lnKpiLoading=true;
+  fetch('loinhuan.json',{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(d){
+    var xs=(d.ky&&d.ky.xe)||[], by={};
+    xs.forEach(function(x){
+      if(!(x.gb>0) || x.nb) return;
+      var ln=x.gb-x.gv-x.km-(x.hh||0)+x.ht, b=by[x.m]||(by[x.m]={ln:0,gb:0});
+      b.ln+=ln; b.gb+=x.gb;
+    });
+    var ms=Object.keys(by).map(Number).sort(function(a,b){return a-b;});
+    if(!ms.length) return;
+    var m=ms[ms.length-1], pm=ms.length>1?ms[ms.length-2]:null;
+    _lnKpi={m:m, cur:by[m].ln/by[m].gb*100, prev:pm===null?null:by[pm].ln/by[pm].gb*100};
+    _lnKpiEnsure();
+  }).catch(function(){ _lnKpiLoading=false; });
+}
+function _openLnModal(){
+  var m=document.getElementById('ln-modal'), f=document.getElementById('ln-iframe');
+  if(f && !f.getAttribute('data-loaded')){ f.src='https://tinthanhgroup.github.io/BH/loinhuan.html?tab=ky'; f.setAttribute('data-loaded','1'); }
+  if(m) m.style.display='flex';
+}
+function _closeLnModal(){ var m=document.getElementById('ln-modal'); if(m) m.style.display='none'; }
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') _closeLnModal(); });
+
 function renderKPI(data){
   const {kpi,today:fileDate}=data;
   const d=fileDate;
@@ -3101,7 +3143,7 @@ function renderKPI(data){
     <div style="font-size:15px;font-weight:800;color:#1d4ed8;font-family:'JetBrains Mono',monospace;line-height:1.3;margin:6px 0 4px;">${dtStr.split(' ')[1]}</div>
     <div style="font-size:11px;color:#3b82f6;font-family:'JetBrains Mono',monospace;">${dtStr.split(' ')[0]}</div>
   </div>`;
-  document.getElementById('kpi-row').innerHTML=brCards+tsCard;
+  document.getElementById('kpi-row').innerHTML=brCards+_lnKpiHTML()+tsCard;
 }
 
 function updateKpiCards(){
@@ -3127,7 +3169,7 @@ function updateKpiCards(){
   if(existing){
     // Keep last card (timestamp card), replace branch cards
     var lastCard=existing.lastElementChild;
-    existing.innerHTML=brCards;
+    existing.innerHTML=brCards+_lnKpiHTML();
     if(lastCard) existing.appendChild(lastCard);
   }
 }
@@ -5035,7 +5077,7 @@ function _permMatrixHTML(){
     {lbl:'6. Chính sách<br>HTV', f:function(){ return FREE; }},
     {lbl:'7. CRM', f:function(s){ return s.has('crm'); }},
     {lbl:'8. BC tuần', f:function(s){ return s.has('bct'); }},
-    {lbl:'2.12 Lợi nhuận<br>xe (trong tab 2)', f:function(s){ return s.has('ln'); }},
+    {lbl:'Ô KPI lợi nhuận<br>(tab 2)', f:function(s){ return s.has('ln'); }},
     {lbl:'Tab Admin', f:function(s,a){ return a; }},
     {lbl:'Tab 1 · Xe<br>chưa xuất HĐ', f:function(s,a,gd,known){ return known && (a||gd); }},
     {lbl:'Tab 1 · Đặt<br>hàng giả định', f:function(s,a,gd,known){ return known && (a||s.has('crm')||gd); }}
@@ -5437,6 +5479,16 @@ function uploadKCK(){
 <!-- Version badge góc phải dưới cùng -->
 <div style="position:fixed;bottom:10px;right:14px;font-size:10px;color:#aaa;font-weight:500;pointer-events:none;z-index:999;">
   Version 2 (28.05.2026)
+</div>
+<!-- Cửa sổ nổi "Lợi nhuận gộp từng xe" (mở từ ô KPI cạnh Bảo Lộc, tab 2) -->
+<div id="ln-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.55);align-items:center;justify-content:center;" onclick="if(event.target===this)_closeLnModal()">
+  <div style="background:#fff;border-radius:12px;width:min(1400px,96vw);height:92vh;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.35);overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);">
+      <b style="font-size:15px;">Lợi nhuận gộp từng xe <span class="badge" style="margin-left:8px;">Chỉ BGĐ, Bán hàng</span></b>
+      <button onclick="_closeLnModal()" title="Đóng (Esc)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:4px 12px;cursor:pointer;font-size:14px;">✕ Đóng</button>
+    </div>
+    <iframe id="ln-iframe" src="" style="flex:1;width:100%;border:none;display:block;" allowfullscreen></iframe>
+  </div>
 </div>
 </body>
 </html>
