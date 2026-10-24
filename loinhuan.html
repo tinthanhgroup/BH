@@ -57,7 +57,6 @@ td.cell.mstart{border-left:1px solid var(--line)}
 tr.vr .lab{border-bottom:1px solid var(--line-soft)}
 .grid{display:flex;flex-wrap:wrap;gap:2px;width:58px}
 .sq{width:13px;height:13px;border-radius:2px;display:block;position:relative;cursor:pointer;padding:0;border:0;--mk:#16212E}
-.sq.b0,.sq.b4,.sq.b5{--mk:#fff}
 .sq.b0{background:var(--b0)}.sq.b1{background:var(--b1)}.sq.b2{background:var(--b2)}
 .sq.b3{background:var(--b3)}.sq.b4{background:var(--b4)}.sq.b5{background:var(--b5)}
 .sq.cx{background:transparent;border:1.5px dashed var(--muted)}
@@ -66,7 +65,7 @@ tr.vr .lab{border-bottom:1px solid var(--line-soft)}
 .sq.nogia{background:repeating-linear-gradient(135deg,var(--nogia) 0 2px,transparent 2px 4px);box-shadow:inset 0 0 0 1px var(--nogia)}
 .sq.nbr{outline:1.5px solid var(--ink);outline-offset:1px;z-index:1}
 .lg i.nbr{background:transparent}
-.sq.est::before{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 7px 7px 0;border-color:transparent var(--mk) transparent transparent}
+.sq.est::before{content:"";position:absolute;right:0;top:0;border-style:solid;border-width:0 8px 8px 0;border-color:transparent var(--mk) transparent transparent;filter:drop-shadow(0 0 .6px #fff) drop-shadow(0 0 .6px #fff)}
 td.agg{text-align:center;font-variant-numeric:tabular-nums;font-size:11px;padding:3px 0;border-bottom:1px solid var(--line)}
 td.agg span{display:inline-block;min-width:38px;padding:2px 4px;border-radius:3px}
 .sw{color:#fff}.sw.b2,.sw.b3{color:#16212E}
@@ -110,6 +109,14 @@ td.agg span{display:inline-block;min-width:38px;padding:2px 4px;border-radius:3p
 .stats-sub{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:12px;color:var(--muted);padding-top:8px;border-top:1px solid var(--line-soft)}
 .stats-sub b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
 .stat.neg b{color:var(--b0)}
+.pick{font:inherit;color:inherit;text-align:left;background:none;border:1px solid transparent;border-radius:6px;cursor:pointer}
+.pick:hover{border-color:var(--line)}
+.pick[aria-pressed="true"]{background:var(--navy-soft);border-color:var(--navy)}
+.pick:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
+.stat.pick{padding:4px 10px;margin:-5px -11px}
+.lg.pick{padding:2px 7px;margin:-3px -8px;font-size:12px;color:var(--muted)}
+.lg.pick.clr{color:var(--navy);font-weight:600;border-color:var(--navy)}
+.sq.dm{opacity:.14}
 /* chú giải 2 hàng: màu, rồi ký hiệu phụ */
 .toolbar{gap:8px 24px}
 .lgrow{display:flex;flex-wrap:wrap;gap:4px 16px;align-items:center}
@@ -190,6 +197,7 @@ function prepare(list){
 }
 
 let tab = 'bb', DATA = null, xe = [], MONTHS = [], models = [], filter = 'Tất cả';
+const binF = new Set();                                   // lọc theo mức lợi nhuận (b0…b5): bấm ô "xe lỗ gộp" hoặc mức màu trong chú giải
 try{ const s = localStorage.getItem('bdln_tab'); if(s && TABS[s]) tab = s; }catch(e){}
 try{ const q = new URLSearchParams(location.search).get('tab'); if(q && TABS[q]) tab = q; }catch(e){}   // ?tab=ky|bb: mở thẳng tab (ô KPI trong index.html mở tab ký)
 
@@ -225,7 +233,8 @@ function renderStats(list){
       `<div class="stat"><b>${fmt(list.length)}</b><span>${TABS[tab].unit}</span></div>`+
       `<div class="stat main"><b>${pct(a.p)}</b><span>lợi nhuận gộp bình quân gia quyền</span></div>`+
       `<div class="stat"><b>${(htSum/1e9).toLocaleString('vi-VN',{minimumFractionDigits:2,maximumFractionDigits:2})} tỷ</b><span>hỗ trợ HTV đã cộng vào</span></div>`+
-      `<div class="stat${lo?' neg':''}"><b>${fmt(lo)}</b><span>xe lỗ gộp (dưới 0%)</span></div>`+
+      (lo?`<button type="button" class="stat neg pick" data-bin="b0" aria-pressed="${binF.has('b0')}" title="Bấm để chỉ xem các xe lỗ gộp"><b>${fmt(lo)}</b><span>xe lỗ gộp (dưới 0%)</span></button>`
+         :`<div class="stat"><b>0</b><span>xe lỗ gộp (dưới 0%)</span></div>`)+
     `</div>`+
     `<div class="stats-sub">`+
       (nb?`<span><b>${fmt(nb)}</b> xe nội bộ/ngang, không có hỗ trợ HTV</span>`:'')+
@@ -247,7 +256,8 @@ function renderLegend(list){
     [`<i class="sq cx"></i>`, 'chưa ước được', cnt.cx||0]
   ].filter(a=>a[2]>0).map(a=>`<span class="lg">${a[0]}${a[1]} (${a[2]})</span>`).join('');
   document.getElementById('legend').innerHTML =
-    `<div class="lgrow">`+BINS.map(b=>`<span class="lg"><i class="sq ${b.k}"></i>${b.t} (${cnt[b.k]||0})</span>`).join('')+`</div>`;
+    `<div class="lgrow">`+BINS.map(b=>`<button type="button" class="lg pick" data-bin="${b.k}" aria-pressed="${binF.has(b.k)}" title="Bấm để lọc theo mức này"><i class="sq ${b.k}"></i>${b.t} (${cnt[b.k]||0})</button>`).join('')+
+    (binF.size?`<button type="button" class="lg pick clr" data-bin="">Bỏ lọc màu (còn ${fmt(list.filter(x=>binF.has(x.bin)).length)} xe)</button>`:'')+`</div>`;
   document.getElementById('legend2').innerHTML = aux?`<div class="lgrow">${aux}</div>`:'';
 }
 function renderChips(){
@@ -257,7 +267,7 @@ function renderChips(){
 function cellHTML(list){
   if(!list.length) return '';
   const s = [...list].sort((a,b)=>(a.p===null)-(b.p===null) || (a.p??0)-(b.p??0));
-  return '<div class="grid">'+s.map(x=>`<button type="button" class="sq ${x.bin}${x.est?' est':''}${x.nb?' nbr':''}${x.tam?' tam':''}${x.cx&&x.gb?' cxe':''}" data-i="${x.i}" aria-label="${esc(x.mo+' '+x.pb+', '+CN_FULL[x.c]+', '+pct(x.p))}"></button>`).join('')+'</div>';
+  return '<div class="grid">'+s.map(x=>`<button type="button" class="sq ${x.bin}${binF.size&&!binF.has(x.bin)?' dm':''}${x.est?' est':''}${x.nb?' nbr':''}${x.tam?' tam':''}${x.cx&&x.gb?' cxe':''}" data-i="${x.i}" aria-label="${esc(x.mo+' '+x.pb+', '+CN_FULL[x.c]+', '+pct(x.p))}"></button>`).join('')+'</div>';
 }
 function renderBoard(){
   const list = filter==='Tất cả' ? xe : xe.filter(x=>x.mo===filter);
@@ -277,12 +287,13 @@ function renderBoard(){
   }));
   h += '</tr></thead><tbody>';
   ms.forEach(mo=>{
-    const lm = list.filter(x=>x.mo===mo); if(!lm.length) return;
+    const lm = list.filter(x=>x.mo===mo); if(!lm.length || (binF.size && !lm.some(x=>binF.has(x.bin)))) return;
     const am = agg(lm);
     h += `<tr class="mh"><th class="lab">${esc(mo)} <span class="m">${lm.length} xe · ${pct(am.p)}</span></th><td colspan="${MONTHS.length*CNS.length}"></td></tr>`;
     const pbs = [...new Set(lm.map(x=>x.pb))].sort((a,b)=>lm.filter(x=>x.pb===b).length - lm.filter(x=>x.pb===a).length);
     pbs.forEach(pb=>{
       const lp = lm.filter(x=>x.pb===pb); const ap = agg(lp);
+      if(binF.size && !lp.some(x=>binF.has(x.bin))) return;                    // đang lọc theo mức: ẩn phiên bản không có xe thuộc mức đó
       h += `<tr class="vr"><th class="lab"><span class="t">${esc(pb)}</span><span class="m">${lp.length} xe · ${pct(ap.p)}</span></th>`;
       MONTHS.forEach(m=>CNS.forEach((c,j)=>{
         h += `<td class="cell ${j===0?'mstart':''}">${cellHTML(lp.filter(x=>x.m===m && x.c===c))}</td>`;
@@ -312,8 +323,10 @@ function monthStops(){
 }
 function updateMnav(){
   const st = monthStops(); if(!st.length) return;
-  let k = 0; st.forEach((d,i)=>{ if(d <= 4) k = i; });                      // tháng đầu tiên đang thấy (hoặc đang bị che một phần)
-  document.querySelectorAll('#mnav .mn').forEach((b,i)=>b.classList.toggle('on', i===k));
+  const bd = document.getElementById('board'), w = bd.clientWidth - bd.querySelector('th.lab').getBoundingClientRect().width;
+  const mw = st.length>1 ? st[1]-st[0] : 350;
+  // sáng mọi tháng đang hiện trong khung nhìn (ít nhất 40px chiều ngang)
+  document.querySelectorAll('#mnav .mn').forEach((b,i)=>b.classList.toggle('on', st[i]+mw > 40 && st[i] < w - 40));
 }
 document.getElementById('mnav').addEventListener('click',e=>{
   const b = e.target.closest('.mn'); if(!b) return;
@@ -396,6 +409,15 @@ board.addEventListener('focusout',hideTip);
 board.addEventListener('click',e=>{const b=e.target.closest('.sq'); if(b) showTip(b);});
 board.addEventListener('scroll',hideTip);
 document.addEventListener('click',e=>{if(!e.target.closest('.sq')) hideTip();});
+function pickBin(e){
+  const b = e.target.closest('.pick'); if(!b) return;
+  const k = b.dataset.bin;
+  if(!k) binF.clear(); else if(binF.has(k)) binF.delete(k); else binF.add(k);
+  const bd = document.getElementById('board'), l = bd.scrollLeft;
+  renderBoard(); bd.scrollLeft = l; bd.scrollTop = 0; updateMnav();         // giữ nguyên tháng đang xem
+}
+document.getElementById('stats').addEventListener('click',pickBin);
+document.getElementById('legend').addEventListener('click',pickBin);
 document.getElementById('chips').addEventListener('click',e=>{
   const b = e.target.closest('.chip'); if(!b) return;
   filter = b.dataset.m; renderChips(); renderBoard(); snapScroll();

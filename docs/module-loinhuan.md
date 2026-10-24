@@ -15,7 +15,11 @@ Quyền `ln` trong `_classifyGroup()` (`index.html`): chỉ **Admin, GĐ/PGĐ (g
 
 Tab "Theo xe ký" gồm cả xe đã phân xe chưa báo bán (hỗ trợ tạm tính theo chương trình gần nhất) và khách ký chưa có xe (danh sách nợ xe: giá bán, giá vốn, chi phí KM ước theo trung vị xe cùng phiên bản; phiên bản mới chưa có xe bán, vd. Palisade Hybrid, chưa ước được). Bảng mở ra tự cuộn sang phải để thấy các tháng gần nhất; thứ tự tháng vẫn từ T1 đến T mới nhất, hàng nút "Nhảy tới T1…T10" cuộn tới tháng chọn. Cột tháng mới nhất ghi "(đến dd/mm)" theo ngày cập nhật dữ liệu.
 
-**Ký hiệu trên ô (24/10/2026):** màu = mức lợi nhuận; viền đen = nội bộ/ngang; viền đứt = ký chưa có xe; vạch dưới = chưa báo bán; sọc xám = chưa có giá; **tam giác góc = số ước tính** (gộp hai loại cũ "KM theo định mức" và "HTV chưa chắc", lý do ghi trong khung chi tiết). Ô 13px, màu tam giác đổi trắng/đen theo độ sáng ô. Khung chi tiết (tooltip) nền trắng, kết quả "triệu · %" và mẫu màu ở đầu khung. Bảng cao vừa đến đáy cửa sổ. Điểm thiết kế do agent đánh giá giao diện chấm 23–24/10/2026: 6,6/10 trước các chỉnh sửa này.
+**Ký hiệu trên ô (24/10/2026):** màu = mức lợi nhuận; viền đen = nội bộ/ngang; viền đứt = ký chưa có xe; vạch dưới = chưa báo bán; sọc xám = chưa có giá; **tam giác góc = số ước tính** (gộp hai loại cũ "KM theo định mức" và "HTV chưa chắc", lý do ghi trong khung chi tiết). Ô 13px, tam giác đen có viền trắng mảnh để thấy trên mọi màu ô. Khung chi tiết (tooltip) nền trắng, kết quả "triệu · %" và mẫu màu ở đầu khung. Bảng cao vừa đến đáy cửa sổ. Nút nhảy tháng sáng mọi tháng đang hiện trong khung.
+
+**Lọc theo mức lợi nhuận:** bấm ô "xe lỗ gộp" hoặc một mức màu trong chú giải (chọn được nhiều mức, bấm lại để bỏ, nút "Bỏ lọc màu"). Ô không thuộc mức chọn mờ đi, phiên bản không có xe thuộc mức đó bị ẩn, vị trí cuộn ngang giữ nguyên.
+
+Điểm thiết kế do agent đánh giá giao diện chấm: 6,6/10 (23/10/2026), 7,5/10 sau các chỉnh sửa (24/10/2026). Còn lại chưa làm: tooltip nên nêu lý do "ước tính" ngay dưới kết quả; ghi chú "Cách tính" nằm dưới màn hình; bề ngang `.wrap` 1280px chỉ thấy 3 tháng ở màn 1920 (quy ước module, chưa đổi).
 
 ## Cách tính (một thông tin một nơi: chi tiết nghiệp vụ ở `9. KQKD/README.md` mục "Hỗ trợ bán hàng HTV theo xe")
 
