@@ -13,7 +13,9 @@ Quyền `ln` trong `_classifyGroup()` (`index.html`): chỉ **Admin, GĐ/PGĐ (g
 | Theo xe báo bán | Ngày báo bán DMS (`ngayBaoBan`) | Rà hỗ trợ HTV phải nhận (HTV tính chương trình theo tháng báo bán) |
 | Theo xe ký | Ngày ký = ngày đặt cọc (`ngayDatCoc`) | Dự kiến lợi nhuận sớm hơn bản báo bán khoảng 1 tuần (trung vị 8 ngày từ ký đến báo bán) |
 
-Tab "Theo xe ký" gồm cả xe đã phân xe chưa báo bán (hỗ trợ tạm tính theo chương trình gần nhất) và khách ký chưa có xe (danh sách nợ xe: giá bán, giá vốn, chi phí KM ước theo trung vị xe cùng phiên bản; phiên bản mới chưa có xe bán, vd. Palisade Hybrid, chưa ước được). Bảng mở ra tự cuộn sang phải để thấy các tháng gần nhất; thứ tự tháng vẫn từ T1 đến T mới nhất.
+Tab "Theo xe ký" gồm cả xe đã phân xe chưa báo bán (hỗ trợ tạm tính theo chương trình gần nhất) và khách ký chưa có xe (danh sách nợ xe: giá bán, giá vốn, chi phí KM ước theo trung vị xe cùng phiên bản; phiên bản mới chưa có xe bán, vd. Palisade Hybrid, chưa ước được). Bảng mở ra tự cuộn sang phải để thấy các tháng gần nhất; thứ tự tháng vẫn từ T1 đến T mới nhất, hàng nút "Nhảy tới T1…T10" cuộn tới tháng chọn. Cột tháng mới nhất ghi "(đến dd/mm)" theo ngày cập nhật dữ liệu.
+
+**Ký hiệu trên ô (24/10/2026):** màu = mức lợi nhuận; viền đen = nội bộ/ngang; viền đứt = ký chưa có xe; vạch dưới = chưa báo bán; sọc xám = chưa có giá; **tam giác góc = số ước tính** (gộp hai loại cũ "KM theo định mức" và "HTV chưa chắc", lý do ghi trong khung chi tiết). Ô 13px, màu tam giác đổi trắng/đen theo độ sáng ô. Khung chi tiết (tooltip) nền trắng, kết quả "triệu · %" và mẫu màu ở đầu khung. Bảng cao vừa đến đáy cửa sổ. Điểm thiết kế do agent đánh giá giao diện chấm 23–24/10/2026: 6,6/10 trước các chỉnh sửa này.
 
 ## Cách tính (một thông tin một nơi: chi tiết nghiệp vụ ở `9. KQKD/README.md` mục "Hỗ trợ bán hàng HTV theo xe")
 
