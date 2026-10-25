@@ -66,5 +66,6 @@ Các trang nhúng iframe (`chamcong/nhansu/nhacungcap/mkt/fbads/theo_doi_chinh_s
   Từ 09/2026, Chấm công không còn là quyền riêng — ai xem được tab Nhân sự thì xem được luôn sub-tab Chấm công bên trong (xem giải thích ở bảng File HTML phía trên).
 
 - **Bảng phân quyền hiển thị ở đầu tab Admin** (`_permMatrixHTML()` trong `index.html`, thêm 26/09/2026) — tự tính từ `_classifyGroup()` với tên nhóm mẫu, sửa quyền là bảng tự đúng; chỉ cần sửa hàm này khi **thêm nhóm hoặc tab mới** (thêm dòng/cột).
+- **Thẻ "Chi phí bot Telegram" trên cùng tab Admin** (`_chiPhiBotHTML()`, thêm 25/10/2026): chỉ là nút mở `http://localhost:8765/`, trang chi phí do máy anh Khanh chạy (Project A `dashboard/trang_chi_phi.py`), chỉ mở được trên máy đó. **Chỉ ghi địa chỉ localhost trong repo công khai**: không ghi mã tài khoản thanh toán, mã project Google Cloud hay số liệu mức dùng.
 - Đây là khoá **client-side** (ẩn hiển thị), KHÔNG phải bảo mật dữ liệu thật — dữ liệu vẫn tải hết về trình duyệt. Không tự ý nâng cấp thành "bảo mật thật" trừ khi được yêu cầu (đổi kiến trúc lớn).
 - Mục "Xe chưa xuất HĐ" dùng cờ riêng `_isAdmin`/`_isGD`, **không dùng chung** điều kiện với quyền xem tab Nhân sự (2 thứ này từng bị gộp chung gây lộ dữ liệu ngoài ý muốn cho nhóm HCNS — đã tách hẳn, giữ nguyên tách biệt).

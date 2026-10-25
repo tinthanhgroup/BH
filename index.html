@@ -5107,9 +5107,19 @@ function _permMatrixHTML(){
   return h+'</div>';
 }
 
+// Thẻ liên kết tới trang chi phí bot Telegram chạy trên máy của anh Khanh (Project A, dashboard/trang_chi_phi.py).
+// Chỉ ghi địa chỉ localhost: repo công khai, không ghi mã tài khoản thanh toán hay số liệu. Mở được trên đúng máy đang chạy bot.
+function _chiPhiBotHTML(){
+  return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">💰 Chi phí bot Telegram</div>'
+    +'<div style="font-size:11.5px;color:var(--muted);margin-bottom:12px;">Ước tính mức dùng Google (chuyển giọng nói thành chữ, đọc thành giọng) và liên kết tới trang chi phí Google Cloud. Chỉ mở được trên máy đang chạy bot (địa chỉ localhost).</div>'
+    +'<a href="http://localhost:8765/" target="_blank" rel="noopener" style="display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;color:var(--navy);font-weight:700;font-size:13px;text-decoration:none;">Mở trang chi phí →</a>'
+    +'</div>';
+}
+
 function renderAdminTab(){
   var root=document.getElementById('tab-admin');
-  root.innerHTML=_permMatrixHTML()+'<div id="admin-logs"></div>';
+  root.innerHTML=_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
   var el=document.getElementById('admin-logs');
   el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div><div style="margin-top:12px">Đang tải dữ liệu...</div></div>';
   // Dùng GET request để tránh CORS
