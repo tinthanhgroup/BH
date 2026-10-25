@@ -5118,9 +5118,19 @@ function _chiPhiBotHTML(){
     +'</div>';
 }
 
+// Thẻ liên kết tới trang đánh giá KQKD chi nhánh (claude.ai, riêng tư; Project A 9. KQKD, README mục "Trang trình Ban lãnh đạo").
+// Repo công khai: chỉ ghi link, không ghi số liệu. Người chưa được chia sẻ trang thì không mở được.
+function _kqkdHTML(){
+  return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">📊 Đánh giá KQKD chi nhánh</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Kết quả kinh doanh từng hạng mục của 4 chi nhánh theo tháng (phòng kinh doanh, xưởng dịch vụ, lưu ý). Trang riêng tư trên claude.ai: chỉ người được chia sẻ mới mở được.</div>'
+    +'<a href="https://claude.ai/artifact/TaQGKEsNo9vrWGhwoVNA9G" target="_blank" rel="noopener" style="display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;color:var(--blue);font-weight:700;font-size:13px;text-decoration:none;">Mở trang đánh giá →</a>'
+    +'</div>';
+}
+
 function renderAdminTab(){
   var root=document.getElementById('tab-admin');
-  root.innerHTML=_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
+  root.innerHTML=_kqkdHTML()+_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
   var el=document.getElementById('admin-logs');
   el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div><div style="margin-top:12px">Đang tải dữ liệu...</div></div>';
   // Dùng GET request để tránh CORS
