@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-26T15:30:02+07:00",
+ "updated_at": "2026-10-26T16:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1419,8 +1419,8 @@
      "han": "2026-10-24",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "Trời mưa.",
-     "tuanCN": 42,
+     "capNhat": "KS xong, Tucson đang làm, Creta chưa làm => hủy",
+     "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -1494,17 +1494,17 @@
     {
      "boPhan": "BH",
      "dong": 12,
-     "ma": "BH004",
+     "ma": "BH-004",
      "nguon": "Trọng tâm tháng",
      "thang": 10,
-     "linhVuc": "",
+     "linhVuc": "Bán hàng",
      "noiDung": "Chạy Chỉ tiêu Tháng 10",
      "phuTrach": "Thuận + PKD",
      "han": "2026-10-31",
      "hanRaw": "",
      "trangThai": "Kế hoạch",
      "capNhat": "Kí mới 5/14 xe, tình hình chậm, HĐ kí mới lên 7 xe",
-     "tuanCN": 42,
+     "tuanCN": 43,
      "vuongMac": "khách Đụng giá nhiều,",
      "deXuat": "linh hoạt giá bán các trường hợp đụng giá sâu của các đại lý khác",
      "keHoach": "thay đối Chính sách bán hàng,",
@@ -1522,10 +1522,10 @@
     {
      "boPhan": "BH",
      "dong": 13,
-     "ma": "BH005",
+     "ma": "BH-005",
      "nguon": "Bộ phận bổ sung",
-     "thang": null,
-     "linhVuc": "",
+     "thang": 10,
+     "linhVuc": "Bán hàng",
      "noiDung": "Hỗ trợ TVBH đàm phán HĐ với khách khó, khách đụng giá",
      "phuTrach": "Thuận",
      "han": "2026-10-31",
@@ -1550,10 +1550,10 @@
     {
      "boPhan": "BH",
      "dong": 14,
-     "ma": "BH006",
+     "ma": "BH-006",
      "nguon": "Bộ phận bổ sung",
-     "thang": null,
-     "linhVuc": "",
+     "thang": 10,
+     "linhVuc": "Bán hàng",
      "noiDung": "theo dõi thanh toán Đơn hàng kế hoạch, Báo bán lẽ đề xuất vận chuyễn xe",
      "phuTrach": "Thuận",
      "han": "2026-10-31",
@@ -1572,6 +1572,34 @@
      "gdXuLy": "",
      "duyetTT": "",
      "loaiHD": "1. Vận hành thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "BH",
+     "dong": 15,
+     "ma": "BH-007",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "Bán hàng",
+     "noiDung": "Lầm việc với các đối tác ngân hàng về việc chi hoa khoản vay về tài khoản Cty",
+     "phuTrach": "Thuận",
+     "han": "2026-10-31",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "Đã Báo với các đơn vị ngân hàng >> Đợi xin ý kiến lãnh đạo ngân hàng",
+     "tuanCN": 43,
+     "vuongMac": "Đối tác Ngân hàng yêu cầu khi chi hh môi giới cần mở TK tại ngân hàng",
+     "deXuat": "Đề xuất ban giám đốc xem xét",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2327,7 +2355,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2411,7 +2439,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2535,9 +2563,7 @@
       },
       {
        "nhan": "Thực hiện",
-       "giaTri": [
-        815
-       ]
+       "giaTri": []
       }
      ]
     },
@@ -2606,7 +2632,7 @@
        "stt": 5,
        "nhan": "Đối thủ",
        "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
-       "traLoi": ""
+       "traLoi": "Thaco Kí mới 28 xe, Toyota: 28, Mitshubishi: 14, các hãng khuyến mãi giảm sâu: Vios, Velos, Xpander đang khuyến mãi 100% thuế + nhiều quà tặng : phiếu nhiên liệu, bảo hiểm thân vỏ, phụ kiện"
       },
       {
        "stt": 6,
@@ -2624,7 +2650,7 @@
        "stt": 8,
        "nhan": "Đội ngũ TVBH",
        "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
-       "traLoi": ""
+       "traLoi": "hiệu suất TVBH đang giảm so với Tháng 9, Nhã, Đức đang có chỉ số kí tốt, Ly, Quá đang trung bình, Linh mới nên ít khách, TVBH Khải dự kiện hết tháng nghĩ"
       },
       {
        "stt": 9,
@@ -2636,7 +2662,7 @@
        "stt": 10,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": ""
+       "traLoi": "dự kiến đã khớp xe 8/14. cần thêm 1 xe để đủ 60% chỉ tiêu mới nhận được hỗ trợ MKT tháng 10."
       }
      ]
     },
