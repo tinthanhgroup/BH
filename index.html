@@ -5131,14 +5131,17 @@ function _permMatrixHTML(){
   return h+'</div>';
 }
 
-// Thẻ liên kết tới trang chi phí bot Telegram chạy trên máy của anh Khanh (Project A, dashboard/trang_chi_phi.py).
-// Chỉ ghi địa chỉ localhost: repo công khai, không ghi mã tài khoản thanh toán hay số liệu. Mở được trên đúng máy đang chạy bot.
+// Thẻ liên kết tới các trang chạy trên máy của anh Khanh (Project A, dashboard/trang_chi_phi.py): bảng điều khiển bot
+// (chi phí, câu hỏi, tác vụ) và trang "Hệ thống agent" (/he-thong: skill, subagent, trợ lý, quyền — tự sinh từ file).
+// Chỉ ghi địa chỉ localhost: repo công khai, không ghi mã tài khoản thanh toán, số liệu hay cấu trúc hệ thống. Mở được trên đúng máy đang chạy bot.
 function _chiPhiBotHTML(){
+  var nut='display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;color:var(--blue);font-weight:700;font-size:13px;text-decoration:none;margin-right:8px;';
   return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">'
-    +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">💰 Chi phí bot Telegram</div>'
-    +'<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Tình trạng mức dùng Google so với hạn mức miễn phí (chuyển giọng nói thành chữ, đọc thành giọng), theo ngày, kèm liên kết tới trang chi phí Google Cloud.</div>'
+    +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">🤖 Bot và hệ thống agent</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Bảng điều khiển: trạng thái bot, câu hỏi gần đây, chi phí Claude và Google. Hệ thống agent: sơ đồ và danh mục skill, subagent, trợ lý, tác vụ hẹn giờ, quyền.</div>'
     +'<div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:12px;">Chỉ mở được trên máy đang chạy bot. Không mở được nghĩa là bot chưa chạy hoặc đang dùng máy khác.</div>'
-    +'<a href="http://localhost:8765/" target="_blank" rel="noopener" style="display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;color:var(--blue);font-weight:700;font-size:13px;text-decoration:none;">Mở trang chi phí →</a>'
+    +'<a href="http://localhost:8765/" target="_blank" rel="noopener" style="'+nut+'">Bảng điều khiển bot →</a>'
+    +'<a href="http://localhost:8765/he-thong" target="_blank" rel="noopener" style="'+nut+'">Hệ thống agent →</a>'
     +'</div>';
 }
 
