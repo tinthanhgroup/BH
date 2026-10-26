@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đánh giá KQKD chi nhánh</title>
+<!-- Tab 9 "KQKD" của index.html (chỉ Admin, TGĐ). Repo công khai: trang này KHÔNG chứa số liệu.
+     Giao diện + số liệu nằm trong kqkd.enc.json (AES-GCM, khóa từ mật khẩu qua PBKDF2-SHA256), giải mã ngay trong trình duyệt.
+     File mã hóa dựng bằng Project A: 9. KQKD/scripts/bh_kqkd.py. Chi tiết: docs/module-kqkd.md -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  /* Biến màu mà giao diện KQKD dùng (viết cho mẫu Dashboard của claude.ai), gán theo bảng màu BH. Chỉ nền sáng. */
+  :root {
+    --color-fg: #1a2240; --color-fg-muted: #6b7a9e; --color-bg: #f0f4fa; --color-panel: #ffffff;
+    --color-border-line: #dce3f0; --color-ok: #1d6f3b; --color-bad: #a32d2d; --color-warn: #8a5a00;
+    --cds-chart-muted: #c3ccd8; --cds-chart-grid: #e8edf5; --cds-chart-axis: #9aa6c0; --cds-chart-reference: #9aa6c0;
+    --cds-text-secondary: #6b7a9e; --cds-surface-popover: #ffffff; --cds-border: #dce3f0;
+    --cds-shadow-popover: 0 4px 16px rgba(26, 34, 64, .16); --cds-radius: 8px; --cds-pad-xs: 4px; --cds-pad-sm: 8px;
+    --cds-dur-slow: 300ms; --font-anthropic-sans: 'Be Vietnam Pro';
+  }
+  html, body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: 'Be Vietnam Pro', system-ui, sans-serif; }
+  body { padding: 20px 24px 40px; }
+  #khoa { max-width: 360px; margin: 72px auto; background: #fff; border: 1px solid var(--color-border-line); border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, .07); padding: 24px; }
+  #khoa h1 { font-size: 15px; font-weight: 700; margin: 0 0 4px; color: #1B4F8C; }
+  #khoa p { font-size: 12px; color: var(--color-fg-muted); margin: 0 0 16px; line-height: 1.5; }
+  #khoa input { box-sizing: border-box; width: 100%; padding: 9px 12px; font: inherit; font-size: 14px; border: 1px solid var(--color-border-line);
+    border-radius: 8px; outline: none; }
+  #khoa input:focus { border-color: #1B4F8C; }
+  #khoa button { margin-top: 12px; width: 100%; padding: 9px; font: inherit; font-size: 13px; font-weight: 700; color: #fff;
+    background: #1B4F8C; border: 0; border-radius: 8px; cursor: pointer; }
+  #khoa button:disabled { opacity: .6; cursor: wait; }
+  #khoa label { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--color-fg-muted); }
+  #khoa label input { width: auto; }
+  #loi { min-height: 18px; margin-top: 10px; font-size: 12px; color: var(--color-bad); font-weight: 600; }
+  @media (max-width: 600px) { body { padding: 16px; } #khoa { margin-top: 32px; } }
+</style>
+</head>
+<body>
+<form id="khoa" autocomplete="off">
+  <h1>Đánh giá KQKD chi nhánh</h1>
+  <p id="ky">Số liệu được mã hóa. Nhập mật khẩu KQKD để xem.</p>
+  <input id="mk" type="password" placeholder="Mật khẩu KQKD" aria-label="Mật khẩu KQKD" autofocus>
+  <label><input id="nho" type="checkbox"> Nhớ trên máy này</label>
+  <button id="nut" type="submit">Mở báo cáo</button>
+  <div id="loi" role="alert"></div>
+</form>
+<div id="dash-root" hidden></div>
+
+<script>
+(function () {
+  var KEY_MK = 'kqkd_mk';                                   // chỉ lưu khi người xem tick "Nhớ trên máy này"
+  var form = document.getElementById('khoa'), loi = document.getElementById('loi'), nut = document.getElementById('nut');
+  var goi = null;
+  var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+  var doc = function (k) { try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch (e) { return null; } };
+  var ghi = function (k, v, laulau) { try { (laulau ? localStorage : sessionStorage).setItem(k, v); } catch (e) {} };
+  var xoa = function (k) { try { localStorage.removeItem(k); sessionStorage.removeItem(k); } catch (e) {} };
+
+  // Đối tượng `dash` tối giản thay cho thư viện của mẫu Dashboard claude.ai: dữ liệu tĩnh + các phép tính `calc`.
+  function taoDash(ds) {
+    var calc = {}, fns = [];
+    var dash = {
+      colors: ['#1a4fa0', '#E0793C', '#1FA97A', '#7c3aed', '#D64545', '#16a085', '#7f8c8d', '#2c3e50'],
+      calc: function (id, o) { calc[id] = o; },
+      setLink: function (id) { try { history.replaceState(null, '', '#' + id); } catch (e) {} },
+      data: function (id) {
+        if (ds[id]) return { status: 'ok', data: ds[id] };
+        var c = calc[id];
+        if (c) {
+          try { return { status: 'ok', data: c.fn.apply(null, c.inputs.map(function (i) { return dash.data(i).data; })) }; }
+          catch (e) { console.error(e); return { status: 'error', data: [] }; }
+        }
+        return { status: 'missing', data: [] };
+      },
+      onData: function (fn) { fns.push(fn); setTimeout(fn, 0); }
+    };
+    window.addEventListener('resize', function () { fns.forEach(function (f) { f(); }); });
+    return dash;
+  }
+
+  function dung(p) {
+    window.dash = taoDash(p.data);
+    var root = document.getElementById('dash-root');
+    root.innerHTML = p.html;
+    // innerHTML không chạy <script>: chạy lại từng script theo đúng thứ tự
+    root.querySelectorAll('script').forEach(function (s) {
+      var n = document.createElement('script'); n.textContent = s.textContent; s.replaceWith(n);
+    });
+    form.remove(); root.hidden = false;
+    document.title = 'Đánh giá KQKD chi nhánh ' + p.ky;
+  }
+
+  async function moKhoa(mk) {
+    var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(mk), 'PBKDF2', false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(goi.salt), iterations: goi.vong, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    var raw = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(goi.iv) }, key, b64(goi.ma));   // sai mật khẩu → lỗi
+    return JSON.parse(new TextDecoder().decode(raw));
+  }
+
+  async function thu(mk, nho) {
+    nut.disabled = true; loi.textContent = '';
+    try {
+      var p = await moKhoa(mk);
+      if (nho) ghi(KEY_MK, mk, true); else { xoa(KEY_MK); ghi(KEY_MK, mk, false); }
+      dung(p);
+    } catch (e) {
+      xoa(KEY_MK);
+      loi.textContent = 'Mật khẩu không đúng.';
+      nut.disabled = false; document.getElementById('mk').select();
+    }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!goi) return;
+    var mk = document.getElementById('mk').value;
+    if (mk) thu(mk, document.getElementById('nho').checked);
+  });
+
+  nut.disabled = true;
+  fetch('kqkd.enc.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (g) {
+      goi = g; nut.disabled = false;
+      document.getElementById('ky').textContent = 'Kỳ ' + g.ky + '. Số liệu được mã hóa, nhập mật khẩu KQKD để xem.';
+      var luu = doc(KEY_MK);
+      if (luu) thu(luu, (function () { try { return !!localStorage.getItem(KEY_MK); } catch (e) { return false; } })());
+    })
+    .catch(function () { loi.textContent = 'Chưa tải được dữ liệu KQKD. Thử tải lại trang.'; });
+})();
+</script>
+</body>
+</html>

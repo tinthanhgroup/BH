@@ -313,6 +313,7 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
     <div class="tab" id="tab-policy-btn" onclick="switchTab('policy')">6. Chính sách HTV</div>
     <div class="tab" id="tab-crm-btn" style="display:none" onclick="switchTab('crm')">7. CRM 🔒</div>
     <div class="tab" id="tab-bct-btn" style="display:none" onclick="switchTab('bct')">8. BC tuần 🔒</div>
+    <div class="tab" id="tab-kqkd-btn" style="display:none" onclick="switchTab('kqkd')">9. KQKD 🔒</div>
     <div class="tab" id="tab-admin-btn" style="display:none" onclick="switchTab('admin')">Admin</div>
   </div>
 
@@ -432,6 +433,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
   </div>
   <div id="tab-bct" class="tab-panel" style="padding:0;">
     <iframe id="bct-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
+  </div>
+  <div id="tab-kqkd" class="tab-panel" style="padding:0;">
+    <iframe id="kqkd-iframe" src="" style="width:100%;height:100%;border:none;display:block;" allowfullscreen></iframe>
   </div>
 
   <!-- TAB HÀNG HÓA -->
@@ -1176,6 +1180,10 @@ function _applyAuthSession(pass, res){
     var bctBtn=document.getElementById('tab-bct-btn');
     if(bctBtn) bctBtn.style.display='';
   }
+  if(_allowedTabs.has('kqkd')){
+    var kqkdBtn=document.getElementById('tab-kqkd-btn');
+    if(kqkdBtn) kqkdBtn.style.display='';
+  }
   if(_allowedTabs.has('ln')){
     // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2) — ẩn với nhóm không có quyền 'ln' (vd MKT, vẫn xem được tab 2)
     _lnKpiLoad();
@@ -1199,10 +1207,14 @@ function _classifyGroup(nhomRaw, isAdmin){
   // CRM (Bizfly) tạm ẩn bớt 09/2026, mở lại cho Bán hàng thường và PGĐ 09/2026,
   // mở nốt cho GĐ thường 28/09/2026 — hiện Admin/PGĐ/GĐ/MKT/Bán hàng đều xem được.
   // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN — mở cho MỌI nhóm đã đăng nhập (19/10/2026,
-  // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" bỏ dấu cũng chứa "giam doc" → rơi vào nhánh GĐ.
+  // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" / "TGĐ" có nhánh riêng (từ 26/10/2026, thêm tab 9 KQKD), xét trước nhánh GĐ.
   // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu tab 9 riêng, rồi thẻ 12, cuối cùng là ô KPI cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) và Bán hàng — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
-  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
+  // Tab 9 "KQKD" (kqkd, thêm 26/10/2026, anh Khanh): chỉ Admin và nhóm Tổng Giám đốc ("tong giam doc" / "tgd").
+  // Nhánh TGĐ phải xét TRƯỚC "pgd"/"gd" vì "tgd" và "tong giam doc" đều chứa "gd"/"giam doc".
+  // Số liệu trong kqkd.enc.json được mã hóa, cần thêm mật khẩu KQKD (khoá ở đây chỉ ẩn tab).
+  if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
   var n = _stripDiacritics(nhomRaw);
+  if(n.indexOf('tgd')>=0 || n.indexOf('tong giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
@@ -1217,7 +1229,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   return new Set(['bct']);
 }
 function _tabLabel(t){
-  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'BC tuần'}[t];
+  return {bh:'BC Bán hàng', dv:'BC Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'BC tuần', kqkd:'KQKD'}[t];
 }
 // "Giả định đặt hàng" (dathang) — mở cho Admin + đúng nhóm được xem CRM (PGĐ, Bán
 // hàng thường, MKT — 3 nhóm này dùng chung 1 bộ quyền ['bh','mkt','crm'] nên không
@@ -1229,7 +1241,7 @@ function _canSeeDatHang(){
   return _isAdmin || _allowedTabs.has('crm') || _isGD;
 }
 function _pwModalTitle(t){
-  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'Báo cáo tuần chi nhánh'}[t]||'Khu vực bảo mật';
+  return {bh:'Báo cáo Bán hàng', dv:'Báo cáo Dịch vụ', ns:'HCNS', mkt:'MKT', crm:'CRM', bct:'Báo cáo tuần chi nhánh', kqkd:'Đánh giá KQKD chi nhánh'}[t]||'Khu vực bảo mật';
 }
 function _unlockTabUI(t){
   var el = document.getElementById('tab-'+t+'-btn');
@@ -1280,6 +1292,8 @@ function _fixEmbedPanelHeights(){
   if(policy) policy.style.height=h;
   if(crm) crm.style.height=h;
   if(bct) bct.style.height=h;
+  var kqkd=document.getElementById('tab-kqkd');
+  if(kqkd) kqkd.style.height=h;
 }
 window.addEventListener('resize', _fixEmbedPanelHeights);
 
@@ -1288,7 +1302,7 @@ function _doSwitchTab(t){
   window.scrollTo(0,0);
   _fixEmbedPanelHeights();
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','bct','admin'];
+  const tabOrder=['hh','bh','dv','ns','mkt','policy','crm','bct','kqkd','admin'];
   const tabEls=document.querySelectorAll('.tab');
   var idx=tabOrder.indexOf(t);
   if(idx>=0 && tabEls[idx]) tabEls[idx].classList.add('active');
@@ -1338,6 +1352,14 @@ function _doSwitchTab(t){
     if(!bctIframe.getAttribute('data-loaded')){
       bctIframe.src='https://tinthanhgroup.github.io/BH/baocaotuan.html';
       bctIframe.setAttribute('data-loaded','1');
+    }
+  }
+  // Lazy load iframe Đánh giá KQKD chi nhánh (số liệu mã hóa, trang tự hỏi mật khẩu KQKD)
+  if(t==='kqkd'){
+    var kqkdIframe=document.getElementById('kqkd-iframe');
+    if(!kqkdIframe.getAttribute('data-loaded')){
+      kqkdIframe.src='https://tinthanhgroup.github.io/BH/kqkd.html';
+      kqkdIframe.setAttribute('data-loaded','1');
     }
   }
   if(t==='hh') renderHH();
@@ -5058,6 +5080,7 @@ function setupResizer(rsId,leftId,rightId,wrap){
 function _permMatrixHTML(){
   var rows=[
     {lbl:'Admin', nhom:'Admin', admin:true, note:'Cờ isAdmin=TRUE'},
+    {lbl:'TGĐ', nhom:'Tổng Giám đốc', note:'"tgd" / "Tổng Giám đốc"'},
     {lbl:'PGĐ', nhom:'PGĐ', note:'"pgd" / "Phó Giám Đốc"'},
     {lbl:'GĐ', nhom:'GĐ', note:'"gd" / "Giám Đốc"'},
     {lbl:'MKT', nhom:'MKT', note:'"mkt" / "Marketing"'},
@@ -5077,6 +5100,7 @@ function _permMatrixHTML(){
     {lbl:'6. Chính sách<br>HTV', f:function(){ return FREE; }},
     {lbl:'7. CRM', f:function(s){ return s.has('crm'); }},
     {lbl:'8. BC tuần', f:function(s){ return s.has('bct'); }},
+    {lbl:'9. KQKD', f:function(s){ return s.has('kqkd'); }},
     {lbl:'Ô KPI lợi nhuận<br>(tab 2)', f:function(s){ return s.has('ln'); }},
     {lbl:'Tab Admin', f:function(s,a){ return a; }},
     {lbl:'Tab 1 · Xe<br>chưa xuất HĐ', f:function(s,a,gd,known){ return known && (a||gd); }},
@@ -5118,19 +5142,9 @@ function _chiPhiBotHTML(){
     +'</div>';
 }
 
-// Thẻ liên kết tới trang đánh giá KQKD chi nhánh (claude.ai, riêng tư; Project A 9. KQKD, README mục "Trang trình Ban lãnh đạo").
-// Repo công khai: chỉ ghi link, không ghi số liệu. Người chưa được chia sẻ trang thì không mở được.
-function _kqkdHTML(){
-  return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">'
-    +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">📊 Đánh giá KQKD chi nhánh</div>'
-    +'<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Kết quả kinh doanh từng hạng mục của 4 chi nhánh theo tháng (phòng kinh doanh, xưởng dịch vụ, lưu ý). Trang riêng tư trên claude.ai: chỉ người được chia sẻ mới mở được.</div>'
-    +'<a href="https://claude.ai/artifact/TaQGKEsNo9vrWGhwoVNA9G" target="_blank" rel="noopener" style="display:inline-block;padding:8px 16px;border:1px solid var(--border);border-radius:8px;color:var(--blue);font-weight:700;font-size:13px;text-decoration:none;">Mở trang đánh giá →</a>'
-    +'</div>';
-}
-
 function renderAdminTab(){
   var root=document.getElementById('tab-admin');
-  root.innerHTML=_kqkdHTML()+_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
+  root.innerHTML=_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
   var el=document.getElementById('admin-logs');
   el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div><div style="margin-top:12px">Đang tải dữ liệu...</div></div>';
   // Dùng GET request để tránh CORS

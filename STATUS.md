@@ -35,6 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 26/10/2026 | Thêm tab 9 "KQKD" (Đánh giá KQKD chi nhánh, chỉ Admin + nhóm TGĐ), số liệu mã hóa bằng mật khẩu KQKD trong `kqkd.enc.json`; bỏ thẻ link claude.ai trong tab Admin; xem `docs/module-kqkd.md` |
 | 25/10/2026 | Tab Admin: thêm thẻ "Đánh giá KQKD chi nhánh" (nút mở trang claude.ai riêng tư của Project A 9. KQKD); repo chỉ chứa link, không số liệu; xem `docs/giao-dien-va-phan-quyen.md` |
 | 25/10/2026 | Tab Admin: thêm thẻ "Chi phí bot Telegram" (nút mở `http://localhost:8765/`, trang chi phí chạy trên máy anh Khanh, Project A `dashboard/trang_chi_phi.py`); repo chỉ chứa địa chỉ localhost, không mã tài khoản hay số liệu; xem `docs/giao-dien-va-phan-quyen.md` |
 | 23/10/2026 | Đổi thẻ 12 thành ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2); bấm mở cửa sổ nổi chứa danh sách (loinhuan.html?tab=ky); vẫn quyền `ln` |

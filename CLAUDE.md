@@ -16,7 +16,7 @@ Hệ thống báo cáo nội bộ **Hyundai Tín Thanh** (chi nhánh Nha Trang/�
 
 | Việc đang làm | Đọc |
 |---|---|
-| Sửa một trang/tab module | `docs/module-<tên>.md` của module đó: hanghoa (tab 1 Hàng hóa, KCK, Creta), chamcong, nhansu, nhacungcap, mkt, fbads, chinhsach, quydinh, crm, baocaotuan, loinhuan |
+| Sửa một trang/tab module | `docs/module-<tên>.md` của module đó: hanghoa (tab 1 Hàng hóa, KCK, Creta), chamcong, nhansu, nhacungcap, mkt, fbads, chinhsach, quydinh, crm, baocaotuan, loinhuan, kqkd |
 | Tab/sub-tab, lazy-load, style dùng chung giữa các trang, phân quyền | `docs/giao-dien-va-phan-quyen.md` |
 | Sửa / thêm script `.gs`, trigger | `docs/apps-script.md` |
 | Cập nhật tay: chỉ tiêu, KCK dự phòng, chính sách HTV, quy định nội bộ, nhà cung cấp | `docs/cap-nhat-thu-cong.md` |
@@ -26,7 +26,7 @@ Chỉ mở file `docs/` của phần đang sửa, không đọc hết.
 
 ## Trang HTML (root repo)
 
-`index.html` (desktop, các tab + Admin), `mobile.html` (rút gọn, không có HCNS/MKT), và các trang module nhúng iframe, lazy-load khi mở: `chamcong`, `nhansu`, `nhacungcap`, `quy_dinh_noi_bo` (sub-tab của tab 4 HCNS), `fbads`, `mkt` (sub-tab của tab 5 MKT), `theo_doi_chinh_sach` (tab 6, mở tự do), `crm` (tab 7), `baocaotuan` (tab 8). Bảng đầy đủ: `docs/giao-dien-va-phan-quyen.md`.
+`index.html` (desktop, các tab + Admin), `mobile.html` (rút gọn, không có HCNS/MKT), và các trang module nhúng iframe, lazy-load khi mở: `chamcong`, `nhansu`, `nhacungcap`, `quy_dinh_noi_bo` (sub-tab của tab 4 HCNS), `fbads`, `mkt` (sub-tab của tab 5 MKT), `theo_doi_chinh_sach` (tab 6, mở tự do), `crm` (tab 7), `baocaotuan` (tab 8), `kqkd` (tab 9, số liệu mã hóa). Bảng đầy đủ: `docs/giao-dien-va-phan-quyen.md`.
 
 - `index.html` và `mobile.html` **trùng dữ liệu có chủ đích** (`KCK_DATA`, `KCK_DATE`): sửa một file thì kiểm tra file kia.
 - Trang module **không có `<h1>`**, theo chuẩn style chung (màu `--navy:#1B4F8C`, `.wrap` 1280px, font Inter, badge `.chart-num`) — chi tiết trong docs.
