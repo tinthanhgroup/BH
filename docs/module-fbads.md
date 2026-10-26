@@ -153,6 +153,10 @@ Bộ lọc: khoảng thời gian + Chi nhánh dạng nút bấm. **Bộ lọc ch
 
 **Header bảng tự xuống dòng** (đổi 23/09/2026, theo yêu cầu người dùng) — bỏ `white-space:nowrap` ở `thead th` (CSS dùng chung cho mọi bảng) để header dài (vd "Kết quả (Messenger bắt đầu)") tự wrap xuống nhiều dòng thay vì kéo bảng rộng ra — bảng gọn hơn, nhất là panel 4 (nhiều cột).
 
+## Quy ước đặt tên chiến dịch (panel 6, thêm 25/10/2026)
+
+Mẫu: `CHI NHÁNH CHƯƠNG TRÌNH KỲ XE ghi chú`, cách nhau dấu cách, 4 phần đầu viết hoa không dấu (vd `PY CSC T10 CRETA`, `BL CDR Q4 TUCSON INBOX`). Ký hiệu, ví dụ, lưu ý: xem trực tiếp panel `#quyUocTen` cuối `fbads.html` (nơi sở hữu duy nhất; nút "📋 Quy ước đặt tên chiến dịch" ở đầu trang nhảy tới). Áp dụng cho chiến dịch tạo mới; không sửa tên chiến dịch đang chạy vì khoá lịch sử là tên chiến dịch (đổi tên → tách 2 dòng, backfill có thể tính trùng). `phanLoaiChienDich()` **chưa** đọc theo mẫu mới (vẫn dò chữ "CSC"/"CDR"); tách PR/BL, cột VM, theo mẫu xe là việc sau khi mẫu chốt.
+
 ## Trigger
 
 `fbAdsSync`: 1 trigger `everyHours(1)` (24 lần/ngày, 24/7 — đổi từ `everyHours(6)` ngày 22/09/2026 khi chuyển sang tự gọi Facebook Graph API thay vì đợi tool ngoài; chi phí quảng cáo phát sinh liên tục cả ngoài giờ hành chính, khác Nhân sự/Chấm công chỉ cần đồng bộ giờ hành chính). Vẫn chỉ 1 trigger duy nhất (đổi tần suất lặp, không tạo thêm trigger) nên không ảnh hưởng hạn mức ~20 trigger/project.

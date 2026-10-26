@@ -148,6 +148,28 @@
   .trend-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
   .trend-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);}
   .trend-legend-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  /* Panel 6 — Quy ước đặt tên chiến dịch (thêm 25/10/2026). Mỗi phần của tên 1 màu,
+     dùng chung cho công thức, ví dụ và bảng ký hiệu để MKT nhìn là nhận ra. */
+  .ten-cong-thuc{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 22px;}
+  .ten-phan{display:inline-flex;flex-direction:column;align-items:center;gap:4px;}
+  .ten-phan b{font-size:22px;font-weight:800;padding:8px 16px;border-radius:9px;color:#fff;letter-spacing:.02em;}
+  .ten-phan small{font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .ten-cn{background:var(--navy);} .ten-ct{background:var(--accent);} .ten-ky{background:var(--green);}
+  .ten-xe{background:#B8860B;} .ten-gc{background:#9AA7BD;}
+  .ten-vd-list{display:flex;flex-direction:column;gap:14px;margin:8px 0 24px;}
+  .ten-vd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:#F7F9FC;}
+  .ten-vd code{font-family:'Consolas','Courier New',monospace;font-size:28px;font-weight:700;letter-spacing:.02em;}
+  .ten-vd code .cn{color:var(--navy);} .ten-vd code .ct{color:var(--accent);} .ten-vd code .ky{color:var(--green);}
+  .ten-vd code .xe{color:#B8860B;} .ten-vd code .gc{color:#7385A0;font-weight:500;}
+  .ten-vd span.giai{font-size:13px;color:var(--ink-soft);}
+  .ten-tieude{font-size:13px;font-weight:700;color:var(--navy);margin:0 0 6px;text-transform:uppercase;letter-spacing:.03em;}
+  table.ten-bang{font-size:14px;margin-bottom:22px;}
+  table.ten-bang td:first-child{white-space:nowrap;}
+  table.ten-bang code{font-family:'Consolas','Courier New',monospace;font-weight:700;font-size:15px;color:var(--ink);background:#EEF3F9;padding:1px 6px;border-radius:4px;}
+  .ten-cham{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;}
+  .ten-quytac{margin:0;padding-left:20px;font-size:14px;line-height:1.75;}
+  .huongdan-link{font-size:12.5px;font-weight:600;color:var(--navy);text-decoration:none;padding:8px 14px;border-radius:7px;border:1.5px solid #cddcef;background:#fff;}
+  .huongdan-link:hover{border-color:var(--navy);}
 </style>
 </head>
 <body>
@@ -157,6 +179,7 @@
     <div>
       <div class="sub" id="updatedText">Đang tải dữ liệu…</div>
     </div>
+    <a class="huongdan-link" href="#quyUocTen">📋 Quy ước đặt tên chiến dịch</a>
   </div>
 
   <div class="kpi-row" id="kpiRow"></div>
@@ -227,6 +250,50 @@
     </table>
     <div class="empty" id="emptyMsg" style="display:none;">Không có dữ liệu khớp bộ lọc.</div>
   </details>
+
+  <div class="panel" id="quyUocTen">
+    <h3><span class="chart-num">6</span> Quy ước đặt tên chiến dịch</h3>
+    <p class="desc">Áp dụng cho chiến dịch tạo mới. Hệ thống đọc tên chiến dịch (cấp Chiến dịch trong Ads Manager) để tách chi phí theo chi nhánh, chương trình, kỳ, mẫu xe.</p>
+
+    <div class="ten-cong-thuc">
+      <span class="ten-phan"><b class="ten-cn">CHI NHÁNH</b><small>1</small></span>
+      <span class="ten-phan"><b class="ten-ct">CHƯƠNG TRÌNH</b><small>2</small></span>
+      <span class="ten-phan"><b class="ten-ky">KỲ</b><small>3</small></span>
+      <span class="ten-phan"><b class="ten-xe">XE</b><small>4</small></span>
+      <span class="ten-phan"><b class="ten-gc">ghi chú</b><small>5 · không bắt buộc</small></span>
+    </div>
+
+    <div class="ten-tieude">Ví dụ</div>
+    <div class="ten-vd-list">
+      <div class="ten-vd"><code><span class="cn">PY</span> <span class="ct">CSC</span> <span class="ky">T10</span> <span class="xe">CRETA</span></code><span class="giai">Phú Yên · CSC tháng 10 · Creta</span></div>
+      <div class="ten-vd"><code><span class="cn">BL</span> <span class="ct">CDR</span> <span class="ky">Q4</span> <span class="xe">TUCSON</span> <span class="gc">INBOX</span></code><span class="giai">Bảo Lộc · CDR quý 4 · Tucson · mục tiêu tin nhắn</span></div>
+      <div class="ten-vd"><code><span class="cn">PR</span> <span class="ct">CDR</span> <span class="ky">Q4</span> <span class="xe">CRETA</span></code><span class="giai">Phan Rang · CDR quý 4 · Creta</span></div>
+      <div class="ten-vd"><code><span class="cn">DL</span> <span class="ct">CSC</span> <span class="ky">T10</span> <span class="xe">PALISADE</span> <span class="gc">HEV</span></code><span class="giai">Đà Lạt · CSC tháng 10 · Palisade Hybrid</span></div>
+      <div class="ten-vd"><code><span class="cn">NT</span> <span class="ct">CSC</span> <span class="ky">T10</span> <span class="xe">NHIEUXE</span> <span class="gc">Lai thu Cam Ranh</span></code><span class="giai">Nha Trang · CSC tháng 10 · nhiều xe · ghi chú tự do</span></div>
+      <div class="ten-vd"><code><span class="cn">DL</span> <span class="ct">TD</span> <span class="ky">T10</span> <span class="xe">CHUNG</span></code><span class="giai">Đà Lạt · tuyển dụng tháng 10 · không gắn xe</span></div>
+    </div>
+
+    <div class="ten-tieude">Ký hiệu từng phần</div>
+    <table class="ten-bang">
+      <thead><tr><th>Phần</th><th>Bắt buộc</th><th>Ký hiệu</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ten-cham ten-cn"></span>1. Chi nhánh</td><td>Có</td><td><code>NT</code> Nha Trang · <code>PR</code> Phan Rang · <code>PY</code> Phú Yên · <code>DL</code> Đà Lạt · <code>BL</code> Bảo Lộc</td></tr>
+        <tr><td><span class="ten-cham ten-ct"></span>2. Chương trình</td><td>Có</td><td><code>CSC</code> · <code>CDR</code> · <code>VM</code> Vùng miền · <code>DV</code> Dịch vụ · <code>TD</code> Tuyển dụng · <code>KHAC</code> công ty tự chi, không thuộc chương trình nào</td></tr>
+        <tr><td><span class="ten-cham ten-ky"></span>3. Kỳ</td><td>Có</td><td>Kỳ chương trình tính chi phí, không phải ngày chạy: CSC ghi tháng <code>T10</code>, CDR ghi quý <code>Q4</code></td></tr>
+        <tr><td><span class="ten-cham ten-xe"></span>4. Xe</td><td>Có</td><td><code>ACCENT</code> <code>CRETA</code> <code>VENUE</code> <code>STARGAZER</code> <code>TUCSON</code> <code>SANTAFE</code> <code>CUSTIN</code> <code>PALISADE</code> <code>IONIQ5</code> · nhiều xe: <code>NHIEUXE</code> · không gắn xe: <code>CHUNG</code></td></tr>
+        <tr><td><span class="ten-cham ten-gc"></span>5. Ghi chú</td><td>Không</td><td>Tự do, có thể có dấu cách: <code>INBOX</code>, <code>TUONGTAC</code>, <code>NLINE</code>, <code>HEV</code>, địa bàn (Cam Ranh, Ninh Hòa…), ngày bắt đầu…</td></tr>
+      </tbody>
+    </table>
+
+    <div class="ten-tieude">Lưu ý</div>
+    <ol class="ten-quytac">
+      <li>4 phần đầu viết HOA, không dấu, cách nhau đúng 1 dấu cách; mỗi phần viết liền (<code>SANTAFE</code>, không viết SANTA FE).</li>
+      <li>Mỗi chiến dịch chỉ thuộc 1 chi nhánh, 1 chương trình, 1 kỳ.</li>
+      <li>Nhân bản chiến dịch thì đổi tên ngay, không để đuôi "Bản sao".</li>
+      <li>Quảng cáo bài viết bấm từ fanpage (Facebook tự đặt tên "Bài viết: …"): vào Ads Manager đổi tên chiến dịch theo mẫu ngay trong ngày.</li>
+      <li>Chiến dịch đang chạy giữ nguyên tên, không sửa (sửa tên giữa chừng làm số liệu bị tách đôi).</li>
+    </ol>
+  </div>
 
   <div class="footnote" id="footnoteText"></div>
 </div>
