@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-26T11:30:02+07:00",
+ "updated_at": "2026-10-26T14:30:02+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -273,11 +273,11 @@
      "han": "2026-12-31",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "Hoàn thiện sổ thuế 2022-2023-2024-2025, chạy lại tờ khai 2022-2023-2024-2025, kiểm tra đối chiếu tiếp tài khoản ngân hàng, tài khoản vay, kiểm tra tiếp số dư 131-331 năm 2023, 2024,2025",
-     "tuanCN": 42,
+     "capNhat": "Đã hoàn thiện tờ khai 2022, đang rà kiểm tra lại lương TNCN 2022, đã kiểm tra xong ngân hàng 2023 2024, đang tiếp tục ra kiểm tra lại mua vào bán ra 2023 2024 để chạy lại tờ khai và kiểm tra tài khoản 331 131",
+     "tuanCN": 43,
      "vuongMac": "",
-     "deXuat": "",
-     "keHoach": "Hoàn thiện tờ khai 2022, phần ngân hàng, vay 2023-2024-2025 trong tuần này",
+     "deXuat": "có nhận lệnh tăng ca CN từ KTT để chạy kịp lại hết các sổ thuế trước khi kết thúc năm và PKT đã tiến hành tăng ca",
+     "keHoach": "Kiểm tra lại tk vay 2023, 2024, 2025, 2026, chứng từ đầu ra, đầu vào 2023 2024, chạy lại tờ khai 2023 2024, làm bảng lương và TNCN 2023",
      "ngayHT": "",
      "ngayHTRaw": "",
      "ketQua": "",
@@ -301,8 +301,8 @@
      "han": "2026-10-31",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "BC thống kê lệnh đang chờ PDV đối chiếu, BC kho BO đang kiểm tra sẽ gởi PDV đối chiếu trong ngày 21.10.2026, BC hàng ngập lụt đang dò đối chiếu, sẽ tập hợp gởi BGĐ ngày 24.10.2026",
-     "tuanCN": 42,
+     "capNhat": "BC thống kê lệnh đã nhận từ PDV nhưng chỉ mới cập nhật lý do chưa ghi rõ hướng xử lý và tgian xử lý, PKT đang hệ thống để làm việc lại với PDV, BC kho BO đang kiểm tra sẽ gởi PDV đối chiếu trong ngày 28.10.2026, BC hàng ngập lụt đang dò đối chiếu, sẽ tập hợp gởi BGĐ ngày 28.10.2026",
+     "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -324,13 +324,13 @@
      "nguon": "Trọng tâm tháng",
      "thang": 10,
      "linhVuc": "Kế Toán",
-     "noiDung": "Nộp tờ khai VAT T09.2026",
+     "noiDung": "Gia hạn phần mềm Misa SME 01 năm từ 01.11.2026, nộp tiền thuê đất NT, + nộp tiền thuế đát PY + nộp tiền thuế sd đất phi NN PY năm 2026 (hạn nộp 31.10.2026), nộp tờ khai quyết toán TNCN tháng 03.2026",
      "phuTrach": "Phòng KT",
-     "han": "2026-10-20",
+     "han": "2026-10-31",
      "hanRaw": "",
-     "trangThai": "Hoàn thành",
-     "capNhat": "Đã nộp Tk VAT T09.2026",
-     "tuanCN": 42,
+     "trangThai": "Đang làm",
+     "capNhat": "Hạn nộp 31.10.2026",
+     "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -885,8 +885,8 @@
      "ngayGiao": "",
      "ngayGiaoRaw": "",
      "noiDung": "Xử lý sổ Thuế 22-25",
-     "boPhan": "",
-     "trangThai": "",
+     "boPhan": "Văn phòng",
+     "trangThai": "Đang làm",
      "capNhat": "",
      "tuanCN": 42,
      "vuongMac": "",
@@ -1003,6 +1003,144 @@
     }
    ],
    "nhanDinhBP": [
+    {
+     "nam": 2026,
+     "tuan": 43,
+     "ngay": "2026-10-24",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 23/10/2026: 656.485.894đ (trong đó quá hạn trên 03 tháng là 65.024.683đ). Công nợ quá hạn KD: 430.800.000  gồm Sở XD KH 34.100.000đ + khách Nguyễn Thị Ngọc 396.700.000đ (khách vay VP, đã có giấy độc thân, đang làm thủ tục vay với VP, dự kiến thanh toán 26.10.2026) - Dự kiến gia hạn Misa SME 01 năm 15.300.000đ, đóng tiền thuê đất và thuế sd đất phi NN NT và PY đợt 02 năm 2026: 172.432.288đ"
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 42,
+     "ngay": "2026-10-17",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 16/10/2026: 224.775.053đ (trong đó quá hạn trên 03 tháng là 72.485.363đ). Công nợ quá hạn KD: 430.800.000  gồm Sở XD KH 34.100.000đ + khách Nguyễn Thị Ngọc 396.700.000đ (khách vay VP, đang chờ lấy giấy độc thân để giải ngân,công an hẹn 20/10 mới trả kết quả)"
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
     {
      "nam": 2026,
      "tuan": 42,
@@ -1132,75 +1270,6 @@
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
        "traLoi": "Bộ phận IT hỗ trợ gửi tin nhắn kênh ZALO để mời lượng khách hàng Ninh Thuận , tham gia CTSCLĐ"
-      }
-     ]
-    },
-    {
-     "nam": 2026,
-     "tuan": 42,
-     "ngay": "2026-10-17",
-     "boPhan": "VP",
-     "nguoiViet": "",
-     "items": [
-      {
-       "stt": 1,
-       "nhan": "Biến động nhân sự",
-       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
-       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
-      },
-      {
-       "stt": 2,
-       "nhan": "Tuyển dụng",
-       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
-       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
-      },
-      {
-       "stt": 3,
-       "nhan": "Tinh thần – kỷ luật",
-       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
-       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
-      },
-      {
-       "stt": 4,
-       "nhan": "Công nợ – dòng tiền",
-       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
-       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 16/10/2026: 224.775.053đ (trong đó quá hạn trên 03 tháng là 72.485.363đ). Công nợ quá hạn KD: 430.800.000  gồm Sở XD KH 34.100.000đ + khách Nguyễn Thị Ngọc 396.700.000đ (khách vay VP, đang chờ lấy giấy độc thân để giải ngân,công an hẹn 20/10 mới trả kết quả)"
-      },
-      {
-       "stt": 5,
-       "nhan": "Chứng từ – hồ sơ",
-       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
-       "traLoi": "Không"
-      },
-      {
-       "stt": 6,
-       "nhan": "CSVC – an toàn",
-       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
-       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
-      },
-      {
-       "stt": 7,
-       "nhan": "Tuân thủ",
-       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
-       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
-      },
-      {
-       "stt": 8,
-       "nhan": "Chi phí",
-       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
-       "traLoi": "Không"
-      },
-      {
-       "stt": 9,
-       "nhan": "Phối hợp",
-       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
-       "traLoi": ""
-      },
-      {
-       "stt": 10,
-       "nhan": "Tuần tới & cần hỗ trợ",
-       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
-       "traLoi": ""
       }
      ]
     }
