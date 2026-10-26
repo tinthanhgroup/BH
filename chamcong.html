@@ -11,13 +11,14 @@
     --bg:#EEF3F9;
     --panel:#FFFFFF;
     --ink:#233247;
-    --ink-soft:#7385A0;
+    --ink-soft:#5E6E8A;
     --line:#E4EAF3;
     --navy:#1B4F8C;
     --bh:#1F6FB2;
     --dv:#5B9BD5;
     --vp:#9FCBEA;
     --accent:#E0793C;
+    --accent-text:#B4531F; /* cam đậm cho chữ nhỏ (đủ tương phản); --accent giữ cho cột/thanh */
     --gold:#F2C14E;
     --bad:#C0392B;
     --good:#4F7A5D;
@@ -43,7 +44,7 @@
 
   .panel{background:var(--panel);border:none;border-radius:14px;box-shadow:var(--shadow);padding:18px 20px 16px;margin-bottom:16px;}
   .panel h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin:0 0 4px;}
-  .panel h3 .accent{color:var(--accent);}
+  .panel h3 .accent, .panel summary .accent{color:var(--accent-text);}
   .panel .desc{font-size:11.5px;color:var(--ink-soft);margin:0 0 12px;}
   .chart-num{
     display:inline-flex;align-items:center;justify-content:center;
@@ -63,7 +64,7 @@
   .branch-pill .bp-pending{font-size:12px;color:var(--ink-soft);font-weight:700;padding:14px 0 8px;}
   .bg-label{font-size:12px;color:var(--ink-soft);font-weight:600;display:flex;align-items:center;padding:9px 8px 9px 4px;}
   .bg-value{text-align:center;font-weight:700;color:var(--ink);border-left:1.5px solid var(--line);padding:9px 6px;font-size:13px;font-variant-numeric:tabular-nums;}
-  .bg-value .pct{color:var(--accent);font-weight:700;font-size:11.5px;}
+  .bg-value .pct{color:var(--accent-text);font-weight:700;font-size:11.5px;}
   .bg-value.empty{color:var(--ink-soft);font-weight:400;font-size:11px;}
   .bg-full-divider{grid-column:1 / -1;display:flex;align-items:center;gap:10px;margin:10px 0 6px;}
   .bg-full-divider::before, .bg-full-divider::after{content:'';flex:1;height:0;border-top:1.5px dashed var(--line);}
@@ -92,6 +93,7 @@
   td{padding:7px 8px;border-bottom:1px solid var(--line);}
   tr:hover td{background:#F7F9FC;}
   td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  th.num{text-align:right;}
   tr.row-muted td{color:var(--ink-soft);font-style:italic;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
   .badge.bad{background:#FBE4DD;color:var(--bad);}
@@ -154,28 +156,14 @@
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">1</span> Cấu hình giờ chuẩn</summary>
-    <div style="margin-top:14px;">
-      <div class="config-row">
-        <div class="config-item"><label>Giờ vào buổi sáng</label><input type="text" class="time-input" id="cfgGioVaoSang" value="07:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 07:30"></div>
-        <div class="config-item"><label>Giờ ra buổi sáng</label><input type="text" class="time-input" id="cfgGioRaSang" value="11:45" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 11:45"></div>
-        <div class="config-item" style="margin-left:14px;"><label>Giờ vào buổi chiều</label><input type="text" class="time-input" id="cfgGioVaoChieu" value="13:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 13:30"></div>
-        <div class="config-item"><label>Giờ ra buổi chiều</label><input type="text" class="time-input" id="cfgGioRaChieu" value="17:15" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 17:15"></div>
-        <div class="config-item" style="margin-left:14px;"><label>Ngưỡng trễ/sớm (phút)</label><input type="number" id="cfgNguong" value="5" min="0" max="60"></div>
-      </div>
-      <p class="config-note" id="exceptionNote"></p>
-    </div>
-  </details>
-
-  <details class="panel">
-    <summary><span class="chart-num">2</span> <span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></summary>
+    <summary><span class="chart-num">1</span> <span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></summary>
     <p class="desc">Chọn ngày để xem chi tiết. Mặc định là ngày gần nhất có dữ liệu.</p>
     <div class="search-box">
       <select id="todaySelect"></select>
     </div>
     <div class="grid2">
       <div>
-        <h3 style="margin-top:8px;">Đi trễ trong ngày <span id="todayTreCount" style="color:var(--accent);"></span></h3>
+        <h3 style="margin-top:8px;">Đi trễ trong ngày <span id="todayTreCount" style="color:var(--accent-text);"></span></h3>
         <table id="todayTreTable">
           <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Buổi</th><th class="num">Giờ vào</th><th class="num">Trễ (phút)</th></tr></thead>
           <tbody id="todayTreTbody"></tbody>
@@ -193,7 +181,7 @@
 
   <div class="grid2">
     <details class="panel">
-      <summary><span class="chart-num">3</span> <span class="accent">Đi trễ</span> theo phòng ban</summary>
+      <summary><span class="chart-num">2</span> <span class="accent">Đi trễ</span> theo phòng ban</summary>
       <p class="desc">Phòng ban lấy theo file Tổng hợp nhân sự (chuẩn) — sắp xếp theo số lượt trễ giảm dần</p>
       <table id="phongTable">
         <thead><tr>
@@ -209,14 +197,14 @@
       </table>
     </details>
     <details class="panel">
-      <summary><span class="chart-num">4</span> Lượt đi trễ &amp; nghỉ theo ngày</summary>
+      <summary><span class="chart-num">3</span> Lượt đi trễ &amp; nghỉ theo ngày</summary>
       <p class="desc">Toàn chi nhánh, 10 ngày gần nhất</p>
       <div class="chart-box"><canvas id="chartTreTheoNgay"></canvas></div>
     </details>
   </div>
 
   <details class="panel">
-    <summary><span class="chart-num">5</span> <span class="accent">Nhân viên đi trễ</span> — chi tiết</summary>
+    <summary><span class="chart-num">4</span> <span class="accent">Nhân viên đi trễ</span> — chi tiết</summary>
     <p class="desc">Bấm tiêu đề cột để sắp xếp. Mặc định chỉ hiện người có ít nhất 1 lần đi trễ.</p>
     <div class="search-box">
       <input type="text" id="searchNV" placeholder="Tìm theo tên nhân viên...">
@@ -242,7 +230,7 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">6</span> Số liệu phụ (giờ làm, về sớm...)</summary>
+    <summary><span class="chart-num">5</span> Số liệu phụ (giờ làm, về sớm...)</summary>
     <div class="grid2" style="margin-top:16px;">
       <div>
         <h3 style="margin-top:8px;">Giờ làm trung bình theo phòng ban</h3>
@@ -264,7 +252,7 @@
   </details>
 
   <details class="panel" id="chuaKhopPanel">
-    <summary><span class="chart-num">7</span> ⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
+    <summary><span class="chart-num">6</span> ⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
     <p class="desc">Danh sách nhân viên xuất hiện trong file chấm công nhưng KHÔNG khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.</p>
     <div class="table-wrap">
     <table id="chuaKhopTable">
@@ -280,7 +268,7 @@
   </details>
 
   <details class="panel" id="trungVanTayPanel">
-    <summary><span class="chart-num">8</span> 🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
+    <summary><span class="chart-num">7</span> 🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
     <p class="desc">Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp KHÔNG tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).</p>
     <div class="table-wrap">
     <table id="trungVanTayTable">
@@ -295,7 +283,7 @@
   </details>
 
   <details class="panel" id="thieuChamCongPanel">
-    <summary><span class="chart-num">9</span> 👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
+    <summary><span class="chart-num">8</span> 👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
     <p class="desc">Danh sách người ĐANG LÀM VIỆC theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng KHÔNG xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.</p>
     <div class="table-wrap">
     <table id="thieuChamCongTable">
@@ -308,6 +296,20 @@
       </tr></thead>
       <tbody id="thieuChamCongTbody"></tbody>
     </table>
+    </div>
+  </details>
+
+  <details class="panel">
+    <summary>⚙ Thiết lập giờ chuẩn</summary>
+    <div style="margin-top:14px;">
+      <div class="config-row">
+        <div class="config-item"><label>Giờ vào buổi sáng</label><input type="text" class="time-input" id="cfgGioVaoSang" value="07:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 07:30"></div>
+        <div class="config-item"><label>Giờ ra buổi sáng</label><input type="text" class="time-input" id="cfgGioRaSang" value="11:45" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 11:45"></div>
+        <div class="config-item" style="margin-left:14px;"><label>Giờ vào buổi chiều</label><input type="text" class="time-input" id="cfgGioVaoChieu" value="13:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 13:30"></div>
+        <div class="config-item"><label>Giờ ra buổi chiều</label><input type="text" class="time-input" id="cfgGioRaChieu" value="17:15" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 17:15"></div>
+        <div class="config-item" style="margin-left:14px;"><label>Ngưỡng trễ/sớm (phút)</label><input type="number" id="cfgNguong" value="5" min="0" max="60"></div>
+      </div>
+      <p class="config-note" id="exceptionNote"></p>
     </div>
   </details>
 
@@ -377,6 +379,18 @@ function ngayDate(s){
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); if(!m) return null;
   return NGAY_YDM ? new Date(+m[1], +m[3]-1, +m[2]) : new Date(+m[1], +m[2]-1, +m[3]);
 }
+// Khoá sắp xếp yyyy-mm-dd (sắp chuỗi gốc năm-ngày-tháng sẽ sai thứ tự khi có nhiều tháng)
+function ngayKey(s){
+  const d = ngayDate(s); if(!d) return s || '';
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function soSanhNgay(a, b){ const x = ngayKey(a), y = ngayKey(b); return x < y ? -1 : x > y ? 1 : 0; }
+// Hiển thị dd/mm/yyyy (đủ) hoặc dd/mm (nhãn biểu đồ)
+function fmtNgay(s){
+  const d = ngayDate(s); if(!d) return s || '—';
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+}
+function fmtNgayNgan(s){ return fmtNgay(s).slice(0,5); }
 function gioVaoChieu(r, cfg){
   const d = ngayDate(r.ngay);
   return d && d >= GIO_VAO_CHIEU_MOI.tu ? timeToMin(GIO_VAO_CHIEU_MOI.gio) : cfg.vaoChieu;
@@ -587,6 +601,8 @@ function renderChuaKhop(rows){
     </tr>`).join('') : '';
 }
 
+// Bảng nhân viên đi trễ: chỉ tô nhãn đỏ khi tổng lượt trễ từ mức này trở lên
+const NGUONG_TRE_NHIEU = 5;
 function renderNVTable(rows){
   const search = document.getElementById('searchNV').value.trim().toLowerCase();
   const filterPhong = document.getElementById('filterPhong').value;
@@ -601,13 +617,13 @@ function renderNVTable(rows){
     <tr>
       <td>${g.ten}</td>
       <td>${g.phong}</td>
-      <td class="num">${g.sotresang>0?`<span class="badge bad">${g.sotresang}</span>`:'0'}</td>
-      <td class="num">${g.sotrechieu>0?`<span class="badge bad">${g.sotrechieu}</span>`:'0'}</td>
-      <td class="num"><b>${g.sotre}</b></td>
+      <td class="num">${g.sotresang}</td>
+      <td class="num">${g.sotrechieu}</td>
+      <td class="num">${g.sotre>=NGUONG_TRE_NHIEU?`<span class="badge bad">${g.sotre}</span>`:`<b>${g.sotre}</b>`}</td>
       <td class="num">${g.tyletre.toFixed(0)}%</td>
       <td class="num">${g.socong}</td>
-      <td class="num">${g.sosom>0?`<span class="badge warn">${g.sosom}</span>`:'0'}</td>
-      <td class="num">${g.sothieu>0?`<span class="badge neutral">${g.sothieu}</span>`:'0'}</td>
+      <td class="num">${g.sosom}</td>
+      <td class="num">${g.sothieu}</td>
     </tr>`).join('') : `<tr><td colspan="9" style="text-align:center;color:var(--ink-soft);padding:16px;">Không có ai khớp bộ lọc hiện tại</td></tr>`;
   document.querySelectorAll('#nvTable th').forEach(th=>{
     th.classList.toggle('sorted', th.dataset.key===st.key);
@@ -638,7 +654,7 @@ const barValueLabelPlugin = {
 };
 
 function renderCharts(rows){
-  const ngayListDay = [...new Set(rows.map(r=>r.ngay))].sort().slice(-10);
+  const ngayListDay = [...new Set(rows.map(r=>r.ngay))].sort(soSanhNgay).slice(-10);
   const treTheoNgay = ngayListDay.map(d=> rows.filter(r=>r.ngay===d && r.ditre).length);
   const nghiTheoNgay = ngayListDay.map(d=> rows.some(r=>r.ngay===d && r.thu==='CN') ? 0 : rows.filter(r=>r.ngay===d && !r.cocong).length);
 
@@ -646,7 +662,7 @@ function renderCharts(rows){
   chartTre = new Chart(document.getElementById('chartTreTheoNgay'), {
     type:'bar',
     data:{
-      labels: ngayListDay.map(d=>d.slice(8,10)+'/'+d.slice(5,7)),
+      labels: ngayListDay.map(fmtNgayNgan),
       datasets:[
         { label:'Trễ', data:treTheoNgay, backgroundColor:'#E0793C', borderRadius:4, maxBarThickness:24 },
         { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#9FCBEA', borderRadius:4, maxBarThickness:24 },
@@ -670,7 +686,7 @@ function renderCharts(rows){
 }
 
 function populateTodaySelect(rows){
-  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort(soSanhNgay);
   const ngayCoDuLieu = ngayList.filter(d => rows.some(r => r.ngay===d && r.cocong));
   const sel = document.getElementById('todaySelect');
   if(!selectedDate || !ngayList.includes(selectedDate)){
@@ -678,13 +694,13 @@ function populateTodaySelect(rows){
   }
   sel.innerHTML = ngayList.map(d=>{
     const rong = !rows.some(r=>r.ngay===d && r.cocong);
-    return `<option value="${d}" ${d===selectedDate?'selected':''}>${d}${rong?' (chưa có dữ liệu)':''}</option>`;
+    return `<option value="${d}" ${d===selectedDate?'selected':''}>${fmtNgay(d)}${rong?' (chưa có dữ liệu)':''}</option>`;
   }).join('');
 }
 
 function renderToday(rows){
   const dayRows = rows.filter(r=>r.ngay===selectedDate);
-  document.getElementById('todayLabel').textContent = selectedDate || '—';
+  document.getElementById('todayLabel').textContent = selectedDate ? fmtNgay(selectedDate) : '—';
 
   const treList = [];
   dayRows.forEach(r=>{
@@ -730,7 +746,7 @@ function branchOverview(chinhanh){
   const tongCong = rows.filter(r=>r.cocong).length;
   const soTre = rows.filter(r=>r.tresang).length + rows.filter(r=>r.trechieu).length;
   const nvTreSet = new Set(rows.filter(r=>r.tresang || r.trechieu).map(r=>r.manv));
-  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort(soSanhNgay);
   const ngayCoDuLieu = ngayList.filter(d => rows.some(r => r.ngay===d && r.cocong));
   const ngayCapNhat = ngayCoDuLieu.length ? ngayCoDuLieu[ngayCoDuLieu.length-1] : (ngayList.length ? ngayList[ngayList.length-1] : null);
 
@@ -796,7 +812,7 @@ function renderBranchKPI(){
   metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} <span class="pct">(${o.tyLeNghi.toFixed(0)}%)</span>`);
   metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} <span class="pct">(${o.tyLeNVTre.toFixed(0)}%)</span>`);
   metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} <span class="pct">(${o.tyLeTreNgayCong.toFixed(1)}%)</span>`);
-  metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat || '—'}`);
+  metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat ? fmtNgay(o.ngayCapNhat) : '—'}`);
 
   document.getElementById('branchGrid').innerHTML = cells.join('');
 
@@ -872,9 +888,9 @@ function renderAll(){
 
   renderBranchKPI();
 
-  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort();
+  const ngayList = [...new Set(rows.map(r=>r.ngay))].sort(soSanhNgay);
   document.getElementById('subtitle').textContent = rows.length
-    ? `${chinhanh} — dữ liệu từ ${ngayList[0]} đến ${ngayList[ngayList.length-1]} · phòng ban theo file Nhân sự`
+    ? `${chinhanh} — dữ liệu từ ${fmtNgay(ngayList[0])} đến ${fmtNgay(ngayList[ngayList.length-1])} · phòng ban theo file Nhân sự`
     : `${chinhanh} — chưa có dữ liệu`;
 
   populateFilterOptions(rows);
@@ -887,6 +903,17 @@ function renderAll(){
   renderTrungVanTay();
   renderThieuChamCong(rows, chinhanh);
   renderCharts(rows);
+  danhSoMuc();
+}
+
+// Đánh lại số mục theo thứ tự các mục đang hiện (mục chưa khớp / trùng vân tay / thiếu chấm công tự ẩn khi không có gì)
+function danhSoMuc(){
+  let so = 0;
+  document.querySelectorAll('.wrap .chart-num').forEach(el=>{
+    const panel = el.closest('.panel');
+    if(panel && panel.style.display === 'none') return;
+    el.textContent = ++so;
+  });
 }
 
 

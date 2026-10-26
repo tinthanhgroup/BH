@@ -16,7 +16,9 @@
 
 **Giờ vào buổi chiều theo ngày (28/09/2026):** từ T2 28/09/2026 (tuần 40) là **13:15** (`GIO_VAO_CHIEU_MOI`, hàm `gioVaoChieu()`); ô cấu hình "Giờ vào buổi chiều" (mặc định 13:30) chỉ áp dụng cho các ngày trước mốc. `baocaotuan.html` (khối Nhân sự) dùng cùng quy tắc (`ccVaoChieu()`) — đổi 1 nơi nhớ đổi nơi kia.
 
-⚠️ Field `ngay` trong `chamcong.json` đang ở dạng **năm-NGÀY-tháng** (`2026-21-09`), không phải ISO chuẩn — trang so sánh chuỗi nên chỉ đúng trong 1 tháng; khi cần ra ngày thật dùng `ngayDate()` (cờ `NGAY_YDM` tự nhận lúc tải).
+⚠️ Field `ngay` trong `chamcong.json` đang ở dạng **năm-NGÀY-tháng** (`2026-21-09`), không phải ISO chuẩn — cờ `NGAY_YDM` tự nhận lúc tải. Ra ngày thật dùng `ngayDate()`; sắp xếp danh sách ngày dùng `.sort(soSanhNgay)` (không `.sort()` chuỗi); hiển thị dùng `fmtNgay()` (dd/mm/yyyy) / `fmtNgayNgan()` (dd/mm).
+
+Giao diện (sửa 27/10/2026 theo đánh giá UX): mục "Thiết lập giờ chuẩn" để cuối trang, không đánh số; số mục do `danhSoMuc()` đánh lại theo các mục đang hiện (mục chưa khớp / trùng vân tay / thiếu chấm công tự ẩn); bảng "Nhân viên đi trễ" chỉ tô nhãn đỏ ở cột Tổng lượt trễ khi ≥ `NGUONG_TRE_NHIEU` (5); chữ cam cỡ nhỏ dùng `--accent-text`.
 
 **3 bảng chẩn đoán cuối `chamcong.html`** (đều dropdown, mặc định đóng khi không có gì bất thường):
 - **"⚠ Nhân sự chưa khớp với dữ liệu Nhân sự"** — có chấm công nhưng không khớp được cả Mã NV lẫn Tên với sheet Nhân sự.
