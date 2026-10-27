@@ -43,8 +43,8 @@
   select:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--ink-soft);}
 
   .panel{background:var(--panel);border:none;border-radius:14px;box-shadow:var(--shadow);padding:18px 20px 16px;margin-bottom:16px;}
-  .panel h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--navy);margin:0 0 4px;}
-  .panel h3 .accent, .panel summary .accent{color:var(--accent-text);}
+  .panel h3{font-size:13px;font-weight:700;color:var(--navy);margin:0 0 4px;}
+  .panel h3 .accent, .panel summary .accent{color:inherit;}
   .panel .desc{font-size:11.5px;color:var(--ink-soft);margin:0 0 12px;}
   .chart-num{
     display:inline-flex;align-items:center;justify-content:center;
@@ -96,9 +96,9 @@
   th.num{text-align:right;}
   tr.row-muted td{color:var(--ink-soft);font-style:italic;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
-  .badge.bad{background:#FBE4DD;color:var(--bad);}
-  .badge.warn{background:#FBF1DC;color:#C79A3E;}
-  .badge.good{background:#E2EFE4;color:var(--good);}
+  .badge.bad{background:#FBE4DD;color:#B03A2E;}
+  .badge.warn{background:#FBF1DC;color:#7A5F17;}
+  .badge.good{background:#E2EFE4;color:#3B6B4B;}
   .badge.neutral{background:#EEF3F9;color:var(--ink-soft);}
   .bar-cell{display:flex;align-items:center;gap:8px;}
   .bar-track{flex:1;height:8px;background:#EEF3F9;border-radius:4px;overflow:hidden;min-width:60px;}
@@ -111,7 +111,7 @@
   .search-box input[type=text]{flex:1;min-width:180px;}
   .checkbox-lbl{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;}
   .table-wrap{max-height:520px;overflow:auto;}
-  details summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:13px;text-transform:uppercase;letter-spacing:.03em;}
+  details summary{cursor:pointer;font-weight:700;color:var(--navy);font-size:15px;}
 
   @media(max-width:1100px){
     .kpi-row{grid-template-columns:repeat(3,1fr);}
@@ -155,7 +155,7 @@
     <div class="bg-value empty bg-updated">—</div><div class="bg-value empty bg-updated">—</div><div class="bg-value empty bg-updated">—</div><div class="bg-value empty bg-updated">—</div>
   </div>
 
-  <details class="panel">
+  <details class="panel" open>
     <summary><span class="chart-num">1</span> <span class="accent">Đi trễ &amp; nghỉ</span> — <span id="todayLabel"></span></summary>
     <p class="desc">Chọn ngày để xem chi tiết. Mặc định là ngày gần nhất có dữ liệu.</p>
     <div class="search-box">
@@ -500,8 +500,8 @@ function renderPhongTable(rows){
       <td>${g.phong}</td>
       <td class="num">${g.sonv}</td>
       <td class="num">${g.tongcong}</td>
-      <td class="num">${g.sotresang>0?`<span class="badge bad">${g.sotresang}</span>`:'0'}</td>
-      <td class="num">${g.sotrechieu>0?`<span class="badge bad">${g.sotrechieu}</span>`:'0'}</td>
+      <td class="num">${g.sotresang}</td>
+      <td class="num">${g.sotrechieu}</td>
       <td class="num">
         <div class="bar-cell">
           <span style="min-width:20px;text-align:right;font-weight:700;color:${g.sotre>0?'var(--bad)':'var(--ink-soft)'}">${g.sotre}</span>
@@ -642,7 +642,7 @@ const barValueLabelPlugin = {
         const value = dataset.data[index];
         if(value === null || value === undefined) return;
         ctx.save();
-        ctx.fillStyle = dataset.borderColor || dataset.backgroundColor;
+        ctx.fillStyle = dataset.labelColor || dataset.borderColor || dataset.backgroundColor;
         ctx.font = '700 10px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
@@ -665,7 +665,7 @@ function renderCharts(rows){
       labels: ngayListDay.map(fmtNgayNgan),
       datasets:[
         { label:'Trễ', data:treTheoNgay, backgroundColor:'#E0793C', borderRadius:4, maxBarThickness:24 },
-        { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#9FCBEA', borderRadius:4, maxBarThickness:24 },
+        { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#9FCBEA', labelColor:'#2E5C8A', borderRadius:4, maxBarThickness:24 },
       ]
     },
     options: {
@@ -715,7 +715,7 @@ function renderToday(rows){
       <td>${t.phong}</td>
       <td>${t.buoi}</td>
       <td class="num">${t.gio}</td>
-      <td class="num"><span class="badge bad">${t.phut}p</span></td>
+      <td class="num">${t.phut>=30?`<span class="badge bad">${t.phut}p</span>`:`${t.phut}p`}</td>
     </tr>`).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:12px;">Không có ai đi trễ</td></tr>`;
 
   const laChuNhat = dayRows.some(r=>r.thu==='CN');

@@ -6,9 +6,11 @@ Cập nhật: 27/10/2026
 - **Việc gấp nhất:** Palisade LX3 (CV 126): ký HĐ chính thức các khách đặt xe trước 31/10/2026
 - **Đang chờ:** Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
 
-Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). HTV yêu cầu đặt bổ sung để tuân thủ CV157 (thiếu NT 11 · ĐL 7 · PY 5, hạn 12h 10/10/2026); Công ty chọn **xin tạm dừng đặt bổ sung**: đã gửi công văn cho HTV ngày 10/10/2026, **HTV đã đồng ý tạm dừng (ghi nhận 13/10/2026)**; phương án 20 xe giữ làm dự phòng (bảng Giả định đặt hàng PA4). Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
+Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
+- [ ] Chuyển các trang module còn lại sang `chung.css` (Chấm công, Nhân sự, MKT, Quảng cáo FB, NCC, Báo cáo tuần, Chính sách, Quy định) sau khi người dùng duyệt trang CRM
+- [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; lưu ý 6 Creta N Line CBU chưa có CKD kèm (PY đặt 5/6 xe HTV yêu cầu)
 - [ ] Quy ước tên chiến dịch FB: chốt ý nghĩa VM (Vùng miền), CDR ghi theo quý, ngày áp dụng; phổ biến MKT chi nhánh; sau đó sửa `phanLoaiChienDich()` đọc theo mẫu
 - [ ] Nhận quy định cũ từ Loan (nếu có): rà soát trùng lặp với cách tính lãi nội bộ hằng tuần của PKT; cần thì đề xuất chị Đào sửa đổi QĐ 03.26
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
@@ -31,6 +33,9 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 27/10/2026 | Chốt chuẩn giao diện mới theo tab Hàng hóa / Bán hàng, file chung `chung.css`; chuyển trang CRM trước (sửa sót Very Hot, cột ngày chưa cập nhật khách Hot, tách nguồn theo TVBH, thiếu Nguồn); xem `docs/giao-dien-va-phan-quyen.md`; chưa push |
+| 27/10/2026 | Chị Đào duyệt đặt bổ sung T10: 23 xe theo đề xuất 3 chi nhánh (NT 9 · ĐL 9 · PY 5, folder `2. Dat hang/T10 L2 v2/`); bảng Giả định đặt hàng PA5 đã push |
+| 27/10/2026 | Đồng bộ phong cách 5 trang module (Nhân sự, Chấm công, Quảng cáo FB, CRM, MKT): màu chữ phụ, bộ màu nhãn chung, tiêu đề mục chữ thường 15px, ngày dd/mm/yyyy, màu chi nhánh theo BC Bán hàng; quy ước ghi ở `docs/giao-dien-va-phan-quyen.md`; chưa push |
 | 27/10/2026 | Đã tách sheet Văn phòng Nha Trang (KT 3, CSKH 4, HCNS 15 việc); push trang Báo cáo tuần hiện nhóm CSKH / Kế toán / HCNS |
 | 27/10/2026 | Đã tách sheet Văn phòng Phú Yên (CSKH 12, HCNS 8 việc, giữ mã VP-); hiện lại cột E (ô Mã tiếp theo), xoá nội dung Lĩnh vực ở NT + PY; xem `docs/module-baocaotuan.md` |
 | 27/10/2026 | Chốt tách sheet Văn phòng báo cáo tuần thành CSKH / Kế toán / HCNS (nhận định VP viết chung), làm Phú Yên trước; đã viết script + sửa web (chưa push); xem `docs/module-baocaotuan.md` |

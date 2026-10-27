@@ -1,0 +1,80 @@
+/* chung.css — kiểu dùng chung cho các trang module nhúng iframe (28/10/2026).
+   Chuẩn lấy theo tab Hàng hóa / Bán hàng của index.html (người dùng chọn 27/10/2026).
+   Trang module: <link rel="stylesheet" href="chung.css"> rồi chỉ khai báo thêm phần riêng của trang.
+   Sửa giá trị chung ở ĐÂY, không chép lại vào từng trang. Quy ước: docs/giao-dien-va-phan-quyen.md */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;800&display=swap');
+
+:root{
+  /* màu như index.html */
+  --bg:#f0f4fa; --card:#ffffff; --card2:#f4f6fb; --border:#dce3f0;
+  --text:#1a2240; --muted:#6b7a9e; --accent:#2563eb;
+  --blue:#1a4fa0; --blue-mid:#3b6fd4;
+  --green:#1d6f3b; --green-bg:#e6f4ec;
+  --amber:#8a5a00; --amber-bg:#fff3cd;
+  --red:#a32d2d;   --red-bg:#fdeaea;
+  --nt:#4a90d9; --pr:#d4ac0d; --py:#82c9a0; --dl:#d4693a; --bl:#7e5ea8;
+  --shadow:0 1px 6px rgba(0,0,0,.07);
+  --mono:'JetBrains Mono',monospace;
+  /* tên cũ của các trang module — trỏ về màu mới để trang chưa sửa hết vẫn đồng bộ */
+  --panel:var(--card); --ink:var(--text); --ink-soft:var(--muted); --line:var(--border); --navy:var(--blue);
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Be Vietnam Pro',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;}
+button,select,input{font-family:inherit;}
+.wrap{max-width:1600px;margin:0 auto;padding:16px 20px 48px;}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.hdr .sub{font-size:12px;color:var(--muted);}
+
+/* Khung mục (= .card của index) */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;}
+.panel h3,.panel summary{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--accent);}
+.panel summary{cursor:pointer;}
+.panel .desc{margin:0 0 12px;font-size:12px;line-height:1.55;color:var(--muted);}
+/* Số mục: "2. Tiêu đề" như tab Bán hàng (giữ thẻ <span class="chart-num">2</span> cũ) */
+.chart-num{font-weight:600;margin-right:2px;}
+.chart-num::after{content:'.';}
+.sub-title{font-size:12px;font-weight:600;color:var(--text);margin:0 0 8px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.grid2 .panel,.grid3 .panel{margin-bottom:0;}
+
+/* KPI (= .kpi-card của index) */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;box-shadow:var(--shadow);}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.kpi-num{font-size:30px;font-weight:800;font-family:var(--mono);line-height:1;margin-bottom:5px;color:var(--text);}
+.kpi-sub{font-size:11px;color:var(--muted);}
+.kpi.xau .kpi-num{color:var(--red);} .kpi.canh .kpi-num{color:var(--amber);} .kpi.tot .kpi-num{color:var(--green);}
+
+/* Bảng (= bảng tab Hàng hóa) */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;background:var(--blue);color:#fff;}
+tbody tr{border-bottom:1px solid #f0f0f0;}
+tbody tr:hover{background:#f8f9ff;}
+tbody td{padding:7px 10px;vertical-align:middle;}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.table-wrap{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.empty{text-align:center;color:var(--muted);padding:24px;font-size:12px;}
+.dash{color:var(--muted);}
+
+/* Nhãn: chỉ tô khi cần chú ý */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;white-space:nowrap;background:var(--card2);color:var(--text);}
+.badge.xau{background:var(--red-bg);color:var(--red);}
+.badge.canh{background:var(--amber-bg);color:var(--amber);}
+.badge.tot{background:var(--green-bg);color:var(--green);}
+
+/* Bộ lọc (= .filters / .branch-chip của index) */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.filters input,.filters select,select,input[type=text]{height:30px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--text);background:#fff;}
+input[type=text]{min-width:200px;}
+.reset-btn,.btn-clear{height:30px;padding:0 10px;border:1px solid var(--border);border-radius:6px;background:#fff;font-size:12px;cursor:pointer;color:var(--muted);}
+.reset-btn:hover,.btn-clear:hover{border-color:var(--accent);color:var(--accent);}
+.chk-label{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none;}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.filter-btn{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);font-size:12px;font-weight:500;color:var(--text);cursor:pointer;}
+.filter-btn:hover{border-color:var(--accent);}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.legend-item{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500;margin-right:12px;}
+.legend-dot{width:9px;height:9px;border-radius:2px;display:inline-block;}
+.footnote{color:var(--muted);font-size:11px;margin-top:10px;text-align:center;}

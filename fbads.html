@@ -7,7 +7,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
   :root{
-    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#7385A0; --line:#E4EAF3;
+    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#5E6E8A; --line:#E4EAF3;
     --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
     --shadow:0 2px 10px rgba(31,95,153,0.08);
   }
@@ -59,10 +59,10 @@
   tbody tr.xau{background:#FDF1F1;}
   tbody tr.xau:hover{background:#FBE5E5;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
-  .badge.tot{background:#E1F5EC;color:var(--green);}
-  .badge.canhbao{background:#FFF3E0;color:#B8860B;}
-  .badge.xau{background:#FBE5E5;color:var(--red);}
-  .badge.na{background:#EDEFF3;color:var(--ink-soft);}
+  .badge.tot{background:#E2EFE4;color:#3B6B4B;}
+  .badge.canhbao{background:#FBF1DC;color:#7A5F17;}
+  .badge.xau{background:#FBE4DD;color:#B03A2E;}
+  .badge.na{background:#EEF3F9;color:var(--ink-soft);}
   .dash{color:var(--ink-soft);}
   .run-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:middle;}
   .run-badge.active{color:var(--green);}
@@ -160,7 +160,7 @@
   .ten-vd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:#F7F9FC;}
   .ten-vd code{font-family:'Consolas','Courier New',monospace;font-size:28px;font-weight:700;letter-spacing:.02em;}
   .ten-vd code .cn{color:var(--navy);} .ten-vd code .ct{color:var(--accent);} .ten-vd code .ky{color:var(--green);}
-  .ten-vd code .xe{color:#B8860B;} .ten-vd code .gc{color:#7385A0;font-weight:500;}
+  .ten-vd code .xe{color:#B8860B;} .ten-vd code .gc{color:var(--ink-soft);font-weight:500;}
   .ten-vd span.giai{font-size:13px;color:var(--ink-soft);}
   .ten-tieude{font-size:13px;font-weight:700;color:var(--navy);margin:0 0 6px;text-transform:uppercase;letter-spacing:.03em;}
   table.ten-bang{font-size:14px;margin-bottom:22px;}
@@ -745,7 +745,7 @@ function xuatExcelCanhBao(){
 function renderWarnTable(list){
   document.getElementById('warnDesc').innerHTML =
     `"Kết quả" = số cuộc trò chuyện Messenger bắt đầu. Cảnh báo <b style="color:var(--red)">đỏ</b> = đã chi trên ${fmtVND(FBADS_NGUONG_KHONG_KQ)} mà chưa có kết quả nào; ` +
-    `<b style="color:#B8860B">vàng</b> = chi phí/kết quả cao hơn ${FBADS_HE_SO_CANH_BAO}× trung bình các chiến dịch còn lại; dưới ${fmtVND(FBADS_CHI_TOI_THIEU_DANH_GIA)} coi là chưa đủ dữ liệu.`;
+    `<b style="color:#7A5F17">vàng</b> = chi phí/kết quả cao hơn ${FBADS_HE_SO_CANH_BAO}× trung bình các chiến dịch còn lại; dưới ${fmtVND(FBADS_CHI_TOI_THIEU_DANH_GIA)} coi là chưa đủ dữ liệu.`;
 
   const camps = xepLoaiHieuQua(aggregateByCampaign(list));
   const badgeMap = {tot:'tot', canhbao:'canhbao', xau:'xau', na:'na'};

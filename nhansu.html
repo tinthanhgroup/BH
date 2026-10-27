@@ -194,13 +194,11 @@
     padding:18px 20px 14px;
   }
   .panel h3{
-    font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;
-    letter-spacing:.05em;color:var(--navy);margin:0 0 4px;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--navy);margin:0 0 4px;
   }
   .panel .desc{font-size:11.5px;color:var(--ink-soft);margin:0 0 12px;}
   .panel summary{
-    font-family:'Inter',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;
-    letter-spacing:.05em;color:var(--navy);margin:0 0 4px;cursor:pointer;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--navy);margin:0 0 4px;cursor:pointer;
   }
   .panel[open] summary{margin-bottom:4px;}
   .chart-box{position:relative;height:230px;overflow:hidden;}
@@ -233,7 +231,7 @@
   /* Nhãn trạng thái hợp đồng + dòng cảnh báo HĐ ở mục 1 */
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
   .badge.bad{background:#FBE4DD;color:#B03A2E;}
-  .badge.warn{background:#FBF1DC;color:#8A6D1F;}
+  .badge.warn{background:#FBF1DC;color:#7A5F17;}
   .hd-alert{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 18px;padding:10px 14px;border-radius:10px;background:#FDF3EF;border:1px solid #F3D3C6;font-size:13px;color:var(--ink);}
   .hd-alert b{color:#B03A2E;}
   .hd-alert a{margin-left:auto;font-size:12px;font-weight:600;color:var(--navy);text-decoration:none;cursor:pointer;}
@@ -681,7 +679,7 @@ function branchDepartures(rows){
     const days = Math.round((REF-dt)/(1000*60*60*24));
     const agoStr = days<30 ? `${days} ngày trước` : `${(days/30.44).toFixed(1)} tháng trước`;
     const initials = d.ten.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase();
-    const dateStr = dt.toLocaleDateString('vi-VN');
+    const dateStr = fmtNgayVN(d.ngaynghi);
     return `<div class="dep-item">
       <div class="dep-avatar" style="background:${COLORS[d.khoi]||'#999'}">${initials}</div>
       <div class="dep-info">
@@ -925,13 +923,22 @@ function renderThamNienChart(rows){
 let turnoverCharts = {};
 function destroyTurnover(id){ if(turnoverCharts[id]){ turnoverCharts[id].destroy(); delete turnoverCharts[id]; } }
 
+// Màu chi nhánh theo BC Bán hàng (index.html --nt/--pr/--py/--dl/--bl)
 const LOC_COLORS = {
-  'Nha Trang':'#4F8FC4', 'Phan Rang':'#D4A843', 'Phú Yên':'#E38F82',
-  'Đà Lạt':'#5FA777', 'Bảo Lộc':'#8B6DB8'
+  'Nha Trang':'#4a90d9', 'Phan Rang':'#d4ac0d', 'Phú Yên':'#82c9a0',
+  'Đà Lạt':'#d4693a', 'Bảo Lộc':'#7e5ea8'
 };
+// Ngày dd/mm/yyyy (nhận "yyyy-mm-dd" hoặc chuỗi Date)
+function fmtNgayVN(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || '');
+  if(m) return m[3] + '/' + m[2] + '/' + m[1];
+  const d = new Date(s); if(isNaN(d)) return s || '';
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+}
 const LOC_ORDER = ['Nha Trang','Phan Rang','Phú Yên','Đà Lạt','Bảo Lộc'];
 
-const TO_COLORS = {'Văn phòng DV':'#D4A843','SCC':'#4F8FC4','Sơn':'#5FA777','Đồng':'#8B6DB8','Vệ sinh xe':'#E38F82','Đồng/Sơn':'#5C9E9E'};
+// Màu tổ: tránh trùng màu chi nhánh ở trên
+const TO_COLORS = {'Văn phòng DV':'#9AA7BD','SCC':'#1B4F8C','Sơn':'#2E9DA6','Đồng':'#C07A9B','Vệ sinh xe':'#A3B86C','Đồng/Sơn':'#5C6BC0'};
 
 function renderTurnover(){
   const T = TURNOVER.filter(d => d.namnghi >= 2024 && d.namnghi <= 2026 && d.khoi==='Dịch vụ');
@@ -1186,7 +1193,7 @@ function renderThangNay(){
     }).join('');
     document.getElementById('hdCanXuLyBox').innerHTML = `
       <details id="hdDetails">
-        <summary style="cursor:pointer;font-weight:600;color:var(--navy);">Danh sách hợp đồng có ngày hết hạn (${HD_HET_HAN.length} người có dữ liệu / ${soDangLam} đang làm việc)</summary>
+        <summary style="cursor:pointer;font-weight:600;font-size:13px;color:var(--navy);">Danh sách hợp đồng có ngày hết hạn (${HD_HET_HAN.length} người có dữ liệu / ${soDangLam} đang làm việc)</summary>
         <table style="margin-top:8px;">
           <thead><tr><th>Nhân sự</th><th>Địa điểm</th><th>Phòng</th><th>Chức vụ</th><th>Ngày hết hạn HĐ</th><th>Trạng thái</th></tr></thead>
           <tbody>${rows}</tbody>
@@ -1225,7 +1232,7 @@ function renderBienDong(){
   document.getElementById('bienDongTable').innerHTML = top.map((e,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td>${new Date(e.ngay).toLocaleDateString('vi-VN')}</td>
+      <td>${fmtNgayVN(e.ngay)}</td>
       <td><span class="tag" style="background:${e.loai==='Tuyển mới'?'#DCEAF1':'#FBE4DD'};color:${e.loai==='Tuyển mới'?'#1F6FB2':'#B94A32'}">${e.loai}</span></td>
       <td><strong>${e.ten}</strong>${tenureBadge(e)}</td>
       <td>${e.diadiem}</td>

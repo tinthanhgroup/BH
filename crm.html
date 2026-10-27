@@ -4,93 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CRM — Tín Thanh Group</title>
+<link rel="stylesheet" href="chung.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root{
-    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#7385A0; --line:#E4EAF3;
-    --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
-    --shadow:0 2px 10px rgba(31,95,153,0.08);
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
-  .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
-  .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
-  .hdr .sub{color:var(--ink-soft);font-size:12px;margin-top:4px;}
-
-  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
-  .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
-  .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
-  .kpi.green::before{background:var(--green);} .kpi.red::before{background:var(--red);} .kpi.gold::before{background:var(--gold);}
-  .kpi-label{font-size:10.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
-  .kpi-num{font-size:21px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
-  .kpi.green .kpi-num{color:var(--green);} .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:#B8860B;}
-  .kpi-sub{font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
-
-  .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
-  .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
-  .panel summary{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;cursor:pointer;}
-  .chart-num{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;
-    font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
-  }
-  .panel[open] summary{margin-bottom:4px;}
-  .panel .desc{margin:0 0 14px;font-size:11px;color:var(--ink-soft);}
-
-  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
-  select,input[type=text]{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:7px 11px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
-  input[type=text]{cursor:text;font-weight:500;min-width:200px;}
-  .reset-btn{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:7px 13px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
-  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .chk-label{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;user-select:none;}
-  .chk-label input{cursor:pointer;}
-  .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .filter-btn{font-family:'Inter',sans-serif;font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
-  .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
-
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
-  .grid2 .panel{margin-bottom:0;}
-  @media(max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr);} .grid2{grid-template-columns:1fr;}}
-
-  table{width:100%;border-collapse:collapse;font-size:10.5px;}
-  thead th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:6px 8px;border-bottom:2px solid var(--line);white-space:nowrap;}
-  tbody td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
-  tbody tr:hover{background:#F7F9FC;}
-  .badge{display:inline-block;padding:2px 6px;border-radius:20px;font-size:9.5px;font-weight:700;}
-  .badge.veryhot{background:var(--red);color:#fff;}
-  .badge.hot{background:#FBE5E5;color:var(--red);}
-  .badge.warm{background:#FFF3E0;color:#B8860B;}
-  .badge.test{background:#EDEFF3;color:var(--ink-soft);}
-  tbody tr.veryhot-row{background:#FDF1F1;}
-  tbody tr.veryhot-row:hover{background:#FBE5E5;}
-  .dash{color:var(--ink-soft);}
-  .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
-  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
-
-  .funnel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
-  .funnel-mini{background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 8px 8px;}
-  .funnel-mini-title{font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px;}
-  .funnel-conv-table{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:8px;}
-  .funnel-conv-table th{text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink-soft);font-weight:700;padding:4px;border-bottom:1.5px solid var(--line);}
-  .funnel-conv-table td{padding:4px;border-bottom:1px solid var(--line);}
-  .funnel-lost{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);}
-  .funnel-period-title{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin:0 0 10px;}
-  details.funnel-period-details{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);}
-  details.funnel-period-details summary{font-size:11.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;cursor:pointer;list-style:none;margin-bottom:10px;}
-  details.funnel-period-details summary::-webkit-details-marker{display:none;}
-  details.funnel-period-details summary::before{content:'▸ ';}
-  details.funnel-period-details[open] summary::before{content:'▾ ';}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-bottom:18px;}
-  .grid3 .panel{margin-bottom:0;}
-  @media(max-width:980px){.grid3{grid-template-columns:1fr;}}
+  /* Riêng trang CRM — phần chung ở chung.css */
+  .funnel-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .funnel-mini,.chart-mini{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 8px 8px;}
+  .funnel-mini-title{font-size:12px;font-weight:600;color:var(--text);text-align:center;margin-bottom:6px;}
+  .funnel-mini-title span{font-weight:400;color:var(--muted);}
+  .funnel-conv-table{font-size:12px;margin-top:8px;}
+  .funnel-conv-table td{padding:4px 6px;border-bottom:1px solid var(--border);}
+  .funnel-lost{margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:12px;color:var(--muted);}
+  .funnel-period-title{font-size:12px;font-weight:600;color:var(--text);margin:0 0 10px;}
+  details.funnel-period-details{margin-top:16px;padding-top:12px;border-top:1px dashed var(--border);}
+  details.funnel-period-details summary{font-size:12px;font-weight:600;color:var(--text);cursor:pointer;margin-bottom:10px;}
   .nomodel-bar{cursor:pointer;}
-  .nomodel-bar:hover{stroke:var(--ink);stroke-width:1.5;}
-  .nomodel-tip{position:fixed;display:none;z-index:1000;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.15);padding:8px 10px;max-width:360px;max-height:70vh;overflow:hidden;font-size:11.5px;}
-  .nomodel-tip-title{font-weight:700;color:var(--navy);margin-bottom:6px;}
-  .nomodel-tip table{width:100%;border-collapse:collapse;}
-  .nomodel-tip th{text-align:left;font-size:9.5px;text-transform:uppercase;color:var(--ink-soft);padding:3px 4px;border-bottom:1.5px solid var(--line);}
-  .nomodel-tip td{padding:3px 4px;border-bottom:1px solid var(--line);}
+  .nomodel-bar:hover{stroke:var(--text);stroke-width:1.5;}
+  .nomodel-tip{position:fixed;display:none;z-index:1000;pointer-events:none;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.15);padding:8px 10px;max-width:360px;max-height:70vh;overflow:hidden;font-size:12px;}
+  .nomodel-tip-title{font-weight:600;color:var(--text);margin-bottom:6px;}
+  .nomodel-tip thead th{font-size:11px;padding:4px 6px;}
+  .nomodel-tip td{padding:3px 6px;}
 </style>
 </head>
 <body>
@@ -140,7 +72,7 @@
 
   <div class="panel">
     <h3><span class="chart-num">2</span> Trạng thái khách hàng — từng Chi nhánh</h3>
-    <p class="desc">Tỷ lệ khách theo Trạng thái (Veryhot/Hot/Warm...) của từng chi nhánh — mục này luôn hiện đủ chi nhánh, không theo bộ lọc phía trên (trừ checkbox ẩn dữ liệu test).</p>
+    <p class="desc">Tỷ lệ khách theo Trạng thái (Very Hot / Hot / Warm…) của từng chi nhánh — mục này luôn hiện đủ chi nhánh, không theo bộ lọc phía trên (trừ checkbox ẩn dữ liệu test).</p>
     <div id="statusLegend" style="margin-bottom:12px;"></div>
     <div id="statusChartsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;"></div>
   </div>
@@ -153,12 +85,12 @@
   </details>
 
   <div class="panel">
-    <h3><span class="chart-num">4</span> Khách Hot &amp; Veryhot cần theo dõi (<span id="hotCount">0</span>)</h3>
-    <p class="desc">Danh sách khách <b>Veryhot</b> (ưu tiên trên cùng) và <b>Hot</b>, làm cơ sở cho GĐBH theo dõi sát — không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Cột "Chi nhánh" in nghiêng = chi nhánh trống ở CRM, được suy luận theo email Nhân viên.</p>
+    <h3><span class="chart-num">4</span> Khách Hot &amp; Very Hot cần theo dõi (<span id="hotCount">0</span> khách · <span id="hotStale">0</span> quá 14 ngày chưa cập nhật)</h3>
+    <p class="desc">Very Hot trên cùng, trong từng nhóm khách lâu chưa cập nhật nhất lên đầu. Cột "Chưa cập nhật": vàng từ 7 ngày, đỏ từ 14 ngày (khách Hot lâu không cập nhật cần làm nguội hoặc chăm sóc lại). Không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Chi nhánh in nghiêng = trống ở CRM, suy luận theo email nhân viên.</p>
     <table>
       <thead><tr>
         <th>#</th><th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
-        <th>Tiến trình hiện tại</th><th>Trạng thái</th><th>Cập nhật gần nhất</th>
+        <th>Tiến trình hiện tại</th><th>Trạng thái</th><th>Cập nhật gần nhất</th><th class="num">Chưa cập nhật</th>
       </tr></thead>
       <tbody id="hotTable"></tbody>
     </table>
@@ -169,7 +101,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">5</span> Theo Nhóm nguồn</summary>
       <table>
-        <thead><tr><th>#</th><th>Nhóm nguồn</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
+        <thead><tr><th>#</th><th>Nhóm nguồn</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
         <tbody id="sourceTable"></tbody>
       </table>
     </details>
@@ -177,7 +109,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">6</span> Theo Chi nhánh</summary>
       <table>
-        <thead><tr><th>#</th><th>Chi nhánh</th><th>Lead</th><th>Ký HĐ</th><th>Tỷ lệ</th></tr></thead>
+        <thead><tr><th>#</th><th>Chi nhánh</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
         <tbody id="branchTable"></tbody>
       </table>
     </details>
@@ -185,25 +117,26 @@
     <details class="panel" open>
       <summary><span class="chart-num">7</span> Model quan tâm nhất</summary>
       <table>
-        <thead><tr><th>#</th><th>Model</th><th>Lead</th><th>Ký HĐ</th></tr></thead>
+        <thead><tr><th>#</th><th>Model</th><th class="num">Lead</th><th class="num">Ký HĐ</th></tr></thead>
         <tbody id="modelTable"></tbody>
       </table>
     </details>
   </div>
 
-  <details class="panel">
+  <details class="panel" open>
     <summary><span class="chart-num">8</span> Lead theo Nhân viên phụ trách</summary>
+    <p class="desc">Lead công ty = nhóm nguồn Facebook, Website, TikTok (công ty chạy và chia về). Nguồn khác = nhóm "Khác" (TVBH, Hotline, HTV…). Cột "% lead công ty" tô vàng khi từ 80% và có từ 10 lead: TVBH gần như chỉ nhập lead công ty chia về, chưa nhập khách tự khai thác.</p>
     <table>
-      <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th>Số lead</th><th>Đã ký HĐ</th><th>Tỷ lệ chuyển đổi</th></tr></thead>
+      <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th class="num">Số lead</th><th class="num">Lead công ty</th><th class="num">Nguồn khác</th><th class="num">Chưa ghi nguồn</th><th class="num">% lead công ty</th><th class="num">Đã ký HĐ</th></tr></thead>
       <tbody id="staffTable"></tbody>
     </table>
   </details>
 
-  <details class="panel">
-    <summary><span class="chart-num">9</span> Dữ liệu thiếu — giai đoạn triển khai (<span id="missingCount">0</span> lead thiếu)</summary>
-    <p class="desc">Lead thiếu Tiến trình và/hoặc Model theo từng nhân viên, dùng để GĐBH mỗi chi nhánh chấn chỉnh trong giai đoạn mới triển khai CRM — chỉ áp dụng tạm thời, sẽ bỏ khi dữ liệu nhập đã ổn định.</p>
+  <details class="panel" open>
+    <summary><span class="chart-num">9</span> Dữ liệu thiếu (<span id="missingCount">0</span> lead thiếu ít nhất 1 thông tin)</summary>
+    <p class="desc">Lead thiếu Tiến trình, Model hoặc Nguồn theo từng nhân viên, để GĐBH chấn chỉnh trong giai đoạn triển khai CRM. "% lead thiếu" tô đỏ khi từ 30%.</p>
     <table>
-      <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th>Tổng lead</th><th>Thiếu Tiến trình</th><th>Thiếu Model</th><th>% lead thiếu</th></tr></thead>
+      <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th class="num">Tổng lead</th><th class="num">Thiếu Tiến trình</th><th class="num">Thiếu Model</th><th class="num">Thiếu Nguồn</th><th class="num">% lead thiếu</th></tr></thead>
       <tbody id="missingTable"></tbody>
     </table>
   </details>
@@ -260,17 +193,21 @@ function buildStages(list){
 }
 
 function renderKPI(list){
+  // 5 thẻ trả lời câu hỏi quản lý (28/10/2026): Hot quá hạn, dữ liệu thiếu, ký HĐ trên CRM.
+  // Số chỉ tô màu khi vượt ngưỡng.
   const total = list.length;
   const won = list.filter(isWon).length;
-  const lost = list.filter(isLost).length;
-  const active = total - won - lost;
-  const pct = total>0 ? Math.round(won/total*100) : 0;
+  const hot = list.filter(l=>trangThaiPriority(l.trangThai)<=1);
+  const stale = hot.filter(l=>daysSince(l)>=14).length;
+  const noNguon = list.filter(l=>!l.nhomNguon).length;
+  const noModel = list.filter(l=>!l.model).length;
+  const p = n=> total>0 ? Math.round(n/total*100) : 0;
   const kpis = [
     {label:'Tổng lead', num:total, sub:'trong bộ lọc hiện tại', cls:''},
-    {label:'Đang xử lý', num:active, sub:'chưa ký HĐ / chưa dừng', cls:'gold'},
-    {label:'Đã ký hợp đồng', num:won, sub:fmtPct(won,total)+' tổng số', cls:'green'},
-    {label:'Đã dừng / không mua', num:lost, sub:'mua xe khác hoặc từ chối', cls:'red'},
-    {label:'Tỷ lệ chuyển đổi', num:pct+'%', sub:'đã ký HĐ / tổng lead', cls: pct>=20?'green':(pct>=8?'gold':'red')},
+    {label:'Hot quá 14 ngày', num:stale, sub:'trên '+hot.length+' khách Hot / Very Hot', cls: stale>0?'xau':''},
+    {label:'Thiếu Nguồn', num:p(noNguon)+'%', sub:noNguon+' lead chưa ghi nhóm nguồn', cls: p(noNguon)>=30?'xau':(p(noNguon)>=10?'canh':'')},
+    {label:'Thiếu Model', num:p(noModel)+'%', sub:noModel+' lead chưa ghi model', cls: p(noModel)>=30?'xau':(p(noModel)>=10?'canh':'')},
+    {label:'Ký hợp đồng trên CRM', num:won, sub:fmtPct(won,total)+' tổng lead', cls:''},
   ];
   document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
     <div class="kpi ${k.cls}">
@@ -280,10 +217,22 @@ function renderKPI(list){
     </div>`).join('');
 }
 
+// Số ngày từ lần cập nhật gần nhất trên CRM đến nay
+function daysSince(l){
+  return l._ngayCapNhatTs ? Math.floor((Date.now()-l._ngayCapNhatTs)/86400000) : null;
+}
+function fmtNgayGio(ts){
+  if(!ts) return '—';
+  const d = new Date(ts), z = n=>String(n).padStart(2,'0');
+  return `${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`;
+}
+
 function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
 
 // Màu từng tầng phễu — cycle nếu số bước nhiều hơn số màu.
-const FUNNEL_COLORS = ['#1B4F8C','#1FA97A','#F2C14E','#8E5CB8','#E0793C','#2E9DA6','#D64545'];
+// Một tông xanh (theo --blue) nhạt dần theo bước; bước "Ký hợp đồng" tô xanh lá. Chữ trắng trên 3 tầng đậm.
+const FUNNEL_COLORS = ['#1a4fa0','#2f64b3','#4d7dc4','#7299d2','#9db6e0','#c3d3ec'];
+const FUNNEL_WIN_COLOR = '#1d6f3b';
 
 function renderFunnel(list, gridId, lostId){
   // Luôn dùng toàn bộ dữ liệu (chỉ trừ checkbox test), không theo bộ lọc
@@ -322,21 +271,25 @@ function renderFunnel(list, gridId, lostId){
       const botW = i<stages.length-1 ? widthOf(counts[i+1]) : widthOf(counts[i]);
       const y0 = i*(rowH+gap), y1 = y0+rowH;
       const xTop0=(W-topW)/2, xTop1=(W+topW)/2, xBot0=(W-botW)/2, xBot1=(W+botW)/2;
-      const color = FUNNEL_COLORS[i % FUNNEL_COLORS.length];
+      const laThang = stripDiacritics(s.label).indexOf(stripDiacritics(WIN_STAGE_LABEL_HINT))>=0;
+      const ci = Math.min(i, FUNNEL_COLORS.length-1);
+      const color = laThang ? FUNNEL_WIN_COLOR : FUNNEL_COLORS[ci];
+      const chu = (laThang || ci<3) ? '#fff' : '#1a2240';
       const pct = branchTotal>0 ? Math.round(counts[i]/branchTotal*100) : 0;
       shapes += `<polygon points="${xTop0.toFixed(1)},${y0} ${xTop1.toFixed(1)},${y0} ${xBot1.toFixed(1)},${y1} ${xBot0.toFixed(1)},${y1}" fill="${color}"/>`;
-      shapes += `<text x="${W/2}" y="${y0+rowH/2-2}" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">${counts[i]}</text>`;
-      shapes += `<text x="${W/2}" y="${y0+rowH/2+11}" text-anchor="middle" font-size="8.5" fill="#fff" opacity=".92">${pct}%</text>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2-2}" text-anchor="middle" font-size="12" font-weight="800" fill="${chu}">${counts[i]}</text>`;
+      shapes += `<text x="${W/2}" y="${y0+rowH/2+11}" text-anchor="middle" font-size="10" fill="${chu}" opacity=".92">${pct}%</text>`;
     });
     // Ghi rõ tên đầy đủ của cả 2 bước (không rút gọn thành "Bước N→M" nữa)
     // để không cần di chuột mới biết tên bước.
     const convRows = stages.slice(0,-1).map((s,i)=>{
       const rate = counts[i]>0 ? Math.round(counts[i+1]/counts[i]*100) : 0;
-      const color = rate>=50 ? 'var(--green)' : (rate>=25 ? '#B8860B' : 'var(--red)');
-      return `<tr><td>${s.label} → ${stages[i+1].label}</td><td style="font-weight:800;color:${color};text-align:right;white-space:nowrap;">${rate}%</td></tr>`;
+      // Chỉ tô đỏ khi tỷ lệ thấp (< 25%) và mẫu đủ lớn (≥ 5 khách), còn lại chữ thường
+      const xau = rate<25 && counts[i]>=5;
+      return `<tr><td>${s.label} → ${stages[i+1].label}</td><td class="num" style="${xau?'color:var(--red);font-weight:700;':''}">${counts[i+1]}/${counts[i]} · ${rate}%</td></tr>`;
     }).join('');
     return `<div class="funnel-mini">
-      <div class="funnel-mini-title">${b} <span style="font-weight:400;color:var(--ink-soft);">(${branchTotal})</span></div>
+      <div class="funnel-mini-title">${b} <span>(${branchTotal})</span></div>
       <svg viewBox="0 0 ${W} ${svgH}" width="${W}" height="${svgH}" style="display:block;margin:0 auto;">${shapes}</svg>
       <table class="funnel-conv-table"><tbody>${convRows}</tbody></table>
     </div>`;
@@ -361,16 +314,21 @@ function renderFunnelPeriods(allStagesList){
 }
 
 // ── Mục 2: Trạng thái khách hàng theo Chi nhánh ──
-const STATUS_FIXED_COLORS = { 'Veryhot':'#D64545', 'Hot':'#E0793C', 'Warm':'#F2C14E' };
-const STATUS_OTHER_COLORS = ['#7A5CA3','#2E9DA6','#9C6644','#1FA97A','#8E5CB8','#5C8A9E'];
+const STATUS_FIXED_COLORS = { 'Very Hot':'#a32d2d', 'Hot':'#ef9f27', 'Warm':'#f5d27a', 'Close':'#9aa5b1', '(Chưa xác định)':'#d5dce6' };
+const STATUS_OTHER_COLORS = ['#7e5ea8','#4a90d9','#82c9a0','#d4693a','#5c8a9e'];
+
+// Chuẩn hóa trạng thái CRM: bỏ dấu, bỏ khoảng trắng ("Very Hot" = "Veryhot");
+// giá trị ghép "Hot|Warm" lấy giá trị đầu.
+function normTT(t){ return stripDiacritics(String(t||'').split('|')[0]).replace(/\s+/g,''); }
 
 function statusLabel(t){
   const raw = (t||'').toString().trim();
   if(!raw) return '(Chưa xác định)';
-  const n = stripDiacritics(raw);
-  if(n==='veryhot') return 'Veryhot';
+  const n = normTT(raw);
+  if(n==='veryhot') return 'Very Hot';
   if(n==='hot') return 'Hot';
   if(n==='warm') return 'Warm';
+  if(n==='close') return 'Close';
   return raw;
 }
 
@@ -396,7 +354,7 @@ function renderStatusChart(allStagesList){
     const k = statusLabel(l.trangThai);
     totalByStatus[k] = (totalByStatus[k]||0)+1;
   });
-  const knownOrder = ['Veryhot','Hot','Warm'].filter(k=>totalByStatus[k]);
+  const knownOrder = ['Very Hot','Hot','Warm'].filter(k=>totalByStatus[k]);
   const otherKeys = Object.keys(totalByStatus).filter(k=>!knownOrder.includes(k))
     .sort((a,b)=>totalByStatus[b]-totalByStatus[a]);
   const legendKeys = [...knownOrder, ...otherKeys];
@@ -407,9 +365,7 @@ function renderStatusChart(allStagesList){
   });
 
   document.getElementById('statusLegend').innerHTML = legendKeys.map(k=>
-    `<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-right:14px;">
-      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorOf[k]};"></span>${k}
-    </span>`).join('');
+    `<span class="legend-item"><span class="legend-dot" style="background:${colorOf[k]};"></span>${k}</span>`).join('');
 
   // ── Mỗi chi nhánh 1 thanh ngang chia theo tỷ lệ trạng thái (100% stacked) ──
   const barW = 200, barH = 26;
@@ -423,12 +379,17 @@ function renderStatusChart(allStagesList){
       const c = counts[k]||0;
       if(c<=0) return;
       const w = (c/total)*barW;
-      segs += `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${barH}" fill="${colorOf[k]}"/>`;
+      segs += `<rect x="${x.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${barH}" fill="${colorOf[k]}"><title>${k}: ${c} (${Math.round(c/total*100)}%)</title></rect>`;
+      // Ghi % lên đoạn đủ rộng (≥ 12%); chữ tối trên màu nhạt
+      if(c/total>=0.12){
+        const sang = ['Warm','Close','(Chưa xác định)','Hot'].includes(k);
+        segs += `<text x="${(x+w/2).toFixed(1)}" y="${barH/2+4}" text-anchor="middle" font-size="11" font-weight="700" fill="${sang?'#1a2240':'#fff'}">${Math.round(c/total*100)}%</text>`;
+      }
       x += w;
     });
-    return `<div style="background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:10px 10px 8px;">
-      <div style="font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px;">${b} <span style="font-weight:400;color:var(--ink-soft);">(${total})</span></div>
-      <svg viewBox="0 0 ${barW} ${barH}" width="100%" height="${barH}" style="display:block;border-radius:4px;overflow:hidden;">${total>0 ? segs : `<rect x="0" y="0" width="${barW}" height="${barH}" fill="#EDEFF3"/>`}</svg>
+    return `<div class="chart-mini">
+      <div class="funnel-mini-title">${b} <span>(${total})</span></div>
+      <svg viewBox="0 0 ${barW} ${barH}" width="100%" height="${barH}" preserveAspectRatio="none" style="display:block;border-radius:4px;overflow:hidden;">${total>0 ? segs : `<rect x="0" y="0" width="${barW}" height="${barH}" fill="#EDEFF3"/>`}</svg>
     </div>`;
   }).join('');
   document.getElementById('statusChartsGrid').innerHTML = gridHtml;
@@ -450,22 +411,22 @@ function renderSourceTable(list){
   document.getElementById('sourceTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;">${r.key}</td>
-      <td>${r.total}</td>
-      <td style="color:var(--green);font-weight:700;">${r.won}</td>
-      <td>${fmtPct(r.won,r.total)}</td>
+      <td style="font-weight:600;">${r.key}</td>
+      <td class="num">${r.total}</td>
+      <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
+      <td class="num">${fmtPct(r.won,r.total)}</td>
     </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderBranchTable(list){
-  const rows = groupCount(list, l=>l.chiNhanh);
+  const rows = theoThuTuCN(groupCount(list, l=>l.chiNhanh), r=>r.key);
   document.getElementById('branchTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;color:var(--navy);">${r.key}</td>
-      <td>${r.total}</td>
-      <td style="color:var(--green);font-weight:700;">${r.won}</td>
-      <td>${fmtPct(r.won,r.total)}</td>
+      <td style="font-weight:600;">${r.key}</td>
+      <td class="num">${r.total}</td>
+      <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
+      <td class="num">${fmtPct(r.won,r.total)}</td>
     </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
 }
 
@@ -473,24 +434,41 @@ function staffLabel(l){
   return l.nhanVienTen || l.nhanVien || '(Chưa gán)';
 }
 
+// Nhóm nguồn do công ty chạy và chia về (còn lại: nhóm "Khác" = TVBH, Hotline, HTV…)
+const NGUON_CONG_TY = ['Facebook','Website','TikTok'];
+// Sắp theo thứ tự chi nhánh NT ĐL PY PR BL, chưa gán xuống cuối (giữ thứ tự cũ trong cùng chi nhánh)
+function theoThuTuCN(rows, cnOf){
+  const thuTu = cn=>{ const i = BRANCH_ORDER.indexOf(cn); return i>=0 ? i : (cn && cn!=='(Chưa gán)' ? 50 : 99); };
+  return rows.map((r,i)=>({r,i})).sort((a,b)=> thuTu(cnOf(a.r))-thuTu(cnOf(b.r)) || a.i-b.i).map(x=>x.r);
+}
+
 function renderStaffTable(list){
   const map = {};
   list.forEach(l=>{
     const k = l.nhanVien || '(Chưa gán)';
-    if(!map[k]) map[k] = {total:0, won:0, chinhanh:l.chiNhanh, label:staffLabel(l)};
-    map[k].total++;
-    if(isWon(l)) map[k].won++;
+    if(!map[k]) map[k] = {total:0, won:0, cty:0, khac:0, trong:0, chinhanh:l.chiNhanh, label:staffLabel(l)};
+    const m = map[k];
+    m.total++;
+    if(isWon(l)) m.won++;
+    if(!l.nhomNguon) m.trong++;
+    else if(NGUON_CONG_TY.includes(l.nhomNguon)) m.cty++;
+    else m.khac++;
   });
-  const rows = Object.keys(map).map(k=>({key:k, ...map[k]})).sort((a,b)=>b.total-a.total);
-  document.getElementById('staffTable').innerHTML = rows.length ? rows.map((r,i)=>`
-    <tr>
+  const rows = theoThuTuCN(Object.values(map).sort((a,b)=>b.total-a.total), r=>r.chinhanh);
+  document.getElementById('staffTable').innerHTML = rows.length ? rows.map((r,i)=>{
+    const pct = r.total>0 ? Math.round(r.cty/r.total*100) : 0;
+    const canh = pct>=80 && r.total>=10;
+    return `<tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;">${r.label}</td>
+      <td style="font-weight:600;">${r.label}</td>
       <td>${r.chinhanh||'<span class="dash">—</span>'}</td>
-      <td>${r.total}</td>
-      <td style="color:var(--green);font-weight:700;">${r.won}</td>
-      <td>${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="6" class="empty">Không có dữ liệu</td></tr>`;
+      <td class="num">${r.total}</td>
+      <td class="num">${r.cty}</td>
+      <td class="num">${r.khac}</td>
+      <td class="num">${r.trong}</td>
+      <td class="num">${canh?`<span class="badge canh">${pct}%</span>`:pct+'%'}</td>
+      <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
+    </tr>`;}).join('') : `<tr><td colspan="9" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderModelTable(list){
@@ -498,16 +476,16 @@ function renderModelTable(list){
   document.getElementById('modelTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;">${r.key}</td>
-      <td>${r.total}</td>
-      <td style="color:var(--green);font-weight:700;">${r.won}</td>
+      <td style="font-weight:600;">${r.key}</td>
+      <td class="num">${r.total}</td>
+      <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
     </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // Thứ tự ưu tiên trạng thái — Veryhot lên đầu bảng chi tiết để GĐBH
 // theo dõi ngay không cần lọc, số càng nhỏ càng ưu tiên hiện trước.
 function trangThaiPriority(t){
-  const n = stripDiacritics(t);
+  const n = normTT(t);
   if(n==='veryhot') return 0;
   if(n==='hot') return 1;
   if(n==='warm') return 2;
@@ -521,40 +499,47 @@ function maskPhone(sdt){
   return s.length <= 3 ? '•'.repeat(s.length) : s.slice(0, -3) + '•••';
 }
 
+// Nhãn trạng thái trung tính (đỏ/vàng để dành cho "quá hạn chưa cập nhật")
 function trangThaiBadge(t){
-  const n = stripDiacritics(t);
-  if(n==='veryhot') return '<span class="badge veryhot">Veryhot</span>';
-  if(n==='hot') return '<span class="badge hot">Hot</span>';
-  if(n==='warm') return '<span class="badge warm">Warm</span>';
+  const n = normTT(t);
+  if(n==='veryhot') return '<span class="badge" style="font-weight:800;">Very Hot</span>';
+  if(n==='hot') return '<span class="badge">Hot</span>';
+  if(n==='warm') return '<span class="badge">Warm</span>';
   return t ? t : '<span class="dash">—</span>';
 }
 
 function renderHotList(list){
-  const hot = list.filter(l=>trangThaiPriority(l.trangThai)<=1); // 0=Veryhot, 1=Hot
+  const hot = list.filter(l=>trangThaiPriority(l.trangThai)<=1); // 0=Very Hot, 1=Hot
   const sorted = [...hot].sort((a,b)=>{
     const p = trangThaiPriority(a.trangThai) - trangThaiPriority(b.trangThai);
     if(p!==0) return p;
-    return (b._ngayCapNhatTs||0) - (a._ngayCapNhatTs||0);
+    return (a._ngayCapNhatTs||0) - (b._ngayCapNhatTs||0);   // lâu chưa cập nhật nhất lên trước
   });
   document.getElementById('hotCount').textContent = sorted.length;
+  document.getElementById('hotStale').textContent = sorted.filter(l=>daysSince(l)>=14).length;
   document.getElementById('hotEmptyMsg').style.display = sorted.length ? 'none' : 'block';
-  document.getElementById('hotTable').innerHTML = sorted.map((l,i)=>`
-    <tr${trangThaiPriority(l.trangThai)===0?' class="veryhot-row"':''}>
+  document.getElementById('hotTable').innerHTML = sorted.map((l,i)=>{
+    const d = daysSince(l);
+    const ngay = d===null ? '<span class="dash">—</span>'
+      : d>=14 ? `<span class="badge xau">${d} ngày</span>` : d>=7 ? `<span class="badge canh">${d} ngày</span>` : d+' ngày';
+    return `<tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge test">test</span>':''}</td>
+      <td style="font-weight:600;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge">test</span>':''}</td>
       <td>${maskPhone(l.sdtHienThi)||'<span class="dash">—</span>'}</td>
       <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
       <td>${staffLabel(l)}</td>
       <td>${l.model||'<span class="dash">—</span>'}</td>
       <td>${l.tienTrinh||'<span class="dash">—</span>'}</td>
       <td>${trangThaiBadge(l.trangThai)}</td>
-      <td>${l.ngayCapNhat||'—'}</td>
-    </tr>`).join('');
+      <td style="white-space:nowrap;">${fmtNgayGio(l._ngayCapNhatTs)}</td>
+      <td class="num">${ngay}</td>
+    </tr>`;}).join('');
 }
 
 function renderChiNhanhButtons(){
   const base = LEADS.filter(l=>state.showTest || !l.isTest);
-  const branches = uniqSorted(base.map(l=>l.chiNhanh));
+  const co = new Set(base.map(l=>l.chiNhanh).filter(Boolean));
+  const branches = [...BRANCH_ORDER.filter(b=>co.has(b)), ...[...co].filter(b=>!BRANCH_ORDER.includes(b)).sort()];
   const opts = ['', ...branches];
   document.getElementById('fChiNhanhBtns').innerHTML = opts.map(b=>{
     const label = b === '' ? 'Tất cả chi nhánh' : b;
@@ -619,7 +604,7 @@ function render(){
 }
 
 // ── Mục 3: Lead theo tuần theo Model (6 tuần gần nhất, tính theo Ngày tạo) ──
-const MODEL_COLORS = ['#1B4F8C','#E0793C','#1FA97A','#D64545','#F2C14E','#7A5CA3','#2E9DA6','#9C6644'];
+const MODEL_COLORS = ['#1a4fa0','#ef9f27','#1d6f3b','#e24b4a','#7e5ea8','#4a90d9','#d4ac0d','#82c9a0'];
 
 function startOfWeekTs(ts){
   const d = new Date(ts);
@@ -654,12 +639,12 @@ function renderWeeklyChart(list){
   if(hasOther && totalByModel[NO_MODEL] && !showModels.includes(NO_MODEL)) showModels[6] = NO_MODEL;
   const legendKeys = hasOther ? [...showModels, 'Khác'] : showModels;
   const colorOf = {};
-  legendKeys.forEach((m,i)=>{ colorOf[m] = m==='Khác' ? '#9AA5B1' : MODEL_COLORS[i % MODEL_COLORS.length]; });
+  // "(Chưa nhập Model)" luôn xám nhạt (thiếu dữ liệu = xám trên cả trang), "Khác" xám đậm hơn
+  let mi = 0;
+  legendKeys.forEach(m=>{ colorOf[m] = m==='Khác' ? '#9aa5b1' : (m===NO_MODEL ? '#c3ccdb' : MODEL_COLORS[mi++ % MODEL_COLORS.length]); });
 
   const legendHtml = legendKeys.length ? legendKeys.map(m=>
-    `<span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-right:14px;">
-      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${colorOf[m]};"></span>${m}
-    </span>`).join('') : '<span class="dash">Chưa có dữ liệu</span>';
+    `<span class="legend-item"><span class="legend-dot" style="background:${colorOf[m]};"></span>${m}</span>`).join('') : '<span class="dash">Chưa có dữ liệu</span>';
   document.getElementById('weeklyLegend').innerHTML = legendHtml;
 
   // ── Danh sách chi nhánh cần vẽ (bỏ qua lead chưa gán chi nhánh) ──
@@ -705,11 +690,11 @@ function renderWeeklyChart(list){
         const hover = m===NO_MODEL ? ` class="nomodel-bar" data-b="${b}" data-w="${i}"` : '';
         bars += `<rect x="${x}" y="${y.toFixed(1)}" width="${barW}" height="${h.toFixed(1)}" fill="${colorOf[m]}" rx="2"${hover}/>`;
       });
-      if(w.total>0) bars += `<text x="${x+barW/2}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="var(--ink)">${w.total}</text>`;
-      bars += `<text x="${x+barW/2}" y="${svgH-6}" text-anchor="middle" font-size="9.5" fill="var(--ink-soft)">${w.label}</text>`;
+      if(w.total>0) bars += `<text x="${x+barW/2}" y="${(y-5).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="#1a2240">${w.total}</text>`;
+      bars += `<text x="${x+barW/2}" y="${svgH-6}" text-anchor="middle" font-size="10" fill="#6b7a9e">${w.label}</text>`;
     });
-    return `<div style="background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:8px 6px 4px;">
-      <div style="font-size:11.5px;font-weight:700;color:var(--navy);text-align:center;margin-bottom:4px;">${b}</div>
+    return `<div class="chart-mini">
+      <div class="funnel-mini-title">${b}</div>
       <svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" style="display:block;margin:0 auto;">${bars}</svg>
     </div>`;
   }).join('') : '<div class="empty">Không có dữ liệu chi nhánh</div>';
@@ -753,7 +738,7 @@ function _escHtml(s){
   });
 })();
 
-// ── Mục 7: Dữ liệu thiếu (Tiến trình/Model) theo Chi nhánh + Nhân viên ──
+// ── Mục 9: Dữ liệu thiếu (Tiến trình / Model / Nguồn) theo Chi nhánh + Nhân viên ──
 function renderMissingDataTable(list){
   const map = {};
   let totalMissing = 0;
@@ -761,28 +746,29 @@ function renderMissingDataTable(list){
     const chiNhanh = l.chiNhanh || '(Chưa gán)';
     const staffKey = l.nhanVien || '(Chưa gán)';
     const key = chiNhanh+'|'+staffKey;
-    if(!map[key]) map[key] = {chiNhanh, label:staffLabel(l), total:0, thieuTT:0, thieuModel:0, thieuAny:0};
-    map[key].total++;
-    const thieuTT = (l.tienTrinhMaxNum||0)===0;
-    const thieuModel = !l.model;
-    if(thieuTT) map[key].thieuTT++;
-    if(thieuModel) map[key].thieuModel++;
-    if(thieuTT || thieuModel){ map[key].thieuAny++; totalMissing++; }
+    if(!map[key]) map[key] = {chiNhanh, label:staffLabel(l), total:0, thieuTT:0, thieuModel:0, thieuNguon:0, thieuAny:0};
+    const m = map[key];
+    m.total++;
+    const a = (l.tienTrinhMaxNum||0)===0, b = !l.model, c = !l.nhomNguon;
+    if(a) m.thieuTT++;
+    if(b) m.thieuModel++;
+    if(c) m.thieuNguon++;
+    if(a || b || c){ m.thieuAny++; totalMissing++; }
   });
-  const rows = Object.values(map)
-    .filter(r=>r.thieuAny>0)
-    .sort((a,b)=> a.chiNhanh.localeCompare(b.chiNhanh) || b.thieuAny-a.thieuAny);
+  const rows = theoThuTuCN(Object.values(map).filter(r=>r.thieuAny>0).sort((a,b)=>b.thieuAny-a.thieuAny), r=>r.chiNhanh);
   document.getElementById('missingCount').textContent = totalMissing;
-  document.getElementById('missingTable').innerHTML = rows.length ? rows.map((r,i)=>`
-    <tr>
+  document.getElementById('missingTable').innerHTML = rows.length ? rows.map((r,i)=>{
+    const pct = Math.round(r.thieuAny/r.total*100);
+    return `<tr>
       <td>${i+1}</td>
-      <td style="font-weight:700;color:var(--navy);">${r.chiNhanh}</td>
+      <td style="font-weight:600;">${r.chiNhanh}</td>
       <td>${r.label}</td>
-      <td>${r.total}</td>
-      <td style="${r.thieuTT>0?'color:var(--red);font-weight:700;':''}">${r.thieuTT}</td>
-      <td style="${r.thieuModel>0?'color:var(--red);font-weight:700;':''}">${r.thieuModel}</td>
-      <td>${fmtPct(r.thieuAny,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="7" class="empty">Không có lead thiếu dữ liệu 🎉</td></tr>`;
+      <td class="num">${r.total}</td>
+      <td class="num">${r.thieuTT||''}</td>
+      <td class="num">${r.thieuModel||''}</td>
+      <td class="num">${r.thieuNguon||''}</td>
+      <td class="num">${pct>=30?`<span class="badge xau">${pct}%</span>`:pct+'%'}</td>
+    </tr>`;}).join('') : `<tr><td colspan="8" class="empty">Không có lead thiếu dữ liệu</td></tr>`;
 }
 
 // Parse "HH:mm:ss dd/MM/yyyy" (chuỗi ngày giờ crm.json trả về) -> timestamp
