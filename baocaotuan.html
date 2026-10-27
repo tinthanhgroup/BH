@@ -268,6 +268,22 @@ function branchCode(s){
 let SALES = null;   // [{d:Date, br:'NT'}] — null nếu tải data.json lỗi
 const BP_NAME = {BH:'Bán hàng', DV:'Dịch vụ', VP:'Văn phòng'};
 const BP_ORDER = ['BH','DV','VP'];
+// Văn phòng tách 3 sheet CSKH / Kế toán / HCNS (27/10/2026, làm Phú Yên trước): việc vẫn boPhan 'VP', thêm field nhom.
+// Mã việc mới theo nhóm (CSKH-/KT-/HCNS-); việc cũ chuyển sang giữ mã VP-. Nhận định Văn phòng vẫn viết chung (VP-000).
+const NHOM_ORDER = ['CSKH','KT','HCNS'];
+const NHOM_NAME = {CSKH:'CSKH', KT:'Kế toán', HCNS:'HCNS'};
+const NHOM_MA = {CSKH:'CSKH-', KT:'KT-', HCNS:'HCNS-'};
+function bpTen(t){ return (BP_NAME[t.boPhan]||t.boPhan)+(t.nhom?' · '+(NHOM_NAME[t.nhom]||t.nhom):''); }
+// Chia danh sách việc theo bộ phận để in tiêu đề con; Văn phòng có nhóm thì tách từng nhóm (việc chưa có nhóm giữ "Văn phòng")
+function nhomBP(list, bp){
+  var l=list.filter(function(t){ return t.boPhan===bp; });
+  if(bp!=='VP' || !l.some(function(t){ return t.nhom; })) return [{ten:BP_NAME[bp], list:l}];
+  var keys=NHOM_ORDER.concat(l.map(function(t){ return t.nhom||''; }).filter(function(k,i,a){ return k && NHOM_ORDER.indexOf(k)<0 && a.indexOf(k)===i; }));
+  var out=keys.map(function(k){ return {ten:'Văn phòng · '+(NHOM_NAME[k]||k), list:l.filter(function(t){ return t.nhom===k; })}; });
+  var le=l.filter(function(t){ return !t.nhom; });
+  if(le.length) out.push({ten:'Văn phòng', list:le});
+  return out;
+}
 // Thứ tự khối "Nhận định tuần" — GĐCN đọc trước, rồi tới 3 bộ phận
 const ND_ORDER = ['GDCN','BH','DV','VP'];
 const ND_NAME = {GDCN:'Giám đốc chi nhánh', BH:'Bán hàng · BH-000', DV:'Dịch vụ · DV-000', VP:'Văn phòng · VP-000'};
@@ -322,7 +338,7 @@ function analyze(b){
     var h=parseD(t.han);
     t._overdue = !isClosed(t) && h && h<ref;
     t._stale = !isClosed(t) && (t.tuanCN==null || t.tuanCN<refWeek);
-    t._bpName = BP_NAME[t.boPhan]||t.boPhan;
+    t._bpName = bpTen(t);
   });
   tct.forEach(function(t){
     t._stale = !isClosed(t) && (t.tuanCN==null || t.tuanCN<refWeek);
@@ -351,6 +367,7 @@ function analyze(b){
     var p=[];
     if(!t.ma) p.push('Thiếu Mã việc');
     else if(seen[t.ma]>1) p.push('Trùng Mã việc');
+    else if(t.nhom && NHOM_MA[t.nhom]){ if(t.ma.indexOf(NHOM_MA[t.nhom])!==0 && t.ma.indexOf('VP-')!==0) p.push('Mã việc không đúng tiền tố '+NHOM_MA[t.nhom]); }
     else if(t.ma.indexOf(t.boPhan+'-')!==0) p.push('Mã việc không đúng tiền tố '+t.boPhan+'-');
     if(!t.trangThai) p.push('Chưa chọn Trạng thái');
     if(!t.han && !t.hanRaw) p.push('Chưa điền Hạn dự kiến');
@@ -1076,7 +1093,8 @@ function renderDeXuat(a){
   var h='<div class="panel" id="sec-dexuat"><h3><span class="chart-num">3</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
   h+='<p class="desc" title="Việc có Đề xuất / cần hỗ trợ, chưa Hoàn thành, Hướng chỉ đạo = Chuyển thông tin TGĐ hoặc để trống. Việc GĐCN đã có ý kiến chỉ đạo không nằm ở mục này.">Việc có đề xuất, chưa xong và chưa có hướng chỉ đạo. Việc GĐCN chuyển TGĐ hiện đầy đủ; việc chưa có ý kiến chỉ đạo thu gọn — bấm để mở.</p>';
   if(!a.deXuat.length) return h+'<div class="empty">Không có đề xuất nào đang chờ.</div></div>';
-  var tgd=a.chuyenTGD, khac=a.chuaYKien.slice().sort(function(x,y){ return BP_ORDER.indexOf(x.boPhan)-BP_ORDER.indexOf(y.boPhan); });
+  var thuTu=function(t){ return BP_ORDER.indexOf(t.boPhan)*10+(t.nhom?NHOM_ORDER.indexOf(t.nhom)+1:0); };
+  var tgd=a.chuyenTGD, khac=a.chuaYKien.slice().sort(function(x,y){ return thuTu(x)-thuTu(y); });
   // 28/09/2026: chỉ việc "Chuyển thông tin TGĐ" mở đầy đủ; nhóm "Chưa có ý kiến chỉ đạo" (việc GĐCN còn nợ) thu 1 dòng/việc
   if(tgd.length) h+=subHead('Chuyển thông tin TGĐ ('+tgd.length+')')+grid(tgd.map(function(t){ return taskBlock(t,{hlTGD:true}); }));
   if(khac.length) h+=subHead('<span class="warnc">Chưa có ý kiến chỉ đạo ('+khac.length+')</span>')+grid(khac.map(function(t){ return taskBlock(t,{fold:true, showBP:true, noEmptyGD:true}); }));
@@ -1088,12 +1106,12 @@ function renderTrongTam(a){
   if(!a.trongTam.length) return '<details class="panel"><summary><span class="chart-num">4</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">0</span></summary><div class="empty">Tuần này GĐCN chưa chọn việc trọng tâm (cột "Trọng tâm tuần" = Có).</div></details>';
   var h='<details class="panel" open><summary><span class="chart-num">4</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">'+a.trongTam.length+'</span></summary>';
   h+='<p class="desc">Các việc GĐCN chọn "Trọng tâm tuần = Có" để báo TGĐ tuần này.</p>';
-  BP_ORDER.forEach(function(bp){
-    var list=a.trongTam.filter(function(t){ return t.boPhan===bp; });
-    h+=subHead(BP_NAME[bp]+' ('+list.length+')');
+  BP_ORDER.forEach(function(bp){ nhomBP(a.trongTam, bp).forEach(function(g){
+    var list=g.list;
+    h+=subHead(g.ten+' ('+list.length+')');
     // Việc đã có ở mục 3 → ghi chú mờ bên phải để người đọc biết đã xem rồi
     h+=list.length?grid(list.map(function(t){ return taskBlock(t,{fold:true, dupNote:a.deXuat.indexOf(t)>=0?'đã nêu ở mục 3':''}); })):'<div class="empty">Không có việc trọng tâm tuần.</div>';
-  });
+  }); });
   return h+'</details>';
 }
 
@@ -1148,11 +1166,11 @@ function renderThang(a){
     ['Trọng tâm tháng', tt.length+' việc'],
     ['Cải tiến', list.filter(function(t){ return isCaiTien(t); }).length+' việc']
   ], 'gd')]);
-  BP_ORDER.forEach(function(bp){
-    var l=list.filter(function(t){ return t.boPhan===bp; });
-    h+=subHead(BP_NAME[bp]+' ('+l.length+')');
+  BP_ORDER.forEach(function(bp){ nhomBP(list, bp).forEach(function(g){
+    var l=g.list;
+    h+=subHead(g.ten+' ('+l.length+')');
     h+=l.length?grid(l.map(function(t){ return taskBlock(t,{compact:true}); })):'<div class="empty">Không có việc.</div>';
-  });
+  }); });
   h+=subHead('TCT giao trong tháng ('+tctM.length+')');
   h+=tctM.length?grid(tctM.map(function(t){ return taskBlock(t,{tct:true, compact:true}); })):'<div class="empty">Không có nhiệm vụ TCT giao trong tháng.</div>';
   return h+'</details>';

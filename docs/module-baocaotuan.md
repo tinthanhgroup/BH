@@ -50,9 +50,20 @@ Báo cáo dùng cho **họp giao ban thứ 4** và để TGĐ nắm công việc
 
 Căn cứ: đối chiếu 48 việc NT + PY (bản đồng bộ 20/10) với những gì web dùng.
 - **Ẩn** sheet tổng hợp trùng nội dung web: `8. Bao cao GDCN` (vẫn giữ để tính G3/E3 — script, G4 sheet bộ phận, nhãn sheet 6 dùng), `9. Trong tam thang`, `10. Achievement`, `11. Nhan dinh tuan` (cũ, đã thay bằng khối GĐCN sheet 7). Không xoá.
-- Sheet bộ phận: **ẩn cột E Lĩnh vực** (web không dùng) và **T GĐCN duyệt TT tháng** (bỏ duyệt — trọng tâm tháng chốt ở họp tháng; web bỏ cảnh báo "chưa duyệt"); xoá ô "Người cập nhật" (I3:J3, không ai điền, web không dùng). Script vẫn đọc cột cũ (trống) → JSON không đổi.
+- Sheet bộ phận: ~~ẩn cột E Lĩnh vực~~ (27/10/2026: ẩn cột E che mất ô E4 "Mã tiếp theo" → `boCotLinhVuc()` hiện lại cột E, xoá tiêu đề + dữ liệu Lĩnh vực, không xoá cột để F–V không dồn) và **T GĐCN duyệt TT tháng** (bỏ duyệt — trọng tâm tháng chốt ở họp tháng; web bỏ cảnh báo "chưa duyệt"); xoá ô "Người cập nhật" (I3:J3, không ai điền, web không dùng). Script vẫn đọc cột cũ (trống) → JSON không đổi.
 - **Hướng chỉ đạo gộp vào Ghi chú GĐCN**: cột S (TCT: O) chỉ còn `Chuyển thông tin TGĐ`; **có Ghi chú GĐCN = đã có ý kiến chỉ đạo** (`daCoChiDao(t)`). Giá trị cũ "GĐCN đã có ý kiến chỉ đạo" bị xoá trong file (lý do: NT chọn 5 việc nhưng không ghi chỉ đạo nào); web vẫn nhận giá trị cũ cho bản chốt các tuần trước. Tô vàng cột S thêm điều kiện R trống.
 - Loại hoạt động bỏ lựa chọn `5. Tuân thủ - TCT giao` (trùng Nguồn "TCT giao" + Mã TCT). Cột P Kết quả hoàn thành giữ nguyên.
+
+## Tách Văn phòng thành 3 sheet CSKH / Kế toán / HCNS (27/10/2026, anh Khanh chốt — làm Phú Yên trước)
+
+Lý do: khối văn phòng đề nghị (họp quản lý 27/10/2026) vì nhiều người cùng nhập 1 sheet. Hàm `thuTachVanPhong()` (chạy trên bản sao) / `tachVanPhong()` (file thật, tự chép sao lưu trước rồi đồng bộ), cấu hình `BCT_TACH_VP` (file, người phụ trách → nhóm, Lĩnh vực dự phòng).
+- Sheet `4. Van phong` **đổi tên** thành `4a. CSKH` (công thức sheet ẩn 8–11 tự theo tên mới, nên chỉ còn đếm CSKH — các sheet này web không dùng); chép thêm `4b. Ke toan`, `4c. HCNS` cùng mẫu. `baseName_` bỏ cả tiền tố dạng `4a.`.
+- Việc cũ chia theo Người phụ trách (PY: Hưởng → CSKH, Nhi → HCNS; NT: Phòng KT → KT, Liễu → CSKH, Thúy → HCNS), **giữ mã VP-xxx**; việc mới lấy mã ở E4: `CSKH-` / `KT-` / `HCNS-` + 3 số. Sheet `Ke hoach TCT giao` cột P đếm cả 3 sheet.
+- **Nhận định Văn phòng vẫn viết chung** (khối `VP-000`), không tách.
+- Script: `BCT_BP_SHEETS` có cả `Van phong` lẫn 3 sheet nhóm, sheet nào file không có thì bỏ qua (Nha Trang chưa tách vẫn đọc như cũ). Việc từ 3 sheet: `boPhan:'VP'` + `nhom:'CSKH'|'KT'|'HCNS'` (file chưa tách không có field `nhom`).
+- Web: `bpTen()` ghi "Văn phòng · CSKH"; mục 4 và 8 tách tiêu đề con theo nhóm (`nhomBP()`); kiểm tra tiền tố mã theo nhóm, chấp nhận mã `VP-` cũ.
+- Cột E (Lĩnh vực) ở 3 sheet mới để trống, luôn hiện (ô E4).
+- Chi nhánh khác: sửa `BCT_TACH_VP.FILE_ID` + `PHU_TRACH` rồi chạy lại 2 hàm. File mẫu chưa tách.
 
 ## Sheet được đọc (chỉ dữ liệu gốc, KHÔNG đọc các sheet tổng hợp FILTER)
 
