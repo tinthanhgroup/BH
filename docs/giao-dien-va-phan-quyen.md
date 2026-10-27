@@ -38,7 +38,7 @@ Các trang nhúng iframe (`chamcong/nhansu/nhacungcap/mkt/fbads/theo_doi_chinh_s
 - Lớp khác trong `chung.css` (28/10/2026): `.tag` nhãn phân loại trung tính (nhóm, phòng ban, khối — không tô màu tốt/xấu); `.t-xau/.t-canh/.t-tot` màu chữ trạng thái; tên nhãn cũ `.badge.bad/late`, `.warn/pending`, `.good/done` đã có sẵn màu tương ứng, không cần đổi tên trong mã khi chuyển trang.
 - Khi chuyển một trang: xoá định nghĩa `.chart-num` tròn cũ cùng lúc (nếu không sẽ thành "1." trong vòng tròn); số 0 trong bảng hiện "0" nhạt, không để ô trống.
 - `chung.css` có biến tên cũ (`--navy`, `--ink`, `--ink-soft`, `--line`, `--panel`) trỏ về màu mới, để trang chưa chuyển hết vẫn hiển thị gần đúng.
-- **Đã chuyển:** `crm.html` (27/10/2026), `nhacungcap.html` (28/10/2026). **Chưa chuyển** (vẫn theo các quy ước cũ bên dưới cho tới khi chuyển), thứ tự dự kiến: mkt, fbads, chamcong, nhansu, theo_doi_chinh_sach + quy_dinh_noi_bo, baocaotuan (cần người dùng chốt vì trái quyết định 20/10), loinhuan, kqkd. Khi chuyển trang nào thì cập nhật danh sách này.
+- **Đã chuyển:** `crm.html` (27/10/2026), `nhacungcap.html` (28/10/2026). **Chưa chuyển** (vẫn theo các quy ước cũ bên dưới cho tới khi chuyển), thứ tự dự kiến: mkt, fbads, chamcong, nhansu, theo_doi_chinh_sach + quy_dinh_noi_bo, loinhuan, kqkd. **baocaotuan không chuyển** (người dùng chốt 28/10/2026): giữ kiểu nhẹ riêng đã duyệt 20/10 (ít độ đậm, không chữ in hoa, biểu đồ dịu — trang đọc chữ nhiều), chỉ đồng bộ biến màu nền/chữ/viền/chữ phụ với `chung.css`. Khi chuyển trang nào thì cập nhật danh sách này.
 
 Quy ước cũ (Inter, navy `#1B4F8C`, `.chart-num` tròn), áp dụng cho trang chưa chuyển:
 
