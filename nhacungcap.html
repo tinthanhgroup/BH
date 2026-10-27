@@ -4,77 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Đầu mối Nhà cung cấp CSVC</title>
+<link rel="stylesheet" href="chung.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root{
-    --ink:#1c2430;
-    --ink-soft:#5b6472;
-    --line:#dfe3e8;
-    --bg:#EEF3F9;
-    --card:#ffffff;
-    --navy:#1B4F8C;
-    --blue-deep:#0a3866;
-  }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter','Segoe UI',sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
-
-  .masthead{
-    padding-bottom:18px;
-    margin-bottom:22px;
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    gap:16px;
-    flex-wrap:wrap;
-  }
-  .masthead h1{font-size:24px;margin:0 0 6px;font-weight:800;letter-spacing:-0.01em;color:var(--navy);}
-  .masthead p{margin:0;color:var(--ink-soft);font-size:13px;}
-  .updated-tag{
-    font-size:12px;color:var(--blue-deep);background:#eaf1fa;
-    border:1px solid #cddcef;padding:5px 12px;border-radius:20px;white-space:nowrap;
-  }
-
-  .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  .filter-btn{
-    font-family:inherit;font-size:12px;font-weight:600;padding:6px 14px;
-    border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--blue-deep);cursor:pointer;
-  }
-  .filter-btn.active{background:var(--blue-deep);color:#fff;border-color:var(--blue-deep);}
-
-  .search-row{margin-bottom:18px;}
-  .search-row input{
-    width:100%;max-width:360px;font-family:inherit;font-size:13px;font-weight:500;
-    padding:8px 12px;border-radius:7px;border:1.5px solid var(--navy);background:#fff;color:var(--ink);
-  }
-
-  .panel{background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(20,30,50,.08);padding:18px 20px;}
-
-  table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;
-    color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);white-space:nowrap;}
-  tbody td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
-  tbody tr:hover{background:#F7F9FC;}
-  .nhom-badge{display:inline-block;padding:2px 9px;border-radius:10px;border:1px solid #bfe3c8;
-    background:#eaf6ee;color:#1c7a3e;font-size:11.5px;font-weight:600;white-space:nowrap;}
-  td.col-nhom{text-align:center;vertical-align:middle;background:#FAFBFD;border-right:1px solid var(--line);}
-  td.col-sdt a{color:var(--blue-deep);text-decoration:none;font-weight:600;}
+  /* Riêng trang Nhà cung cấp — phần chung ở chung.css (chuyển 28/10/2026) */
+  .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+  .masthead p{margin:0;color:var(--muted);font-size:13px;}
+  .updated-tag{font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:4px 12px;border-radius:20px;white-space:nowrap;}
+  .updated-tag.stale{background:var(--red-bg);border-color:var(--red-bg);color:var(--red);font-weight:600;}
+  .stale-banner{background:var(--red-bg);color:var(--red);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:600;}
+  .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+  .search-row{margin-bottom:14px;}
+  .search-row input{width:100%;max-width:360px;height:32px;}
+  tbody td{vertical-align:top;}
+  td.col-nhom{text-align:center;vertical-align:middle;background:var(--card2);border-right:1px solid var(--border);}
+  td.col-hangmuc{font-weight:600;}
+  td.col-sdt{white-space:nowrap;font-variant-numeric:tabular-nums;}
+  td.col-sdt a{color:var(--accent);text-decoration:none;font-weight:600;}
   td.col-sdt a:hover{text-decoration:underline;}
-  td.col-ghichu{color:var(--ink-soft);font-style:italic;}
-  .dash{color:var(--ink-soft);}
-  .empty{text-align:center;color:var(--ink-soft);padding:34px;font-size:13px;}
-  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:14px;text-align:center;}
-  .updated-tag.stale{background:#fdeae3;border-color:#f3b8a3;color:#c0421f;font-weight:600;}
-  .stale-banner{
-    background:#fdeae3;border:1px solid #f3b8a3;color:#c0421f;
-    border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:13px;font-weight:600;
-  }
+  td.col-ghichu{color:var(--muted);font-style:italic;}
 
   @media (max-width:640px){
     table, tbody, tbody td{display:block;width:auto!important;}
@@ -110,7 +57,7 @@
   </div>
 
   <div class="panel">
-    <table>
+    <table class="data-table">
       <thead><tr>
         <th>Nhóm</th><th>Hạng mục</th><th>Liên hệ</th><th>SĐT</th><th>Công ty</th><th>Ghi chú</th>
       </tr></thead>
@@ -241,7 +188,7 @@ function render(){
     let span = 1;
     while(i+span<rows.length && (rows[i+span].chiNhanh+'|'+rows[i+span].nhom)===groupKey) span++;
     html += `<tr>
-      <td class="col-nhom" rowspan="${span}">${r.nhom ? `<span class="nhom-badge">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
+      <td class="col-nhom" rowspan="${span}">${r.nhom ? `<span class="tag">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
       <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
       <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
       <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>

@@ -7,7 +7,7 @@
 :root{
   /* màu như index.html */
   --bg:#f0f4fa; --card:#ffffff; --card2:#f4f6fb; --border:#dce3f0;
-  --text:#1a2240; --muted:#6b7a9e; --accent:#2563eb;
+  --text:#1a2240; --muted:#5E6E8A; --accent:#2563eb;   /* muted đổi từ #6b7a9e (4,28:1) để chữ phụ đạt 5,16:1 — 28/10/2026 */
   --blue:#1a4fa0; --blue-mid:#3b6fd4;
   --green:#1d6f3b; --green-bg:#e6f4ec;
   --amber:#8a5a00; --amber-bg:#fff3cd;
@@ -29,7 +29,7 @@ button,select,input{font-family:inherit;}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;}
 .panel h3,.panel summary{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--accent);}
 .panel summary{cursor:pointer;}
-.panel .desc{margin:0 0 12px;font-size:12px;line-height:1.55;color:var(--muted);}
+.panel .desc{margin:0 0 12px;font-size:12px;line-height:1.55;color:var(--muted);max-width:140ch;}
 /* Số mục: "2. Tiêu đề" như tab Bán hàng (giữ thẻ <span class="chart-num">2</span> cũ) */
 .chart-num{font-weight:600;margin-right:2px;}
 .chart-num::after{content:'.';}
@@ -40,6 +40,7 @@ button,select,input{font-family:inherit;}
 
 /* KPI (= .kpi-card của index) */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.kpi-row.c3{grid-template-columns:repeat(3,1fr);} .kpi-row.c4{grid-template-columns:repeat(4,1fr);} .kpi-row.c6{grid-template-columns:repeat(6,1fr);}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;box-shadow:var(--shadow);}
 .kpi-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
 .kpi-num{font-size:30px;font-weight:800;font-family:var(--mono);line-height:1;margin-bottom:5px;color:var(--text);}
@@ -49,6 +50,8 @@ button,select,input{font-family:inherit;}
 /* Bảng (= bảng tab Hàng hóa) */
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:8px 10px;text-align:left;font-weight:600;font-size:12px;white-space:nowrap;background:var(--blue);color:#fff;}
+/* Bảng nhẹ (bảng phụ, bảng trong tooltip, bảng lưới đặc thù): đầu bảng không nền xanh */
+table.bang-nhe thead th{background:none;color:var(--muted);border-bottom:1.5px solid var(--border);}
 tbody tr{border-bottom:1px solid #f0f0f0;}
 tbody tr:hover{background:#f8f9ff;}
 tbody td{padding:7px 10px;vertical-align:middle;}
@@ -62,6 +65,14 @@ th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:now
 .badge.xau{background:var(--red-bg);color:var(--red);}
 .badge.canh{background:var(--amber-bg);color:var(--amber);}
 .badge.tot{background:var(--green-bg);color:var(--green);}
+/* Tên cũ của các trang (giữ để chuyển dần, không cần đổi tên trong mã) */
+.badge.bad,.badge.late{background:var(--red-bg);color:var(--red);}
+.badge.warn,.badge.pending{background:var(--amber-bg);color:var(--amber);}
+.badge.good,.badge.done{background:var(--green-bg);color:var(--green);}
+/* Nhãn phân loại trung tính (nhóm, phòng ban, khối) — không mang nghĩa tốt/xấu */
+.tag{display:inline-block;padding:2px 9px;border-radius:12px;font-size:11px;font-weight:500;white-space:nowrap;background:var(--card2);color:var(--text);border:1px solid var(--border);}
+/* Màu chữ trạng thái (khi không cần nhãn nền) */
+.t-xau{color:var(--red);font-weight:600;} .t-canh{color:var(--amber);font-weight:600;} .t-tot{color:var(--green);font-weight:600;}
 
 /* Bộ lọc (= .filters / .branch-chip của index) */
 .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}

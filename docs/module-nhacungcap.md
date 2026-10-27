@@ -32,7 +32,7 @@ Logic nằm trong `initPage()` (chạy ngay khi trang load, không còn `fetch` 
 
 ## `nhacungcap.html` — giao diện
 
-Trang lookup đơn giản (không phải dashboard nhiều panel như nhansu/chamcong/crm — không dùng `.chart-num`), theo mẫu style gần với `theo_doi_chinh_sach.html`/`quy_dinh_noi_bo.html`: `--navy:#1B4F8C`, `.wrap` 1280px, `h1` 24px/800, `tr:hover #F7F9FC`, Inter font. Gồm:
+Trang lookup đơn giản (không dùng `.chart-num`). Từ 28/10/2026 dùng `chung.css` (trang chuyển thử đầu tiên sau CRM): bảng `.data-table` đầu xanh, nhãn nhóm `.tag` trung tính (thay `.nhom-badge` xanh lá), SĐT màu `--accent`; `<style>` riêng chỉ còn dòng ngày cập nhật, cảnh báo quá hạn, cột Nhóm gộp ô. Gồm:
 
 - Banner cảnh báo quá hạn cập nhật (`#staleBanner`, xem mục trên) — tự ẩn khi chưa quá hạn.
 - Bộ lọc **Chi nhánh** (`#chinhanhBar`) — **tự ẩn nếu chỉ có 1 chi nhánh** để không thừa UI; tự hiện khi dữ liệu có ≥2 chi nhánh (hiện có Nha Trang, Phú Yên).
