@@ -230,7 +230,9 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
 .yr-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:12px;white-space:nowrap;}
 .yr25{background:#fff3e0;color:#e65100;}.yr26{background:#e3f2fd;color:#0d47a1;}
 .yr24{background:#f3e5f5;color:#6a1b9a;}.yr-other{background:#f5f5f5;color:#555;}
-.sec-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;padding:0 0 5px;border-bottom:2px solid currentColor;}
+/* Tiêu đề mục tab Hàng hóa: cùng kiểu .card-title tab Bán hàng (chữ thường, màu nhấn) — 28/10/2026, trước là chữ in hoa, mỗi nhóm một màu */
+.sec-title{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:10px;padding:0;border-bottom:none;}
+.sec-title.canh-bao{color:var(--amber);}
 .sale-panel{background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:0;}
 .sale-panel-hdr{padding:8px 12px;font-size:12px;font-weight:600;color:var(--text);background:#fafafa;border-bottom:1px solid var(--border);}
 .sale-panel-body{padding:10px 12px;}
@@ -1734,7 +1736,7 @@ function renderChuaGiao(){
     +(showDH?'<div style="font-size:11px;color:#4b5563;font-style:italic;margin-top:-6px;line-height:1.6">Cột 8 = xe đã đặt đang <b>chờ HTV xác nhận</b> (trạng thái Chờ XN, không tính Palisade); xe đã xác nhận nằm ở cột 5 Xe BO. Cột 10 = SL hợp đồng bán lẻ trung bình mỗi tháng trong '+DH_KY_DAYS+' ngày gần nhất (theo Nguồn khách: Phan Rang tính vào NT, Bảo Lộc tính vào ĐL; không gồm bán ngang). Cột 8–11 chỉ hiện với nhóm được xem Giả định đặt hàng.</div>':'')
     +'</div>';
 
-  return '<div class="sec-title" style="color:#b45309">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY <span style="font-weight:400;font-size:11px;color:#64748b">(hàng Tổng không tính Palisade)</span></div>'
+  return '<div class="sec-title">Xe chưa báo cáo DMS — nguồn xe NT, ĐL, PY <span style="font-weight:400;font-size:11px;color:#64748b">(hàng Tổng không tính Palisade)</span></div>'
     +filterHtml+tableHtml;
 }
 // ═══════════════════════════════════════════════════════════
@@ -1977,24 +1979,24 @@ function renderDatHang(){
   // định, bấm vào tiêu đề (dạng dropdown) mới xổ ra, vì đây là bảng phụ ít cần xem
   // hơn 2 bảng kia.
   return renderTocDoBanHang()
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">2. 📦 Giả định đặt hàng — Phương án 1 (chỉ model đang đặt thêm)</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">2. Giả định đặt hàng — Phương án 1 (chỉ model đang đặt thêm)</summary>'
     +'<div id="dh-tbl-main">'+_datHangTableHtml(DAT_HANG_ORDERS,'')+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">3. 📦 Giả định đặt hàng — Phương án 2 (Phương án 1 + đơn bổ sung lần 2)</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">3. Giả định đặt hàng — Phương án 2 (Phương án 1 + đơn bổ sung lần 2)</summary>'
     +'<div id="dh-tbl-pa2">'+_datHangTableHtml(DAT_HANG_ORDERS_PA2,'')+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">4. 📦 Giả định đặt hàng — Phương án 3 (Phương án 2 + đổi một phần Creta CBU sang CKD theo yêu cầu HTV)</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">4. Giả định đặt hàng — Phương án 3 (Phương án 2 + đổi một phần Creta CBU sang CKD theo yêu cầu HTV)</summary>'
     +'<div id="dh-tbl-pa3">'+_datHangTableHtml(DAT_HANG_ORDERS_PA3,'')+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA3)+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">5. 📦 Giả định đặt hàng — Phương án 4 (đặt bổ sung theo yêu cầu HTV: 20 xe + 3 Creta đang chờ XN)</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">5. Giả định đặt hàng — Phương án 4 (đặt bổ sung theo yêu cầu HTV: 20 xe + 3 Creta đang chờ XN)</summary>'
     +'<div style="font-size:12px;color:#4b5563;line-height:1.6;margin:6px 0 8px">HTV báo còn thiếu NT 11 · ĐL 7 · PY 5; trừ 3 Creta ĐB đang chờ XN (NT 2, PY 1) → đặt thêm <b>20 xe: NT 9 · ĐL 7 · PY 4</b>. Chọn xe rẻ, bán nhanh trước; không đặt phiên bản có xe tồn trên 90 ngày; không vượt 2,5 tháng. Cột chi nhánh là đại lý <b>đặt</b>; "thả ở NT" = xe về kho Nha Trang. Bảng độc lập, không cộng các phương án trên.</div>'
     +'<div id="dh-tbl-pa4">'+_datHangTableHtml(DAT_HANG_ORDERS_PA4,'',true)+'</div>'
     +'</details>'
-    +'<details open style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">6. 📦 Giả định đặt hàng — Phương án 5 (đề xuất bổ sung T10 lần 3 của chi nhánh, 27/10/2026)</summary>'
+    +'<details open style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">6. Giả định đặt hàng — Phương án 5 (đề xuất bổ sung T10 lần 3 của chi nhánh, 27/10/2026)</summary>'
     +'<div style="font-size:12px;color:#4b5563;line-height:1.6;margin:6px 0 8px">Đề xuất của 3 chi nhánh: <b>23 xe: NT 9 · ĐL 9 · PY 5</b> (HTV yêu cầu NT 9 · ĐL 9 · PY 6). Số chi nhánh tự đề xuất, chưa điều chỉnh. Bấm "Hiện cột phụ" để xem Tồn / BO / LXX. Theo quy tắc: Creta N Line và Stargazer ĐB vượt 2,5 tháng sau khi đặt; Creta N Line CBU cần xe CKD kèm (ô kiểm tra dưới bảng). Bảng độc lập, không cộng các phương án trên.</div>'
     +'<div id="dh-tbl-pa5">'+_datHangTableHtml(DAT_HANG_ORDERS_PA5,'',true)+_dhCkdQuotaHtml(DAT_HANG_ORDERS_PA5)+'</div>'
     +'</details>'
-    +'<details style="margin-top:40px"><summary class="sec-title" style="color:#4f46e5;cursor:pointer;border-bottom:none">7. 📦 Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
+    +'<details style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">7. Giả định đặt hàng (Thực tế thao tác) — 1 chi nhánh có thể đặt cho chi nhánh khác</summary>'
     +'<div id="dh-tbl-thucte">'+_datHangTableHtml(DAT_HANG_ORDERS_THUCTE,'',true)+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
@@ -2420,7 +2422,7 @@ function renderTocDoBanHang(opts){
     defModel=_spdSel.model;defVer=_spdSel.ver||SPD_ALL;defMau=_spdSel.mau||SPD_ALL;
   }
   _spdSel=defModel?{model:defModel,ver:defVer,mau:defMau}:{model:null,ver:null,mau:null};
-  return (opts.noTitle?'':'<div class="sec-title" style="color:#0d7c66;border-bottom:none">1. Tốc độ bán hàng (Bán lẻ)</div>')
+  return (opts.noTitle?'':'<div class="sec-title" style="border-bottom:none">1. Tốc độ bán hàng (Bán lẻ)</div>')
     +'<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin:8px 0 14px">'
     +'<div id="spd-model-box" style="flex:0 0 170px">'+_spdModelBoxHtml(defModel)+'</div>'
     +'<div id="spd-ver-box" style="flex:0 0 190px">'+(defModel?_spdVerBoxHtml(defModel,defVer):_spdPickTableHtml('Phiên bản',[],null,'_spdPickVer',null))+'</div>'
@@ -2437,7 +2439,7 @@ function renderTocDoBanHang(opts){
 var _tongSpdOpen=false;
 function _tongTocDoHtml(){
   return '<details style="margin-top:24px"'+(_tongSpdOpen?' open':'')+' ontoggle="_tongSpdOpen=this.open">'
-    +'<summary class="sec-title" style="color:#0d7c66;cursor:pointer;border-bottom:none">📈 Tốc độ bán hàng (Bán lẻ) — số hợp đồng ký theo tháng</summary>'
+    +'<summary class="sec-title" style="cursor:pointer;border-bottom:none">Tốc độ bán hàng (Bán lẻ) — số hợp đồng ký theo tháng</summary>'
     +renderTocDoBanHang({noTitle:true,keepSel:true})
     +'</details>';
 }
@@ -2593,7 +2595,7 @@ function renderKCK(){
     +'.kck-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:#1e293b}'
     +'.kck-cell:hover .kck-tip{display:block}'
     +'</style>'
-    +'<div class="sec-title" style="color:#7c3aed">Xe giao ngay — KCK cập nhật '+KCK_DATE+_kckScanHTML()+'</div>'
+    +'<div class="sec-title">Xe giao ngay — KCK cập nhật '+KCK_DATE+_kckScanHTML()+'</div>'
     +legend
     +_kckChangeNoteHTML()
     +'<div class="table-wrap"><div class="table-scroll"><table style="table-layout:fixed;width:100%"><thead><tr>'+ths+'</tr></thead><tbody>'+tbody+'</tbody></table></div></div>';
@@ -4067,7 +4069,7 @@ function renderChuaHD(){
       +'<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#94a3b8;font-weight:500">Tuần:</span><select onchange="hhSelectWeek(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;"><option value="">Tuần hiện tại</option>'+(window._weeklySnaps||[]).map(function(s){return`<option value="${s.week}"${activeWeek===s.week?' selected':''}>${s.week.replace('_',' — ').replace('W','Tuần ')} (${(s.saved_vn||'').substring(0,10)})</option>`;}).join('')+'</select></div>'
       +'<div style="display:flex;gap:8px;align-items:center;"><span style="font-size:11px;color:#94a3b8;font-weight:500">Tháng:</span><select onchange="hhSelectMonth(this.value)" style="font-size:12px;padding:3px 8px;border-radius:8px;border:1.5px solid #e2e8f0;color:#374151;cursor:pointer;"><option value="">—</option>'+(window._monthlySnaps||[]).map(function(s){return`<option value="${s.month}"${activeMonth===s.month?' selected':''}>${s.month.replace('_M',' — Tháng ')} (${(s.saved_vn||'').substring(0,10)})</option>`;}).join('')+'</select></div>'
       +'<span style="font-size:10.5px;color:#7c3aed;font-style:italic">Đang xem lịch sử</span></div>';
-    return '<div class="sec-title" style="color:#7c3aed">Xe chưa xuất hóa đơn</div>'
+    return '<div class="sec-title">Xe chưa xuất hóa đơn</div>'
       +weekSel0
       +'<div style="padding:16px;color:#94a3b8;font-size:12px;font-style:italic">⚠️ Snapshot này được lưu trước khi có field "Xuất hồ sơ" — không thể hiển thị chính xác.<br>Vui lòng chạy <b>manualSync()</b> rồi <b>testWeeklySnapshot()</b>/<b>testMonthlySnapshot()</b> để tạo lại snapshot với dữ liệu đầy đủ.</div>';
   }
@@ -4166,7 +4168,7 @@ function renderChuaHD(){
     });
   var banNgangHtml='';
   if(banNgangRows.length>0){
-    banNgangHtml='<div class="sec-title" style="color:#b45309;font-size:13px;">⚠️ Xe bán ngang cho đại lý khác — chưa xuất hóa đơn ('+banNgangRows.length+' xe)</div>'
+    banNgangHtml='<div class="sec-title canh-bao">⚠️ Xe bán ngang cho đại lý khác — chưa xuất hóa đơn ('+banNgangRows.length+' xe)</div>'
       +'<div style="font-size:11px;color:#94a3b8;margin:-4px 0 10px;">Nguồn khách = "Khác" (bán cho đại lý khác, không phải khách lẻ) nhưng cột Xuất hóa đơn vẫn đang để trống — admin dịch vụ dễ quên đánh dấu nhóm này, cần rà soát lại.</div>'
       +'<div style="max-width:680px;margin-bottom:20px;"><div class="table-wrap"><div class="table-scroll"><table style="border-collapse:collapse;font-size:11.5px;width:100%">'
       +'<thead><tr style="border-bottom:2px solid var(--border);">'
@@ -4272,9 +4274,9 @@ function renderChuaHD(){
     +(detailRows.length===0?'<tr><td colspan="4" style="padding:16px;text-align:center;color:#94a3b8;font-style:italic">Không có xe nào</td></tr>':'')
     +'</tbody></table></div></div></div>';
 
-  return `<div class="sec-title" style="color:#7c3aed">Xe chưa xuất hóa đơn${giaNote}</div>`
+  return `<div class="sec-title">Xe chưa xuất hóa đơn${giaNote}</div>`
     +weekSel+banNgangHtml+tableHtml
-    +'<div class="sec-title" style="color:#7c3aed;font-size:13px;margin-top:6px">Danh sách chi tiết ('+detailRows.length+' xe)</div>'
+    +'<div class="sec-title" style="font-size:13px;margin-top:6px">Danh sách chi tiết ('+detailRows.length+' xe)</div>'
     +khoFilterHtml+detailHtml;
 }
 
@@ -4626,7 +4628,7 @@ function renderHH(){
       // Hiển thị tổng số xe (trước khi gom) trong tiêu đề
       var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
       var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
-      bodyContent='<div class="sec-title" style="color:'+colors[typeFilter]+'">'+titles[typeFilter]+' — <span style="font-weight:400;font-size:11px">'+dRows.length+' xe · '+cxnRows.length+' dòng</span></div><div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>';
+      bodyContent='<div class="sec-title">'+titles[typeFilter]+' — <span style="font-weight:400;font-size:11px">'+dRows.length+' xe · '+cxnRows.length+' dòng</span></div><div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>';
     } else {
 
     if(doMerge) dRows.forEach(function(r){modelSpanMap[r.model]=(modelSpanMap[r.model]||0)+1;});
@@ -4651,7 +4653,7 @@ function renderHH(){
     var titles={bo:'Back Order — chờ nhà máy phân xe',lxx:'Có LXX — sắp về kho (~5 ngày)',debt:'Xe nợ khách – chưa phân xe',daphan:'Đã phân xe – chưa báo cáo DMS',yr2025:'Danh sách xe SX 2025 (Tồn kho + BO)',inventory:'Chi tiết tồn kho',old60:'Xe tồn trên 60 ngày',nhamay:'Xe Nhà máy cho mượn (ký gửi)',chuaXN:'Chờ xác nhận đơn hàng — NM chưa xác nhận'};
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
     if(isOld60) titles.old60='Xe tồn trên '+oldMinDays+' ngày'+(oldDupOnly?' — kho có từ 2 xe cùng phiên bản':'');
-    if(!isCXN) bodyContent='<div class="sec-title" style="color:'+(colors[typeFilter]||'#333')+'">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+oldDayBtns+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
+    if(!isCXN) bodyContent='<div class="sec-title">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+oldDayBtns+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
       +(isLxx||isDebt?_lxxPhanNoteHtml():''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
   }
   } else {
