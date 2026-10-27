@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 27/10/2026
+Cập nhật: 28/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -9,6 +9,8 @@ Cập nhật: 27/10/2026
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
+- [ ] Báo cáo tuần: dán `TinThanh_DichVu_Sync.gs` mới (đọc thêm Doanh thu.xlsx) vào script.google.com, chạy ▶ `dichVuSyncNgay`, kiểm tra `dichvu.json` có `doanhThu`; push `baocaotuan.html` (doanh thu DV tự động, tuần HĐ T2–CN)
+- [ ] Báo cáo tuần: bỏ tô cam ô Thực hiện doanh thu DV (C15) và sửa mục J sheet Hướng dẫn ở file NT, PY, file mẫu
 - [x] Chuyển các trang module sang `chung.css` (28/10/2026; Báo cáo tuần, Lợi nhuận, KQKD chỉ đồng bộ font và màu)
 - [x] Tiêu đề tab Hàng hóa đổi theo kiểu tab Bán hàng (28/10/2026); anh Khanh xem trên web, không đẹp thì trả lại bằng git revert
 - [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; lưu ý 6 Creta N Line CBU chưa có CKD kèm (PY đặt 5/6 xe HTV yêu cầu)
@@ -34,6 +36,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 28/10/2026 | Báo cáo tuần: doanh thu DV "Thực hiện" tự động từ `13. DV - Master Data/Doanh thu.xlsx` (Giá trị trước thuế, gồm xe ngập, theo ngày thanh toán; chỉ tiêu vẫn nhập tay); biểu đồ HĐ ký đổi sang tuần T2–CN như tuần báo cáo; chưa push, chờ dán script; xem `docs/module-baocaotuan.md` |
 | 28/10/2026 | Tiêu đề mục tab Hàng hóa đổi theo kiểu tab Bán hàng (chữ thường, màu nhấn, bỏ emoji); cảnh báo xe bán ngang giữ màu |
 | 28/10/2026 | Chuyển xong các trang module sang `chung.css` (MKT, Quảng cáo FB, Chấm công, Nhân sự, Chính sách, Quy định); Báo cáo tuần, Lợi nhuận, KQKD chỉ đồng bộ font/màu; xem `docs/giao-dien-va-phan-quyen.md` |
 | 28/10/2026 | Đánh giá lại giao diện toàn hệ thống (CRM 5,8 → 7,3/10); chữ phụ đậm hơn (`--muted #5E6E8A`, cả index); chung.css thêm bảng nhẹ, nhãn trung tính, tên nhãn cũ; sửa biểu đồ CRM; chuyển trang Nhà cung cấp sang chung.css |
