@@ -434,14 +434,15 @@ function qaBlock(title, by, rows, cls, fold){
 }
 // ── Số HĐ ký tự động (data.json) ───────────────────────────
 function stripVN(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[đĐ]/g,'d').toLowerCase().trim(); }
-// Tuần Chủ nhật → Thứ 7, GIỐNG HỆT isoWeek() trong index.html để số khớp biểu đồ "Chốt cọc" của tab BC Bán hàng
-// (khác weekNum() của trang này — tuần Thứ 2 → Chủ nhật theo Excel; 2 cách lệch nhau đúng 1 ngày).
-function weekBH(d){ var t=new Date(d); t.setHours(0,0,0,0); var j=new Date(t.getFullYear(),0,1); return t.getFullYear()+'-'+Math.ceil(((t-j)/864e5+j.getDay()+1)/7); }
+// Tuần HĐ ký = tuần báo cáo (ISO, Thứ 2 → Chủ nhật — đổi 28/10/2026, anh Khanh). Trước đó tính Chủ nhật → Thứ 7 như
+// isoWeek() của index.html (biểu đồ "Chốt cọc" tab BC Bán hàng) → HĐ ký Chủ nhật bị đếm sang tuần sau, năm 2027 lệch +1 tuần.
+// Số tuần có thể khác tab BC Bán hàng ở các HĐ ký ngày Chủ nhật.
+function weekBH(d){ return weekYear(d)+'-'+weekNum(d); }
 function hdStats(chiNhanh, ref){
   var code=branchCode(chiNhanh);
   if(!SALES || !code || !ref) return null;
   var r0=new Date(ref); r0.setHours(0,0,0,0);
-  var from=new Date(r0); from.setDate(r0.getDate()-r0.getDay());   // Chủ nhật đầu tuần
+  var from=new Date(r0); from.setDate(r0.getDate()-(r0.getDay()+6)%7);   // Thứ 2 đầu tuần
   var to=new Date(from); to.setDate(from.getDate()+6);
   var byWeek={}, mtd=0;
   SALES.rows.forEach(function(s){
@@ -555,7 +556,7 @@ function renderChiSoPanel(a){
 }
 
 // ── Chỉ số trọng yếu (sheet "Chi so trong yeu", thêm 26/09/2026) — biểu đồ trong mục 1, theo chi nhánh đang chọn.
-// Bán hàng: số HĐ ký TỰ ĐỘNG từ data.json (weekBH, cùng cách đếm với biểu đồ Chốt cọc tab BC Bán hàng) — cột tên
+// Bán hàng: số HĐ ký TỰ ĐỘNG từ data.json (weekBH: tuần T2→CN như tuần báo cáo, cùng nguồn biểu đồ Chốt cọc tab BC Bán hàng) — cột tên
 // chi nhánh → đếm theo mã, cột "Tổng" = cộng các cột; không tải được data.json thì dùng số điền tay trong sheet.
 // Các bộ phận khác: lấy nguyên số trong sheet (vd Dịch vụ: Chỉ tiêu / Thực hiện).
 // Thứ tự màu cố định (không xoay vòng). Đã chạy kiểm tra bảng màu dataviz 17/10/2026 (nền sáng): đạt độ sáng, độ đậm,
@@ -612,7 +613,7 @@ function csBHData(sec, a){
   // không có: dùng đúng các dòng + số điền tay trong sheet.
   var src=sec.dong||[];
   if(SALES){
-    var r0=new Date(a.ref); r0.setHours(0,0,0,0); r0.setDate(r0.getDate()-r0.getDay());
+    var r0=new Date(a.ref); r0.setHours(0,0,0,0); r0.setDate(r0.getDate()-(r0.getDay()+6)%7);
     src=[]; for(var b=CS_WEEKS-1; b>=0; b--){ var dd=new Date(r0); dd.setDate(r0.getDate()-7*b); src.push({key:weekBH(dd), nhan:'T'+weekBH(dd).split('-')[1]}); }
   }
   var rows=src.map(function(d){
@@ -850,6 +851,27 @@ function dvLuotXe(a){
     cot:['Tuần '+a.refWeek+' (lượt/ngày)','TB 90 ngày (lượt/ngày)'],
     dong:DV_LOAI.map(function(l){ return {nhan:l[1], giaTri:[avg(wk,l[0]), avg(base,l[0])]}; }) };
 }
+// ── Dịch vụ — doanh thu "Thực hiện" TỰ ĐỘNG (28/10/2026, anh Khanh): dichvu.json.doanhThu {"yyyy-MM-dd":{"NT":đồng}}
+// do TinThanh_DichVu_Sync.gs cộng cột "Giá trị" (trước thuế, GỒM xe ngập nước) theo Ngày thanh toán từ Doanh thu.xlsx
+// (Drive 13. DV - Master Data). Luỹ kế từ ngày 1 tháng của ngày mốc tới hết Chủ nhật tuần báo cáo (không quá cuối tháng),
+// đơn vị triệu đồng như ô nhập tay. Có số tự động thì THAY ô "Thực hiện" trong sheet; "Chỉ tiêu" vẫn nhập tay.
+// File doanh thu gộp Đà Lạt + Bảo Lộc thành LD (Lâm Đồng); Phan Rang tính chung Nha Trang.
+const DT_CN = {'NT':'NT','PR':'NT','PY':'PY','ĐL':'LD','BL':'LD','ĐN':'LD'};
+function dvDoanhThu(a){
+  if(!DVX || !DVX.doanhThu) return null;
+  var cn=DT_CN[branchCode(a.b.chiNhanh)]; if(!cn) return null;
+  var ref=new Date(a.ref); ref.setHours(0,0,0,0);
+  var sun=new Date(ref); sun.setDate(ref.getDate()+6-(ref.getDay()+6)%7);
+  var tu=new Date(ref.getFullYear(), ref.getMonth(), 1), cuoiThang=new Date(ref.getFullYear(), ref.getMonth()+1, 0);
+  var den=sun<cuoiThang?sun:cuoiThang;
+  var tong=0, coSo=false, moiNhat=null;
+  Object.keys(DVX.doanhThu).forEach(function(k){ var d=parseD(k), v=DVX.doanhThu[k][cn];
+    if(!d || v==null) return;
+    if(!moiNhat || d>moiNhat) moiNhat=d;
+    if(d>=tu && d<=den){ tong+=v; coSo=true; } });
+  if(!coSo) return null;
+  return {th:Math.round(tong/1e6), tu:tu, den:(moiNhat && moiNhat<den)?moiNhat:den, thang:ref.getMonth()+1, gop:cn==='LD'};
+}
 // ── Bán hàng — Lead & khách hot (thêm 28/09/2026). Khối sheet "Bán hàng | Tự động | Nhập tay | Ghi chú":
 // ô Nhập tay có số → ƯU TIÊN (kèm Ghi chú nhập tay); trống → lấy từ CRM Bizfly (crm.json).
 // Lead = khách TẠO MỚI trong tuần báo cáo (T2–CN chứa ngày mốc); Khách hot = trạng thái Hot/Very Hot HIỆN TẠI,
@@ -924,7 +946,7 @@ function renderChiSo(a){
         d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
       return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div><div>'+
         '<div class="cs-sub">'+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
-        (d.auto?csNote('Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần CN→T7 như tab BC Bán hàng)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')):'<div class="cs-src">Không tải được data.json — dùng số điền trong sheet</div>')+tbl+
+        (d.auto?csNote('Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần T2→CN như tuần báo cáo)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')):'<div class="cs-src">Không tải được data.json — dùng số điền trong sheet</div>')+tbl+
         '</div><div class="cs-part">'+csDMSTable(a)+'</div>'+leadHtml+'</div>';
     }
     if(sec._leadOnly) return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div>'+leadHtml+'</div>';
@@ -952,12 +974,19 @@ function renderChiSo(a){
     // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
     var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
     var ct=get(/chi tieu|ke hoach|muc tieu/), th=get(/thuc hien|dat duoc|ket qua/);
-    var h='';
+    var h='', dt=(sec.boPhan==='DV' && ct!=null) ? dvDoanhThu(a) : null;
+    if(dt){
+      var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
+      th=dt.th;
+      h+='<div class="cs-sub">Doanh thu tháng '+dt.thang+' (triệu đồng, trước thuế) — luỹ kế '+dm(dt.tu)+'–'+dm(dt.den)+'</div>';
+    }
     if(ct && th!=null){
       var pct=th/ct*100, ok=pct>=100;
       h+='<div class="cs-pct'+(ok?' ok':' low')+'">'+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> chỉ tiêu</span></div>';
       h+='<div class="cs-bar" title="Thực hiện '+fmtN(th)+' / Chỉ tiêu '+fmtN(ct)+'"><div class="cs-fill'+(ok?' ok':'')+'" style="width:'+Math.min(100,pct/Math.max(100,pct)*100)+'%"></div><div class="cs-mark" style="left:'+(100/Math.max(100,pct)*100)+'%"></div></div>';
       h+='<div class="cs-kv"><span>Thực hiện <b>'+fmtN(th)+'</b></span><span>Chỉ tiêu <b>'+fmtN(ct)+'</b></span><span>'+(th>=ct?'Vượt':'Còn thiếu')+' <b>'+fmtN(Math.abs(th-ct))+'</b></span></div>';
+      if(dt) h+=csNote('Thực hiện tự động từ dichvu.json — Doanh thu.xlsx (thư mục Drive 13. DV - Master Data): cột Giá trị (trước thuế), gồm xe ngập nước, theo Ngày thanh toán'+
+        (dt.gop?', Đà Lạt + Bảo Lộc gộp chung (file doanh thu không tách)':'')+(DVX.dt_cap_nhat?' · file nguồn lưu lúc '+esc(DVX.dt_cap_nhat):'')+'. Chỉ tiêu nhập tay trong sheet Chi so trong yeu.');
     } else {
       h+='<div class="cs-kv">'+(sec.dong||[]).map(function(x){ return '<span>'+esc(x.nhan)+' <b>'+(x.giaTri||[]).map(fmtN).join(' · ')+'</b></span>'; }).join('')+'</div>';
     }
