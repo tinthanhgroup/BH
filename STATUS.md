@@ -33,9 +33,9 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
-| 27/10/2026 | Chốt chuẩn giao diện mới theo tab Hàng hóa / Bán hàng, file chung `chung.css`; chuyển trang CRM trước (sửa sót Very Hot, cột ngày chưa cập nhật khách Hot, tách nguồn theo TVBH, thiếu Nguồn); xem `docs/giao-dien-va-phan-quyen.md`; chưa push |
+| 27/10/2026 | Chốt chuẩn giao diện mới theo tab Hàng hóa / Bán hàng, file chung `chung.css`; chuyển trang CRM trước (sửa sót Very Hot, cột ngày chưa cập nhật khách Hot, tách nguồn theo TVBH, thiếu Nguồn); xem `docs/giao-dien-va-phan-quyen.md`; đã push 27/10 |
 | 27/10/2026 | Chị Đào duyệt đặt bổ sung T10: 23 xe theo đề xuất 3 chi nhánh (NT 9 · ĐL 9 · PY 5, folder `2. Dat hang/T10 L2 v2/`); bảng Giả định đặt hàng PA5 đã push |
-| 27/10/2026 | Đồng bộ phong cách 5 trang module (Nhân sự, Chấm công, Quảng cáo FB, CRM, MKT): màu chữ phụ, bộ màu nhãn chung, tiêu đề mục chữ thường 15px, ngày dd/mm/yyyy, màu chi nhánh theo BC Bán hàng; quy ước ghi ở `docs/giao-dien-va-phan-quyen.md`; chưa push |
+| 27/10/2026 | Đồng bộ phong cách 5 trang module (Nhân sự, Chấm công, Quảng cáo FB, CRM, MKT): màu chữ phụ, bộ màu nhãn chung, tiêu đề mục chữ thường 15px, ngày dd/mm/yyyy, màu chi nhánh theo BC Bán hàng; quy ước ghi ở `docs/giao-dien-va-phan-quyen.md`; đã push 27/10 |
 | 27/10/2026 | Đã tách sheet Văn phòng Nha Trang (KT 3, CSKH 4, HCNS 15 việc); push trang Báo cáo tuần hiện nhóm CSKH / Kế toán / HCNS |
 | 27/10/2026 | Đã tách sheet Văn phòng Phú Yên (CSKH 12, HCNS 8 việc, giữ mã VP-); hiện lại cột E (ô Mã tiếp theo), xoá nội dung Lĩnh vực ở NT + PY; xem `docs/module-baocaotuan.md` |
 | 27/10/2026 | Chốt tách sheet Văn phòng báo cáo tuần thành CSKH / Kế toán / HCNS (nhận định VP viết chung), làm Phú Yên trước; đã viết script + sửa web (chưa push); xem `docs/module-baocaotuan.md` |
