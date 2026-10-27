@@ -19,7 +19,7 @@ Tab "Theo xe ký" gồm cả xe đã phân xe chưa báo bán (hỗ trợ tạm 
 
 **Lọc theo mức lợi nhuận:** bấm ô "xe lỗ gộp" hoặc một mức màu trong chú giải (chọn được nhiều mức, bấm lại để bỏ, nút "Bỏ lọc màu"). Ô không thuộc mức chọn mờ đi, phiên bản không có xe thuộc mức đó bị ẩn, vị trí cuộn ngang giữ nguyên.
 
-Điểm thiết kế do agent đánh giá giao diện chấm: 6,6/10 (23/10/2026), 7,5/10 sau các chỉnh sửa (24/10/2026). Còn lại chưa làm: tooltip nên nêu lý do "ước tính" ngay dưới kết quả; ghi chú "Cách tính" nằm dưới màn hình; bề ngang `.wrap` 1280px chỉ thấy 3 tháng ở màn 1920 (quy ước module, chưa đổi).
+**Không dùng `chung.css`** (28/10/2026): chỉ đồng bộ font Be Vietnam Pro và màu nền/chữ/viền/xanh với chuẩn chung; bảng màu 6 mức lợi nhuận giữ nguyên. Điểm thiết kế do agent đánh giá giao diện chấm: 6,6/10 (23/10/2026), 7,5/10 sau các chỉnh sửa (24/10/2026). Còn lại chưa làm: tooltip nên nêu lý do "ước tính" ngay dưới kết quả; ghi chú "Cách tính" nằm dưới màn hình; bề ngang `.wrap` 1280px chỉ thấy 3 tháng ở màn 1920 (quy ước module, chưa đổi).
 
 ## Cách tính (một thông tin một nơi: chi tiết nghiệp vụ ở `9. KQKD/README.md` mục "Hỗ trợ bán hàng HTV theo xe")
 

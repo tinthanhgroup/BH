@@ -16,6 +16,7 @@
   --shadow:0 1px 6px rgba(0,0,0,.07);
   --mono:'JetBrains Mono',monospace;
   /* tên cũ của các trang module — trỏ về màu mới để trang chưa sửa hết vẫn đồng bộ */
+  --cam:#ef9f27; --gold:#ef9f27; --accent-text:#B4531F;   /* cam cho thanh/cột (--accent giờ là xanh) */
   --panel:var(--card); --ink:var(--text); --ink-soft:var(--muted); --line:var(--border); --navy:var(--blue);
 }
 *{box-sizing:border-box;}
@@ -46,6 +47,7 @@ button,select,input{font-family:inherit;}
 .kpi-num{font-size:30px;font-weight:800;font-family:var(--mono);line-height:1;margin-bottom:5px;color:var(--text);}
 .kpi-sub{font-size:11px;color:var(--muted);}
 .kpi.xau .kpi-num{color:var(--red);} .kpi.canh .kpi-num{color:var(--amber);} .kpi.tot .kpi-num{color:var(--green);}
+/* tên cũ */ .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:var(--amber);} .kpi.green .kpi-num{color:var(--green);}
 
 /* Bảng (= bảng tab Hàng hóa) */
 table{width:100%;border-collapse:collapse;font-size:13px;}

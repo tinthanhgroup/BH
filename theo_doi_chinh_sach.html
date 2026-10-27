@@ -4,19 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cập nhật chính sách HTV</title>
+<link rel="stylesheet" href="chung.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  /* Riêng trang — phần chung ở chung.css (chuyển 28/10/2026). Màu nền tảng lấy từ biến chung. */
   :root{
-    --ink:#1c2430;
-    --ink-soft:#5b6472;
-    --line:#dfe3e8;
-    --bg:#EEF3F9;
-    --card:#ffffff;
-    --blue:#0f4c92;
-    --blue-deep:#0a3866;
-    --navy:#1B4F8C;
-    --active-bg:#eaf6ee;
-    --active-ink:#1c7a3e;
+    --blue-deep:var(--accent);   /* chuẩn chung 28/10/2026 */
+    --active-bg:var(--green-bg);
+    --active-ink:var(--green);
     --active-dot:#2ea44f;
     --inactive-bg:#f3f1ee;
     --inactive-ink:#8a8378;
@@ -29,15 +23,6 @@
     --fs-sm:12px;
     --fs-xs:11px;
   }
-  *{box-sizing:border-box;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
 
   .masthead{
     padding-bottom:18px;
@@ -58,11 +43,9 @@
   .masthead p{
     margin:0;
     color:var(--ink-soft);
-    font-family:'Inter',sans-serif;
     font-size:var(--fs-base);
   }
   .today-tag{
-    font-family:'Inter',sans-serif;
     font-size:var(--fs-sm);
     color:var(--blue-deep);
     background:#eaf1fa;
@@ -80,7 +63,6 @@
     width:100%;
     border-collapse:collapse;
     table-layout:fixed;
-    font-family:'Inter',sans-serif;
     font-size:var(--fs-base);
   }
   .policy-table thead th{
@@ -144,9 +126,9 @@
     display:inline-block;
     padding:2px 8px;
     border-radius:10px;
-    border:1px solid #bfe3c8;
-    background:var(--active-bg);
-    color:var(--active-ink);
+    border:1px solid var(--border);
+    background:var(--card2);
+    color:var(--text);
   }
 
   .filter-bar{
@@ -154,7 +136,6 @@
     gap:8px;
     flex-wrap:wrap;
     margin-bottom:18px;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   }
   .filter-btn{
     font-family:inherit;
@@ -252,7 +233,6 @@
   }
 
   .block h4{
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:var(--fs-xs);
     font-weight:700;
     color:var(--blue-deep);
@@ -279,7 +259,6 @@
   }
   .block table.mini th{
     background:#f5f6f8;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-weight:600;
     font-size:var(--fs-xs);
     color:var(--ink-soft);
@@ -287,7 +266,6 @@
 
   .note{
     grid-column:1 / -1;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:var(--fs-sm);
     color:var(--ink-soft);
     background:#f8f7f4;
@@ -309,7 +287,6 @@
     display:inline-flex;
     align-items:center;
     gap:7px;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:var(--fs-sm);
     font-weight:600;
     color:var(--blue-deep);
@@ -323,7 +300,6 @@
   .pdf-btn:hover{background:#eef3fa;border-color:var(--blue);}
   .pdf-btn svg{flex-shrink:0;}
   .pdf-unavailable{
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:var(--fs-sm);
     color:#a9aeb6;
     font-style:italic;
@@ -331,11 +307,15 @@
 
   .foot{
     text-align:center;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     font-size:var(--fs-xs);
     color:#a9aeb6;
     margin-top:34px;
   }
+
+  /* Đầu bảng theo chuẩn chung: nền xanh, chữ trắng */
+  .policy-table thead th{color:#fff;border-bottom:none;font-weight:600;letter-spacing:0;}
+  .policy-table tr.policy-row.is-active{background:#eef3fd;}
+  .policy-table tr.policy-row.is-active:hover{background:#e3ebfb;}
 </style>
 </head>
 <body>
@@ -350,7 +330,7 @@
 
   <div class="filter-bar" id="filterBar"></div>
 
-  <div id="list"></div>
+  <div id="list" class="panel"></div>
 
   <div class="foot">Nhấn vào từng chính sách để xem tóm tắt chi tiết</div>
 </div>
@@ -1210,7 +1190,7 @@ function render(){
       <td class="col-range">${p.fromLabel} — ${p.toLabel}</td>
       <td class="col-status">
         <span class="status ${isActive ? 'active' : 'inactive'}">
-          <span class="dot"></span>${isActive ? 'Active' : 'Inactive'}
+          <span class="dot"></span>${isActive ? 'Đang áp dụng' : 'Hết hiệu lực'}
         </span>
       </td>
       <td class="col-chev">
@@ -1263,8 +1243,8 @@ function render(){
         <col>
         <col style="width:200px">
         <col style="width:130px">
-        <col style="width:230px">
-        <col style="width:96px">
+        <col style="width:216px">
+        <col style="width:130px">
         <col style="width:36px">
       </colgroup>
       <thead>

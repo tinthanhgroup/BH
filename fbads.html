@@ -4,75 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quảng cáo Facebook — Tín Thanh Group</title>
+<link rel="stylesheet" href="chung.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-  :root{
-    --bg:#EEF3F9; --panel:#FFFFFF; --ink:#233247; --ink-soft:#5E6E8A; --line:#E4EAF3;
-    --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
-    --shadow:0 2px 10px rgba(31,95,153,0.08);
-  }
-  *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1280px;margin:0 auto;padding:28px 28px 60px;}
-  .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
-  .hdr h1{font-weight:800;font-size:24px;margin:0;letter-spacing:-0.01em;color:var(--navy);}
-  .hdr .sub{color:var(--ink-soft);font-size:13px;margin-top:4px;}
-
-  .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
-  .kpi{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:16px 18px;position:relative;overflow:hidden;}
-  .kpi::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--navy);}
-  .kpi.green::before{background:var(--green);} .kpi.red::before{background:var(--red);} .kpi.gold::before{background:var(--gold);}
-  .kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;}
-  .kpi-num{font-size:26px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;}
-  .kpi.green .kpi-num{color:var(--green);} .kpi.red .kpi-num{color:var(--red);} .kpi.gold .kpi-num{color:#B8860B;}
-  .kpi-sub{font-size:11.5px;color:var(--ink-soft);margin-top:2px;}
-
-  .panel{background:var(--panel);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:18px;}
-  .panel h3{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;}
-  .panel summary{margin:0 0 4px;font-size:15px;color:var(--navy);font-weight:700;cursor:pointer;}
-  .chart-num{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:20px;height:20px;border-radius:50%;background:var(--navy);color:#fff;
-    font-size:11px;font-weight:800;margin-right:4px;vertical-align:middle;
-  }
-  .panel[open] summary{margin-bottom:4px;}
-  .panel .desc{margin:0 0 14px;font-size:12px;color:var(--ink-soft);}
-
-  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-  .reset-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;border:1.5px solid var(--line);background:transparent;color:var(--ink-soft);cursor:pointer;}
-  .reset-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .filter-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .filter-btn{font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;padding:8px 16px;border-radius:20px;border:1px solid #cddcef;background:#fff;color:var(--navy);cursor:pointer;}
-  .filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
-
-  table{width:100%;border-collapse:collapse;font-size:12.5px;}
-  /* Panel 3 (Cảnh báo hiệu quả): cố định độ rộng cột qua colgroup — Chi nhánh đủ
-     rộng để không xuống dòng, 3 cột Chi phí/Kết quả/Chi phí-Kết quả gọn & bằng
-     nhau (đổi 23/09/2026, theo yêu cầu người dùng). Chỉ áp dụng cho bảng này —
-     các bảng khác vẫn auto layout như cũ. */
+  /* Riêng trang Quảng cáo FB — phần chung ở chung.css (chuyển 28/10/2026) */
+  .hdr .sub{font-size:13px;}
+  .filters{margin-bottom:0;}
+  /* Panel 3 (Cảnh báo hiệu quả): cố định độ rộng cột qua colgroup (23/09/2026). */
   table.warn-table{table-layout:fixed;}
   table.warn-table th, table.warn-table td{overflow-wrap:break-word;}
-  /* Header dài tự xuống dòng cho bảng gọn hơn (đổi 23/09/2026, bỏ nowrap theo yêu cầu người dùng) */
-  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);font-weight:700;padding:8px 10px;border-bottom:2px solid var(--line);}
-  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
-  tbody tr:hover{background:#F7F9FC;}
-  tbody tr.xau{background:#FDF1F1;}
-  tbody tr.xau:hover{background:#FBE5E5;}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
-  .badge.tot{background:#E2EFE4;color:#3B6B4B;}
-  .badge.canhbao{background:#FBF1DC;color:#7A5F17;}
-  .badge.xau{background:#FBE4DD;color:#B03A2E;}
-  .badge.na{background:#EEF3F9;color:var(--ink-soft);}
-  .dash{color:var(--ink-soft);}
-  .run-badge{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:600;margin-left:6px;vertical-align:middle;}
+  /* Header dài tự xuống dòng cho bảng gọn hơn (23/09/2026) */
+  thead th{white-space:normal;}
+  tbody td{vertical-align:top;}
+  tbody tr.xau{background:#fdf4f4;}
+  /* Cột số căn phải: bảng cảnh báo (cột 4–6) và các khung chi phí theo chi nhánh */
+  table.warn-table th:nth-child(n+4):nth-child(-n+6), table.warn-table td:nth-child(n+4):nth-child(-n+6),
+  .budget-box:not(.budget-box-thang) th, .budget-box:not(.budget-box-thang) td{text-align:right;font-variant-numeric:tabular-nums;}
+  /* Nhãn: "Tốt" để trung tính (chỉ tô khi bất thường); tên cũ canhbao / na */
+  .badge.tot{background:var(--card2);color:var(--muted);}
+  .badge.canhbao{background:var(--amber-bg);color:var(--amber);}
+  .badge.na{background:var(--card2);color:var(--muted);}
+  .run-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;}
   .run-badge.active{color:var(--green);}
-  .run-badge.paused{color:var(--ink-soft);}
+  .run-badge.paused{color:var(--muted);}
   .run-dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
   .run-dot.active{background:var(--green);}
-  .run-dot.paused{background:var(--ink-soft);}
-  .empty{text-align:center;color:var(--ink-soft);padding:30px;font-size:13px;}
-  .footnote{color:var(--ink-soft);font-size:11.5px;margin-top:10px;text-align:center;}
-
+  .run-dot.paused{background:var(--muted);}
   /* ── Chi phí theo Nhóm (CSC/CDR/Khác) & Kỳ (tháng/quý), ưu tiên theo Chi nhánh (đổi 23/09/2026) ── */
   /* (đổi 25/09/2026, theo yêu cầu người dùng) Cột "Tháng" tách thành 1 cột riêng
      (.budget-box-thang, không viền) đứng trước — không còn dính vào bảng Phú Yên;
@@ -82,9 +38,9 @@
      hẹp (sẽ tách cột tháng khỏi số liệu) — thay bằng cuộn ngang. */
   .budget-scroll{overflow-x:auto;}
   .budget-grid{display:grid;gap:14px;min-width:760px;margin-top:12px;}
-  .budget-box{border:1.5px solid #C9D6E8;border-radius:12px;padding:14px 12px 6px;}
+  .budget-box{border:1px solid var(--border);border-radius:12px;padding:14px 12px 6px;}
   .budget-box.budget-box-thang{border-color:transparent;padding-left:0;padding-right:0;}
-  .budget-group-title{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:14px;text-align:center;}
+  .budget-group-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;text-align:center;}
   .budget-box table{font-size:13px;}
   .budget-box thead th{white-space:nowrap;}
   .budget-box td{white-space:nowrap;}
@@ -110,7 +66,7 @@
   .trend-chart{display:flex;align-items:flex-end;gap:3px;height:220px;padding:20px 4px 0;border-bottom:1px solid var(--line);}
   /* Tooltip tuỳ chỉnh khi hover (đổi 23/09/2026 từ title mặc định trình duyệt —
      hiện ngay lập tức, không cần chờ delay của tooltip OS). */
-  .trend-tooltip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;font-size:11px;
+  .trend-tooltip{position:absolute;pointer-events:none;background:var(--text);color:#fff;font-size:11px;
     font-weight:600;line-height:1.6;padding:7px 10px;border-radius:7px;white-space:pre-line;
     transform:translate(-50%,-100%);margin-top:-8px;opacity:0;transition:opacity .08s;z-index:10;
     box-shadow:var(--shadow);}
@@ -124,7 +80,7 @@
      để đọc được trên cả 3 màu nền (navy/green/accent) — rỗng thì không chiếm
      chỗ, không cần ẩn riêng. overflow:hidden ở .trend-bar (cha) đã tự cắt chữ
      nếu đoạn quá mỏng so với chữ (hiếm khi xảy ra vì đã lọc theo FBADS_TREND_NGUONG_GHI_SO). */
-  .trend-seg{width:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9.5px;font-weight:700;white-space:nowrap;overflow:hidden;}
+  .trend-seg{width:100%;display:flex;align-items:center;justify-content:center;color:#1a2240;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;}
   /* Nhãn tổng mỗi cột (thêm 23/09/2026: ghi ở MỌI cột, không chỉ cột cao nhất) —
      "bottom" đặt qua inline style khớp đúng chiều cao cột (${h}%) nên luôn nổi
      ngay phía trên đỉnh cột, bất kể cột cao thấp khác nhau (đổi từ "top:-18px"
@@ -153,23 +109,23 @@
   .ten-cong-thuc{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 22px;}
   .ten-phan{display:inline-flex;flex-direction:column;align-items:center;gap:4px;}
   .ten-phan b{font-size:22px;font-weight:800;padding:8px 16px;border-radius:9px;color:#fff;letter-spacing:.02em;}
-  .ten-phan small{font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
-  .ten-cn{background:var(--navy);} .ten-ct{background:var(--accent);} .ten-ky{background:var(--green);}
-  .ten-xe{background:#B8860B;} .ten-gc{background:#9AA7BD;}
+  .ten-phan small{font-size:11px;color:var(--muted);font-weight:500;}
+  .ten-cn{background:var(--navy);} .ten-ct{background:var(--cam);} .ten-ky{background:var(--green);}
+  .ten-xe{background:#a07a00;} .ten-gc{background:#9AA7BD;}
   .ten-vd-list{display:flex;flex-direction:column;gap:14px;margin:8px 0 24px;}
   .ten-vd{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:#F7F9FC;}
   .ten-vd code{font-family:'Consolas','Courier New',monospace;font-size:28px;font-weight:700;letter-spacing:.02em;}
-  .ten-vd code .cn{color:var(--navy);} .ten-vd code .ct{color:var(--accent);} .ten-vd code .ky{color:var(--green);}
-  .ten-vd code .xe{color:#B8860B;} .ten-vd code .gc{color:var(--ink-soft);font-weight:500;}
+  .ten-vd code .cn{color:var(--navy);} .ten-vd code .ct{color:var(--accent-text);} .ten-vd code .ky{color:var(--green);}
+  .ten-vd code .xe{color:var(--amber);} .ten-vd code .gc{color:var(--ink-soft);font-weight:500;}
   .ten-vd span.giai{font-size:13px;color:var(--ink-soft);}
-  .ten-tieude{font-size:13px;font-weight:700;color:var(--navy);margin:0 0 6px;text-transform:uppercase;letter-spacing:.03em;}
+  .ten-tieude{font-size:13px;font-weight:600;color:var(--text);margin:0 0 6px;}
   table.ten-bang{font-size:14px;margin-bottom:22px;}
   table.ten-bang td:first-child{white-space:nowrap;}
   table.ten-bang code{font-family:'Consolas','Courier New',monospace;font-weight:700;font-size:15px;color:var(--ink);background:#EEF3F9;padding:1px 6px;border-radius:4px;}
   .ten-cham{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;}
   .ten-quytac{margin:0;padding-left:20px;font-size:14px;line-height:1.75;}
-  .huongdan-link{font-size:12.5px;font-weight:600;color:var(--navy);text-decoration:none;padding:8px 14px;border-radius:7px;border:1.5px solid #cddcef;background:#fff;}
-  .huongdan-link:hover{border-color:var(--navy);}
+  .huongdan-link{font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;}
+  .huongdan-link:hover{border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -329,7 +285,8 @@ function fmtNgan(n){
 // tự, dễ so sánh giữa các ngày. Chi nhánh mới chưa có trong danh sách vẫn hiển thị
 // được (rơi xuống cuối danh sách, màu xám mặc định) — không cần sửa code khi thêm chi nhánh.
 const CHI_NHANH_ORDER = ['Phú Yên', 'Nha Trang', 'Đà Lạt'];
-const CHI_NHANH_COLORS = { 'Phú Yên': 'var(--navy)', 'Nha Trang': 'var(--green)', 'Đà Lạt': 'var(--accent)' };
+// Màu chi nhánh theo index.html (--nt/--py/--dl, chuẩn chung 28/10/2026)
+const CHI_NHANH_COLORS = { 'Phú Yên': 'var(--py)', 'Nha Trang': 'var(--nt)', 'Đà Lạt': 'var(--dl)' };
 function chiNhanhColor(cn){ return CHI_NHANH_COLORS[cn] || '#9AA7BD'; }
 function sapXepChiNhanh(list){
   return [...list].sort((a,b)=>{
@@ -473,10 +430,10 @@ function renderKPI(list){
   const soCanhBao = camps.filter(c=>c.loai==='xau' || c.loai==='canhbao').length;
   const kpis = [
     {label:'Tổng chi phí', num:fmtVND(totalChiPhi), sub:'trong khoảng đang chọn', cls:''},
-    {label:'Kết quả Messenger', num:totalKQ, sub:'cuộc trò chuyện bắt đầu', cls:'green'},
+    {label:'Kết quả Messenger', num:totalKQ, sub:'cuộc trò chuyện bắt đầu', cls:''},
     {label:'Chi phí / Kết quả TB', num: chiPhiMoiKQ!=null ? fmtVND(chiPhiMoiKQ) : '—', sub:'trung bình toàn bộ', cls:''},
-    {label:'Chiến dịch cần chú ý', num:soCanhBao, sub:'trên tổng '+camps.length+' chiến dịch', cls: soCanhBao>0?'red':'green'},
-    {label:'Tổng tương tác bài viết', num:totalEngage, sub:'like + comment + click...', cls:'gold'},
+    {label:'Chiến dịch cần chú ý', num:soCanhBao, sub:'trên tổng '+camps.length+' chiến dịch', cls: soCanhBao>0?'red':''},
+    {label:'Tổng tương tác bài viết', num:totalEngage, sub:'like + comment + click...', cls:''},
   ];
   document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
     <div class="kpi ${k.cls}">
