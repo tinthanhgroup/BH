@@ -7,8 +7,7 @@
 <link rel="stylesheet" href="chung.css">
 <style>
   /* Riêng trang Nhà cung cấp — phần chung ở chung.css (chuyển 28/10/2026) */
-  .masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
-  .masthead p{margin:0;color:var(--muted);font-size:13px;}
+  .hdr p{margin:0;color:var(--muted);font-size:13px;}
   .updated-tag{font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--border);padding:4px 12px;border-radius:20px;white-space:nowrap;}
   .updated-tag.stale{background:var(--red-bg);border-color:var(--red-bg);color:var(--red);font-weight:600;}
   .stale-banner{background:var(--red-bg);color:var(--red);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:600;}
@@ -22,6 +21,7 @@
   td.col-sdt a{color:var(--accent);text-decoration:none;font-weight:600;}
   td.col-sdt a:hover{text-decoration:underline;}
   td.col-ghichu{color:var(--muted);font-style:italic;}
+  td.col-ghichu .dash{font-style:normal;}
 
   @media (max-width:640px){
     table, tbody, tbody td{display:block;width:auto!important;}
@@ -42,7 +42,7 @@
 <body>
 <div class="wrap">
 
-  <div class="masthead">
+  <div class="hdr">
     <div>
       <p>Danh bạ liên hệ nhà cung cấp/đầu mối sửa chữa, bảo trì cơ sở vật chất theo từng nhóm hạng mục.</p>
     </div>
@@ -58,6 +58,7 @@
 
   <div class="panel">
     <table class="data-table">
+      <colgroup><col style="width:160px"><col><col><col style="width:130px"><col><col></colgroup>
       <thead><tr>
         <th>Nhóm</th><th>Hạng mục</th><th>Liên hệ</th><th>SĐT</th><th>Công ty</th><th>Ghi chú</th>
       </tr></thead>
@@ -181,7 +182,7 @@ function render(){
         <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
         <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
         <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
-        <td class="col-ghichu">${r.ghiChu || ''}</td>
+        <td class="col-ghichu">${r.ghiChu || '<span class="dash">—</span>'}</td>
       </tr>`;
       continue;
     }
@@ -193,7 +194,7 @@ function render(){
       <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
       <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
       <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
-      <td class="col-ghichu">${r.ghiChu || ''}</td>
+      <td class="col-ghichu">${r.ghiChu || '<span class="dash">—</span>'}</td>
     </tr>`;
   }
   document.getElementById('tbody').innerHTML = html;

@@ -23,9 +23,10 @@
   .branch-pill .bp-num{font-size:30px;font-weight:800;font-family:var(--mono);color:var(--text);line-height:1.1;}
   .branch-pill .bp-sub{font-size:11px;color:var(--muted);}
   .branch-pill .bp-pending{font-size:12px;color:var(--muted);font-weight:600;padding:14px 0 8px;}
-  .bg-label{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;padding:9px 8px 9px 4px;}
+  .bg-label{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;padding:9px 8px 9px 12px;}
   .bg-value{text-align:center;font-weight:600;color:var(--text);border-left:1px solid var(--border);padding:9px 6px;font-size:13px;font-variant-numeric:tabular-nums;}
-  .bg-value .pct{color:var(--accent-text);font-weight:600;font-size:11.5px;}
+  .bg-value .pct{color:var(--muted);font-weight:500;font-size:11.5px;}
+  .bg-value .pct.t-canh{color:var(--amber);font-weight:600;} .bg-value .pct.t-xau{color:var(--red);font-weight:600;}
   .bg-value.empty{color:var(--muted);font-weight:400;font-size:11px;}
   .bg-full-divider{grid-column:1 / -1;display:flex;align-items:center;gap:10px;margin:10px 0 6px;}
   .bg-full-divider::before, .bg-full-divider::after{content:'';flex:1;height:0;border-top:1px dashed var(--border);}
@@ -105,14 +106,14 @@
     </div>
     <div class="grid2">
       <div>
-        <h3 style="margin-top:8px;">Đi trễ trong ngày <span id="todayTreCount" style="color:var(--accent-text);"></span></h3>
+        <div class="sub-title" style="margin-top:8px;">Đi trễ trong ngày <span id="todayTreCount" class="t-canh"></span></div>
         <table id="todayTreTable">
           <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Buổi</th><th class="num">Giờ vào</th><th class="num">Trễ (phút)</th></tr></thead>
           <tbody id="todayTreTbody"></tbody>
         </table>
       </div>
       <div>
-        <h3 style="margin-top:8px;">Nghỉ / vắng chấm công <span id="todayVangCount" style="color:var(--ink-soft);"></span></h3>
+        <div class="sub-title" style="margin-top:8px;">Nghỉ / vắng chấm công <span id="todayVangCount" style="color:var(--muted);"></span></div>
         <table id="todayVangTable">
           <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Tổ/Nhóm</th></tr></thead>
           <tbody id="todayVangTbody"></tbody>
@@ -175,11 +176,11 @@
     <summary><span class="chart-num">5</span> Số liệu phụ (giờ làm, về sớm...)</summary>
     <div class="grid2" style="margin-top:16px;">
       <div>
-        <h3 style="margin-top:8px;">Giờ làm trung bình theo phòng ban</h3>
+        <div class="sub-title" style="margin-top:8px;">Giờ làm trung bình theo phòng ban</div>
         <div class="chart-box small"><canvas id="chartGioTheoPhong"></canvas></div>
       </div>
       <div>
-        <h3 style="margin-top:8px;">Tổng hợp đầy đủ theo phòng ban</h3>
+        <div class="sub-title" style="margin-top:8px;">Tổng hợp đầy đủ theo phòng ban</div>
         <table id="phongFullTable">
           <thead><tr>
             <th data-key="phong">Phòng ban</th>
@@ -194,7 +195,7 @@
   </details>
 
   <details class="panel" id="chuaKhopPanel">
-    <summary><span class="chart-num">6</span> ⚠ <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
+    <summary><span class="chart-num">6</span> <span id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</span></summary>
     <p class="desc">Danh sách nhân viên xuất hiện trong file chấm công nhưng KHÔNG khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.</p>
     <div class="table-wrap">
     <table id="chuaKhopTable">
@@ -210,7 +211,7 @@
   </details>
 
   <details class="panel" id="trungVanTayPanel">
-    <summary><span class="chart-num">7</span> 🔁 <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
+    <summary><span class="chart-num">7</span> <span id="trungVanTaySummary">Cần kiểm tra thủ công</span></summary>
     <p class="desc">Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp KHÔNG tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).</p>
     <div class="table-wrap">
     <table id="trungVanTayTable">
@@ -225,7 +226,7 @@
   </details>
 
   <details class="panel" id="thieuChamCongPanel">
-    <summary><span class="chart-num">8</span> 👤 <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
+    <summary><span class="chart-num">8</span> <span id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</span></summary>
     <p class="desc">Danh sách người ĐANG LÀM VIỆC theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng KHÔNG xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.</p>
     <div class="table-wrap">
     <table id="thieuChamCongTable">
@@ -242,7 +243,7 @@
   </details>
 
   <details class="panel">
-    <summary>⚙ Thiết lập giờ chuẩn</summary>
+    <summary>Thiết lập giờ chuẩn</summary>
     <div style="margin-top:14px;">
       <div class="config-row">
         <div class="config-item"><label>Giờ vào buổi sáng</label><input type="text" class="time-input" id="cfgGioVaoSang" value="07:30" placeholder="HH:MM" maxlength="5" inputmode="numeric" pattern="^([01]\d|2[0-3]):[0-5]\d$" title="Định dạng 24h, VD: 07:30"></div>
@@ -259,6 +260,7 @@
 
 
 <script>
+if(window.Chart){ Chart.defaults.font.family = "'Be Vietnam Pro', sans-serif"; Chart.defaults.color = '#5E6E8A'; }
 let ATT = [];
 const CHAMCONG_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/chamcong.json';
 let NHANSU_ACTIVE = []; // toàn bộ nhân sự đang làm việc, dùng để đối chiếu ngược (ai không có dữ liệu chấm công)
@@ -489,8 +491,8 @@ function renderThieuChamCong(rows, chinhanh){
   summaryEl.textContent = canChuY
     ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công (${canChuY} người)`
     : missing.length
-      ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, ${missing.length} người còn lại thuộc diện không bắt buộc chấm công ✓`
-      : 'Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, mọi người đã có dữ liệu ✓';
+      ? `Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, ${missing.length} người còn lại thuộc diện không bắt buộc chấm công`
+      : 'Nhân sự đang làm nhưng chưa có dữ liệu chấm công — không có, mọi người đã có dữ liệu';
   panelEl.style.display = missing.length ? '' : 'none';
 
   document.getElementById('thieuChamCongTbody').innerHTML = missing.length ? missing.map(e=>`
@@ -510,7 +512,7 @@ function renderTrungVanTay(){
   const panelEl = document.getElementById('trungVanTayPanel');
   summaryEl.textContent = list.length
     ? `Cần kiểm tra thủ công (${list.length} người)`
-    : 'Nghi vấn trùng vân tay — không có, mọi trường hợp đã tự gộp hoặc rõ ràng ✓';
+    : 'Nghi vấn trùng vân tay — không có, mọi trường hợp đã tự gộp hoặc rõ ràng';
   panelEl.style.display = list.length ? '' : 'none';
 
   document.getElementById('trungVanTayTbody').innerHTML = list.length ? list.map(g=>{
@@ -532,7 +534,7 @@ function renderChuaKhop(rows){
   const panelEl = document.getElementById('chuaKhopPanel');
   summaryEl.textContent = list.length
     ? `Nhân sự chưa khớp với dữ liệu Nhân sự (${list.length} người)`
-    : 'Nhân sự chưa khớp với dữ liệu Nhân sự — không có, mọi người đã khớp ✓';
+    : 'Nhân sự chưa khớp với dữ liệu Nhân sự — không có, mọi người đã khớp';
   panelEl.style.display = list.length ? '' : 'none';
   document.getElementById('chuaKhopTbody').innerHTML = list.length ? list.map(v=>`
     <tr>
@@ -585,7 +587,7 @@ const barValueLabelPlugin = {
         if(value === null || value === undefined) return;
         ctx.save();
         ctx.fillStyle = dataset.labelColor || dataset.borderColor || dataset.backgroundColor;
-        ctx.font = '700 10px Inter, sans-serif';
+        ctx.font = "700 10px 'Be Vietnam Pro', sans-serif";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(value, bar.x, bar.y - 3);
@@ -746,14 +748,16 @@ function renderBranchKPI(){
     });
   }
 
+  // % chỉ tô màu khi vượt ngưỡng chú ý (canh) / xấu (xau) — ngưỡng hiển thị, đặt 28/10/2026
+  const pctNguong = (v, so, canh, xau) => `<span class="pct ${v>=xau?'t-xau':v>=canh?'t-canh':''}">(${v.toFixed(so)}%)</span>`;
   metricRow('Nghỉ/vắng (hôm nay)', '', o=>`${o.nghiHomNay}`);
   metricRow('Đi muộn (hôm nay)', '', o=>`${o.treHomNay}`);
 
   cells.push(`<div class="bg-full-divider"><span>Lũy kế từ đầu tháng</span></div>`);
 
-  metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} <span class="pct">(${o.tyLeNghi.toFixed(0)}%)</span>`);
-  metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} <span class="pct">(${o.tyLeNVTre.toFixed(0)}%)</span>`);
-  metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} <span class="pct">(${o.tyLeTreNgayCong.toFixed(1)}%)</span>`);
+  metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} ${pctNguong(o.tyLeNghi, 0, 10, 20)}`);
+  metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} ${pctNguong(o.tyLeNVTre, 0, 20, 40)}`);
+  metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} ${pctNguong(o.tyLeTreNgayCong, 1, 10, 20)}`);
   metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat ? fmtNgay(o.ngayCapNhat) : '—'}`);
 
   document.getElementById('branchGrid').innerHTML = cells.join('');

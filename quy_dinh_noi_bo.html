@@ -9,14 +9,6 @@
   /* Riêng trang — phần chung ở chung.css (chuyển 28/10/2026). Màu nền tảng lấy từ biến chung. */
   :root{
     --blue-deep:var(--accent);   /* chuẩn chung 28/10/2026 */
-    --active-bg:var(--green-bg);
-    --active-ink:var(--green);
-    --active-dot:#2ea44f;
-    --inactive-bg:#f3f1ee;
-    --inactive-ink:#8a8378;
-    --new-bg:#fff1e0;
-    --new-ink:#b45309;
-    --inactive-dot:#b8b0a3;
     --fs-h1:24px;
     --fs-md:14px;
     --fs-base:13px;
@@ -47,11 +39,7 @@
   }
   .today-tag{
     font-size:var(--fs-sm);
-    color:var(--blue-deep);
-    background:#eaf1fa;
-    border:1px solid #cddcef;
-    padding:5px 12px;
-    border-radius:20px;
+    color:var(--muted);
     white-space:nowrap;
   }
 
@@ -70,13 +58,14 @@
   .search-box input{
     width:100%;
     font-size:var(--fs-base);
-    padding:9px 14px 9px 34px;
-    border-radius:8px;
-    border:1.5px solid #cddcef;
+    height:30px;
+    padding:0 30px 0 32px;
+    border-radius:6px;
+    border:1px solid var(--border);
     background:#fff;
     color:var(--ink);
   }
-  .search-box input:focus{outline:none;border-color:var(--blue);}
+  .search-box input:focus{outline:none;border-color:var(--accent);}
   .search-box svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink-soft);pointer-events:none;}
   .search-clear{
     position:absolute;right:8px;top:50%;transform:translateY(-50%);
@@ -85,25 +74,9 @@
 
   .filter-bar{
     display:flex;
-    gap:8px;
+    gap:6px;
     flex-wrap:wrap;
     margin-bottom:18px;
-  }
-  .filter-btn{
-    font-family:inherit;
-    font-size:var(--fs-sm);
-    font-weight:600;
-    padding:6px 14px;
-    border-radius:20px;
-    border:1px solid #cddcef;
-    background:#fff;
-    color:var(--blue-deep);
-    cursor:pointer;
-  }
-  .filter-btn.active{
-    background:var(--blue-deep);
-    color:#fff;
-    border-color:var(--blue-deep);
   }
 
   .empty-hint{
@@ -132,57 +105,35 @@
     vertical-align:top;
   }
   .policy-table tr.policy-row{cursor:pointer;transition:background .15s ease;}
-  .policy-table tr.policy-row:hover{background:#F7F9FC;}
-  .policy-table tr.policy-row.is-active{background:#eaf3fc;}
-  .policy-table tr.policy-row.is-active:hover{background:#dcebfa;}
+  .policy-table tr.policy-row:hover{background:#f8f9ff;}
   .policy-table tr.policy-row td{border-bottom:1px solid var(--line);}
-  .policy-table tr.policy-row.is-open td{border-bottom-color:#c7ccd3;}
+  .policy-table tr.policy-row.is-open td{border-bottom-color:var(--border);}
   .policy-table tr.policy-detail-row td{padding:0;}
 
   .col-title{min-width:0;}
   .col-title .name{font-weight:400;line-height:1.35;}
-  .badge-new{
-    display:inline-block;
-    margin-left:6px;
-    padding:1px 7px;
-    border-radius:10px;
-    font-size:11px;
-    font-weight:700;
-    vertical-align:middle;
-    background:var(--new-bg);
-    color:var(--new-ink);
-  }
   mark{background:#fff1a8;color:inherit;border-radius:2px;padding:0 1px;}
   .col-code{letter-spacing:.02em;color:var(--ink-soft);}
   .col-stt{color:var(--ink-soft);}
   .col-dept{color:var(--ink);}
-  .col-dept .dept-pill{
-    display:inline-block;
-    padding:2px 8px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    background:var(--card2);
-    color:var(--text);
-  }
 
   .policy-table td.col-updated,
   .policy-table td.col-range{color:var(--ink);}
   .policy-table td.col-range{white-space:normal;}
 
   .status{
-    font-weight:600;
-    padding:5px 11px 5px 9px;
-    border-radius:20px;
+    font-size:12px;
     display:inline-flex;
     align-items:center;
     gap:6px;
     white-space:nowrap;
   }
   .status .dot{width:6px;height:6px;border-radius:50%;}
-  .status.active{background:var(--active-bg);color:var(--active-ink);}
-  .status.active .dot{background:var(--active-dot);}
-  .status.inactive{background:var(--inactive-bg);color:var(--inactive-ink);}
-  .status.inactive .dot{background:var(--inactive-dot);}
+  .status.active{color:var(--text);}
+  .status.active .dot{background:var(--green);}
+  .status.inactive{color:var(--muted);}
+  .status.inactive .dot{background:var(--border);}
+  tr.policy-row:not(.is-active) td{color:var(--muted);}
 
   .chev{
     width:22px;height:22px;
@@ -211,7 +162,7 @@
     .policy-table td.col-status{order:6;margin-top:4px;}
     .policy-table td.col-stt{order:7;color:var(--ink-soft);}
     .policy-table tr.policy-row td.col-chev{order:0;position:absolute;top:14px;right:16px;padding:0;}
-    .policy-table tr.policy-row.is-open{border-bottom-color:#c7ccd3;}
+    .policy-table tr.policy-row.is-open{border-bottom-color:var(--border);}
     .policy-table td.col-updated,.policy-table td.col-range{padding-right:70px;}
     .policy-table td.col-stt::before{content:"STT ";font-weight:600;color:var(--ink-soft);}
     .policy-table td.col-dept::before{content:"Phân loại: ";font-weight:600;color:var(--ink-soft);}
@@ -231,7 +182,7 @@
   .block table.mini{width:100%;border-collapse:collapse;font-size:var(--fs-base);margin-top:2px;}
   .block table.mini th, .block table.mini td{border:1px solid var(--line);padding:5px 8px;text-align:center;}
   .block table.mini th{
-    background:#f5f6f8;
+    background:var(--card2);
     font-weight:600;
     font-size:var(--fs-xs);
     color:var(--ink-soft);
@@ -241,8 +192,8 @@
     grid-column:1 / -1;
     font-size:var(--fs-sm);
     color:var(--ink-soft);
-    background:#f8f7f4;
-    border-left:2px solid var(--blue);
+    background:var(--card2);
+    border-left:2px solid var(--accent);
     padding:9px 12px;
     margin-top:2px;
   }
@@ -256,31 +207,29 @@
     font-weight:600;
     color:var(--blue-deep);
     background:#fff;
-    border:1px solid #c7d3e2;
+    border:1px solid var(--border);
     padding:7px 13px;
     border-radius:5px;
     text-decoration:none;
     transition:background .15s ease, border-color .15s ease;
   }
-  .doc-btn:hover{background:#eef3fa;border-color:var(--blue);}
+  .doc-btn:hover{background:#f8f9ff;border-color:var(--accent);}
   .doc-btn svg{flex-shrink:0;}
   .doc-unavailable{
     font-size:var(--fs-sm);
-    color:#a9aeb6;
+    color:var(--muted);
     font-style:italic;
   }
 
   .foot{
     text-align:center;
     font-size:var(--fs-xs);
-    color:#a9aeb6;
+    color:var(--muted);
     margin-top:34px;
   }
 
   /* Đầu bảng theo chuẩn chung: nền xanh, chữ trắng */
   .policy-table thead th{color:#fff;border-bottom:none;font-weight:600;letter-spacing:0;}
-  .policy-table tr.policy-row.is-active{background:#eef3fd;}
-  .policy-table tr.policy-row.is-active:hover{background:#e3ebfb;}
 </style>
 </head>
 <body>
@@ -1131,9 +1080,9 @@ function render(){
     return `
     <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
       <td class="col-stt">${stt}</td>
-      <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
+      <td class="col-dept">${p.category ? `<span class="tag">${p.category}</span>` : '—'}</td>
       <td class="col-title">
-        <div class="name">${highlight(p.name, q)}${isNew ? '<span class="badge-new">Mới</span>' : ''}</div>
+        <div class="name">${highlight(p.name, q)}${isNew ? '<span class="badge canh" style="margin-left:6px;vertical-align:middle;">Mới</span>' : ''}</div>
       </td>
       <td class="col-code">${highlight(p.code || '—', q)}</td>
       <td class="col-updated">${p.updated}</td>
@@ -1179,13 +1128,13 @@ function render(){
   list.innerHTML = `
     <table class="policy-table">
       <colgroup>
-        <col style="width:40px">
-        <col style="width:150px">
+        <col style="width:44px">
+        <col style="width:170px">
         <col>
-        <col style="width:110px">
         <col style="width:100px">
-        <col style="width:210px">
         <col style="width:120px">
+        <col style="width:260px">
+        <col style="width:130px">
         <col style="width:36px">
       </colgroup>
       <thead>
