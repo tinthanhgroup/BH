@@ -36,6 +36,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 28/10/2026 | Nhân sự, Chấm công: dựng lại bố cục (KPI → so sánh chi nhánh → bất thường/xu hướng luôn hiện, chi tiết thu gọn; Phan Rang tách riêng; tuổi/thâm niên theo nhóm); đổi quy tắc thu gọn, xem `docs/giao-dien-va-phan-quyen.md` |
 | 28/10/2026 | Mục 4 (Nhân sự, Chấm công, Nhà cung cấp, Quy định nội bộ): sửa theo đánh giá UX lần 2 (font biểu đồ, KPI kiểu chung, nhãn chỉ tô khi cần chú ý, bỏ emoji, độ rộng cột) |
 | 28/10/2026 | Báo cáo tuần: doanh thu DV "Thực hiện" tự động từ `13. DV - Master Data/Doanh thu.xlsx` (Giá trị trước thuế, gồm xe ngập, theo ngày thanh toán; chỉ tiêu vẫn nhập tay); biểu đồ HĐ ký đổi sang tuần T2–CN như tuần báo cáo; chưa push, chờ dán script; xem `docs/module-baocaotuan.md` |
 | 28/10/2026 | Tiêu đề mục tab Hàng hóa đổi theo kiểu tab Bán hàng (chữ thường, màu nhấn, bỏ emoji); cảnh báo xe bán ngang giữ màu |
