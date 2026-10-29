@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KM đối thủ Khánh Hòa — Tín Thanh Group</title>
+<link rel="stylesheet" href="chung.css">
+<style>
+  /* Riêng trang KM đối thủ (sub-tab 5.3 của tab MKT). Dữ liệu: km_doi_thu.json, do agent doi-thu-km (Project A, project 16) ghi hằng ngày */
+  tr.grp td{background:var(--card2);color:var(--blue);font-weight:600;font-size:12px;}
+  tr.grp:hover{background:var(--card2);}
+  tbody td{vertical-align:top;}
+  .rival{font-weight:600;}
+  .muted{color:var(--muted);}
+  .small{font-size:11.5px;}
+  .na{color:var(--muted);font-style:italic;}
+  .phu{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .lb{font-weight:700;font-family:var(--mono);}
+  .lb-bar{height:4px;border-radius:2px;background:var(--blue-mid);opacity:.3;margin:4px 0 0 auto;}
+  .lb-low .lb{color:var(--green);}
+  .lb-low .lb-bar{background:var(--green);opacity:.6;}
+  .nguon{white-space:nowrap;}
+  .loai{display:inline-block;min-width:18px;text-align:center;padding:1px 5px;border-radius:5px;font-size:10.5px;font-weight:700;background:var(--card2);color:var(--blue);border:1px solid var(--border);margin-right:4px;}
+  .log{list-style:none;margin:0;padding:0;}
+  .log li{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;display:flex;gap:14px;}
+  .log li:last-child{border-bottom:none;}
+  .log .d{color:var(--muted);font-weight:600;min-width:84px;}
+  .formula{font-size:12.5px;line-height:1.7;}
+  .formula code{background:var(--card2);padding:2px 6px;border-radius:5px;font-size:12px;}
+  .cuon{overflow-x:auto;}
+  @media(max-width:900px){.kpi-row.c4{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="sub" id="updatedText">Đang tải…</div>
+  </div>
+
+  <div class="kpi-row c4" id="kpiRow"></div>
+
+  <div class="panel">
+    <h3><span class="chart-num">1</span> Giá lăn bánh tạm tính của đối thủ theo model Hyundai</h3>
+    <p class="desc">Giá đối thủ tại Khánh Hòa sau khuyến mãi. Màu xanh là mức lăn bánh thấp nhất trong nhóm. "Chưa rõ" là chưa có giá niêm yết hoặc số tiền KM đáng tin. Nguồn: A hãng · B đại lý · C tư vấn bán hàng.</p>
+    <div class="filter-btns" id="chips" style="margin-bottom:12px"></div>
+    <div class="table-wrap cuon">
+      <table>
+        <thead><tr>
+          <th>Đối thủ</th><th class="num">Niêm yết (tr)</th><th>Khuyến mãi</th><th>Hạn</th>
+          <th class="num">Lăn bánh tạm tính (tr)</th><th>Nguồn</th>
+        </tr></thead>
+        <tbody id="kmBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">2</span> Thay đổi gần đây</h3>
+    <p class="desc">KM mới, KM đổi, KM hết hạn so với lần kiểm tra trước.</p>
+    <ul class="log" id="log"></ul>
+  </div>
+
+  <details class="panel">
+    <summary><span class="chart-num">3</span> Giá chào của tư vấn bán hàng</summary>
+    <p class="desc">Giá sát thực tế hơn niêm yết, lấy từ bài đăng của tư vấn bán hàng (nguồn C).</p>
+    <div id="tvbh"></div>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">4</span> Tình trạng nguồn (<span id="srcCount">0</span>)</summary>
+    <p class="desc">Nguồn không đọc được thì không kết luận "không có KM".</p>
+    <div class="table-wrap cuon">
+      <table class="bang-nhe">
+        <thead><tr><th>Nguồn</th><th>Loại</th><th>Trang</th><th>Tình trạng</th><th>Kiểm tra</th></tr></thead>
+        <tbody id="srcBody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="panel">
+    <summary><span class="chart-num">5</span> Cách tính giá lăn bánh</summary>
+    <div class="formula" id="formula"></div>
+  </details>
+
+</div>
+
+<script>
+let DATA = null, MODEL = 'Tất cả';
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmt(n){ return n.toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function fmtDate(iso){ if(!iso) return '—'; const p = iso.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : iso; }
+
+// Lăn bánh = niêm yết − giảm trực tiếp + trước bạ (sau hỗ trợ) + phí cố định
+function lanBanh(r){
+  if(r.niem_yet == null) return null;
+  const c = DATA.cong_thuc;
+  const tb = r.niem_yet * c.truoc_ba_pct / 100;
+  let ht = 0;
+  if(typeof r.ho_tro_truoc_ba === 'string' && r.ho_tro_truoc_ba.endsWith('%')) ht = tb * parseFloat(r.ho_tro_truoc_ba) / 100;
+  else if(typeof r.ho_tro_truoc_ba === 'number') ht = r.ho_tro_truoc_ba;
+  const phi = r.cho >= 7 ? c.phi_7_cho : c.phi_5_cho;
+  return r.niem_yet - (r.giam_truc_tiep || 0) + Math.max(tb - ht, 0) + phi;
+}
+
+function renderKpi(){
+  const km = DATA.km;
+  const coGia = km.filter(r => r.niem_yet != null).length;
+  const coKM = km.filter(r => r.ho_tro_truoc_ba || r.giam_truc_tiep || r.qua).length;
+  const nguon = DATA.nguon, ok = nguon.filter(s => s.trang_thai === 'doc_duoc').length;
+  const kem = nguon.length - ok;
+  document.getElementById('kpiRow').innerHTML = [
+    ['Đối thủ theo dõi', km.length, 'phiên bản/mẫu xe', ''],
+    ['Có giá lăn bánh', coGia, 'trên ' + km.length + ', còn lại chưa rõ giá', coGia < km.length ? 'canh' : ''],
+    ['Đang có KM', coKM, 'trước bạ, giảm giá hoặc quà', ''],
+    ['Nguồn đọc được', ok + '/' + nguon.length, kem ? kem + ' nguồn chưa đọc đủ' : 'đủ nguồn', kem ? 'canh' : '']
+  ].map(k => '<div class="kpi ' + k[3] + '"><div class="kpi-label">' + k[0] + '</div><div class="kpi-num">' + k[1] + '</div><div class="kpi-sub">' + k[2] + '</div></div>').join('');
+}
+
+function renderChips(){
+  const models = ['Tất cả', ...new Set(DATA.km.map(r => r.model))];
+  document.getElementById('chips').innerHTML = models.map(m =>
+    '<button class="filter-btn' + (m === MODEL ? ' active' : '') + '" data-m="' + esc(m) + '">' + esc(m) + '</button>').join('');
+  document.querySelectorAll('#chips .filter-btn').forEach(b => b.onclick = () => { MODEL = b.dataset.m; renderChips(); renderTable(); });
+}
+
+function renderTable(){
+  const rows = DATA.km.filter(r => MODEL === 'Tất cả' || r.model === MODEL);
+  const models = [...new Set(rows.map(r => r.model))];
+  let html = '';
+  models.forEach(m => {
+    const grp = rows.filter(r => r.model === m);
+    const vals = grp.map(lanBanh).filter(v => v != null);
+    const lo = vals.length ? Math.min(...vals) : null, hi = vals.length ? Math.max(...vals) : null;
+    html += '<tr class="grp"><td colspan="6">Hyundai ' + esc(m) + '</td></tr>';
+    grp.forEach(r => {
+      const lb = lanBanh(r);
+      const low = lb != null && vals.length > 1 && lb === lo;
+      const barW = lb != null && hi ? Math.max(8, Math.round(lb / hi * 100)) : 0;
+      const kmCell = esc(r.km) + (r.qua ? '<span class="phu">+ ' + esc(r.qua) + '</span>' : '')
+        + (r.ghi_chu ? '<span class="phu">' + esc(r.ghi_chu) + '</span>' : '');
+      html += '<tr>'
+        + '<td><span class="rival">' + esc(r.doi_thu) + '</span>' + (r.phien_ban ? '<div class="muted small">' + esc(r.phien_ban) + '</div>' : '') + '</td>'
+        + '<td class="num">' + (r.niem_yet != null ? fmt(r.niem_yet) : '<span class="na">chưa rõ</span>') + '</td>'
+        + '<td>' + kmCell + '</td>'
+        + '<td class="small muted">' + esc(r.han || '—') + '</td>'
+        + '<td class="num ' + (low ? 'lb-low' : '') + '">' + (lb != null ? '<div class="lb">' + fmt(lb) + '</div><div class="lb-bar" style="width:' + barW + '%"></div>' : '<span class="na">chưa rõ</span>') + '</td>'
+        + '<td class="small nguon">' + (r.nguon_loai ? '<span class="loai">' + esc(r.nguon_loai) + '</span>' + esc(r.nguon) + '<div class="muted">' + fmtDate(r.ngay) + '</div>' : '<span class="na">chưa có nguồn</span>') + '</td>'
+        + '</tr>';
+    });
+  });
+  document.getElementById('kmBody').innerHTML = html || '<tr><td colspan="6" class="empty">Chưa có dữ liệu</td></tr>';
+}
+
+function renderLog(){
+  const l = DATA.thay_doi || [];
+  document.getElementById('log').innerHTML = l.length
+    ? l.map(t => '<li><span class="d">' + fmtDate(t.ngay) + '</span><span>' + esc(t.noi_dung) + '</span></li>').join('')
+    : '<li class="empty">Chưa có thay đổi</li>';
+}
+
+function renderTvbh(){
+  const t = DATA.tvbh || [];
+  document.getElementById('tvbh').innerHTML = t.length
+    ? '<div class="table-wrap cuon"><table class="bang-nhe"><thead><tr><th>Tư vấn bán hàng</th><th>Mẫu xe</th><th class="num">Giá chào</th><th>Nội dung</th><th>Ngày đăng</th></tr></thead><tbody>'
+      + t.map(x => '<tr><td>' + esc(x.ten) + '</td><td>' + esc(x.xe) + '</td><td class="num">' + esc(x.gia) + '</td><td>' + esc(x.noi_dung) + '</td><td>' + fmtDate(x.ngay) + '</td></tr>').join('') + '</tbody></table></div>'
+    : '<div class="empty">Chưa có dữ liệu. Facebook chặn đọc tự động, giá chào của tư vấn bán hàng cần nhập từ ảnh chụp bài đăng.</div>';
+}
+
+function renderSrc(){
+  const st = {doc_duoc:['tot','Đọc được'], mot_phan:['canh','Đọc một phần'], khong_doc_duoc:['xau','Không đọc được']};
+  document.getElementById('srcCount').textContent = DATA.nguon.length;
+  document.getElementById('srcBody').innerHTML = DATA.nguon.map(s => {
+    const x = st[s.trang_thai] || ['canh', s.trang_thai];
+    return '<tr><td class="rival">' + esc(s.ten) + '</td><td><span class="loai">' + esc(s.loai) + '</span></td><td class="small muted">' + esc(s.link) + '</td><td><span class="badge ' + x[0] + '">' + x[1] + '</span></td><td class="small muted">' + fmtDate(s.ngay) + '</td></tr>';
+  }).join('');
+}
+
+function renderFormula(){
+  const c = DATA.cong_thuc;
+  document.getElementById('formula').innerHTML =
+    '<p><code>Lăn bánh = Niêm yết − Giảm trực tiếp + Trước bạ (sau hỗ trợ) + Phí cố định</code></p>'
+    + '<p>Trước bạ = ' + c.truoc_ba_pct + '% giá niêm yết. "Hỗ trợ 100%" thì trước bạ bằng 0; "hỗ trợ N triệu" thì trừ N.</p>'
+    + '<p>Phí cố định ước tính: ' + fmt(c.phi_5_cho) + ' triệu (xe 5 chỗ), ' + fmt(c.phi_7_cho) + ' triệu (xe 7 chỗ), gồm biển số, đăng kiểm, phí đường bộ, bảo hiểm bắt buộc. Chưa gồm bảo hiểm vật chất, phụ kiện, phí dịch vụ của đại lý.</p>'
+    + '<p>Quà tặng (phiếu nhiên liệu, bảo hiểm, phụ kiện) không trừ vào giá lăn bánh. Giá là tạm tính, cần xác nhận với đại lý.</p>';
+}
+
+function render(){
+  document.getElementById('updatedText').textContent = 'Cập nhật lúc ' + DATA.updated_vn + ' · Khánh Hòa · 4 model chủ lực Hyundai';
+  renderKpi(); renderChips(); renderTable(); renderLog(); renderTvbh(); renderSrc(); renderFormula();
+}
+
+fetch('km_doi_thu.json', {cache:'no-store'})
+  .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d => { DATA = d; render(); })
+  .catch(e => { document.getElementById('updatedText').textContent = 'Không tải được dữ liệu: ' + e; });
+</script>
+</body>
+</html>

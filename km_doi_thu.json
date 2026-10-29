@@ -1,0 +1,271 @@
+{
+  "updated_vn": "30/10/2026 04:12",
+  "cong_thuc": {
+    "truoc_ba_pct": 10,
+    "phi_5_cho": 3.4,
+    "phi_7_cho": 3.8
+  },
+  "km": [
+    {
+      "model": "Tucson",
+      "doi_thu": "Mitsubishi Destinator",
+      "phien_ban": "Premium",
+      "cho": 7,
+      "niem_yet": 780,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": "100%",
+      "km": "Hỗ trợ 100% trước bạ (~78 tr)",
+      "qua": "",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "A",
+      "nguon": "mitsubishi-motors.com.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Hãng, toàn quốc; banner Bitcar còn ghi \"ưu đãi 35 triệu\" (chưa rõ cách tính, chưa cộng)"
+    },
+    {
+      "model": "Tucson",
+      "doi_thu": "Mitsubishi Destinator",
+      "phien_ban": "Ultimate",
+      "cho": 7,
+      "niem_yet": 855,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": "50%",
+      "km": "Hỗ trợ 50% trước bạ (~43 tr)",
+      "qua": "Phiếu nhiên liệu 25 tr",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "A",
+      "nguon": "mitsubishi-motors.com.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Hãng, toàn quốc"
+    },
+    {
+      "model": "Tucson",
+      "doi_thu": "Ford Territory",
+      "phien_ban": "Trend 1.5L AT",
+      "cho": 5,
+      "niem_yet": 739,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Không có KM đang chạy",
+      "qua": "",
+      "han": "",
+      "nguon_loai": "B",
+      "nguon": "nhatrangford.com.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "KM duy nhất (lãi suất 0%) hết hạn 31/05/2026"
+    },
+    {
+      "model": "Tucson",
+      "doi_thu": "Mazda CX-5",
+      "phien_ban": "",
+      "cho": 5,
+      "niem_yet": null,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Chỉ nói chung \"100% trước bạ\", chưa có số tiền",
+      "qua": "",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "mazdanhatrang.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Trang giá của đại lý tải bằng script, chưa đọc được giá niêm yết"
+    },
+    {
+      "model": "Creta",
+      "doi_thu": "Mitsubishi Xforce",
+      "phien_ban": "GLX",
+      "cho": 5,
+      "niem_yet": 599,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": "100%",
+      "km": "Hỗ trợ 100% trước bạ (~60 tr)",
+      "qua": "",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "mitsubishibitcarkhanhhoa.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Bitcar và hãng cùng ghi"
+    },
+    {
+      "model": "Creta",
+      "doi_thu": "Toyota Yaris Cross",
+      "phien_ban": "Bản xăng",
+      "cho": 5,
+      "niem_yet": 650,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 50,
+      "km": "Hỗ trợ lệ phí trước bạ tương đương 50 tr",
+      "qua": "Quà tặng trong tháng (chưa nêu cụ thể)",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "toyotanhatrang.com.vn",
+      "ngay": "2026-10-10",
+      "ghi_chu": "Trang ghi lệch giá: 650 (giá bán) và 730 (tiêu đề); lấy 650"
+    },
+    {
+      "model": "Creta",
+      "doi_thu": "VinFast VF 6",
+      "phien_ban": "",
+      "cho": 5,
+      "niem_yet": null,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Chưa có nguồn đại lý",
+      "qua": "",
+      "han": "",
+      "nguon_loai": "",
+      "nguon": "",
+      "ngay": "",
+      "ghi_chu": "Tạm bỏ qua"
+    },
+    {
+      "model": "Accent",
+      "doi_thu": "Honda City",
+      "phien_ban": "G",
+      "cho": 5,
+      "niem_yet": 499,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Không có KM",
+      "qua": "",
+      "han": "",
+      "nguon_loai": "B",
+      "nguon": "hondanhatrang.com.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025"
+    },
+    {
+      "model": "Accent",
+      "doi_thu": "Toyota Vios",
+      "phien_ban": "1.5E MT",
+      "cho": 5,
+      "niem_yet": 458,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Không có KM",
+      "qua": "",
+      "han": "",
+      "nguon_loai": "B",
+      "nguon": "toyotanhatrang.com.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Bài KM tháng 10 không nêu Vios"
+    },
+    {
+      "model": "Accent",
+      "doi_thu": "Mazda 2",
+      "phien_ban": "",
+      "cho": 5,
+      "niem_yet": null,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Chỉ nói chung \"100% trước bạ\", chưa có số tiền",
+      "qua": "",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "mazdanhatrang.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Chưa đọc được giá niêm yết"
+    },
+    {
+      "model": "Stargazer",
+      "doi_thu": "Mitsubishi Xpander",
+      "phien_ban": "MT",
+      "cho": 7,
+      "niem_yet": 568,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": "100%",
+      "km": "Hỗ trợ 100% trước bạ (~57 tr)",
+      "qua": "Phiếu nhiên liệu 10–24 tr",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "mitsubishibitcarkhanhhoa.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Bitcar và hãng cùng ghi"
+    },
+    {
+      "model": "Stargazer",
+      "doi_thu": "Kia Carens",
+      "phien_ban": "1.5G Deluxe",
+      "cho": 7,
+      "niem_yet": 559,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Bản Deluxe không ưu đãi (IVT tới 5 tr, Luxury tới 10 tr)",
+      "qua": "",
+      "han": "Tháng 10/2026",
+      "nguon_loai": "B",
+      "nguon": "kianhatrang.vn",
+      "ngay": "2026-10-30",
+      "ghi_chu": "Hai trang của đại lý ghi ưu đãi mâu thuẫn nhau, cần hỏi đại lý"
+    }
+  ],
+  "thay_doi": [
+    {
+      "ngay": "2026-10-30",
+      "noi_dung": "Không có KM mới, đổi hay hết hạn so với 23/10."
+    },
+    {
+      "ngay": "2026-10-23",
+      "noi_dung": "Lập mốc theo dõi lần đầu: 12 đối thủ/phiên bản, 9 có giá niêm yết, 5 có KM trước bạ."
+    }
+  ],
+  "nguon": [
+    {
+      "ten": "Kia Nha Trang",
+      "loai": "B",
+      "link": "kianhatrang.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Toyota Nha Trang",
+      "loai": "B",
+      "link": "toyotanhatrang.com.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Honda Ôtô Khánh Hòa",
+      "loai": "B",
+      "link": "hondanhatrang.com.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Nha Trang Ford",
+      "loai": "B",
+      "link": "nhatrangford.com.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Mitsubishi Bitcar Khánh Hòa",
+      "loai": "B",
+      "link": "mitsubishibitcarkhanhhoa.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Mazda Nha Trang (Thaco)",
+      "loai": "B",
+      "link": "mazdanhatrang.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Mitsubishi Việt Nam (hãng)",
+      "loai": "A",
+      "link": "mitsubishi-motors.com.vn",
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-10-30"
+    },
+    {
+      "ten": "Ngọc Hải – Kia Mazda Cam Ranh",
+      "loai": "C",
+      "link": "facebook.com/profile.php?id=61582370495626",
+      "trang_thai": "mot_phan",
+      "ngay": "2026-10-30"
+    }
+  ],
+  "tvbh": []
+}
