@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 28/10/2026
+Cập nhật: 29/10/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -9,6 +9,7 @@ Cập nhật: 28/10/2026
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
+- [ ] Công nợ BH Phú Yên (báo cáo tuần): dán `TinThanh_CongNo_Sync.gs` vào script.google.com (điền token, bật Drive API, chạy ▶ `congNoSyncNgay` rồi `setupCongNoTrigger`), kế toán trưởng cập nhật file mỗi thứ 7 (kể cả đổi ngày "ĐẾN" ở ô A1); push `baocaotuan.html` + `congno.json`
 - [x] Báo cáo tuần: dán `TinThanh_DichVu_Sync.gs` mới (đọc thêm Doanh thu.xlsx) vào script.google.com, chạy ▶ `dichVuSyncNgay`, kiểm tra `dichvu.json` có `doanhThu`; push `baocaotuan.html` (doanh thu DV tự động, tuần HĐ T2–CN)
 - [ ] Báo cáo tuần: dán hàm `doanhThuDVTuDong()` vào script Báo cáo tuần, chạy 1 lần (xoá + bỏ tô cam ô C15, sửa mục J Hướng dẫn ở NT, PY, file mẫu)
 - [x] Chuyển các trang module sang `chung.css` (28/10/2026; Báo cáo tuần, Lợi nhuận, KQKD chỉ đồng bộ font và màu)
@@ -36,6 +37,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 29/10/2026 | Báo cáo tuần Phú Yên: thêm khối Công nợ bảo hiểm (biểu đồ theo tuần từ `congno.json`, điểm đầu 16/10); xem `docs/module-baocaotuan.md` |
 | 28/10/2026 | Nhân sự, Chấm công: dựng lại bố cục (KPI → so sánh chi nhánh → bất thường/xu hướng luôn hiện, chi tiết thu gọn; Phan Rang tách riêng; tuổi/thâm niên theo nhóm); đổi quy tắc thu gọn, xem `docs/giao-dien-va-phan-quyen.md` |
 | 28/10/2026 | Mục 4 (Nhân sự, Chấm công, Nhà cung cấp, Quy định nội bộ): sửa theo đánh giá UX lần 2 (font biểu đồ, KPI kiểu chung, nhãn chỉ tô khi cần chú ý, bỏ emoji, độ rộng cột) |
 | 28/10/2026 | Báo cáo tuần: doanh thu DV "Thực hiện" tự động từ `13. DV - Master Data/Doanh thu.xlsx` (Giá trị trước thuế, gồm xe ngập, theo ngày thanh toán; chỉ tiêu vẫn nhập tay); biểu đồ HĐ ký đổi sang tuần T2–CN như tuần báo cáo; chưa push, chờ dán script; xem `docs/module-baocaotuan.md` |

@@ -1003,10 +1003,48 @@ function renderChiSo(a){
   blocks=cards.map(function(b){
     return typeof b==='string'?b:'<div class="cs-block"><div class="cs-title">'+esc(b.name)+(b.tieuDe?' — '+esc(b.tieuDe):'')+'</div>'+b.body+'</div>';
   });
-  var ns=renderNS(a); if(ns) blocks.push(ns);
+  var ns=renderNS(a); if(ns) blocks.push(ns); var cnb=renderCongNo(a); if(cnb) blocks.push(cnb);
   // Đánh số thẻ theo thứ tự hiển thị: 1.1, 1.2, 1.3... (mỗi thẻ có đúng 1 .cs-title ở đầu)
   var n=0, html=blocks.join('').replace(/<div class="cs-title">/g, function(m){ n++; return m+'1.'+n+' '; });
   return '<div class="cs-grid">'+html+'</div>';
+}
+
+// ── Công nợ bảo hiểm (Dịch vụ) — thêm 29/10/2026 (anh Khanh): theo dõi mức kiểm soát công nợ hằng tuần.
+// Nguồn congno.json (TinThanh_CongNo_Sync.gs đọc file "Cong no bao hiem .xlsx" kế toán trưởng cập nhật mỗi thứ 7).
+// Chỉ có Phú Yên; chi nhánh khác không hiện khối này. Đơn vị biểu đồ: triệu đồng.
+const CN_JSON_URL = 'congno.json', CN_TUAN = 10;
+let CNX = null;   // null nếu tải lỗi
+const CN_SERIES = [{name:'Trong hạn 30 ngày', mau:'#4DB58E'}, {name:'Quá hạn trong 30 ngày', mau:'#F2C14E'}, {name:'Quá hạn trên 30 ngày', mau:'#EE9A62'}, {name:'Quá hạn trên 3 tháng', mau:'#D64545'}];
+function renderCongNo(a){
+  if(!CNX || branchCode(a.b.chiNhanh)!=='PY') return '';
+  var tuan=(CNX.PY||{}).tuan||{}, keys=Object.keys(tuan).sort().slice(-CN_TUAN); if(!keys.length) return '';
+  var tr=function(v){ return Math.round((v||0)/1e5)/10; };   // đồng → triệu, 1 số lẻ
+  var rows=keys.map(function(k){ var t=tuan[k], qh=(t.qh30||0)+(t.qhTren30||0)+(t.qhTren3t||0), tong=qh+(t.trongHan||0), pct=tong? qh/tong*100 : 0;
+    return {k:k, t:t, qh:qh, tong:tong, pct:pct, nhan:fmtDShort(k), vals:[t.trongHan,t.qh30,t.qhTren30,t.qhTren3t].map(tr), tong_tr:tr(tong),
+      sub:'Quá hạn '+fmtN(tr(qh))+' tr = '+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'% tổng nợ'}; });
+  var chart=rows.map(function(r){ return {nhan:r.nhan, vals:r.vals, tong:r.tong_tr, sub:r.sub}; });
+  var cur=rows[rows.length-1], prev=rows.length>1? rows[rows.length-2] : null;
+  var dPct=prev? cur.pct-prev.pct : null;
+  var h='<div class="cs-block cs-full"><div class="cs-title">Công nợ bảo hiểm — Phú Yên</div>';
+  h+='<div class="cs-pct'+(cur.pct>=30?' low':'')+'">'+cur.pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> công nợ đã quá hạn (số đến '+fmtD(cur.k)+')'+
+     (dPct!=null? ' · '+(dPct>0?'tăng ':dPct<0?'giảm ':'không đổi ')+(dPct? Math.abs(dPct).toLocaleString('vi-VN',{maximumFractionDigits:1})+' điểm % so với tuần trước' : '') : ' · chưa có tuần trước để so sánh')+'</span></div>';
+  h+='<div class="cs-kv"><span>Tổng công nợ <b>'+fmtN(tr(cur.tong))+' tr</b></span><span>Quá hạn <b>'+fmtN(tr(cur.qh))+' tr</b></span><span>Quá hạn trên 3 tháng <b>'+fmtN(tr(cur.t.qhTren3t))+' tr</b></span></div>';
+  h+='<div class="cs-sub">'+rows.length+' tuần gần nhất (triệu đồng)</div>';
+  h+='<div class="cs-leg">'+CN_SERIES.map(function(se){ return '<span><i style="background:'+se.mau+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng công nợ</span></div>';
+  h+=svgStacked(CN_SERIES, chart, 'triệu đồng');
+  h+='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Số đến ngày</th>'+CN_SERIES.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th><th class="num">% quá hạn</th></tr></thead><tbody>'+
+    rows.slice().reverse().map(function(r){ return '<tr><td>'+fmtD(r.k)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong_tr)+'</b></td><td class="num"><b>'+r.pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%</b></td></tr>'; }).join('')+'</tbody></table></details>';
+  // Đơn vị bảo hiểm có nợ quá hạn ở tuần mới nhất (nhiều → ít)
+  var dv=(cur.t.donVi||[]).map(function(u){ return {ten:u.ten, th:u.trongHan||0, q30:u.qh30||0, q3:u.qhTren30||0, q3t:u.qhTren3t||0}; })
+    .map(function(u){ u.qh=u.q30+u.q3+u.q3t; return u; }).filter(function(u){ return u.qh>0; }).sort(function(x,y){ return y.qh-x.qh; });
+  h+='<div class="cs-sub" style="margin-top:12px">Đơn vị bảo hiểm còn nợ quá hạn — số đến '+fmtD(cur.k)+' (triệu đồng)</div>';
+  h+= dv.length? '<table class="cs-cmp"><thead><tr><th>Đơn vị</th><th class="num">Quá hạn trong 30 ngày</th><th class="num">Quá hạn trên 30 ngày</th><th class="num">Quá hạn trên 3 tháng</th><th class="num">Tổng quá hạn</th></tr></thead><tbody>'+
+    dv.map(function(u){ return '<tr><td>'+esc(u.ten)+'</td><td class="num">'+fmtN(tr(u.q30))+'</td><td class="num">'+fmtN(tr(u.q3))+'</td><td class="num'+(u.q3t?' down':'')+'">'+fmtN(tr(u.q3t))+'</td><td class="num"><b>'+fmtN(tr(u.qh))+'</b></td></tr>'; }).join('')+'</tbody></table>'
+    : '<div class="empty">Không có công nợ quá hạn.</div>';
+  var x=cur.t.xuatHS;
+  if(x) h+='<div class="cs-kv" style="margin-top:8px"><span>Xuất hồ sơ xe trong tuần <b>'+fmtN(x.slTuan)+' hồ sơ · '+fmtN(tr(x.gtTuan))+' tr</b></span><span>Luỹ kế tháng <b>'+fmtN(x.slThang)+' hồ sơ · '+fmtN(tr(x.gtThang))+' tr</b></span></div>';
+  h+=csNote('Từ congno.json — file "Cong no bao hiem" kế toán trưởng cập nhật mỗi thứ 7'+(CNX.updated_vn?' · đồng bộ lúc '+esc(CNX.updated_vn):'')+'. Công nợ theo HĐLK; "trong hạn" = trong 30 ngày kể từ mốc quá hạn. Quá hạn = ba cột quá hạn cộng lại. Tuần nào kế toán chưa cập nhật thì không có cột.');
+  return h+'</div>';
 }
 
 // Nhảy tới 1 mục (mở luôn nếu đang thu gọn) — dùng cho các ô KPI của thẻ chi nhánh
@@ -1292,13 +1330,15 @@ async function load(){
     .catch(function(e){ console.warn('Không tải được chamcong.json:', e); CC=null; });
   var dvP=getJ(DV_JSON_URL).then(function(j){ DVX=j; })
     .catch(function(e){ console.warn('Không tải được dichvu.json — dùng số nhập tay trong sheet:', e); DVX=null; });
+  var cnP=getJ(CN_JSON_URL).then(function(j){ CNX=j; })
+    .catch(function(e){ console.warn('Không tải được congno.json — bỏ qua khối Công nợ bảo hiểm:', e); CNX=null; });
   var crmP=getJ(CRM_JSON_URL).then(function(j){ CRMD=(j.records&&j.records.leads)||null; })
     .catch(function(e){ console.warn('Không tải được crm.json — Lead/khách hot chỉ dùng số nhập tay:', e); CRMD=null; });
   try{
     var res=await fetch(BCT_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     DATA=await res.json();
-    await salesP; await nsP; await ccP; await dvP; await crmP;
+    await salesP; await nsP; await ccP; await dvP; await crmP; await cnP;
   }catch(e){
     document.getElementById('app').innerHTML='<div class="error">Không tải được baocaotuan.json ('+esc(e.message)+').</div>';
     document.getElementById('updatedTag').textContent='Lỗi tải dữ liệu';
