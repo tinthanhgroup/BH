@@ -1,6 +1,90 @@
 {
  "PY": {
   "tuan": {
+   "2026-10-16": {
+    "trongHan": 158300281,
+    "qh30": 0,
+    "qhTren30": 44008128,
+    "qhTren3t": 12227476,
+    "xuatHS": {
+     "slTuan": 6,
+     "gtTuan": 66589943,
+     "slThang": 16,
+     "gtThang": 158184937
+    },
+    "donVi": [
+     {
+      "ten": "Bảo hiểm PJICO Phú Yên",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 3132000,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "Bảo Minh Phú Yên",
+      "trongHan": 14546930,
+      "qh30": 0,
+      "qhTren30": 5505840,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "Agribank (BH Ngân hàng Nông nghiệp) CN Bình Định",
+      "trongHan": 16981056,
+      "qh30": 0,
+      "qhTren30": 22230900,
+      "qhTren3t": 8504136
+     },
+     {
+      "ten": "DBV CN Trung Trung Bộ",
+      "trongHan": 33519744,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "DBV CN Bình Định",
+      "trongHan": 65472851,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "Bảo hiểm TASCO",
+      "trongHan": 18808200,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "Bảo Long Phú Yên",
+      "trongHan": 6109500,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "PVI CN Gia Lai",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 3723340
+     },
+     {
+      "ten": "AAA CN Khánh Hòa",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 13139388,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "LPBank CN Nam Trung Bộ",
+      "trongHan": 2862000,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     }
+    ]
+   },
    "2026-10-24": {
     "trongHan": 165228248,
     "qh30": 20760170,
