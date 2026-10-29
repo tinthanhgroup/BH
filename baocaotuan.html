@@ -40,6 +40,7 @@
   tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top;}
   tbody tr:hover{background:#F7F9FC;}
   td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;}
+  .cs-tbl td.num,.cs-tbl th.num{text-align:right;}
   td.nowrap{white-space:nowrap;}
   td.pre{white-space:pre-line;}
   tr.clickable{cursor:pointer;}
@@ -1015,35 +1016,52 @@ function renderChiSo(a){
 const CN_JSON_URL = 'congno.json', CN_TUAN = 10;
 let CNX = null;   // null nếu tải lỗi
 const CN_SERIES = [{name:'Trong hạn 30 ngày', mau:'#4DB58E'}, {name:'Quá hạn trong 30 ngày', mau:'#F2C14E'}, {name:'Quá hạn trên 30 ngày', mau:'#EE9A62'}, {name:'Quá hạn trên 3 tháng', mau:'#D64545'}];
+// Tên đơn vị: file kế toán lúc viết HOA, lúc hoa chữ đầu → hiển thị thống nhất hoa chữ đầu từ, giữ nguyên chữ viết tắt
+const CN_VIET_TAT = {'aaa':'AAA','pvi':'PVI','dbv':'DBV','mic':'MIC','bidv':'BIDV','pjico':'PJICO','tasco':'TASCO','lpbank':'LPBank','agribank':'Agribank','vbi':'VBI','pti':'PTI','vni':'VNI','bsh':'BSH','abic':'ABIC','xti':'XTI','cp':'CP','tnhh':'TNHH','tct':'TCT'};
+function cnTen(s){
+  return String(s||'').replace(/\s+/g,' ').trim().split(' ').map(function(w){
+    var k=w.toLowerCase(); if(CN_VIET_TAT[k]) return CN_VIET_TAT[k];
+    return w.replace(/[^\s\-\/()]+/g, function(p){ var q=p.toLowerCase(); return CN_VIET_TAT[q] || q.charAt(0).toUpperCase()+q.slice(1); });
+  }).join(' ');
+}
 function renderCongNo(a){
   if(!CNX || branchCode(a.b.chiNhanh)!=='PY') return '';
   var tuan=(CNX.PY||{}).tuan||{}, keys=Object.keys(tuan).sort().slice(-CN_TUAN); if(!keys.length) return '';
   var tr=function(v){ return Math.round((v||0)/1e5)/10; };   // đồng → triệu, 1 số lẻ
+  var so=function(v){ return v? fmtN(v) : '<span class="zero">0</span>'; };
+  var nguong=(CNX.PY||{}).nguongMienPhi;   // đồng; ngưỡng miễn tính chi phí tài chính của xưởng (quy định thu hồi công nợ BH), nhập ở congno.json
   var rows=keys.map(function(k){ var t=tuan[k], qh=(t.qh30||0)+(t.qhTren30||0)+(t.qhTren3t||0), tong=qh+(t.trongHan||0), pct=tong? qh/tong*100 : 0;
     return {k:k, t:t, qh:qh, tong:tong, pct:pct, nhan:fmtDShort(k), vals:[t.trongHan,t.qh30,t.qhTren30,t.qhTren3t].map(tr), tong_tr:tr(tong),
       sub:'Quá hạn '+fmtN(tr(qh))+' tr = '+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'% tổng nợ'}; });
   var chart=rows.map(function(r){ return {nhan:r.nhan, vals:r.vals, tong:r.tong_tr, sub:r.sub}; });
   var cur=rows[rows.length-1], prev=rows.length>1? rows[rows.length-2] : null;
-  var dPct=prev? cur.pct-prev.pct : null;
+  var dPct=prev? cur.pct-prev.pct : null, vuot=nguong? cur.qh>nguong : false;
+  var pf=function(v){ return v.toLocaleString('vi-VN',{maximumFractionDigits:1}); };
   var h='<div class="cs-block cs-full"><div class="cs-title">Công nợ bảo hiểm — Phú Yên</div>';
-  h+='<div class="cs-pct'+(cur.pct>=30?' low':'')+'">'+cur.pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> công nợ đã quá hạn (số đến '+fmtD(cur.k)+')'+
-     (dPct!=null? ' · '+(dPct>0?'tăng ':dPct<0?'giảm ':'không đổi ')+(dPct? Math.abs(dPct).toLocaleString('vi-VN',{maximumFractionDigits:1})+' điểm % so với tuần trước' : '') : ' · chưa có tuần trước để so sánh')+'</span></div>';
-  h+='<div class="cs-kv"><span>Tổng công nợ <b>'+fmtN(tr(cur.tong))+' tr</b></span><span>Quá hạn <b>'+fmtN(tr(cur.qh))+' tr</b></span><span>Quá hạn trên 3 tháng <b>'+fmtN(tr(cur.t.qhTren3t))+' tr</b></span></div>';
+  h+='<div class="cs-pct'+(vuot?' low':'')+'">'+pf(cur.pct)+'%<span> công nợ đã quá hạn (số đến '+fmtD(cur.k)+')'+
+     (dPct!=null? ' · '+(dPct>0.05?'<b class="bad">tăng '+pf(dPct)+' điểm %</b>':dPct<-0.05?'giảm '+pf(-dPct)+' điểm %':'không đổi')+' so với tuần trước' : ' · chưa có tuần trước để so sánh')+'</span></div>';
+  h+='<div class="cs-kv"><span>Tổng công nợ <b>'+fmtN(tr(cur.tong))+' tr</b></span><span>Quá hạn <b>'+fmtN(tr(cur.qh))+' tr</b></span><span>Quá hạn trên 3 tháng <b>'+fmtN(tr(cur.t.qhTren3t))+' tr</b></span>'+
+     (nguong? '<span>Ngưỡng miễn tính phí <b>'+fmtN(tr(nguong))+' tr</b> · '+(vuot?'<b class="bad">vượt '+fmtN(tr(cur.qh-nguong))+' tr</b>':'còn dưới '+fmtN(tr(nguong-cur.qh))+' tr')+'</span>' : '')+'</div>';
+  h+='<div class="cs-ns" style="margin-top:14px"><div>';
   h+='<div class="cs-sub">'+rows.length+' tuần gần nhất (triệu đồng)</div>';
   h+='<div class="cs-leg">'+CN_SERIES.map(function(se){ return '<span><i style="background:'+se.mau+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng công nợ</span></div>';
   h+=svgStacked(CN_SERIES, chart, 'triệu đồng');
   h+='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>Số đến ngày</th>'+CN_SERIES.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th><th class="num">% quá hạn</th></tr></thead><tbody>'+
-    rows.slice().reverse().map(function(r){ return '<tr><td>'+fmtD(r.k)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong_tr)+'</b></td><td class="num"><b>'+r.pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%</b></td></tr>'; }).join('')+'</tbody></table></details>';
+    rows.slice().reverse().map(function(r){ return '<tr><td>'+fmtD(r.k)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+so(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong_tr)+'</b></td><td class="num"><b>'+pf(r.pct)+'%</b></td></tr>'; }).join('')+'</tbody></table></details>';
+  h+='</div><div>';
   // Đơn vị bảo hiểm có nợ quá hạn ở tuần mới nhất (nhiều → ít)
-  var dv=(cur.t.donVi||[]).map(function(u){ return {ten:u.ten, th:u.trongHan||0, q30:u.qh30||0, q3:u.qhTren30||0, q3t:u.qhTren3t||0}; })
+  var dv=(cur.t.donVi||[]).map(function(u){ return {ten:cnTen(u.ten), q30:u.qh30||0, q3:u.qhTren30||0, q3t:u.qhTren3t||0}; })
     .map(function(u){ u.qh=u.q30+u.q3+u.q3t; return u; }).filter(function(u){ return u.qh>0; }).sort(function(x,y){ return y.qh-x.qh; });
-  h+='<div class="cs-sub" style="margin-top:12px">Đơn vị bảo hiểm còn nợ quá hạn — số đến '+fmtD(cur.k)+' (triệu đồng)</div>';
-  h+= dv.length? '<table class="cs-cmp"><thead><tr><th>Đơn vị</th><th class="num">Quá hạn trong 30 ngày</th><th class="num">Quá hạn trên 30 ngày</th><th class="num">Quá hạn trên 3 tháng</th><th class="num">Tổng quá hạn</th></tr></thead><tbody>'+
-    dv.map(function(u){ return '<tr><td>'+esc(u.ten)+'</td><td class="num">'+fmtN(tr(u.q30))+'</td><td class="num">'+fmtN(tr(u.q3))+'</td><td class="num'+(u.q3t?' down':'')+'">'+fmtN(tr(u.q3t))+'</td><td class="num"><b>'+fmtN(tr(u.qh))+'</b></td></tr>'; }).join('')+'</tbody></table>'
+  h+='<div class="cs-sub">Đơn vị bảo hiểm còn nợ quá hạn — số đến '+fmtD(cur.k)+' (triệu đồng)</div>';
+  h+= dv.length? '<table class="cs-cmp"><thead><tr><th>Đơn vị</th><th class="num">QH trong 30 ngày</th><th class="num">QH trên 30 ngày</th><th class="num">QH trên 3 tháng</th><th class="num">Tổng quá hạn</th></tr></thead><tbody>'+
+    dv.map(function(u){ return '<tr><td>'+esc(u.ten)+'</td><td class="num">'+so(tr(u.q30))+'</td><td class="num">'+so(tr(u.q3))+'</td><td class="num'+(u.q3t?' down':'')+'">'+so(tr(u.q3t))+'</td><td class="num"><b>'+fmtN(tr(u.qh))+'</b></td></tr>'; }).join('')+'</tbody></table>'
     : '<div class="empty">Không có công nợ quá hạn.</div>';
   var x=cur.t.xuatHS;
-  if(x) h+='<div class="cs-kv" style="margin-top:8px"><span>Xuất hồ sơ xe trong tuần <b>'+fmtN(x.slTuan)+' hồ sơ · '+fmtN(tr(x.gtTuan))+' tr</b></span><span>Luỹ kế tháng <b>'+fmtN(x.slThang)+' hồ sơ · '+fmtN(tr(x.gtThang))+' tr</b></span></div>';
-  h+=csNote('Từ congno.json — file "Cong no bao hiem" kế toán trưởng cập nhật mỗi thứ 7'+(CNX.updated_vn?' · đồng bộ lúc '+esc(CNX.updated_vn):'')+'. Công nợ theo HĐLK; "trong hạn" = trong 30 ngày kể từ mốc quá hạn. Quá hạn = ba cột quá hạn cộng lại. Tuần nào kế toán chưa cập nhật thì không có cột.');
+  if(x) h+='<div class="cs-kv" style="margin-top:10px"><span>Xuất hồ sơ xe trong tuần <b>'+fmtN(x.slTuan)+' hồ sơ · '+fmtN(tr(x.gtTuan))+' tr</b></span><span>Luỹ kế tháng <b>'+fmtN(x.slThang)+' hồ sơ · '+fmtN(tr(x.gtThang))+' tr</b></span></div>';
+  h+='</div></div>';
+  h+=csNote('Từ congno.json — file "Cong no bao hiem" kế toán trưởng cập nhật mỗi thứ 7'+(CNX.updated_vn?' · đồng bộ lúc '+esc(CNX.updated_vn):'')+'. Quá hạn = ba cột quá hạn cộng lại. '+
+    (nguong?'Ngưỡng miễn tính phí lấy từ quy định thu hồi công nợ BH (xem 0. Quy dinh/cong-no-bao-hiem.md); ở đây chỉ so tổng quá hạn trong file với ngưỡng để cảnh báo, số chi phí tài chính chính thức do kế toán tính ở file lương. ':'')+
+    'Tuần nào kế toán chưa cập nhật thì không có cột.');
   return h+'</div>';
 }
 
