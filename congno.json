@@ -1,0 +1,115 @@
+{
+ "PY": {
+  "tuan": {
+   "2026-10-24": {
+    "trongHan": 165228248,
+    "qh30": 20760170,
+    "qhTren30": 35370288,
+    "qhTren3t": 12227476,
+    "donVi": [
+     {
+      "ten": "BẢO HIỂM MIC PHÚ YÊN",
+      "trongHan": 7754605,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM PJICO PHÚ YÊN",
+      "trongHan": 2418768,
+      "qh30": 3132000,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BIDV BÌNH ĐỊNH",
+      "trongHan": 3899124,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO MINH PHÚ YÊN",
+      "trongHan": 2424600,
+      "qh30": 17628170,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BƯU ĐIỆN BÌNH ĐỊNH",
+      "trongHan": 4977800,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM NGÂN HÀNG NÔNG NGHIỆP - CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 16981056,
+      "qh30": 0,
+      "qhTren30": 22230900,
+      "qhTren3t": 8504136
+     },
+     {
+      "ten": "BẢO HIỂM DBV - CHI NHÁNH TRUNG TRUNG BỘ",
+      "trongHan": 33519744,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM DBV-CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 65472851,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM TASCO",
+      "trongHan": 18808200,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BẢO LONG- CÔNG TY BẢO HIỂM BẢO LONG PHÚ YÊN",
+      "trongHan": 6109500,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM PVI - CHI NHÁNH BẢO HIỂM PVI GIA LAI",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 3723340
+     },
+     {
+      "ten": "BẢO HIỂM AAA - CHI NHÁNH KHÁNH HÒA",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 13139388,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM LPBANK - CHI NHÁNH NAM TRUNG BỘ",
+      "trongHan": 2862000,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     }
+    ],
+    "xuatHS": {
+     "slTuan": 6,
+     "slThang": 16,
+     "gtTuan": 66589943,
+     "gtThang": 158184937
+    }
+   }
+  }
+ },
+ "updated_at": "2026-10-29T07:50:31.216Z",
+ "updated_vn": "29/10/2026 14:50",
+ "nguon_file": "Cong no bao hiem  .xlsx",
+ "nguon_cap_nhat": "29/10/2026 14:44"
+}
