@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-10-29T10:30:03+07:00",
+ "updated_at": "2026-10-31T10:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
    "ngayBaoCao": "2026-10-24",
-   "ngayDuLieu": "2026-10-29",
+   "ngayDuLieu": "2026-10-31",
    "canhBao": [],
    "viec": [
     {
@@ -1482,7 +1482,7 @@
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
    "ngayBaoCao": "2026-10-24",
-   "ngayDuLieu": "2026-10-29",
+   "ngayDuLieu": "2026-10-31",
    "canhBao": [],
    "viec": [
     {
@@ -2020,7 +2020,7 @@
     {
      "boPhan": "VP",
      "dong": 9,
-     "ma": "VP-005",
+     "ma": "CSKH-001",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2049,7 +2049,7 @@
     {
      "boPhan": "VP",
      "dong": 10,
-     "ma": "VP-006",
+     "ma": "CSKH-002",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2078,7 +2078,7 @@
     {
      "boPhan": "VP",
      "dong": 11,
-     "ma": "VP-007",
+     "ma": "CSKH-003",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2107,7 +2107,7 @@
     {
      "boPhan": "VP",
      "dong": 12,
-     "ma": "VP-008",
+     "ma": "CSKH-004",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2116,7 +2116,7 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "Vẫn đang thực hiện",
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
@@ -2136,7 +2136,7 @@
     {
      "boPhan": "VP",
      "dong": 13,
-     "ma": "VP-009",
+     "ma": "CSKH-005",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2145,7 +2145,7 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "Vẫn đang thực hiện",
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
@@ -2165,7 +2165,7 @@
     {
      "boPhan": "VP",
      "dong": 14,
-     "ma": "VP-010",
+     "ma": "CSKH-006",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2194,7 +2194,7 @@
     {
      "boPhan": "VP",
      "dong": 15,
-     "ma": "VP-011",
+     "ma": "CSKH-007",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2203,7 +2203,7 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "Vẫn đang thực hiện",
      "tuanCN": 42,
      "vuongMac": "",
      "deXuat": "",
@@ -2223,7 +2223,7 @@
     {
      "boPhan": "VP",
      "dong": 16,
-     "ma": "VP-012",
+     "ma": "CSKH-008",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2232,7 +2232,7 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "Vẫn đang thực hiện",
      "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "",
@@ -2244,7 +2244,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": "",
      "nhom": "CSKH"
@@ -2252,7 +2252,7 @@
     {
      "boPhan": "VP",
      "dong": 17,
-     "ma": "VP-013",
+     "ma": "CSKH-009",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2281,7 +2281,7 @@
     {
      "boPhan": "VP",
      "dong": 18,
-     "ma": "VP-014",
+     "ma": "CSKH-010",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2310,7 +2310,7 @@
     {
      "boPhan": "VP",
      "dong": 19,
-     "ma": "VP-015",
+     "ma": "CSKH-011",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2318,7 +2318,7 @@
      "phuTrach": "Hưởng",
      "han": "",
      "hanRaw": "",
-     "trangThai": "Đang làm",
+     "trangThai": "Hoàn thành",
      "capNhat": "",
      "tuanCN": 43,
      "vuongMac": "",
@@ -2339,7 +2339,7 @@
     {
      "boPhan": "VP",
      "dong": 20,
-     "ma": "VP-016",
+     "ma": "CSKH-012",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2347,7 +2347,7 @@
      "phuTrach": "Hưởng",
      "han": "",
      "hanRaw": "",
-     "trangThai": "Đang làm",
+     "trangThai": "Hoàn thành",
      "capNhat": "",
      "tuanCN": 43,
      "vuongMac": "",
@@ -2360,7 +2360,123 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": "",
+     "nhom": "CSKH"
+    },
+    {
+     "boPhan": "VP",
+     "dong": 21,
+     "ma": "CSKH-013",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "",
+     "noiDung": "Tham giao đào tạo về hợp tác cùng ngân hàng VIB",
+     "phuTrach": "Hưởng",
+     "han": "2026-10-30",
+     "hanRaw": "",
+     "trangThai": "Hoàn thành",
+     "capNhat": "",
+     "tuanCN": 44,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": "",
+     "nhom": "CSKH"
+    },
+    {
+     "boPhan": "VP",
+     "dong": 22,
+     "ma": "CSKH-014",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "",
+     "noiDung": "Tham gia đào tạo cùng HTV về chương trình đào tạo mở rộng chính sách bảo hành xe",
+     "phuTrach": "Hưởng",
+     "han": "2026-10-31",
+     "hanRaw": "",
+     "trangThai": "Hoàn thành",
+     "capNhat": "",
+     "tuanCN": 44,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": "",
+     "nhom": "CSKH"
+    },
+    {
+     "boPhan": "VP",
+     "dong": 23,
+     "ma": "CSKH-015",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "",
+     "noiDung": "Số khách hàng quan tâm trang Zalo OA mới 37 tăng 48% so với tuần 43",
+     "phuTrach": "Hưởng",
+     "han": "",
+     "hanRaw": "",
+     "trangThai": "Hoàn thành",
+     "capNhat": "",
+     "tuanCN": 44,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "1. Vận hành thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": "",
+     "nhom": "CSKH"
+    },
+    {
+     "boPhan": "VP",
+     "dong": 24,
+     "ma": "CSKH-016",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
+     "linhVuc": "",
+     "noiDung": "Tổng số  gửi tin nhắn hình ảnh cho khách hàng là 26, khách phản hồi tin 1",
+     "phuTrach": "Hưởng",
+     "han": "",
+     "hanRaw": "",
+     "trangThai": "Hoàn thành",
+     "capNhat": "",
+     "tuanCN": 44,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": "",
      "nhom": "CSKH"
@@ -2966,6 +3082,106 @@
      ]
     }
    ]
+  },
+  {
+   "chiNhanh": "Đà Lạt",
+   "file": "Bao cao tuan - Da Lat",
+   "ngayBaoCao": "2026-10-24",
+   "ngayDuLieu": "2026-10-31",
+   "canhBao": [],
+   "viec": [],
+   "tct": [],
+   "nhanDinh": [],
+   "chiSo": [
+    {
+     "boPhan": "BH",
+     "tieuDe": "Ký hợp đồng trong 5 tuần gần nhất",
+     "nhanCot": "Tuần",
+     "cot": [
+      "Đà Lạt",
+      "Bảo Lộc",
+      "Tổng"
+     ],
+     "dong": [
+      {
+       "nhan": "Tuần 39",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 40",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 41",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 42",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Tuần 43",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    },
+    {
+     "boPhan": "DV",
+     "tieuDe": "Thực hiện",
+     "nhanCot": "",
+     "cot": [],
+     "dong": []
+    },
+    {
+     "boPhan": "BH",
+     "tieuDe": "",
+     "nhanCot": "",
+     "cot": [
+      "Tự động",
+      "Nhập tay",
+      "Ghi chú"
+     ],
+     "dong": [
+      {
+       "nhan": "Lượt Lead phát sinh trong tuần",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      },
+      {
+       "nhan": "Số lượng khách hot",
+       "giaTri": [
+        null,
+        null,
+        null
+       ]
+      }
+     ]
+    }
+   ],
+   "nhanDinhBP": []
   }
  ]
 }
