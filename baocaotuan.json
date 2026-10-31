@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-31T13:37:04+07:00",
+ "updated_at": "2026-10-31T14:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -2778,7 +2778,7 @@
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
-     "noiDung": "Hoàn ứng, thanh toán định kì vào cuối tháng",
+     "noiDung": "Thanh toán, hoàn ứng định kỳ và phát sinh cuối tháng",
      "phuTrach": "Nhi",
      "han": "2026-11-10",
      "hanRaw": "",
