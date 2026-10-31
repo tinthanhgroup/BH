@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-10-31T12:37:03+07:00",
+ "updated_at": "2026-10-31T13:37:04+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -2600,7 +2600,7 @@
     {
      "boPhan": "VP",
      "dong": 13,
-     "ma": "VP-017",
+     "ma": "VP-005",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2629,7 +2629,7 @@
     {
      "boPhan": "VP",
      "dong": 14,
-     "ma": "VP-018",
+     "ma": "VP-006",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2658,7 +2658,7 @@
     {
      "boPhan": "VP",
      "dong": 15,
-     "ma": "VP-019",
+     "ma": "VP-007",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2687,7 +2687,7 @@
     {
      "boPhan": "VP",
      "dong": 16,
-     "ma": "VP-020",
+     "ma": "VP-008",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2716,7 +2716,7 @@
     {
      "boPhan": "VP",
      "dong": 17,
-     "ma": "VP-021",
+     "ma": "VP-009",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2745,7 +2745,7 @@
     {
      "boPhan": "VP",
      "dong": 18,
-     "ma": "VP-022",
+     "ma": "VP-010",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2774,7 +2774,7 @@
     {
      "boPhan": "VP",
      "dong": 19,
-     "ma": "VP-023",
+     "ma": "VP-011",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2803,7 +2803,7 @@
     {
      "boPhan": "VP",
      "dong": 20,
-     "ma": "VP-024",
+     "ma": "VP-012",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2832,7 +2832,7 @@
     {
      "boPhan": "VP",
      "dong": 21,
-     "ma": "VP-025",
+     "ma": "VP-013",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2861,7 +2861,7 @@
     {
      "boPhan": "VP",
      "dong": 22,
-     "ma": "VP-026",
+     "ma": "VP-014",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2890,7 +2890,7 @@
     {
      "boPhan": "VP",
      "dong": 23,
-     "ma": "VP-027",
+     "ma": "VP-015",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2919,7 +2919,7 @@
     {
      "boPhan": "VP",
      "dong": 24,
-     "ma": "VP-028",
+     "ma": "VP-016",
      "nguon": "Bộ phận bổ sung",
      "thang": 10,
      "linhVuc": "",
@@ -2948,17 +2948,17 @@
     {
      "boPhan": "VP",
      "dong": 25,
-     "ma": "",
-     "nguon": "",
-     "thang": null,
+     "ma": "VP-017",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 10,
      "linhVuc": "",
-     "noiDung": "BHXH:",
-     "phuTrach": "",
-     "han": "",
+     "noiDung": "BHXH: Liên hệ về việc ngưng cấp tờ rời giấy chuyển sang cấp tờ rời điện tử để thông tin cho NLĐ khi chấm dứt việc đóng BHXH tại  doanh nghiệp",
+     "phuTrach": "Nhi",
+     "han": "2026-10-30",
      "hanRaw": "",
-     "trangThai": "",
-     "capNhat": "",
-     "tuanCN": null,
+     "trangThai": "Hoàn thành",
+     "capNhat": "Đã thông tin với Nguyễn Thành Nhơn để bạn kiểm tra trên Vssid và hướng dẫn bạn nộp giấy tờ nhận trợ cấp thất nghiệp.",
+     "tuanCN": 44,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -2969,7 +2969,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": "",
      "nhom": "HCNS"
@@ -3072,6 +3072,144 @@
     }
    ],
    "nhanDinhBP": [
+    {
+     "nam": 2026,
+     "tuan": 44,
+     "ngay": "2026-10-31",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "2 TVBH nghỉ việc",
+       "traLoi": ""
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Tuyển dụng TVBH",
+       "traLoi": ""
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Không",
+       "traLoi": ""
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": ""
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Logo mặt mái nhấp nháy vào Q1.2026, không sáng đèn vào Q2.2026",
+       "traLoi": "Chờ kết quả đánh giá DRP BH từ HTV. Nếu:\n1. HTV có ghi nhận, cần báo cáo cải thiện: sử dụng hình ảnh cũ. \n2. Không ghi nhân: tạm thời không sửa chữa, vì PY đang vào mùa mưa."
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 43,
+     "ngay": "2026-10-24",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Không",
+       "traLoi": ""
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Tuyển dụng TVBH",
+       "traLoi": "Tuyển dụng vị trí TVBH từ 23/09. SL CV ứng tuyển gửi về mail: 6. \nCó ứng viên gọi đi phỏng vấn nhưng không đến. Lý do: xa trung tâm TP, người nhà không cho phép hoặc HCNS gọi lại không nghe máy/ bấm từ chối\nCó ứng viên đã đậu phỏng vấn nhưng không nhận việc. Lý do: mức lương chưa phù hợp hoặc HCNS gọi lại không nghe máy"
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Không",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": ""
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Logo mặt mái nhấp nháy vào Q1.2026, không sáng đèn vào Q2.2026",
+       "traLoi": "Chờ kết quả đánh giá DRP BH từ HTV. Nếu:\n1. HTV có ghi nhận, cần báo cáo cải thiện: sử dụng hình ảnh cũ. \n2. Không ghi nhân: tạm thời không sửa chữa, vì PY đang vào mùa mưa."
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
+      }
+     ]
+    },
     {
      "nam": 2026,
      "tuan": 43,
@@ -3200,75 +3338,6 @@
        "stt": 9,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới thế nào, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": ""
-      }
-     ]
-    },
-    {
-     "nam": 2026,
-     "tuan": 43,
-     "ngay": "2026-10-24",
-     "boPhan": "VP",
-     "nguoiViet": "",
-     "items": [
-      {
-       "stt": 1,
-       "nhan": "Biến động nhân sự",
-       "cauHoi": "Không",
-       "traLoi": ""
-      },
-      {
-       "stt": 2,
-       "nhan": "Tuyển dụng",
-       "cauHoi": "Tuyển dụng TVBH",
-       "traLoi": "Tuyển dụng vị trí TVBH từ 23/09. SL CV ứng tuyển gửi về mail: 6. \nCó ứng viên gọi đi phỏng vấn nhưng không đến. Lý do: xa trung tâm TP, người nhà không cho phép hoặc HCNS gọi lại không nghe máy/ bấm từ chối\nCó ứng viên đã đậu phỏng vấn nhưng không nhận việc. Lý do: mức lương chưa phù hợp hoặc HCNS gọi lại không nghe máy"
-      },
-      {
-       "stt": 3,
-       "nhan": "Tinh thần – kỷ luật",
-       "cauHoi": "Không",
-       "traLoi": "Không"
-      },
-      {
-       "stt": 4,
-       "nhan": "Công nợ – dòng tiền",
-       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
-       "traLoi": ""
-      },
-      {
-       "stt": 5,
-       "nhan": "Chứng từ – hồ sơ",
-       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
-       "traLoi": ""
-      },
-      {
-       "stt": 6,
-       "nhan": "CSVC – an toàn",
-       "cauHoi": "Logo mặt mái nhấp nháy vào Q1.2026, không sáng đèn vào Q2.2026",
-       "traLoi": "Chờ kết quả đánh giá DRP BH từ HTV. Nếu:\n1. HTV có ghi nhận, cần báo cáo cải thiện: sử dụng hình ảnh cũ. \n2. Không ghi nhân: tạm thời không sửa chữa, vì PY đang vào mùa mưa."
-      },
-      {
-       "stt": 7,
-       "nhan": "Tuân thủ",
-       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
-       "traLoi": ""
-      },
-      {
-       "stt": 8,
-       "nhan": "Chi phí",
-       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
-       "traLoi": ""
-      },
-      {
-       "stt": 9,
-       "nhan": "Phối hợp",
-       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
-       "traLoi": ""
-      },
-      {
-       "stt": 10,
-       "nhan": "Tuần tới & cần hỗ trợ",
-       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
        "traLoi": ""
       }
      ]
