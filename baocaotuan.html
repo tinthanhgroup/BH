@@ -56,7 +56,7 @@
 
   /* Thẻ đầu chi nhánh */
   /* Thẻ chi nhánh + KPI: ghim ở mép trên khi cuộn (28/09/2026) — gọn hơn để không che nhiều nội dung */
-  .branch-card{background:var(--panel);border-radius:14px;box-shadow:0 2px 8px rgba(27,79,140,.10);padding:10px 16px 12px;margin-bottom:14px;border:1px solid var(--line);border-top:3px solid var(--navy);position:sticky;top:0;z-index:30;}
+  .branch-card{background:var(--panel);border-radius:14px;box-shadow:0 2px 8px rgba(27,79,140,.10);padding:10px 16px 12px;margin-bottom:14px;border:1px solid var(--line);position:sticky;top:0;z-index:30;}
   .branch-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:8px;}
   .branch-name{font-size:15px;font-weight:600;color:var(--navy);}
   .branch-card .kpi-row{margin-bottom:0;gap:8px;}
@@ -71,11 +71,11 @@
   .kpi.red .kpi-num{color:var(--red-t);} .kpi.gold .kpi-num{color:var(--gold-t);} .kpi.green .kpi-num{color:var(--green-t);} .kpi.orange .kpi-num{color:var(--orange-t);}
   .kpi.muted .kpi-num{color:#c3ccd8;}
   .kpi-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
-  .nhandinh{background:#F7F9FC;border-left:4px solid var(--navy);border-radius:0 10px 10px 0;padding:12px 16px;}
+  .nhandinh{background:#F7F9FC;border:1px solid var(--line);border-radius:10px;padding:12px 16px;}
   .nhandinh .lbl{font-size:12px;font-weight:500;color:var(--ink-soft);margin-bottom:6px;}
   .nhandinh .txt{font-size:13px;line-height:1.6;white-space:pre-line;}
   .nhandinh .by{font-size:12px;color:var(--ink-soft);margin-top:6px;}
-  .nhandinh.missing{border-left-color:var(--red);background:#fdf3f3;}
+  .nhandinh.missing{border-color:#f1c9c9;background:#fdf3f3;}
   .nhandinh.missing .txt{color:var(--red-t);font-weight:500;}
   details.history{margin-top:10px;}
   details.history summary{font-size:12px;font-weight:500;color:var(--ink-soft);cursor:pointer;}
@@ -84,7 +84,7 @@
   /* Mục 2 Nhận định tuần */
   .nd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch;}
   .nd-block{border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
-  .nd-block.gd{grid-column:1/-1;border-top:3px solid var(--navy);background:#F7F9FC;}
+  .nd-block.gd{grid-column:1/-1;background:#F7F9FC;}
   .nd-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px;}
   details.nd-fold{grid-column:1/-1;padding:10px 14px;}
   details.nd-fold > summary.nd-head{cursor:pointer;list-style:none;margin-bottom:0;}
@@ -123,9 +123,9 @@
 
   /* Kiểu dùng chung cho mục 3–9 (cùng kiểu khối của mục 2) */
   .ma{font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;}
-  .nd-block.tgd{border-top:3px solid var(--accent);}
+  .nd-block.tgd{background:#FFF6EE;border-color:#F3D9C4;}
   /* Khung "Điểm TGĐ cần lưu ý" ngay dưới thẻ chi nhánh (28/09/2026) — trích câu Vấn đề lớn nhất / Cần TGĐ của GĐCN */
-  .panel.tgd-box{border-left:4px solid var(--accent);}
+  .panel.tgd-box{background:#FFF9F4;border-color:#F3D9C4;}
   .panel.tgd-box h3{color:var(--orange-t);margin-bottom:10px;}
   .tgd-link{margin-top:10px;font-size:13px;}
   .tgd-link a{color:var(--orange-t);font-weight:500;cursor:pointer;text-decoration:none;}
@@ -209,7 +209,9 @@
     .kpi-row{grid-template-columns:repeat(2,1fr);}
     .branch-card{position:static;}   /* điện thoại: 6 ô KPI xếp 3 hàng, ghim sẽ che gần hết màn hình */
     .panel, details.panel{scroll-margin-top:0;}
-    .nd-grid,.cs-grid{grid-template-columns:1fr;}
+    .nd-grid,.cs-grid{grid-template-columns:minmax(0,1fr);}   /* minmax(0,…): 1fr để bảng/biểu đồ đẩy rộng cột → tràn ngang (31/10/2026) */
+    .cs-block{overflow-x:auto;}
+    .view-bar select{max-width:100%;}
     .nd-qa,.nd-block.gd .nd-qa{grid-template-columns:1fr;gap:2px;}
     .nd-v{margin-bottom:6px;}
     .task-meta{margin-left:0;white-space:normal;width:100%;}
@@ -218,16 +220,28 @@
   /* ── 20/10/2026 (anh Khanh duyệt bản demo): chữ nhẹ, 5 cỡ chữ, không in hoa, biểu đồ dịu ── */
   body{font-size:13px;line-height:1.55;}
   b,strong{font-weight:500;}
-  .panel h3,.panel summary,.branch-name{font-weight:600;}
-  .chart-num{background:#E7EEF7;color:var(--navy);font-weight:600;width:22px;height:22px;font-size:12px;}
+  /* 31/10/2026 (đánh giá Giao diện 1, anh Khanh duyệt): bỏ đậm 600 — tiêu đề/số lớn 500, nhãn/nút/ô chọn/mã việc 400 */
+  .panel h3,.panel summary,.branch-name{font-weight:500;}
+  .chart-num{background:#E7EEF7;color:var(--navy);font-weight:500;width:22px;height:22px;font-size:12px;}
   .kpi-num{font-weight:500;}
-  .ma{font-weight:600;}
+  .ma,.cs-title,.nd-week{font-weight:500;}
+  .kpi-label,.nd-k,.filter-btn,select,.view-bar select,.count-pill,.bad,.warnc,.nhandinh .lbl,details.history summary,.cs-tbl summary,.leg-btn.leg-all,.nd-ok{font-weight:400;}
+  .cs-pct,.cs-tot{font-weight:500;}
   .nd-title{font-weight:500;}
   .cs-tot{font-weight:500;fill:var(--ink-soft);}
   thead th{color:var(--ink-soft);font-weight:500;}
   .cs-bar{height:8px;background:#EEF2F7;}
   .cs-fill{background:#E8A0A0;} .cs-fill.ok{background:#8FD0B4;}
   .cs-mark{height:14px;top:-3px;background:#9AA7BA;}
+  /* ── 31/10/2026 (đánh giá Giao diện 1, anh Khanh duyệt): bớt màu, bỏ viền màu và biểu tượng cảm xúc ──
+     Số KPI màu chữ chính; chỉ ô bất thường (Quá hạn, Chuyển TGĐ) có nền nhạt + số đỏ/cam. Nhãn đếm nền xám, bo 4px.
+     Đầu bảng nền nhạt, kẻ 1px; số trong bảng căn phải. */
+  .kpi-num,.kpi.gold .kpi-num,.kpi.green .kpi-num{color:var(--ink);}
+  .kpi.red{background:#FDF3F3;border-color:#F1C9C9;} .kpi.orange{background:#FFF6EE;border-color:#F3D9C4;}
+  .count-pill{background:#F0F2F5;color:#4B5563;border-radius:4px;}
+  .count-pill.red{background:#FBE6E6;color:var(--red-t);}
+  thead th{background:#F5F7FA;color:var(--ink);border-bottom:1px solid var(--line);}
+  td.num,th.num{text-align:right;}
   .cs-leg{gap:4px 10px;}
   .leg-btn{padding:1px 5px;margin:0;}
   .cs-pct{font-weight:500;}
@@ -471,14 +485,15 @@ function grid(blocks){ return blocks.length ? '<div class="nd-grid">'+blocks.joi
 function subHead(s){ return '<div class="nd-week">'+s+'</div>'; }
 
 // Dòng "Tình trạng": trạng thái · hạn · phụ trách · tuần cập nhật — chỉ tô màu phần bất thường
-function tinhTrang(t, isTCT){
-  var p=[];
+// bo: bỏ phần đã ghi ở dòng tóm tắt việc thu gọn ({han:1, phuTrach:1}) — tránh lặp chữ (31/10/2026)
+function tinhTrang(t, isTCT, bo){
+  var p=[]; bo=bo||{};
   p.push(t.trangThai?esc(t.trangThai):'<span class="bad">Chưa chọn trạng thái</span>');
   if(isTCT){ if(t.ngayGiao) p.push('Giao '+fmtD(t.ngayGiao)); }
-  else if(t.han) p.push(t._overdue?'<span class="bad">Hạn '+fmtD(t.han)+' — quá hạn</span>':'Hạn '+fmtD(t.han));
+  else if(t.han){ if(!bo.han) p.push(t._overdue?'<span class="bad">Hạn '+fmtD(t.han)+' — quá hạn</span>':'Hạn '+fmtD(t.han)); }
   else if(t.hanRaw) p.push('<span class="warnc">Hạn "'+esc(t.hanRaw)+'" (gõ dạng chữ)</span>');
   else if(!isClosed(t)) p.push('<span class="warnc">Chưa có hạn</span>');
-  if(t.phuTrach) p.push(esc(t.phuTrach));
+  if(t.phuTrach && !bo.phuTrach) p.push(esc(t.phuTrach));
   if(isDone(t)){ if(t.ngayHT) p.push('Xong '+fmtD(t.ngayHT)); }
   else if(t._stale) p.push('<span class="warnc">'+(t.tuanCN!=null?'cập nhật gần nhất T'+t.tuanCN:'chưa cập nhật lần nào')+'</span>');
   return p.join(' · ');
@@ -505,7 +520,9 @@ function taskBlock(t, opt){
   opt=opt||{};
   var isTCT=!!(t._isTCT||opt.tct);
   var by=isTCT?'TCT giao'+(t.boPhan?' · '+esc(t.boPhan):''):esc(t._bpName)+(t.nguon?' · '+esc(t.nguon):'')+(isCaiTien(t)?' · Cải tiến':'');
-  var rows=[['Tình trạng', tinhTrang(t, isTCT)]];
+  // Việc thu gọn: dòng tóm tắt đã có hạn + phụ trách (hoặc bộ phận) → Tình trạng không ghi lại
+  var bo=opt.fold?{han:!isTCT, phuTrach:!opt.showBP}:null;
+  var rows=[['Tình trạng', tinhTrang(t, isTCT, bo)]];
   var add=function(k,v,html){ if(v) rows.push([k, html?v:esc(v)]); };
   add('Cập nhật tuần', t.capNhat?fmtUpd(t.capNhat):'', true);
   if(!opt.compact){
@@ -517,12 +534,14 @@ function taskBlock(t, opt){
   if(isTCT && !isClosed(t)) add('Triển khai ở BP', t._soDong?t._soDong+' dòng':'<span class="bad">Chưa bộ phận nào mở dòng triển khai</span>', true);
   if(!opt.compact){ var g=gdLine(t, opt.noEmptyGD); if(g) rows.push(['Hướng chỉ đạo', g]); }
   if(opt.extra) opt.extra.forEach(function(r){ rows.push(r); });
-  // opt.fold: bên phải dòng tóm tắt = trạng thái · hạn (tô đỏ nếu quá hạn) thay cho bộ phận/nguồn
-  // opt.showBP: thêm tên bộ phận (danh sách trộn nhiều BP); opt.dupNote: ghi chú việc đã nêu ở mục khác
+  // opt.fold: bên phải dòng tóm tắt chỉ 2 mẩu (31/10/2026): hạn (đỏ nếu quá hạn) · phụ trách — hoặc bộ phận khi
+  // danh sách trộn nhiều BP (opt.showBP). Trạng thái xem khi mở việc; chỉ báo ở dòng tóm tắt khi thiếu.
+  // opt.dupNote: ghi chú việc đã nêu ở mục khác
   if(opt.fold){
     var hn=t.han?(t._overdue?'<span class="bad">hạn '+fmtDShort(t.han)+'</span>':'hạn '+fmtDShort(t.han)):'';
-    by=[opt.dupNote?'<span class="dup-note">'+opt.dupNote+'</span>':'', opt.showBP?esc(t._bpName):'',
-        t.trangThai?esc(t.trangThai):'<span class="bad">chưa có trạng thái</span>', hn, t.phuTrach?esc(t.phuTrach):''].filter(Boolean).join(' · ');
+    by=[opt.dupNote?'<span class="dup-note">'+opt.dupNote+'</span>':'',
+        t.trangThai?'':'<span class="bad">chưa có trạng thái</span>', hn,
+        opt.showBP?esc(t._bpName):(t.phuTrach?esc(t.phuTrach):'')].filter(Boolean).join(' · ');
   }
   var title=(opt.fold?esc(t.ma||'(thiếu mã)'):'<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>')+' · '+esc(tieuDe(t.noiDung));
   return qaBlock(title, by, rows, (opt.hlTGD&&isTGD(t.gdXuLy))?'tgd':'', opt.fold);
@@ -918,7 +937,7 @@ function csLeadTable(a, sec){
   h+='</tbody></table>';
   return h+csNote('Ô "Nhập tay" trong sheet Chi so trong yeu được ưu tiên; để trống thì lấy từ CRM Bizfly'+(au?' ('+esc(au.grp.join(' + '))+')':'')+
     '. Lead = khách tạo mới trong tuần (T2–CN); Khách hot = trạng thái Hot/Very Hot hiện tại, chưa ký HĐ / chưa dừng.'+
-    (au&&au.chuaGan?' ⚠ Tuần này CRM còn '+au.chuaGan+' lead chưa gán chi nhánh — số CRM có thể thiếu.':'')+(CRMD?'':' Không tải được crm.json.'));
+    (au&&au.chuaGan?' Tuần này CRM còn '+au.chuaGan+' lead chưa gán chi nhánh — số CRM có thể thiếu.':'')+(CRMD?'':' Không tải được crm.json.'));
 }
 function renderChiSo(a){
   if(!a) return '';
@@ -967,7 +986,7 @@ function renderChiSo(a){
       });
       t+='</tbody></table>';
       if(sec._auto) t=dvTuanChart(a)+'<div class="cs-sub" style="margin-top:12px">'+esc(sec._ss||'')+'</div>'+t;
-      if(sec._auto) t+=(DV_SYNC_URL?'<a class="cs-btn" href="'+esc(DV_SYNC_URL)+'" target="_blank" rel="noopener">🔄 Cập nhật số Dịch vụ</a>':'')+
+      if(sec._auto) t+=(DV_SYNC_URL?'<a class="cs-btn" href="'+esc(DV_SYNC_URL)+'" target="_blank" rel="noopener">Cập nhật số Dịch vụ</a>':'')+
         csNote('Tự động từ dichvu.json — file lệnh sửa chữa admin tải lên Drive hằng ngày'+(DVX.updated_vn?' · cập nhật '+esc(DVX.updated_vn):'')+(DVX.nguon_cap_nhat?' (file nguồn lưu lúc '+esc(DVX.nguon_cap_nhat)+')':'')+
           '. Đếm RO không trùng theo Phân loại; ngày làm việc = trừ Chủ nhật và ngày có quá ít lệnh (nghỉ lễ): tuần này '+sec._auto.nW+' ngày, 90 ngày trước '+sec._auto.nB+' ngày.');
       return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:t};
@@ -1078,7 +1097,7 @@ function renderBranchCard(a){
   // Lỗi nhập liệu không có ô KPI riêng (Quá hạn/Chưa CN có thể = 0 trong khi vẫn có lỗi) → link đỏ cạnh ngày báo cáo, bấm nhảy mục 7
   var nLoi=a.issues.length;
   h+='<div class="branch-meta">'+(b.ngayBaoCao?'Ngày báo cáo '+fmtD(b.ngayBaoCao):'Chưa điền Ngày báo cáo — tính theo ngày lưu file '+fmtD(b.ngayDuLieu))+' · File: '+esc(b.file||'')+
-     (nLoi?'<a class="warn-link" onclick="jumpTo(\'sec-canhbao\')" title="Xem mục 7 Cảnh báo &amp; lỗi nhập liệu">⚠ '+nLoi+' việc nhập liệu chưa đúng ›</a>':'')+'</div></div>';
+     (nLoi?'<a class="warn-link" onclick="jumpTo(\'sec-canhbao\')" title="Xem mục 7 Cảnh báo &amp; lỗi nhập liệu">'+nLoi+' việc nhập liệu chưa đúng ›</a>':'')+'</div></div>';
   // Thẻ chi nhánh (tên + 6 ô KPI) ghim ở mép trên khi cuộn (position:sticky, 28/09/2026) để bấm KPI lúc nào cũng được;
   // cảnh báo đặt NGOÀI thẻ (renderBranchNotes) cho thanh ghim gọn.
   // jump: id mục cần nhảy tới khi bấm (chỉ khi số > 0)
@@ -1101,7 +1120,7 @@ function renderBranchCard(a){
 function renderBranchNotes(a){
   var b=a.b, notes=(b.canhBao||[]).slice();
   if(!b.ngayBaoCao) notes.push('GĐCN chưa điền Ngày báo cáo (sheet "Bao cao GDCN", ô G3).');
-  return notes.length ? '<div class="notice">'+notes.map(function(n){ return '<div>⚠ '+esc(n)+'</div>'; }).join('')+'</div>' : '';
+  return notes.length ? '<div class="notice">'+notes.map(function(n){ return '<div>'+esc(n)+'</div>'; }).join('')+'</div>' : '';
 }
 
 // Mục 2 "Nhận định tuần" — phần TGĐ đọc đầu tiên: nhận định tổng thể của GĐCN + 3 trưởng bộ phận
@@ -1289,7 +1308,7 @@ function renderViewBar(){
   LUU_IDX.forEach(function(x){ h+='<option value="'+esc(x.key)+'"'+(x.key===VIEW_KEY?' selected':'')+'>Tuần '+x.tuan+'/'+x.nam+' — bản chốt '+esc(fmtLuc(x.luc))+'</option>'; });
   h+='</select>';
   h+= VIEW_KEY==='__now' ? ' <span class="view-note">⏳ Tuần đang diễn ra: số tự động (HĐ, lượt xe, nhân sự, lead) tính tới lúc này; công việc và nhận định là bản đang cập nhật.</span>'
-    : VIEW_KEY ? ' <span class="view-note">📌 Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
+    : VIEW_KEY ? ' <span class="view-note">Bản đã chốt lúc '+esc(fmtLuc(VIEW_DATA&&VIEW_DATA.chot&&VIEW_DATA.chot.luc))+' — công việc, nhận định giữ nguyên như lúc chốt; số tự động (HĐ, lượt xe, nhân sự) tính lại theo đúng tuần đó.</span>'
                : ' <span class="view-note">Số liệu đang cập nhật. Bản chốt lưu tự động lúc 17h thứ 3.</span>';
   return h+'</div>';
 }
