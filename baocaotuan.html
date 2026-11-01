@@ -1523,7 +1523,9 @@ async function load(){
   // Danh sách bản chốt — lỗi / chưa có thì chỉ xem số đang cập nhật
   try{ var ri=await fetch(LUU_DIR+'index.json?t='+Date.now()); if(ri.ok) LUU_IDX=((await ri.json()).tuan)||[]; }catch(e){ LUU_IDX=[]; }
   var liveRef=parseD(((DATA.branches||[])[0]||{}).ngayBaoCao);
-  var macDinh=liveRef && LUU_IDX.some(function(x){ return x.key===weekKey(liveRef); }) ? weekKey(liveRef) : '';
+  // Mặc định mở tuần đang diễn ra (người dùng chốt 01/11/2026); dữ liệu chưa sang tuần báo cáo mới thì mở bản chốt / đang cập nhật như cũ
+  var macDinh=liveRef && weekKey(thu7TuanNay())!==weekKey(liveRef) ? '__now'
+    : liveRef && LUU_IDX.some(function(x){ return x.key===weekKey(liveRef); }) ? weekKey(liveRef) : '';
   await chonBan(macDinh);
   // Bảng báo bán (bảng 9) lấy từ trang cha — trang cha có thể chưa tải xong data.json lúc iframe này chạy:
   // thử lại mỗi giây trong 60s, có số thì vẽ lại 1 lần.
