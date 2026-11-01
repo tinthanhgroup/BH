@@ -989,7 +989,9 @@ function dvLuotXe(a){
     dong:DV_LOAI.map(function(l){ return {nhan:l[1], giaTri:[avg(wk,l[0]), avg(base,l[0])]}; }) };
 }
 // ── Dịch vụ — doanh thu "Thực hiện" TỰ ĐỘNG (28/10/2026, anh Khanh): dichvu.json.doanhThu {"yyyy-MM-dd":{"NT":đồng}}
-// do TinThanh_DichVu_Sync.gs cộng cột "Giá trị" (trước thuế, GỒM xe ngập nước) theo Ngày thanh toán từ Doanh thu.xlsx
+// do TinThanh_DichVu_Sync.gs cộng cột "Giá trị" (trước thuế, GỒM xe ngập nước) theo Ngày thanh toán từ Doanh thu.xlsx.
+// Từ 01/11/2026 là DOANH THU NỘI BỘ: chỉ lệnh có trong Master Data (đã loại Hủy/Nội bộ/PDI/Phụ kiện/Bán phụ tùng),
+// trừ lệnh Bảo hành và xe của Cty Tín Thanh — lọc ở script, trang chỉ đổi ghi chú
 // (Drive 13. DV - Master Data). Luỹ kế từ ngày 1 tháng của ngày mốc tới hết Chủ nhật tuần báo cáo (không quá cuối tháng),
 // đơn vị triệu đồng như ô nhập tay. Có số tự động thì THAY ô "Thực hiện" trong sheet; "Chỉ tiêu" vẫn nhập tay.
 // File doanh thu gộp Đà Lạt + Bảo Lộc thành LD (Lâm Đồng); Phan Rang tính chung Nha Trang.
@@ -1122,7 +1124,7 @@ function renderChiSo(a){
       h+='<div class="cs-pct'+(ok?' ok':' low')+'">'+pct.toLocaleString('vi-VN',{maximumFractionDigits:1})+'%<span> chỉ tiêu</span></div>';
       h+='<div class="cs-bar" title="Thực hiện '+fmtN(th)+' / Chỉ tiêu '+fmtN(ct)+'"><div class="cs-fill'+(ok?' ok':'')+'" style="width:'+Math.min(100,pct/Math.max(100,pct)*100)+'%"></div><div class="cs-mark" style="left:'+(100/Math.max(100,pct)*100)+'%"></div></div>';
       h+='<div class="cs-kv"><span>Thực hiện <b>'+fmtN(th)+'</b></span><span>Chỉ tiêu <b>'+fmtN(ct)+'</b></span><span>'+(th>=ct?'Vượt':'Còn thiếu')+' <b>'+fmtN(Math.abs(th-ct))+'</b></span></div>';
-      if(dt) h+=csNote('Thực hiện tự động từ dichvu.json — Doanh thu.xlsx (thư mục Drive 13. DV - Master Data): cột Giá trị (trước thuế), gồm xe ngập nước, theo Ngày thanh toán'+
+      if(dt) h+=csNote('Thực hiện tự động từ dichvu.json — Doanh thu.xlsx (thư mục Drive 13. DV - Master Data): doanh thu nội bộ: cột Giá trị (trước thuế), theo Ngày thanh toán, gồm xe ngập nước; không tính lệnh bảo hành, phụ kiện, bán phụ tùng, PDI, nội bộ, xe của Cty Tín Thanh'+
         (dt.gop?', Đà Lạt + Bảo Lộc gộp chung (file doanh thu không tách)':'')+(DVX.dt_cap_nhat?' · file nguồn lưu lúc '+esc(DVX.dt_cap_nhat):'')+'. Chỉ tiêu nhập tay trong sheet Chi so trong yeu.');
     } else {
       h+='<div class="cs-kv">'+(sec.dong||[]).map(function(x){ return '<span>'+esc(x.nhan)+' <b>'+(x.giaTri||[]).map(fmtN).join(' · ')+'</b></span>'; }).join('')+'</div>';
