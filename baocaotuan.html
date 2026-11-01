@@ -150,19 +150,6 @@
   table.ov td{vertical-align:middle;overflow-wrap:anywhere;}
   .ov-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
   /* Chỉ số trọng yếu (mục 1) */
-  /* Mục 1 theo bộ phận (01/11/2026) */
-  .bp-sec{padding:16px 0 6px;border-top:1px solid var(--line);}
-  .bp-sec:first-of-type{border-top:0;padding-top:4px;}
-  .bp-name{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;}
-  .bp-line{font-size:14px;line-height:1.7;color:var(--ink);}
-  .bp-line b{font-weight:600;font-variant-numeric:tabular-nums;}
-  .bp-line .up{color:var(--green-t);} .bp-line .down{color:var(--red-t);}
-  .bp-sep{color:var(--ink-soft);margin:0 10px;}
-  .bp-more{margin:4px 0 10px;}
-  .panel details.bp-more > summary{font-size:13px;font-weight:400;color:var(--navy);cursor:pointer;margin:0;}
-  .panel details.bp-more[open] > summary{margin-bottom:10px;}
-  .bp-sec .nd-block{margin-top:8px;}
-  .bp-more .cs-grid{align-items:start;}
   .cs-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:stretch;}
   .cs-block{border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
   .cs-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;}
@@ -673,6 +660,11 @@ function renderOverview(A){
   }).join('')+'</div>';
   return h+'</div>';
 }
+// Mục 1 — Chỉ số trọng yếu của chi nhánh đang chọn (thẻ đánh số 1.1 Bán hàng, 1.2 Dịch vụ, 1.3 Nhân sự...)
+function renderChiSoPanel(a){
+  var body=renderChiSo(a); if(!body) return '';
+  return '<div class="panel" id="sec-chiso"><h3><span class="chart-num">1</span> Chỉ số trọng yếu — '+esc(a.b.chiNhanh)+' · Tuần '+a.refWeek+'</h3>'+body+'</div>';
+}
 
 // ── Chỉ số trọng yếu (sheet "Chi so trong yeu", thêm 26/09/2026) — biểu đồ trong mục 1, theo chi nhánh đang chọn.
 // Bán hàng: số HĐ ký TỰ ĐỘNG từ data.json (weekBH: tuần T2→CN như tuần báo cáo, cùng nguồn biểu đồ Chốt cọc tab BC Bán hàng) — cột tên
@@ -685,14 +677,13 @@ const CS_WEEKS = 10;   // số tuần gần nhất của biểu đồ HĐ ký B�
 // Báo bán tháng so với chỉ tiêu = bảng 9 "Thực hiện chỉ tiêu Tháng" của tab BC Bán hàng, lấy thẳng từ trang cha
 // index.html (parent.getDMSMonth()) để cùng 1 logic + chỉ tiêu tự chỉnh tay. Mở trang này riêng lẻ thì không có.
 function getDMS(){ try{ return (window.parent!==window && typeof window.parent.getDMSMonth==='function') ? window.parent.getDMSMonth() : null; }catch(e){ return null; } }
-function dmsNhom(a){ return {nt:'nt',pr:'nt',dl:'dl',bl:'dl',dn:'dl',py:'py'}[stripVN(branchCode(a.b.chiNhanh)||'')]||''; }
-function dmsPick(rows, my){ return (rows||[]).filter(function(r){ return my && stripVN(r.key)===my; })[0]; }
 function csDMSTable(a){
   if(laBanChot()) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">Bản đã chốt không lưu bảng báo bán (số tháng/quý luôn là số hiện tại) — xem tab BC Bán hàng.</div>';
   var d=getDMS();
   if(!d) return '<div class="cs-sub">Báo bán so với chỉ tiêu</div><div class="cs-src">'+(window.parent!==window?'Đang chờ dữ liệu tab BC Bán hàng…':'Chỉ hiện khi mở trong trang chính (tab BC tuần).')+'</div>';
   // Nhóm chỉ tiêu của chi nhánh đang xem: PR tính chung NT, BL/ĐN tính chung ĐL (như TARGET_GROUPS ở index.html)
-  var my=dmsNhom(a), pick=function(rows){ return dmsPick(rows, my); };
+  var my={nt:'nt',pr:'nt',dl:'dl',bl:'dl',dn:'dl',py:'py'}[stripVN(branchCode(a.b.chiNhanh)||'')]||'';
+  var pick=function(rows){ return (rows||[]).filter(function(r){ return my && stripVN(r.key)===my; })[0]; };
   var m=pick(d.rows), q=pick(d.quy&&d.quy.rows);
   var pct=function(x,t){ if(!t) return '–'; var p=x/t*100; return '<span class="'+(p>=100?'up':'')+'">'+p.toLocaleString('vi-VN',{maximumFractionDigits:0})+'%</span>'; };
   // Tháng tách "Chờ đóng tiền" / "Chưa có xe" như bảng 9; Quý chỉ có tổng "Chờ phân xe" (bảng 10) → gộp 2 ô
@@ -1045,11 +1036,12 @@ function crmAuto(a){
     hotNote:Object.keys(byModel).sort(function(x,y){ return byModel[y]-byModel[x]; }).map(function(m){ return byModel[m]+' '+m; }).join(', '),
     chuaGan:live.filter(function(l){ return !l.chiNhanh && inWk(l); }).length };
 }
-function leadVals(a, sec){
+function csLeadTable(a, sec){
   var col=function(name){ var i=-1; (sec.cot||[]).forEach(function(c,j){ if(stripVN(c)===name) i=j; }); return i; };
   var iTu=col('tu dong'), iTay=col('nhap tay'), iGc=col('ghi chu');
   var au=crmAuto(a);
-  return (sec.dong||[]).map(function(x){
+  var h='<div class="cs-sub">Lead &amp; khách hot — tuần '+a.refWeek+'</div><table class="cs-cmp"><thead><tr><th>Chỉ số</th><th class="num">Số liệu</th><th>Nguồn</th><th>Ghi chú</th></tr></thead><tbody>';
+  (sec.dong||[]).forEach(function(x){
     var k=stripVN(x.nhan), isLead=/lead/.test(k), isHot=/hot/.test(k);
     var tay=iTay>=0?(x.giaTri||[])[iTay]:null, tuSheet=iTu>=0?(x.giaTri||[])[iTu]:null;
     // Bản đã chốt: khách hot CRM chỉ có trạng thái HIỆN TẠI, không phải lúc chốt → không hiện (Lead tính lại được theo ngày tạo)
@@ -1059,14 +1051,7 @@ function leadVals(a, sec){
     if(tay!=null){ v=tay; nguon='Nhập tay'+(crm!=null&&crm!==tay?' <span class="cs-muted">(CRM: '+fmtN(crm)+')</span>':''); gc=esc(gcTay); }
     else if(crm!=null){ v=crm; nguon='CRM'; gc=gcTay?esc(gcTay):(isHot&&au.hotNote?esc(au.hotNote):''); }
     else { v=tuSheet; nguon=tuSheet!=null?'Sheet':'–'; gc=esc(gcTay); }
-    return {nhan:x.nhan, v:v, nguon:nguon, gc:gc, isLead:isLead, isHot:isHot};
-  });
-}
-function csLeadTable(a, sec){
-  var au=crmAuto(a);
-  var h='<div class="cs-sub">Lead &amp; khách hot — tuần '+a.refWeek+'</div><table class="cs-cmp"><thead><tr><th>Chỉ số</th><th class="num">Số liệu</th><th>Nguồn</th><th>Ghi chú</th></tr></thead><tbody>';
-  leadVals(a, sec).forEach(function(x){
-    h+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtN(x.v)+'</b></td><td>'+x.nguon+'</td><td>'+x.gc+'</td></tr>';
+    h+='<tr><td>'+esc(x.nhan)+'</td><td class="num"><b>'+fmtN(v)+'</b></td><td>'+nguon+'</td><td>'+gc+'</td></tr>';
   });
   h+='</tbody></table>';
   return h+csNote('Ô "Nhập tay" trong sheet Chi so trong yeu được ưu tiên; để trống thì lấy từ CRM Bizfly'+(au?' ('+esc(au.grp.join(' + '))+')':'')+
@@ -1075,10 +1060,10 @@ function csLeadTable(a, sec){
 }
 function renderChiSo(a){
   if(!a) return '';
-  var secs=(a.b.chiSo||[]).slice();
+  var secs=(a.b.chiSo||[]).slice(); if(!secs.length) return '';
   // Khối Lead & khách hot (Bán hàng) vẽ BÊN TRONG thẻ Bán hàng, dưới bảng báo bán — tách khỏi danh sách khối
   var leadSecs=secs.filter(isLeadSec); secs=secs.filter(function(s){ return !isLeadSec(s); });
-  var leadHtml=leadSecs.map(function(s){ return csLeadTable(a,s); }).join('<div class="cs-part"></div>');
+  var leadHtml=leadSecs.map(function(s){ return '<div class="cs-part">'+csLeadTable(a,s)+'</div>'; }).join('');
   if(leadHtml && !secs.some(function(s){ return s.boPhan==='BH' && (s.cot||[]).length; }))
     secs.unshift({boPhan:'BH', cot:[], dong:[], _leadOnly:true});
   // Lượt xe Dịch vụ: khối "Lượt xe..." NHẬP TAY trong sheet có số → ƯU TIÊN (28/09/2026: trước mắt nhập tay,
@@ -1098,12 +1083,12 @@ function renderChiSo(a){
       var leg='<div class="cs-leg">'+d.series.map(function(se,j){ return '<span><i style="background:'+CS_COLORS[j%CS_COLORS.length]+'"></i>'+esc(se.name)+'</span>'; }).join('')+'<span class="cs-note">Số trên cột = Tổng</span></div>';
       var tbl='<details class="cs-tbl"><summary>Xem bảng số</summary><table><thead><tr><th>'+esc(sec.nhanCot||'')+'</th>'+d.series.map(function(se){ return '<th class="num">'+esc(se.name)+'</th>'; }).join('')+'<th class="num">Tổng</th></tr></thead><tbody>'+
         d.rows.map(function(r){ return '<tr><td>'+esc(r.nhan)+'</td>'+r.vals.map(function(v){ return '<td class="num">'+fmtN(v)+'</td>'; }).join('')+'<td class="num"><b>'+fmtN(r.tong)+'</b></td></tr>'; }).join('')+'</tbody></table></details>';
-      // Gộp mục 1–2 (01/11/2026): 2 thẻ chi tiết cạnh nhau — biểu đồ HĐ ký | báo bán + lead
-      return [{bp:'BH', tieuDe:d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':(sec.tieuDe||''), body:leg+svgStacked(d.series, d.rows)+
-        (d.auto?csNote('Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần T2→CN như tuần báo cáo)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')):'<div class="cs-src">Không tải được data.json — dùng số điền trong sheet</div>')+tbl},
-        {bp:'BH', tieuDe:'', body:csDMSTable(a)+(leadHtml?'<div class="cs-part">'+leadHtml+'</div>':'')}];
+      return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div><div>'+
+        '<div class="cs-sub">'+(d.auto?'Ký hợp đồng '+CS_WEEKS+' tuần gần nhất':esc(sec.tieuDe||''))+'</div>'+leg+svgStacked(d.series, d.rows)+
+        (d.auto?csNote('Tự động từ data.json (Ngày đặt cọc + Nguồn khách, tuần T2→CN như tuần báo cáo)'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')):'<div class="cs-src">Không tải được data.json — dùng số điền trong sheet</div>')+tbl+
+        '</div><div class="cs-part">'+csDMSTable(a)+'</div>'+leadHtml+'</div>';
     }
-    if(sec._leadOnly) return {bp:'BH', tieuDe:'', body:leadHtml};
+    if(sec._leadOnly) return '<div class="cs-block"><div class="cs-title">'+esc(bp)+'</div>'+leadHtml+'</div>';
     // Khối có tiêu đề cột từ 2 cột trở lên (sheet: "Loại | Tuần 39 | TB 90 ngày" = cột 1 kỳ này, cột 2 mốc so sánh)
     // → bảng hiện giá trị tuyệt đối trước (mốc so sánh rồi kỳ này), sau đó mới tới Tăng/giảm (số tuyệt đối) và %
     // (xanh = tăng, đỏ = giảm)
@@ -1146,15 +1131,21 @@ function renderChiSo(a){
     }
     return {bp:sec.boPhan, name:bp, tieuDe:sec.tieuDe, body:h};
   });
-  // Gộp mục 1–2 (01/11/2026): mỗi khối của sheet là 1 thẻ chi tiết, gom theo bộ phận → {BH:[html], DV:[...], VP:[...]};
-  // Công nợ bảo hiểm vào Dịch vụ, Nhân sự vào Văn phòng
-  var out={};
-  [].concat.apply([], blocks).forEach(function(b){
-    (out[b.bp]=out[b.bp]||[]).push('<div class="cs-block">'+(b.tieuDe?'<div class="cs-title">'+esc(b.tieuDe)+'</div>':'')+b.body+'</div>');
+  // Gộp các khối cùng bộ phận (sheet mở nhiều khối "Dịch vụ" cho nhiều chỉ số) thành 1 thẻ:
+  // tiêu đề của khối đầu lên tên thẻ, tiêu đề các khối sau thành tiêu đề phụ bên trong.
+  var cards=[], byBP={};
+  blocks.forEach(function(b){
+    if(typeof b==='string'){ cards.push(b); return; }
+    if(byBP[b.bp]){ byBP[b.bp].body+='<div class="cs-part">'+(b.tieuDe?'<div class="cs-sub">'+esc(b.tieuDe)+'</div>':'')+b.body+'</div>'; return; }
+    byBP[b.bp]=b; cards.push(b);
   });
-  var cnb=renderCongNo(a); if(cnb) (out.DV=out.DV||[]).push(cnb);
-  var ns=renderNS(a); if(ns) (out.VP=out.VP||[]).push(ns);
-  return out;
+  blocks=cards.map(function(b){
+    return typeof b==='string'?b:'<div class="cs-block"><div class="cs-title">'+esc(b.name)+(b.tieuDe?' — '+esc(b.tieuDe):'')+'</div>'+b.body+'</div>';
+  });
+  var ns=renderNS(a); if(ns) blocks.push(ns); var cnb=renderCongNo(a); if(cnb) blocks.push(cnb);
+  // Đánh số thẻ theo thứ tự hiển thị: 1.1, 1.2, 1.3... (mỗi thẻ có đúng 1 .cs-title ở đầu)
+  var n=0, html=blocks.join('').replace(/<div class="cs-title">/g, function(m){ n++; return m+'1.'+n+' '; });
+  return '<div class="cs-grid">'+html+'</div>';
 }
 
 // ── Công nợ bảo hiểm (Dịch vụ) — thêm 29/10/2026 (anh Khanh): theo dõi mức kiểm soát công nợ hằng tuần.
@@ -1225,7 +1216,7 @@ function renderBranchCard(a){
   // Lỗi nhập liệu không có ô KPI riêng (Quá hạn/Chưa CN có thể = 0 trong khi vẫn có lỗi) → link đỏ cạnh ngày báo cáo, bấm nhảy mục 7
   var nLoi=a.issues.length;
   h+='<div class="branch-meta">'+(b.ngayBaoCao?'Ngày báo cáo '+fmtD(b.ngayBaoCao):'Chưa điền Ngày báo cáo — tính theo ngày lưu file '+fmtD(b.ngayDuLieu))+' · File: '+esc(b.file||'')+
-     (nLoi?'<a class="warn-link" onclick="jumpTo(\'sec-canhbao\')" title="Xem mục 6 Cảnh báo &amp; lỗi nhập liệu">'+nLoi+' việc nhập liệu chưa đúng ›</a>':'')+'</div></div>';
+     (nLoi?'<a class="warn-link" onclick="jumpTo(\'sec-canhbao\')" title="Xem mục 7 Cảnh báo &amp; lỗi nhập liệu">'+nLoi+' việc nhập liệu chưa đúng ›</a>':'')+'</div></div>';
   // Thẻ chi nhánh (tên + 6 ô KPI) ghim ở mép trên khi cuộn (position:sticky, 28/09/2026) để bấm KPI lúc nào cũng được;
   // cảnh báo đặt NGOÀI thẻ (renderBranchNotes) cho thanh ghim gọn.
   // jump: id mục cần nhảy tới khi bấm (chỉ khi số > 0)
@@ -1254,9 +1245,9 @@ function renderBranchNotes(a){
 // Mục 2 "Nhận định tuần" — phần TGĐ đọc đầu tiên: nhận định tổng thể của GĐCN + 3 trưởng bộ phận
 // (sheet "Nhan dinh tong the"). GĐCN chưa dùng sheet mới thì lấy tạm nhận định tự do ở sheet cũ "Nhan dinh tuan".
 // autoHtml: số liệu tự động gắn vào câu "Hợp đồng" (câu 1) của khối Bán hàng — xem hdAutoHtml()
-// fold: khối thu gọn (bấm tiêu đề để mở); ten: tên khối thay ND_NAME (mục 1 theo bộ phận)
-function ndBlock(bp, e, oldGD, isHist, autoHtml, fold, ten){
-  var head='<span class="nd-title">'+(ten||ND_NAME[bp])+'</span>';
+// fold: khối thu gọn (bấm tiêu đề để mở) — dùng cho 3 bộ phận ở tuần hiện tại, GĐCN luôn mở
+function ndBlock(bp, e, oldGD, isHist, autoHtml, fold){
+  var head='<span class="nd-title">'+ND_NAME[bp]+'</span>';
   if(fold){
     var n=e?(e.items||[]).filter(function(it){ return it.traLoi; }).length:0, tot=e?(e.items||[]).length:0;
     head+='<span class="nd-by">'+(e?(e.nguoiViet?esc(e.nguoiViet)+' · ':'')+n+'/'+tot+' câu':'<span class="bad">Chưa viết</span>')+'</span>';
@@ -1281,78 +1272,14 @@ function ndBlock(bp, e, oldGD, isHist, autoHtml, fold, ten){
   }
   return h+(fold?'</details>':'</div>');
 }
-// ── Mục 1 "Tình hình tuần theo bộ phận" (01/11/2026, anh Khanh: báo cáo rời rạc — gộp mục Chỉ số trọng yếu + Nhận định):
-// mỗi bộ phận = 1 dòng số chính + "Biểu đồ và số chi tiết" (thu gọn) + nhận định trưởng bộ phận ngay dưới; GĐCN để cuối (tạm thời).
-// Dòng số dùng chung hàm tính với thẻ chi tiết (csBHData, dmsPick, leadVals, dvDoanhThu, dvLuotXe, nsData).
-function ttBH(a){
-  var p=[], chiSo=a.b.chiSo||[];
-  var sec=chiSo.filter(function(x){ return x.boPhan==='BH' && (x.cot||[]).length && !isLeadSec(x); })[0];
-  var d=sec?csBHData(sec,a):null, n=d?d.rows.length:0, r=n?d.rows[n-1]:null, r0=n>1?d.rows[n-2]:null;
-  if(r && r.tong!=null){
-    var tach=d.series.length>1?' ('+d.series.map(function(se,j){ return esc(se.code||se.name)+' '+fmtN(r.vals[j]||0); }).join(', ')+')':'';
-    p.push('Ký HĐ '+(d.auto?'tuần '+a.refWeek:esc(r.nhan))+' <b>'+fmtN(r.tong)+'</b>'+tach+(r0&&r0.tong!=null?', tuần trước '+fmtN(r0.tong):''));
-  }
-  var dms=laBanChot()?null:getDMS(), m=dms?dmsPick(dms.rows, dmsNhom(a)):null;
-  if(m && m.target){ var pc=m.dms/m.target*100;
-    p.push('Báo bán tháng '+dms.thang+' <b>'+fmtN(m.dms)+'</b>/'+fmtN(m.target)+' <span class="'+(pc>=100?'up':'')+'">('+fmtN(Math.round(pc))+'%)</span>'); }
-  var ls=chiSo.filter(isLeadSec)[0], lv=ls?leadVals(a,ls):null;
-  if(!lv){ var au=crmAuto(a); if(au) lv=[{v:au.lead, isLead:true}, {v:laBanChot()?null:au.hot, isHot:true, gc:esc(au.hotNote)}]; }
-  (lv||[]).forEach(function(x){ if(x.v==null) return;
-    p.push((x.isLead?'Lead mới':x.isHot?'Khách hot':esc(x.nhan))+' <b>'+fmtN(x.v)+'</b>'+(x.isHot&&x.gc?' <span class="cs-muted">('+x.gc+')</span>':'')); });
-  return p;
-}
-function ttDV(a){
-  var p=[], chiSo=a.b.chiSo||[];
-  chiSo.forEach(function(sec){
-    if(sec.boPhan!=='DV' || (sec.cot||[]).length>=2) return;
-    var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
-    var ct=get(/chi tieu|ke hoach|muc tieu/), th=get(/thuc hien|dat duoc|ket qua/), dt=ct?dvDoanhThu(a):null;
-    if(dt) th=dt.th;
-    if(!ct || th==null) return;
-    var pc=th/ct*100;
-    p.push((dt?'Doanh thu tháng '+dt.thang:esc(sec.tieuDe||'Thực hiện'))+' <b>'+fmtN(th)+'</b>/'+fmtN(ct)+(dt?' tr':'')+' <span class="'+(pc>=100?'up':'')+'">('+fmtN(Math.round(pc))+'%)</span>');
-  });
-  // Lượt xe: chỉ khi dùng số tự động (sheet có khối "Lượt xe" nhập tay thì xem ở thẻ chi tiết)
-  var tay=chiSo.some(function(x){ return x.boPhan==='DV' && /luot xe/.test(stripVN(x.tieuDe)) &&
-    (x.dong||[]).some(function(y){ return (y.giaTri||[]).some(function(v){ return v!=null; }); }); });
-  var lx=tay?null:dvLuotXe(a), td=lx?dvTuanData(a):null, last=td?td.rows[td.rows.length-1]:null;
-  if(lx){
-    var ten={'Bảo dưỡng':'bảo dưỡng','Bảo hiểm':'bảo hiểm','Đồng sơn tiền mặt':'đồng sơn'};
-    var q=lx.dong.map(function(x){ var w=x.giaTri[0], b=x.giaTri[1], pc=(w!=null&&b)?Math.round((w/b-1)*100):null;
-      return (ten[x.nhan]||esc(x.nhan))+' '+fmtN(w==null?null:Math.round(w*10)/10)+(pc==null?'':' <span class="'+(pc>=0?'up':'down')+'">'+(pc>=0?'+':'−')+Math.abs(pc)+'%</span>'); });
-    p.push('Lượt xe/ngày'+(last&&last.tong!=null?' <b>'+fmtN(last.tong)+'</b>':'')+' <span title="% so với trung bình 90 ngày trước">('+q.join(', ')+')</span>');
-  }
-  if(CNX && branchCode(a.b.chiNhanh)==='PY'){
-    var tuan=(CNX.PY||{}).tuan||{}, k=Object.keys(tuan).sort().pop();
-    if(k){ var t=tuan[k], qh=(t.qh30||0)+(t.qhTren30||0)+(t.qhTren3t||0), tong=qh+(t.trongHan||0), ng=(CNX.PY||{}).nguongMienPhi;
-      p.push('Công nợ BH quá hạn <b>'+fmtN(Math.round(qh/1e5)/10)+' tr</b> <span class="'+(ng&&qh>ng?'down':'')+'">('+fmtN(tong?Math.round(qh/tong*1000)/10:0)+'% tổng nợ)</span>'); }
-  }
-  return p;
-}
-function ttVP(a){
-  var o=nsData(a), p=[]; if(!o) return p;
-  if(o.tong!=null) p.push('Nhân sự <b>'+o.tong+'</b> người');
-  if(CC){ var mu=0, va=0; Object.keys(o.bp).forEach(function(k){ mu+=o.bp[k].muon||0; va+=o.bp[k].nghi||0; });
-    p.push('đi muộn <b>'+mu+'</b> lượt, vắng <b>'+va+'</b> lượt'); }
-  if(o.moi && o.nghi) p.push('30 ngày qua vào '+o.moi.length+', nghỉ '+o.nghi.length);
-  return p;
-}
-function renderTinhHinh(a){
-  var cur=a.ndBP.cur, ct=renderChiSo(a)||{}, tt={BH:ttBH, DV:ttDV, VP:ttVP};
+function renderNhanDinh(a){
+  var cur=a.ndBP.cur;
   var done=ND_ORDER.filter(function(bp){ return cur[bp] || (bp==='GDCN' && a.ndCur); }).length;
-  var h='<div class="panel" id="sec-chiso"><h3><span class="chart-num">1</span> Tình hình tuần '+a.refWeek+' theo bộ phận <span class="count-pill'+(done<ND_ORDER.length?' red':'')+'" title="Số khối đã viết nhận định (GĐCN + 3 bộ phận)">'+done+'/'+ND_ORDER.length+' nhận định</span></h3>';
-  h+='<p class="desc" title="Rê chuột vào nhãn nhận định để xem câu hỏi đầy đủ. Nguồn nhận định: sheet &quot;Nhan dinh tong the&quot;">Mỗi bộ phận: số liệu chính, rồi nhận định của trưởng bộ phận. Biểu đồ và bảng số: bấm "Biểu đồ và số chi tiết".</p>';
-  ['BH','DV','VP'].concat(Object.keys(ct).filter(function(k){ return !tt[k]; })).forEach(function(bp){
-    var line=tt[bp]?tt[bp](a):[], ch=ct[bp]||[];
-    if(!ND_NAME[bp] && !ch.length) return;
-    h+='<div class="bp-sec"><div class="bp-name">'+esc(BP_NAME[bp]||bp)+'</div>';
-    h+='<div class="bp-line">'+(line.length?line.join('<span class="bp-sep">·</span>'):'<span class="cs-muted">Chưa có số liệu tự động.</span>')+'</div>';
-    if(ch.length) h+='<details class="bp-more" data-k="bp-'+bp+'"><summary>Biểu đồ và số chi tiết</summary><div class="cs-grid">'+
-      (ch.length===1?ch[0].replace('class="cs-block"','class="cs-block cs-full"'):ch.join(''))+'</div></details>';
-    if(ND_NAME[bp]) h+=ndBlock(bp, cur[bp], null, false, '', false, 'Nhận định trưởng bộ phận');
-    h+='</div>';
-  });
-  h+='<div class="bp-sec"><div class="bp-name">Giám đốc chi nhánh</div>'+ndBlock('GDCN', cur.GDCN, !cur.GDCN?a.ndCur:null, false, '', false, 'Nhận định tổng thể')+'</div>';
+  var h='<div class="panel"><h3><span class="chart-num">2</span> Nhận định tuần '+a.refWeek+' — GĐCN &amp; trưởng bộ phận <span class="count-pill'+(done<ND_ORDER.length?' red':'')+'">'+done+'/'+ND_ORDER.length+'</span></h3>';
+  h+='<p class="desc" title="Rê chuột vào nhãn để xem câu hỏi đầy đủ. Nguồn: sheet &quot;Nhan dinh tong the&quot;">Đánh giá tổng thể tuần và lý do, theo bộ câu hỏi cố định. Bấm tên bộ phận để mở.</p>';
+  h+='<div class="nd-grid">';
+  ND_ORDER.forEach(function(bp){ h+=ndBlock(bp, cur[bp], bp==='GDCN'&&!cur.GDCN?a.ndCur:null, false, bp==='BH'?hdAutoHtml(a.b.chiNhanh, a.ref):'', bp!=='GDCN'); });
+  h+='</div>';
   var nHist=a.ndBP.hist.length + (a.ndHist.length);
   if(nHist){
     h+='<details class="history"><summary>Nhận định các tuần trước ('+a.ndBP.hist.length+' tuần)</summary>';
@@ -1386,7 +1313,7 @@ function renderCanTGD(a){
 }
 
 function renderDeXuat(a){
-  var h='<div class="panel" id="sec-dexuat"><h3><span class="chart-num">2</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
+  var h='<div class="panel" id="sec-dexuat"><h3><span class="chart-num">3</span> Vướng mắc &amp; đề xuất cần TGĐ / Công ty quyết <span class="count-pill'+(a.chuyenTGD.length?' red':'')+'">'+a.deXuat.length+'</span></h3>';
   h+='<p class="desc" title="Việc có Đề xuất / cần hỗ trợ, chưa Hoàn thành, Hướng chỉ đạo = Chuyển thông tin TGĐ hoặc để trống. Việc GĐCN đã có ý kiến chỉ đạo không nằm ở mục này.">Việc có đề xuất, chưa xong và chưa có hướng chỉ đạo. Việc GĐCN chuyển TGĐ hiện đầy đủ; việc chưa có ý kiến chỉ đạo thu gọn — bấm để mở.</p>';
   if(!a.deXuat.length) return h+'<div class="empty">Không có đề xuất nào đang chờ.</div></div>';
   var thuTu=function(t){ return BP_ORDER.indexOf(t.boPhan)*10+(t.nhom?NHOM_ORDER.indexOf(t.nhom)+1:0); };
@@ -1399,27 +1326,27 @@ function renderDeXuat(a){
 
 function renderTrongTam(a){
   // Không có việc nào: chỉ 1 dòng, thu gọn như mục 5–9 (20/10/2026 — không để 3 tiêu đề con rỗng chiếm chỗ)
-  if(!a.trongTam.length) return '<details class="panel"><summary><span class="chart-num">3</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">0</span></summary><div class="empty">Tuần này GĐCN chưa chọn việc trọng tâm (cột "Trọng tâm tuần" = Có).</div></details>';
-  var h='<details class="panel" open><summary><span class="chart-num">3</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">'+a.trongTam.length+'</span></summary>';
+  if(!a.trongTam.length) return '<details class="panel"><summary><span class="chart-num">4</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">0</span></summary><div class="empty">Tuần này GĐCN chưa chọn việc trọng tâm (cột "Trọng tâm tuần" = Có).</div></details>';
+  var h='<details class="panel" open><summary><span class="chart-num">4</span> Việc trọng tâm tuần theo bộ phận <span class="count-pill">'+a.trongTam.length+'</span></summary>';
   h+='<p class="desc">Các việc GĐCN chọn "Trọng tâm tuần = Có" để báo TGĐ tuần này.</p>';
   BP_ORDER.forEach(function(bp){ nhomBP(a.trongTam, bp).forEach(function(g){
     var list=g.list;
     h+=subHead(g.ten+' ('+list.length+')');
     // Việc đã có ở mục 3 → ghi chú mờ bên phải để người đọc biết đã xem rồi
-    h+=list.length?grid(list.map(function(t){ return taskBlock(t,{fold:true, dupNote:a.deXuat.indexOf(t)>=0?'đã nêu ở mục 2':''}); })):'<div class="empty">Không có việc trọng tâm tuần.</div>';
+    h+=list.length?grid(list.map(function(t){ return taskBlock(t,{fold:true, dupNote:a.deXuat.indexOf(t)>=0?'đã nêu ở mục 3':''}); })):'<div class="empty">Không có việc trọng tâm tuần.</div>';
   }); });
   return h+'</details>';
 }
 
 function renderCaiTien(a){
-  var h='<details class="panel"><summary><span class="chart-num">4</span> Hoạt động cải tiến <span class="count-pill">'+a.caiTien.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">5</span> Hoạt động cải tiến <span class="count-pill">'+a.caiTien.length+'</span></summary>';
   h+='<p class="desc">Mọi việc có Loại hoạt động = "Cải tiến", không phụ thuộc Trọng tâm tuần.</p>';
   if(!a.caiTien.length) return h+'<div class="empty">Chưa có hoạt động cải tiến nào.</div></details>';
   return h+grid(a.caiTien.map(function(t){ return taskBlock(t,{compact:true}); }))+'</details>';
 }
 
 function renderTCT(a){
-  var h='<details class="panel"><summary><span class="chart-num">5</span> Tổng Công ty giao — việc chưa hoàn thành <span class="count-pill">'+a.tctOpen.length+'</span></summary>';
+  var h='<details class="panel"><summary><span class="chart-num">6</span> Tổng Công ty giao — việc chưa hoàn thành <span class="count-pill">'+a.tctOpen.length+'</span></summary>';
   h+='<p class="desc">Từ sheet "Ke hoach TCT giao". Nhiệm vụ chưa bộ phận nào mở dòng triển khai được báo đỏ — dễ bị bỏ quên.</p>';
   if(!a.tctOpen.length) return h+'<div class="empty">Không có nhiệm vụ TCT giao nào đang mở.</div></details>';
   return h+grid(a.tctOpen.map(function(t){ return taskBlock(t,{tct:true}); }))+'</details>';
@@ -1449,7 +1376,7 @@ function renderIssues(a){
     var ma='<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>';
     return qaBlock(ma+' · '+esc(tieuDe(t.noiDung)), by, m.rows, '', fold);
   };
-  var h='<details class="panel" id="sec-canhbao"><summary><span class="chart-num">6</span> Cảnh báo &amp; lỗi nhập liệu <span class="count-pill '+(nhom[0].length?'red':'gold')+'">'+map.length+'</span></summary>';
+  var h='<details class="panel" id="sec-canhbao"><summary><span class="chart-num">7</span> Cảnh báo &amp; lỗi nhập liệu <span class="count-pill '+(nhom[0].length?'red':'gold')+'">'+map.length+'</span></summary>';
   h+='<p class="desc">Mỗi khối là 1 việc có vấn đề (tương ứng các ô ĐỎ/VÀNG trong file Excel) — GĐCN rà và truy trách nhiệm trước khi gửi TGĐ.</p>';
   if(nhom[0].length) h+=subHead('<span class="bad">Quá hạn ('+nhom[0].length+')</span>')+grid(nhom[0].map(function(m){ return blk(m,false); }));
   if(nhom[1].length) h+=subHead('<span class="warnc">Chưa cập nhật tuần ('+nhom[1].length+')</span>')+grid(nhom[1].map(function(m){ return blk(m,true); }));
@@ -1467,7 +1394,7 @@ function renderThang(a){
   var tctM=a.tct.filter(function(t){ var d=parseD(t.ngayGiao); return d && d.getMonth()+1===m; });
   var by=function(s){ return list.filter(function(t){ return t.trangThai===s; }).length; };
   var tt=list.filter(function(t){ return t.nguon==='Trọng tâm tháng'; });
-  var h='<details class="panel" id="sec-thang"><summary><span class="chart-num">7</span> Toàn bộ việc trong tháng <span class="count-pill">'+list.length+'</span></summary>';
+  var h='<details class="panel" id="sec-thang"><summary><span class="chart-num">8</span> Toàn bộ việc trong tháng <span class="count-pill">'+list.length+'</span></summary>';
   h+='<div class="toolbar">Tháng <select onchange="monthSel=+this.value;render()">'+Object.keys(months).map(Number).sort(function(x,y){return x-y;}).map(function(x){ return '<option value="'+x+'"'+(x===m?' selected':'')+'>Tháng '+x+'</option>'; }).join('')+'</select></div>';
   h+=grid([qaBlock('Tháng '+m+' — tổng quan', '', [
     ['Trạng thái', 'Kế hoạch '+by('Kế hoạch')+' · Đang làm '+by('Đang làm')+' · Hoàn thành '+by('Hoàn thành')+' · Tạm dừng '+by('Tạm dừng')],
@@ -1491,7 +1418,7 @@ function renderAchievement(a){
   var m = achMonthSel!=null ? achMonthSel : 0;
   var list=done.filter(function(r){ return !m || r.m===m; });
   list.sort(function(x,y){ return (y.t.ngayHT||'').localeCompare(x.t.ngayHT||''); });
-  var h='<details class="panel" id="sec-achievement"><summary><span class="chart-num">8</span> Việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
+  var h='<details class="panel" id="sec-achievement"><summary><span class="chart-num">9</span> Việc đã hoàn thành <span class="count-pill">'+list.length+'</span></summary>';
   h+='<div class="toolbar">Tháng <select onchange="achMonthSel=+this.value;render()"><option value="0">Tất cả</option>'+Object.keys(months).map(Number).sort(function(x,y){return x-y;}).map(function(x){ return '<option value="'+x+'"'+(x===m?' selected':'')+'>Tháng '+x+'</option>'; }).join('')+'</select></div>';
   if(!list.length) return h+'<div class="empty">Chưa có việc hoàn thành.</div></details>';
   return h+grid(list.map(function(r){ return taskBlock(r.t,{compact:true, tct:!!r.tct}); }))+'</details>';
@@ -1548,12 +1475,11 @@ function render(){
   var h=renderViewBar()+renderOverview(BR);
   // Chỉ 1 chi nhánh thì nút chọn trùng với bảng mục 0 → ẩn
   if(BR.length>1) h+='<div class="filter-bar">'+BR.map(function(x,i){ return '<button class="filter-btn'+(i===selIdx?' active':'')+'" onclick="selectBranch('+i+')">'+esc(x.b.chiNhanh)+'</button>'; }).join('')+'</div>';
-  h+=renderBranchCard(a)+renderBranchNotes(a)+renderCanTGD(a)+renderTinhHinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
+  h+=renderBranchCard(a)+renderBranchNotes(a)+renderCanTGD(a)+renderChiSoPanel(a)+renderNhanDinh(a)+renderDeXuat(a)+renderTrongTam(a)+renderCaiTien(a)+renderTCT(a)+renderIssues(a)+renderThang(a)+renderAchievement(a);
   // Giữ trạng thái mở/đóng các <details> khi render lại (đổi tháng, đổi chi nhánh)
-  var keyOf=function(d){ var s=d.querySelector('summary'); return d.getAttribute('data-k')||(s?s.textContent.replace(/\d+$/,'').trim():''); };
-  var openState={}; app.querySelectorAll('details.panel,details.bp-more').forEach(function(d){ openState[keyOf(d)]=d.open; });
+  var openState={}; app.querySelectorAll('details.panel').forEach(function(d){ var s=d.querySelector('summary'); if(s) openState[s.textContent.replace(/\d+$/,'').trim()]=d.open; });
   app.innerHTML=h;
-  app.querySelectorAll('details.panel,details.bp-more').forEach(function(d){ var k=keyOf(d); if(k in openState) d.open=openState[k]; });
+  app.querySelectorAll('details.panel').forEach(function(d){ var s=d.querySelector('summary'); var k=s&&s.textContent.replace(/\d+$/,'').trim(); if(k in openState) d.open=openState[k]; });
 }
 
 async function load(){
