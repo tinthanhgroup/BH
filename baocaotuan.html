@@ -5,17 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Báo cáo tuần chi nhánh</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
   :root{
-    /* 20/10/2026 (đánh giá UX/UI, anh Khanh duyệt): nền/chữ/viền theo tab BC Bán hàng; chữ phụ #5E6E8A theo chung.css (28/10/2026; trước #5F7190). Trang KHÔNG dùng chung.css (giữ kiểu nhẹ 20/10, chốt 28/10/2026) */
-    --bg:#F0F4FA; --panel:#FFFFFF; --ink:#1A2240; --ink-soft:#5E6E8A; --line:#DCE3F0;
-    --navy:#1B4F8C; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
+    /* 01/11/2026 (anh Khanh chốt): theo quy chuẩn "Giao diện 1 – tinh tế" (Project A/Kien truc agent/giao-dien-1-tinh-te/QUY_CHUAN.md),
+       thay bộ màu theo tab BC Bán hàng (20/10, 28/10). --navy nay là màu nhấn duy nhất (nút, mục đang chọn, liên kết); tiêu đề màu chữ chính.
+       --line = viền khối; kẻ bảng dùng --line-in. --accent (cam) giữ cho Chuyển thông tin TGĐ và biểu đồ. */
+    --bg:#F4F5F8; --panel:#FFFFFF; --ink:#1F2329; --ink-soft:#6B7280; --hint:#9AA1AD; --line:#E6E8EE; --line-in:#EEF0F4; --head:#F7F8FA;
+    --navy:#3B5BDB; --navy-soft:#EEF2FF; --accent:#E0793C; --green:#1FA97A; --red:#D64545; --gold:#F2C14E;
     --shadow:0 1px 6px rgba(0,0,0,0.07);
     /* Màu dành cho CHỮ (đạt ≥ 4,5:1 trên nền trắng); --red/--green/--accent/--gold giữ cho viền, thanh, biểu đồ */
-    --red-t:#B83A3A; --green-t:#177E5B; --gold-t:#8A5A00; --orange-t:#B85A1F;
+    --red-t:#C62828; --green-t:#2E7D32; --gold-t:#A35F00; --orange-t:#B85A1F;
   }
   *{box-sizing:border-box;}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;-webkit-font-smoothing:antialiased;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
   .wrap{max-width:1280px;margin:0 auto;padding:16px 20px 48px;}   /* 1280px theo Giao diện 1 (01/11/2026; 1600px để trống nhiều ở màn 1920) */
   .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
   .hdr p{margin:0;color:var(--ink-soft);font-size:13px;max-width:760px;line-height:1.5;}
@@ -139,7 +141,7 @@
   .view-bar{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:8px 14px;font-size:13px;}
   .view-bar select{font:inherit;font-weight:500;color:var(--navy, #1B4F8C);padding:3px 6px;}
   .view-note{color:var(--ink-soft);}
-  select{font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:500;padding:6px 10px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
+  select{font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:500;padding:6px 10px;border-radius:7px;border:1.5px solid var(--navy);background:var(--panel);color:var(--navy);cursor:pointer;}
   .kpi.clickable{cursor:pointer;transition:border-color .15s, box-shadow .15s;}
   .kpi.clickable:hover{border-color:var(--navy);box-shadow:0 2px 8px rgba(27,79,140,.12);}
   /* Bảng tổng quan mục 1: cố định độ rộng, tiêu đề tự xuống dòng — không trượt ngang */
@@ -173,8 +175,8 @@
   .cs-note{color:var(--ink-soft);}
   .cs-svg{width:100%;height:auto;display:block;}
   .cs-svg rect:hover{opacity:.8;}
-  .cs-ax{font-size:12px;fill:var(--ink-soft);font-family:'Be Vietnam Pro',sans-serif;}
-  .cs-tot{font-size:13px;font-weight:600;fill:var(--ink);font-family:'Be Vietnam Pro',sans-serif;}
+  .cs-ax{font-size:12px;fill:var(--ink-soft);font-family:Inter,system-ui,sans-serif;}
+  .cs-tot{font-size:13px;font-weight:600;fill:var(--ink);font-family:Inter,system-ui,sans-serif;}
   .cs-src{font-size:12px;color:var(--ink-soft);margin-top:4px;}
   .cs-tbl{margin-top:6px;} .cs-tbl summary{font-size:12px;font-weight:500;color:var(--ink-soft);cursor:pointer;}
   .cs-pct{font-size:26px;font-weight:600;font-variant-numeric:tabular-nums;margin:6px 0 8px;color:var(--navy);}
@@ -277,6 +279,43 @@
   .cs-leg{gap:4px 10px;}
   .leg-btn{padding:1px 5px;margin:0;}
   .cs-pct{font-weight:500;}
+  /* ── 01/11/2026 (anh Khanh chốt): áp đủ chuẩn "Giao diện 1 – tinh tế" — thay quy ước 20/10 (5 cỡ 12/13/15/20/26, Be Vietnam Pro,
+     tiêu đề navy) và 28/10 (màu theo tab BC Bán hàng). Nội dung 14px/1.5, chữ phụ 12–13px, tiêu đề khối 16px/500, số KPI 24px/500;
+     tiêu đề màu chữ chính, màu nhấn chỉ cho nút / mục đang chọn / liên kết; bảng: đầu nền #F7F8FA 13px/500, dòng ~38px, kẻ #EEF0F4 ── */
+  body{font:400 14px/1.5 Inter,system-ui,sans-serif;letter-spacing:-0.01em;}
+  table,.cs-cmp,.nd-v,.nd-free,.nd-title,details.tt-fold > summary .nd-title,.nhandinh .txt,.ns-ln,.hist-item,.nd-auto,.nd-missing,.empty,.tgd-link,.notice{font-size:14px;}
+  .panel > h3,.panel > summary{font-size:16px;color:var(--ink);}
+  .panel.tgd-box h3{color:var(--orange-t);}
+  .branch-name{font-size:16px;color:var(--ink);}
+  .chart-num{background:none;color:var(--ink-soft);width:auto;height:auto;margin-right:6px;font-size:16px;font-weight:400;border-radius:0;}
+  .cs-title{font-size:14px;color:var(--ink);margin-bottom:8px;}
+  .cs-sub{font-size:13px;color:var(--ink-soft);font-weight:400;}
+  .nd-week{font-size:14px;color:var(--ink);margin:16px 0 8px;}
+  .ma{color:var(--ink-soft);}
+  .wk,.hist-item b,.nd-auto b,.cs-tip .tip-h,.leg-btn.leg-all{color:var(--ink);}
+  .nd-k{font-size:13px;color:var(--ink-soft);}
+  .nd-qa{gap:6px 16px;}
+  .kpi-label{font-size:13px;}
+  .kpi-num,.branch-card .kpi-num{font-size:24px;}
+  .kpi.red{background:#FDECEC;border-color:#F6D3D3;} .kpi.orange{background:#FFF4E0;border-color:#F5DDB8;}
+  .kpi.clickable:hover{border-color:var(--navy);box-shadow:none;}
+  .zero,.kpi.muted .kpi-num{color:var(--hint);}
+  thead th,.cs-cmp th{background:var(--head);color:var(--ink);font-size:13px;font-weight:500;padding:9px 12px;border-bottom:1px solid var(--line);}
+  tbody td,.cs-cmp td{padding:9px 12px;border-bottom:1px solid var(--line-in);}
+  tbody tr:hover,.cs-cmp tr:hover td{background:var(--head);}
+  tr.sel td,.ov-item.sel{background:var(--navy-soft);}
+  .cs-dms tr.tot td,.cs-cmp tr.tot td{border-top:1px solid var(--line);}
+  .count-pill{background:#F2F3F5;color:#4B5563;}
+  .count-pill.red{background:#FDECEC;} .count-pill.gold{background:#FFF4E0;}
+  .filter-btn{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:7px 14px;}
+  .filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+  select:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px var(--navy-soft);}
+  .nd-block.gd,.nhandinh,.nd-auto{background:var(--head);}
+  .nd-auto{padding:8px 12px;}
+  .cs-bar{background:var(--line-in);}
+  .cs-band.on{fill:#F2F3F5;}
+  .leg-btn:hover{background:var(--head);}
+  .cs-part,.hist-item{border-top-color:var(--line-in);border-bottom-color:var(--line-in);}
 </style>
 </head>
 <body>
@@ -728,7 +767,7 @@ function svgStackedW(series, rows, donVi, W){
   var step=Math.pow(10, Math.floor(Math.log10(max))), nice=Math.ceil(max/step)*step; if(nice/step<=2) step/=2;
   var y=function(v){ return pt+ih-(v/nice)*ih; };
   var s='<svg viewBox="0 0 '+W+' '+H+'" class="cs-svg" role="img">';
-  for(var g=0; g<=nice+1e-9; g+=step){ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="#E4EAF3"/><text x="'+(pl-6)+'" y="'+(y(g)+3.5)+'" text-anchor="end" class="cs-ax">'+fmtN(g)+'</text>'; }
+  for(var g=0; g<=nice+1e-9; g+=step){ s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+y(g)+'" y2="'+y(g)+'" stroke="#EEF0F4"/><text x="'+(pl-6)+'" y="'+(y(g)+3.5)+'" text-anchor="end" class="cs-ax">'+fmtN(g)+'</text>'; }
   var slot=iw/rows.length, bw=Math.min(40, slot*0.42);
   rows.forEach(function(r,i){
     var cx=pl+slot*(i+0.5), acc=0;
