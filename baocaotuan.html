@@ -16,7 +16,7 @@
   }
   *{box-sizing:border-box;}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',sans-serif;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1600px;margin:0 auto;padding:16px 20px 48px;}   /* như chung.css (01/11/2026); dòng chữ vẫn ≤ 820px (.nd-v) */
+  .wrap{max-width:1280px;margin:0 auto;padding:16px 20px 48px;}   /* 1280px theo Giao diện 1 (01/11/2026; 1600px để trống nhiều ở màn 1920) */
   .hdr{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
   .hdr p{margin:0;color:var(--ink-soft);font-size:13px;max-width:760px;line-height:1.5;}
   .updated-tag{font-size:13px;color:#0a3866;background:#eaf1fa;border:1px solid #cddcef;padding:5px 12px;border-radius:20px;white-space:nowrap;}
@@ -192,6 +192,7 @@
   .cs-ns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start;}
   .cs-cmp tr.tot td{font-weight:500;border-top:1.5px solid var(--line);}
   .cs-part{margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);}
+  .ns-ln{font-size:13px;padding:5px 0;border-bottom:1px solid var(--line);} .ns-d{display:inline-block;width:46px;color:var(--ink-soft);}
   .cs-sub{font-size:13px;font-weight:500;color:var(--navy);margin-bottom:4px;}
   .cs-cmp{width:100%;border-collapse:collapse;font-size:13px;}
   .cs-cmp th{text-align:left;font-size:12px;font-weight:500;color:var(--ink-soft);border-bottom:1px solid var(--line);padding:4px 5px;white-space:normal;vertical-align:bottom;line-height:1.3;letter-spacing:0;}
@@ -686,9 +687,30 @@ function csBHData(sec, a){
 // Cột chồng theo tuần, nhãn tổng trên đỉnh cột. Rê chuột (hoặc chạm) vào CẢ VÙNG cột của 1 tuần → khung số liệu
 // từng loại (17/10/2026): giá trị + đơn vị, thêm r.ext[j] (vd tổng lượt xe trong tuần) và r.sub (vd số ngày làm việc).
 // Bề rộng cột = 80% bản cũ (17/10/2026, anh Khanh: cột hơi to).
+// Vẽ theo bề rộng thật của khối chứa (01/11/2026, đánh giá Giao diện 1): trước đây viewBox cố định 560 rồi co giãn
+// theo khung → chữ trục 17px ở màn 1920. Nay trả về khung .cs-chart giữ tham số; fitCharts() đo bề rộng rồi vẽ lại
+// đúng 1:1 (chữ luôn 12/13px, cao 200px), gọi lại khi đổi cỡ cửa sổ hoặc mở/đóng mục.
+var CHARTS={}, chartSeq=0, fitHen=0;
 function svgStacked(series, rows, donVi){
+  var k=++chartSeq; CHARTS[k]=[series, rows, donVi];
+  if(!fitHen) fitHen=setTimeout(fitCharts, 0);
+  return '<div class="cs-chart" data-k="'+k+'">'+svgStackedW(series, rows, donVi, 560)+'</div>';
+}
+function fitCharts(){
+  fitHen=0; var con={};
+  document.querySelectorAll('.cs-chart').forEach(function(el){
+    var k=el.getAttribute('data-k'), a=CHARTS[k]; if(!a) return; con[k]=1;
+    var w=Math.round(el.clientWidth); if(!w) return;   // đang ẩn (mục thu gọn): vẽ khi mở
+    w=Math.max(300, w);
+    if(+el.getAttribute('data-w')!==w){ el.innerHTML=svgStackedW(a[0], a[1], a[2], w); el.setAttribute('data-w', w); }
+  });
+  Object.keys(CHARTS).forEach(function(k){ if(!con[k]) delete CHARTS[k]; });
+}
+window.addEventListener('resize', function(){ clearTimeout(fitHen); fitHen=setTimeout(fitCharts, 150); });
+document.addEventListener('toggle', function(){ if(!fitHen) fitHen=setTimeout(fitCharts, 0); }, true);
+function svgStackedW(series, rows, donVi, W){
   donVi = donVi || 'HĐ';
-  var W=560, H=200, pl=30, pr=10, pt=22, pb=28, iw=W-pl-pr, ih=H-pt-pb;
+  var H=200, pl=30, pr=10, pt=22, pb=28, iw=W-pl-pr, ih=H-pt-pb;
   var max=Math.max(1, Math.max.apply(null, rows.map(function(r){ return r.tong||0; })));
   var step=Math.pow(10, Math.floor(Math.log10(max))), nice=Math.ceil(max/step)*step; if(nice/step<=2) step/=2;
   var y=function(v){ return pt+ih-(v/nice)*ih; };
@@ -786,26 +808,31 @@ function renderNS(a){
   var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
   var keys=['BH','DV','VP'].concat(Object.keys(o.bp).filter(function(k){ return ['BH','DV','VP'].indexOf(k)<0; }));
   var tot={ns:0,muon:0,nghi:0};
-  var h='<div class="cs-block cs-full"><div class="cs-title">Nhân sự — '+esc(o.name)+'</div><div class="cs-ns"><div>';
-  if(o.tong!=null) h+='<div class="cs-pct">'+o.tong+'<span> nhân sự đang làm việc</span></div>';
-  h+='<div class="cs-sub">Đi muộn & nghỉ trong tuần '+dm(o.mon)+'–'+dm(o.sun)+(CC?' · '+o.ngay+' ngày làm việc':'')+'</div>';
+  // Gọn 01/11/2026 (anh Khanh: "gọn hơn, ít chữ"): số người lên tiêu đề; cột ngắn Người/Muộn/Vắng (đơn vị ở Ghi chú);
+  // vào/nghỉ 30 ngày = 1 dòng tổng + tên gộp theo ngày · chức vụ · bộ phận, không bảng
+  var h='<div class="cs-block cs-full"><div class="cs-title">Nhân sự — '+esc(o.name)+(o.tong!=null?' · '+o.tong+' người':'')+'</div><div class="cs-ns"><div>';
+  h+='<div class="cs-sub">Tuần '+dm(o.mon)+'–'+dm(o.sun)+(CC?' ('+o.ngay+' ngày)':'')+'</div>';
   if(CC){
-    h+='<table class="cs-cmp"><thead><tr><th>Bộ phận</th><th class="num">Nhân sự</th><th class="num">Đi muộn (lượt)</th><th class="num">Nghỉ/vắng (lượt)</th></tr></thead><tbody>';
+    h+='<table class="cs-cmp"><thead><tr><th>Bộ phận</th><th class="num">Người</th><th class="num">Muộn</th><th class="num">Vắng</th></tr></thead><tbody>';
     keys.forEach(function(k){ var b=o.bp[k]; if(k==='Khác' && !b.ns && !b.muon && !b.nghi) return;
       tot.ns+=b.ns||0; tot.muon+=b.muon||0; tot.nghi+=b.nghi||0;
-      h+='<tr><td>'+esc(BP_NAME[k]||k)+'</td><td class="num">'+fmtN(b.ns||0)+'</td><td class="num"><b>'+fmtN(b.muon||0)+'</b></td><td class="num"><b>'+fmtN(b.nghi||0)+'</b></td></tr>'; });
+      h+='<tr><td>'+esc(BP_NAME[k]||k)+'</td><td class="num">'+fmtN(b.ns||0)+'</td><td class="num">'+fmtN(b.muon||0)+'</td><td class="num">'+fmtN(b.nghi||0)+'</td></tr>'; });
     h+='<tr class="tot"><td>Tổng</td><td class="num">'+fmtN(tot.ns)+'</td><td class="num">'+fmtN(tot.muon)+'</td><td class="num">'+fmtN(tot.nghi)+'</td></tr></tbody></table>';
-    h+=csNote('Đếm theo máy chấm công (chưa có dữ liệu đơn xin đi muộn / nghỉ phép): Đi muộn = quẹt vào sau 07:35 hoặc '+(o.chieu===795?'13:20':'13:35')+' (giờ vào + 5 phút, mỗi buổi 1 lượt, như tab Chấm công); Nghỉ/vắng = ngày làm việc không có công. Không tính Chủ nhật và ngày nghỉ lễ.');
+    h+=csNote('Đếm theo máy chấm công (chưa có dữ liệu đơn xin đi muộn / nghỉ phép), đơn vị: lượt. Muộn = quẹt vào sau 07:35 hoặc '+(o.chieu===795?'13:20':'13:35')+' (giờ vào + 5 phút, mỗi buổi 1 lượt, như tab Chấm công); Vắng = ngày làm việc không có công. Không tính Chủ nhật và ngày nghỉ lễ.');
   } else h+='<div class="cs-src">Không tải được chamcong.json.</div>';
   h+='</div><div>';
-  var list=function(title, arr, dk){
-    var s='<div class="cs-sub">'+title+' — 30 ngày ('+dm(o.f30)+'–'+dm(o.ref)+'): '+(arr?arr.length:'–')+'</div>';
-    if(!arr) return s+'<div class="cs-src">Không tải được nhansu.json.</div>';
-    if(!arr.length) return s+'<div class="empty">Không có.</div>';
-    return s+'<table class="cs-cmp"><thead><tr><th>Ngày</th><th>Họ tên</th><th>Bộ phận</th><th>Chức vụ</th></tr></thead><tbody>'+
-      arr.map(function(x){ return '<tr><td>'+fmtDShort(x[dk])+'</td><td>'+esc(x.ten)+'</td><td>'+esc(BP_NAME[nsBP(x.khoi)]||x.khoi||'')+'</td><td>'+esc(x.chucvu||'')+'</td></tr>'; }).join('')+'</tbody></table>';
-  };
-  h+=list('Nhân sự mới', o.moi, 'ngayvao')+'<div class="cs-part">'+list('Nghỉ việc', o.nghi, 'ngaynghi')+'</div>';
+  if(!o.moi || !o.nghi) return h+'<div class="cs-src">Không tải được nhansu.json.</div></div></div></div>';
+  h+='<div class="cs-sub">30 ngày qua: vào '+o.moi.length+' · nghỉ '+o.nghi.length+'</div>';
+  var nhom={}, ds=[];
+  [['Vào', o.moi, 'ngayvao'], ['Nghỉ', o.nghi, 'ngaynghi']].forEach(function(g){
+    g[1].forEach(function(x){
+      var bp=BP_NAME[nsBP(x.khoi)]||x.khoi||'', key=x[g[2]]+'|'+g[0]+'|'+(x.chucvu||'')+'|'+bp;
+      if(!nhom[key]){ nhom[key]={d:x[g[2]], loai:g[0], ct:[x.chucvu,bp].filter(Boolean).join(' · '), ten:[]}; ds.push(nhom[key]); }
+      nhom[key].ten.push(esc(x.ten));
+    });
+  });
+  ds.sort(function(p,q){ return String(q.d).localeCompare(String(p.d)); });
+  h+=ds.map(function(n){ return '<div class="ns-ln"><span class="ns-d">'+fmtDShort(n.d)+'</span>'+n.loai+': '+n.ten.join(', ')+(n.ct?' <span class="cs-muted">'+esc(n.ct)+'</span>':'')+'</div>'; }).join('');
   return h+'</div></div></div>';
 }
 // ── Dịch vụ — lượt xe TB/ngày TỰ ĐỘNG (thêm 28/09/2026) từ dichvu.json (TinThanh_DichVu_Sync.gs đếm RO theo
