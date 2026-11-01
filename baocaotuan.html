@@ -1432,7 +1432,11 @@ function renderViewBar(){
   var liveRef=parseD(((DATA.branches||[])[0]||{}).ngayBaoCao);
   var liveWk=liveRef?weekNum(liveRef):'';
   var h='<div class="toolbar view-bar">Xem <select onchange="chonBan(this.value)">';
-  h+='<option value=""'+(!VIEW_KEY?' selected':'')+'>Đang cập nhật — Tuần '+liveWk+(LUU_IDX.some(function(x){ return liveRef && x.key===weekKey(liveRef); })?' (sau giờ chốt)':' (chưa chốt)')+'</option>';
+  // Tuần báo cáo đã có bản chốt → bỏ mục "đang cập nhật" của tuần đó (người dùng chốt 01/11/2026);
+  // chỉ giữ lại khi không tải được bản chốt (VIEW_KEY rỗng) để vẫn có mục được chọn
+  var daChot=LUU_IDX.some(function(x){ return liveRef && x.key===weekKey(liveRef); });
+  if(!daChot || !VIEW_KEY)
+    h+='<option value=""'+(!VIEW_KEY?' selected':'')+'>Đang cập nhật — Tuần '+liveWk+(daChot?'':' (chưa chốt)')+'</option>';
   var nowSat=thu7TuanNay();
   if(!liveRef || weekKey(nowSat)!==weekKey(liveRef))
     h+='<option value="__now"'+(VIEW_KEY==='__now'?' selected':'')+'>Tuần hiện tại — Tuần '+weekNum(nowSat)+' (đang diễn ra, số tạm tính)</option>';
