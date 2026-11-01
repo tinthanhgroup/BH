@@ -231,6 +231,9 @@
   .nd-title{font-weight:500;}
   .cs-tot{font-weight:500;fill:var(--ink-soft);}
   thead th{color:var(--ink-soft);font-weight:500;}
+  .nd-by{white-space:nowrap;max-width:none;}   /* chữ bên phải khối đã ngắn (≤ 3 mẩu) → 1 dòng, không gãy "Trọng / tâm / tháng" (01/11/2026) */
+  /* 01/11/2026 (Giao diện 1): bỏ đậm còn sót — số trong dòng, liên kết, số tăng/giảm, chữ đậm trong bảng; mã việc dòng thu gọn 400 */
+  .cs-kv b,.nd-auto b,.cs-cmp td b,.cs-cmp td.up,.cs-cmp td.down,.cs-cmp span.up,.tgd-link a,.branch-meta a.warn-link,.hl-tgd,.wk,.nd-missing,.nhandinh.missing .txt,details.tt-fold .ma{font-weight:400;}
   .cs-bar{height:8px;background:#EEF2F7;}
   .cs-fill{background:#E8A0A0;} .cs-fill.ok{background:#8FD0B4;}
   .cs-mark{height:14px;top:-3px;background:#9AA7BA;}
@@ -498,9 +501,10 @@ function hdAutoHtml(chiNhanh, ref){
   var s=hdStats(chiNhanh, ref); if(!s) return '';
   var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
   var diff=s.cur-s.prev;
-  var trend=s.prev? ' ('+(diff>=0?'+':'')+diff+', '+(diff>=0?'+':'')+Math.round(diff/s.prev*100)+'%)' : '';
-  var h='<b>Tuần '+s.week+'</b> ('+dm(s.from)+'–'+dm(s.to)+'): <b>'+s.cur+' HĐ</b>'+trend+' · tuần '+s.prevWeek+': '+s.prev+
-        ' · TB 4 tuần trước: '+s.avg4.toLocaleString('vi-VN',{maximumFractionDigits:1})+' · luỹ kế tháng '+s.month+': '+s.mtd;
+  // Viết thành câu (01/11/2026, Giao diện 1: không xé thành nhiều mẩu "·", không đậm)
+  var ss=diff>0?'hơn tuần '+s.prevWeek+' là '+diff+' HĐ':diff<0?'kém tuần '+s.prevWeek+' là '+(-diff)+' HĐ':'bằng tuần '+s.prevWeek;
+  var h='Tuần '+s.week+' ('+dm(s.from)+'–'+dm(s.to)+'): '+s.cur+' HĐ, '+ss+(s.prev&&diff?' ('+(diff>0?'+':'')+Math.round(diff/s.prev*100)+'%)':'')+
+        '. Trung bình 4 tuần trước '+s.avg4.toLocaleString('vi-VN',{maximumFractionDigits:1})+' HĐ; luỹ kế tháng '+s.month+' là '+s.mtd+' HĐ.';
   return '<div class="nd-auto" title="Đếm theo Ngày đặt cọc + Nguồn khách trong data.json — cùng nguồn với biểu đồ Chốt cọc ở tab BC Bán hàng">'+h+
          '<span class="nd-auto-src">Tự động từ tab BC Bán hàng'+(SALES.updated?' · dữ liệu lúc '+esc(SALES.updated):'')+'</span></div>';
 }
@@ -512,15 +516,15 @@ function subHead(s){ return '<div class="nd-week">'+s+'</div>'; }
 // bo: bỏ phần đã ghi ở dòng tóm tắt việc thu gọn ({han:1, phuTrach:1}) — tránh lặp chữ (31/10/2026)
 function tinhTrang(t, isTCT, bo){
   var p=[]; bo=bo||{};
+  // Một câu nối dấu phẩy, chữ thường sau mẩu đầu (01/11/2026, Giao diện 1); người phụ trách đứng cuối sau "·"
   p.push(t.trangThai?esc(t.trangThai):'<span class="bad">Chưa chọn trạng thái</span>');
-  if(isTCT){ if(t.ngayGiao) p.push('Giao '+fmtDV(t.ngayGiao)); }
-  else if(t.han){ if(!bo.han) p.push(t._overdue?'<span class="bad">Hạn '+fmtDV(t.han)+' — quá hạn</span>':'Hạn '+fmtDV(t.han)); }
-  else if(t.hanRaw) p.push('<span class="warnc">Hạn "'+esc(t.hanRaw)+'" (gõ dạng chữ)</span>');
-  else if(!isClosed(t)) p.push('<span class="warnc">Chưa có hạn</span>');
-  if(t.phuTrach && !bo.phuTrach) p.push(esc(t.phuTrach));
-  if(isDone(t)){ if(t.ngayHT) p.push('Xong '+fmtDV(t.ngayHT)); }
+  if(isTCT){ if(t.ngayGiao) p.push('giao '+fmtDV(t.ngayGiao)); }
+  else if(t.han){ if(!bo.han) p.push(t._overdue?'<span class="bad">hạn '+fmtDV(t.han)+', quá hạn</span>':'hạn '+fmtDV(t.han)); }
+  else if(t.hanRaw) p.push('<span class="warnc">hạn "'+esc(t.hanRaw)+'" (gõ dạng chữ)</span>');
+  else if(!isClosed(t)) p.push('<span class="warnc">chưa có hạn</span>');
+  if(isDone(t)){ if(t.ngayHT) p.push('xong '+fmtDV(t.ngayHT)); }
   else if(t._stale) p.push('<span class="warnc">'+(t.tuanCN!=null?'cập nhật gần nhất T'+t.tuanCN:'chưa cập nhật lần nào')+'</span>');
-  return p.join(' · ');
+  return p.join(', ')+(t.phuTrach && !bo.phuTrach?' · '+esc(t.phuTrach):'');
 }
 // Cột "Chuyển TGĐ" (tên cũ "GĐCN xử lý", đổi 28/09/2026): "Chuyển thông tin TGĐ" khi cần TGĐ biết/quyết,
 // "TGĐ đã có chỉ đạo" khi TGĐ đã chỉ đạo; để trống = không chuyển, GĐCN tự xử lý → hiện "GĐCN đang xử lý".
@@ -543,7 +547,9 @@ function tieuDe(s){
 function taskBlock(t, opt){
   opt=opt||{};
   var isTCT=!!(t._isTCT||opt.tct);
-  var by=isTCT?'TCT giao'+(t.boPhan?' · '+esc(t.boPhan):''):esc(t._bpName)+(t.nguon?' · '+esc(t.nguon):'')+(isCaiTien(t)?' · Cải tiến':'');
+  // opt.nhom: việc nằm trong nhóm bộ phận (mục 8) → bỏ tên nhóm khỏi chữ bên phải; nguồn mặc định "Bộ phận bổ sung" không ghi (01/11/2026)
+  var bpTxt=String(t._bpName||''); if(opt.nhom && bpTxt.indexOf(opt.nhom)===0) bpTxt=bpTxt.slice(opt.nhom.length).replace(/^\s*·\s*/,'');
+  var by=isTCT?'TCT giao'+(t.boPhan?' · '+esc(t.boPhan):''):[esc(bpTxt), t.nguon&&t.nguon!=='Bộ phận bổ sung'?esc(t.nguon):'', isCaiTien(t)?'Cải tiến':''].filter(Boolean).join(' · ');
   // Việc thu gọn: dòng tóm tắt đã có hạn + phụ trách (hoặc bộ phận) → Tình trạng không ghi lại
   var bo=opt.fold?{han:!isTCT, phuTrach:!opt.showBP}:null;
   var rows=[['Tình trạng', tinhTrang(t, isTCT, bo)]];
@@ -564,10 +570,10 @@ function taskBlock(t, opt){
   if(opt.fold){
     var hn=t.han?(t._overdue?'<span class="bad">hạn '+fmtDV(t.han)+'</span>':'hạn '+fmtDV(t.han)):'';
     by=[opt.dupNote?'<span class="dup-note">'+opt.dupNote+'</span>':'',
-        t.trangThai?'':'<span class="bad">chưa có trạng thái</span>', hn,
+        t.trangThai?'':'<span class="bad">chưa chọn trạng thái</span>', hn,
         opt.showBP?esc(t._bpName):(t.phuTrach?esc(t.phuTrach):'')].filter(Boolean).join(' · ');
   }
-  var title=(opt.fold?esc(t.ma||'(thiếu mã)'):'<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>')+' · '+esc(tieuDe(t.noiDung));
+  var title='<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span> · '+esc(tieuDe(t.noiDung));
   return qaBlock(title, by, rows, (opt.hlTGD&&isTGD(t.gdXuLy))?'tgd':'', opt.fold);
 }
 
@@ -1317,7 +1323,7 @@ function renderIssues(a){
   });
   var blk=function(m, fold){
     var t=m.t, by=m.tct?'TCT giao':esc(t._bpName)+(t.phuTrach?' · '+esc(t.phuTrach):'');
-    var ma=fold?esc(t.ma||'(thiếu mã)'):'<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>';
+    var ma='<span class="ma">'+esc(t.ma||'(thiếu mã)')+'</span>';
     return qaBlock(ma+' · '+esc(tieuDe(t.noiDung)), by, m.rows, '', fold);
   };
   var h='<details class="panel" id="sec-canhbao"><summary><span class="chart-num">7</span> Cảnh báo &amp; lỗi nhập liệu <span class="count-pill '+(nhom[0].length?'red':'gold')+'">'+map.length+'</span></summary>';
@@ -1348,7 +1354,7 @@ function renderThang(a){
   BP_ORDER.forEach(function(bp){ nhomBP(list, bp).forEach(function(g){
     var l=g.list;
     h+=subHead(g.ten+' ('+l.length+')');
-    h+=l.length?grid(l.map(function(t){ return taskBlock(t,{compact:true}); })):'<div class="empty">Không có việc.</div>';
+    h+=l.length?grid(l.map(function(t){ return taskBlock(t,{compact:true, nhom:g.ten}); })):'<div class="empty">Không có việc.</div>';
   }); });
   h+=subHead('TCT giao trong tháng ('+tctM.length+')');
   h+=tctM.length?grid(tctM.map(function(t){ return taskBlock(t,{tct:true, compact:true}); })):'<div class="empty">Không có nhiệm vụ TCT giao trong tháng.</div>';
