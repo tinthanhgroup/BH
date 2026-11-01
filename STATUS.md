@@ -36,6 +36,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 01/11/2026 | Báo cáo tuần: mục 1 gộp số liệu + nhận định theo bộ phận (1 dòng số, biểu đồ thu gọn, nhận định ngay dưới, GĐCN cuối); mặc định mở tuần đang diễn ra, bỏ mục "sau giờ chốt"; doanh thu DV = doanh thu nội bộ; xem `docs/module-baocaotuan.md` |
 | 01/11/2026 | Báo cáo tuần: chốt và áp đủ chuẩn Giao diện 1 – tinh tế (Inter, màu trung tính, cỡ chữ 14/16/24; thay quy ước 20/10, 28/10); đã sửa chữ "Chưa trả lời" đủ tương phản, lỗi nhập liệu tô vàng, mục 7 chia 3 nhóm, khối 1.3 Nhân sự gọn, biểu đồ vẽ theo bề rộng thật, khung 1280px; xem `docs/module-baocaotuan.md` |
 | 01/11/2026 | Báo cáo tuần: hoàn tất các mục còn lại của đánh giá Giao diện 1 (danh sách tổng quan trên điện thoại, vùng bấm 40px, bo góc 8px, ngày dd/mm, ô trống "–"); xem `docs/module-baocaotuan.md` |
 | 31/10/2026 | Báo cáo tuần: sửa giao diện theo đánh giá Giao diện 1 (hết tràn ngang điện thoại, bỏ đậm 600, dòng tóm tắt việc 2 mẩu, bỏ viền màu và biểu tượng, bớt màu KPI, đầu bảng nền nhạt); xem `docs/module-baocaotuan.md` |
