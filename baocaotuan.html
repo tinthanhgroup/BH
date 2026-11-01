@@ -231,7 +231,14 @@
   .nd-title{font-weight:500;}
   .cs-tot{font-weight:500;fill:var(--ink-soft);}
   thead th{color:var(--ink-soft);font-weight:500;}
-  .nd-by{white-space:nowrap;max-width:none;}   /* chữ bên phải khối đã ngắn (≤ 3 mẩu) → 1 dòng, không gãy "Trọng / tâm / tháng" (01/11/2026) */
+  /* 01/11/2026 (Giao diện 1): ô chọn viền mảnh xám, nhãn "Tổng hợp lúc" chỉ là chữ phụ, bóng nhẹ, đệm khối con 16px */
+  select,.view-bar select{border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:7px 10px;}
+  .updated-tag{background:none;border:0;padding:0;border-radius:0;color:var(--ink-soft);font-size:13px;}
+  :root{--shadow:0 1px 2px rgba(16,24,40,.04);}
+  .branch-card{box-shadow:0 1px 2px rgba(16,24,40,.06);}
+  .nd-block,.cs-block{padding:16px;}
+  .cn-dv th.num{white-space:nowrap;}   /* bảng đơn vị BH (1.4): tên cột ngắn, 1 dòng */
+  .nd-by{white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis;}   /* chữ bên phải khối 1 dòng, không gãy "Trọng / tâm / tháng"; dài quá thì "…", rê chuột xem đủ (01/11/2026) */
   /* 01/11/2026 (Giao diện 1): bỏ đậm còn sót — số trong dòng, liên kết, số tăng/giảm, chữ đậm trong bảng; mã việc dòng thu gọn 400 */
   .cs-kv b,.nd-auto b,.cs-cmp td b,.cs-cmp td.up,.cs-cmp td.down,.cs-cmp span.up,.tgd-link a,.branch-meta a.warn-link,.hl-tgd,.wk,.nd-missing,.nhandinh.missing .txt,details.tt-fold .ma{font-weight:400;}
   .cs-bar{height:8px;background:#EEF2F7;}
@@ -276,7 +283,7 @@
 <div class="wrap">
   <div class="hdr">
     <div>
-      <p>Báo cáo điều hành hàng tuần của GĐCN: mục tiêu → hành động → tình trạng → vướng mắc/rủi ro → đề xuất → kế hoạch tiếp theo. Không lặp lại số liệu kết quả đã có ở các tab khác.</p>
+      <p>Báo cáo điều hành hàng tuần của GĐCN: mục tiêu → hành động → tình trạng → vướng mắc → đề xuất → kế hoạch.</p>
     </div>
     <div class="updated-tag" id="updatedTag">Đang tải…</div>
   </div>
@@ -464,7 +471,7 @@ function analyze(b){
 // (quá hạn, chưa cập nhật, chuyển TGĐ, thiếu thông tin).
 // fold: 1 dòng thu gọn (bấm để mở chi tiết), chữ thường — dùng cho danh sách Trọng tâm tuần (28/09/2026)
 function qaBlock(title, by, rows, cls, fold){
-  var head='<span class="nd-title">'+title+'</span>'+(by?'<span class="nd-by">'+by+'</span>':'');
+  var head='<span class="nd-title">'+title+'</span>'+(by?'<span class="nd-by" title="'+by.replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">'+by+'</span>':'');
   var h=fold ? '<details class="nd-block nd-fold tt-fold'+(cls?' '+cls:'')+'"><summary class="nd-head">'+head+'</summary>'
              : '<div class="nd-block'+(cls?' '+cls:'')+'"><div class="nd-head">'+head+'</div>';
   if(rows.length){
@@ -816,7 +823,7 @@ function renderNS(a){
   var tot={ns:0,muon:0,nghi:0};
   // Gọn 01/11/2026 (anh Khanh: "gọn hơn, ít chữ"): số người lên tiêu đề; cột ngắn Người/Muộn/Vắng (đơn vị ở Ghi chú);
   // vào/nghỉ 30 ngày = 1 dòng tổng + tên gộp theo ngày · chức vụ · bộ phận, không bảng
-  var h='<div class="cs-block cs-full"><div class="cs-title">Nhân sự — '+esc(o.name)+(o.tong!=null?' · '+o.tong+' người':'')+'</div><div class="cs-ns"><div>';
+  var h='<div class="cs-block cs-full"><div class="cs-title">Nhân sự'+(o.tong!=null?' · '+o.tong+' người':'')+'</div><div class="cs-ns"><div>';
   h+='<div class="cs-sub">Tuần '+dm(o.mon)+'–'+dm(o.sun)+(CC?' ('+o.ngay+' ngày)':'')+'</div>';
   if(CC){
     h+='<table class="cs-cmp"><thead><tr><th>Bộ phận</th><th class="num">Người</th><th class="num">Muộn</th><th class="num">Vắng</th></tr></thead><tbody>';
@@ -1125,7 +1132,7 @@ function renderCongNo(a){
   var cur=rows[rows.length-1], prev=rows.length>1? rows[rows.length-2] : null;
   var dPct=prev? cur.pct-prev.pct : null, vuot=nguong? cur.qh>nguong : false;
   var pf=function(v){ return v.toLocaleString('vi-VN',{maximumFractionDigits:1}); };
-  var h='<div class="cs-block cs-full"><div class="cs-title">Công nợ bảo hiểm — Phú Yên</div>';
+  var h='<div class="cs-block cs-full"><div class="cs-title">Công nợ bảo hiểm</div>';
   h+='<div class="cs-pct'+(vuot?' low':'')+'">'+pf(cur.pct)+'%<span> công nợ đã quá hạn (số đến '+fmtD(cur.k)+')'+
      (dPct!=null? ' · '+(dPct>0.05?'<b class="bad">tăng '+pf(dPct)+' điểm %</b>':dPct<-0.05?'giảm '+pf(-dPct)+' điểm %':'không đổi')+' so với tuần trước' : ' · chưa có tuần trước để so sánh')+'</span></div>';
   h+='<div class="cs-kv"><span>Tổng công nợ <b>'+fmtN(tr(cur.tong))+' tr</b></span><span>Quá hạn <b>'+fmtN(tr(cur.qh))+' tr</b></span><span>Quá hạn trên 3 tháng <b>'+fmtN(tr(cur.t.qhTren3t))+' tr</b></span>'+
@@ -1141,7 +1148,7 @@ function renderCongNo(a){
   var dv=(cur.t.donVi||[]).map(function(u){ return {ten:cnTen(u.ten), q30:u.qh30||0, q3:u.qhTren30||0, q3t:u.qhTren3t||0}; })
     .map(function(u){ u.qh=u.q30+u.q3+u.q3t; return u; }).filter(function(u){ return u.qh>0; }).sort(function(x,y){ return y.qh-x.qh; });
   h+='<div class="cs-sub">Đơn vị bảo hiểm còn nợ quá hạn — số đến '+fmtD(cur.k)+' (triệu đồng)</div>';
-  h+= dv.length? '<table class="cs-cmp"><thead><tr><th>Đơn vị</th><th class="num">QH trong 30 ngày</th><th class="num">QH trên 30 ngày</th><th class="num">QH trên 3 tháng</th><th class="num">Tổng quá hạn</th></tr></thead><tbody>'+
+  h+= dv.length? '<table class="cs-cmp cn-dv"><thead><tr><th>Đơn vị</th><th class="num" title="Quá hạn trong 30 ngày">≤ 30 ngày</th><th class="num" title="Quá hạn trên 30 ngày">&gt; 30 ngày</th><th class="num" title="Quá hạn trên 3 tháng">&gt; 3 tháng</th><th class="num" title="Tổng quá hạn">Tổng</th></tr></thead><tbody>'+
     dv.map(function(u){ return '<tr><td>'+esc(u.ten)+'</td><td class="num">'+so(tr(u.q30))+'</td><td class="num">'+so(tr(u.q3))+'</td><td class="num'+(u.q3t?' down':'')+'">'+so(tr(u.q3t))+'</td><td class="num"><b>'+fmtN(tr(u.qh))+'</b></td></tr>'; }).join('')+'</tbody></table>'
     : '<div class="empty">Không có công nợ quá hạn.</div>';
   var x=cur.t.xuatHS;
