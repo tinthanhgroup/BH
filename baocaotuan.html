@@ -206,7 +206,7 @@
   .loading,.error{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:13px;}
   .error{color:var(--red-t);font-weight:500;}
 
-  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} .cs-ns{grid-template-columns:1fr;} }
+  @media (max-width:900px){ .kpi-row{grid-template-columns:repeat(3,1fr);} .cs-ns{grid-template-columns:minmax(0,1fr);} }
   @media (max-width:640px){
     .wrap{padding:16px 12px 40px;}
     .kpi-row{grid-template-columns:repeat(2,1fr);}
@@ -240,6 +240,8 @@
   .branch-card{box-shadow:0 1px 2px rgba(16,24,40,.06);}
   .nd-block,.cs-block{padding:16px;}
   .cn-dv th.num{white-space:nowrap;}   /* bảng đơn vị BH (1.4): tên cột ngắn, 1 dòng */
+  table.cs-cmp td:first-child{white-space:normal;} table.cs-cmp th,table.cs-cmp tbody td{padding-left:8px;padding-right:8px;}   /* bảng nhỏ mục 1: cột đầu xuống dòng, đệm ngang 8px — không tràn khi khung hẹp (01/11/2026) */
+  .cs-tbl thead th{white-space:normal;vertical-align:bottom;line-height:1.35;} .cs-tbl th,.cs-tbl tbody td{padding-left:8px;padding-right:8px;}   /* bảng "Xem bảng số" nhiều cột: tên cột xuống dòng (01/11/2026) */
   .nd-by{white-space:nowrap;max-width:45%;overflow:hidden;text-overflow:ellipsis;}   /* chữ bên phải khối 1 dòng, không gãy "Trọng / tâm / tháng"; dài quá thì "…", rê chuột xem đủ (01/11/2026) */
   /* 01/11/2026 (Giao diện 1): bỏ đậm còn sót — số trong dòng, liên kết, số tăng/giảm, chữ đậm trong bảng; mã việc dòng thu gọn 400 */
   .cs-kv b,.nd-auto b,.cs-cmp td b,.cs-cmp td.up,.cs-cmp td.down,.cs-cmp span.up,.tgd-link a,.branch-meta a.warn-link,.hl-tgd,.wk,.nd-missing,.nhandinh.missing .txt,details.tt-fold .ma{font-weight:400;}
