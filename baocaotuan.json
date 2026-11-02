@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T16:37:03+07:00",
+ "updated_at": "2026-11-02T17:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1289,6 +1289,75 @@
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
        "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; với nhịp hiện tại ~4 HĐ/tuần sẽ không đạt → cần 6–7 HĐ/tuần. Cần thúc đẩy hoạt động MKT từ đầu tháng 11"
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 44,
+     "ngay": "2026-10-31",
+     "boPhan": "VP",
+     "nguoiViet": "",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
+      },
+      {
+       "stt": 2,
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
+      },
+      {
+       "stt": 3,
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
+      },
+      {
+       "stt": 4,
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 31/10/2026: 903.015.536đ (trong đó quá hạn trên 03 tháng là 48.092.983đ). Công nợ quá hạn KD: 34.100.000  gồm Sở XD KH 34.100.000đ"
+      },
+      {
+       "stt": 5,
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 6,
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
+      },
+      {
+       "stt": 7,
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
+      },
+      {
+       "stt": 8,
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": "Không"
+      },
+      {
+       "stt": 9,
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
+      },
+      {
+       "stt": 10,
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
       }
      ]
     },
