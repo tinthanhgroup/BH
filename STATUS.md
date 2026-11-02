@@ -17,6 +17,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; lưu ý 6 Creta N Line CBU chưa có CKD kèm (PY đặt 5/6 xe HTV yêu cầu)
 - [ ] Quy ước tên chiến dịch FB: chốt ý nghĩa VM (Vùng miền), CDR ghi theo quý, ngày áp dụng; phổ biến MKT chi nhánh; sau đó sửa `phanLoaiChienDich()` đọc theo mẫu
 - [ ] Nhận quy định cũ từ Loan (nếu có): rà soát trùng lặp với cách tính lãi nội bộ hằng tuần của PKT; cần thì đề xuất chị Đào sửa đổi QĐ 03.26
+- [ ] KCK: dán `TinThanh_KCK_Sync.gs` (bản 02/11, thêm chặn ghi đè lùi) vào script.google.com trước lần đồng bộ kế tiếp, nếu không `kck.json` bị kéo về bản HTV 20/10
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [ ] Báo cáo tuần: xoá 2 bản sao lưu "… sao luu truoc tach VP …" (NT, PY) trên Drive khi chạy ổn vài ngày
 - [ ] Báo cáo tuần Đà Lạt: đã tạo file (`1-_MDVNi…`, 31/10) và thêm vào `SHEET_IDS`; còn dán script → ▶ `setupBaoCaoTuanTriggers` → ▶ `syncBaoCaoTuan`, chia sẻ file cho ĐL
@@ -34,6 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 02/11/2026 | KCK: cập nhật tay từ file HTV gửi 02/11 (link SharePoint vẫn bản 20/10): thêm Tucson Hybrid FWD, Creta CKD Cao cấp/Đặc biệt, bớt Santafe Turbo Calligraphy Đen; xem `docs/cap-nhat-thu-cong.md` |
 | 02/11/2026 | Tucson Hybrid: HTV yêu cầu đặt trong T11 (hạn 17h 02/11, không đặt thì cắt KM T11, ngưng giao LX3); chị Đào duyệt NT, ĐL, PY mỗi nơi 1 xe Trắng |
 | 02/11/2026 | Trang Chính sách: thêm CV 139/2026 (Tucson Hybrid), CV 157/2025 (tồn kho + B/O ≥ 1,5 tháng, thay CV 449/2024) |
 | 02/11/2026 | Palisade LX3: hết hạn ký HĐ 31/10, phòng bán hàng chưa cập nhật số khách đã ký |
