@@ -341,6 +341,63 @@ let activeCategory = ''; // '' = tất cả
 
 const policies = [
   {
+    pdfUrl: "https://drive.google.com/file/d/1L9CwxmIy0J-7tJjD_eDRS9f3ji5lMaS2/view?usp=drive_link",
+    category: "Bán hàng - MKT",
+    code: "Số 139/2026/CV-HTV · Ngày 22/10/2026 (ký số 27/10/2026)",
+    name: "Hyundai New Tucson Hybrid (CKD) — giá bán, thanh toán & giao xe",
+    important: true,
+    updated: "02/11/2026",
+    from: new Date(2026,9,22),
+    to: null,
+    toLabel: "Đến khi có văn bản mới",
+    fromLabel: "22/10/2026",
+    summary: {
+      quyLabel: "SẢN PHẨM & GIÁ",
+      thangLabel: "CHÍNH SÁCH BÁN HÀNG",
+      quy: [
+        "1 phiên bản <b>Tucson Hybrid</b> (mã NX4 PE HEV-CKD, OCN D828): Smartstream 1.6 Turbo Hybrid, FWD, 6AT; công suất kết hợp 235 PS, mô-men 367 Nm; pin 1,49 kWh",
+        "<b>Giá bán lẻ khuyến nghị / giá bán Đại lý</b> (đã gồm VAT): <b>1,089 tỷ / 1,03719 tỷ</b> (chênh 51,81tr)",
+        "Màu ngoại thất: Đen, Trắng, Đỏ Đô, Xanh Biển, Xanh Tối, Bạc, Xanh Lục Bảo. Nội thất đen",
+        "Trang bị: 2 màn hình 12,3 inch, 8 loa Bose, camera 360, cốp điện, ghế trước sưởi & làm mát, SCC, FCA, BCA, RCCA, PCA, LKA/LFA, BVM, 6 túi khí, lốp 235/60R18"
+      ],
+      thang: [
+        "Thời gian đặt hàng: như xe CKD hiện tại",
+        "Thanh toán: <b>cọc 15% trong 5 ngày làm việc, bảo lãnh/LC 85% trong 7 ngày làm việc</b> (tính từ ngày xác nhận đơn); hiệu lực bảo lãnh/LC 15 ngày từ ngày bàn giao hồ sơ",
+        "Giao xe trong 60 ngày kể từ hạn hoàn thành cọc",
+        "Thưởng kinh doanh, thưởng TVBH và QLBH: <b>như Tucson hiện tại</b>. Áp dụng bồi thường thanh toán chậm, giao xe chậm, chiết khấu thanh toán sớm như xe CKD hiện hành"
+      ],
+      note: "Sản phẩm mới: theo CV 449/2024, mỗi Đại lý giữ tối thiểu 1 xe/spec trong 4 tháng đầu. Thư HTV 02/11/2026 yêu cầu đặt Tucson Hybrid trong tháng 11/2026 (hạn 17h 02/11); Đại lý không đặt bị tạm ngưng giao xe LX3 và ngưng toàn bộ khuyến mại bán hàng tháng 11/2026."
+    }
+  },
+  {
+    pdfUrl: "https://drive.google.com/file/d/1oVywjn2571a8DpKCsYbQm5D0eEnZJEv0/view?usp=drive_link",
+    category: "Bán hàng - MKT",
+    code: "Số 449/2024/BH-MKT/HTV · Ký ngày 25/09/2024",
+    name: "Quy định duy trì tồn kho và đơn hàng (B/O) tối thiểu",
+    important: true,
+    updated: "25/09/2024",
+    from: new Date(2024,8,25),
+    to: null,
+    toLabel: "Đến khi có công văn điều chỉnh",
+    fromLabel: "25/09/2024",
+    summary: {
+      quyLabel: "TỒN KHO + B/O THEO MODEL",
+      thangLabel: "TỒN KHO TỐI THIỂU THEO SPEC",
+      quy: [
+        "Tại mọi thời điểm, <b>tồn kho + B/O của mỗi model ≥ 2 tháng bán hàng trung bình</b> của model đó; áp dụng mọi model xe du lịch HTV phân phối",
+        "Trung bình bán hàng tính theo 1 trong 3 cách: bán thực tế trung bình 3 hoặc 12 tháng gần nhất; kế hoạch trung bình 2 tháng kế tiếp; hoặc kết hợp hai cách. HTV thông báo cách áp dụng theo diễn biến thị trường",
+        "Hiệu lực từ 25/09/2024, thay CV 169/2023/BH-MKT/HTV"
+      ],
+      thang: [
+        "<b>Nhóm 1</b> (chỉ tiêu HTV tính ≥ 600 xe/năm): tối thiểu 27 xe · <b>Nhóm 2</b> (dưới 600 xe/năm): tối thiểu 18 xe — mỗi spec hoặc nhóm spec 1 xe theo bảng trong công văn",
+        "<b>Sản phẩm mới ra mắt:</b> mọi Đại lý (cả 2 nhóm) giữ tối thiểu <b>1 xe/spec trong 4 tháng đầu</b> kể từ ngày ra mắt; sau đó HTV đánh giá lại",
+        "IONIQ 5: Đại lý đã có xe lái thử được coi là đạt (áp dụng năm 2024)",
+        "HTV nhắc bổ sung mà Đại lý không làm đúng hạn: xem như không tuân thủ chính sách bán hàng; HTV có thể <b>không hỗ trợ khuyến mại, thưởng kinh doanh, Marketing…</b>"
+      ],
+      note: "Bảng spec trong công văn lập năm 2024, chưa có các mẫu mới: xem bản gốc. HTV gửi lại công văn này kèm thư 02/11/2026 làm căn cứ yêu cầu đặt Tucson Hybrid (CV 139/2026)."
+    }
+  },
+  {
     pdfUrl: "https://drive.google.com/file/d/1fueFRpmoDRNQjjeyy1wn05Rq-RZRr2Gx/view?usp=drive_link",
     pdfLabel: "Xem CV 126 – chương trình bán hàng (PDF, mở trên Google Drive)",
     extraLinks: [
