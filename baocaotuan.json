@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T11:37:03+07:00",
+ "updated_at": "2026-11-02T15:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -613,10 +613,10 @@
      "linhVuc": "",
      "noiDung": "Kiểm tra, nộp báo cáo các lệnh treo lâu chưa quyết toán, BC kho BO đến 30.09.2026, đối chiếu nộp báo cáo tồn kho phụ tùng đến 30.09.2026, lưu ý chỗ phụ tùng hỏng, thất lạc do ngập lụt 2025 trình BGĐ xin ý kiến xử lý",
      "phuTrach": "Phòng KT",
-     "han": "2026-10-31",
+     "han": "2026-11-10",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "BC thống kê lệnh đã nhận từ PDV nhưng chỉ mới cập nhật lý do chưa ghi rõ hướng xử lý và tgian xử lý, PKT đang hệ thống để làm việc lại với PDV, BC kho BO đang kiểm tra sẽ gởi PDV đối chiếu trong ngày 31.10.2026, BC hàng ngập lụt đang dò đối chiếu, sẽ tập hợp gởi BGĐ ngày 31.10.2026",
+     "capNhat": "BC thống kê lệnh đã nhận từ PDV nhưng chỉ mới cập nhật lý do chưa ghi rõ hướng xử lý và tgian xử lý, PKT đang hệ thống để làm việc lại với PDV, BC kho BO đang kiểm tra sẽ gởi PDV đối chiếu trong ngày 31.10.2026, BC hàng ngập lụt đang dò đối chiếu, sẽ tập hợp gởi BGĐ ngày 31.10.2026 => Tuần 44: xin cho PKT dời lại đến hạn nộp BC T10,2026 vào ngày 10,11,2026 (lý do KTT yêu cầu tạm dừng để xin BGĐ để tập trung xử lý gấp trước sổ thuế 2022->2025 hoàn thiện trước 30,11,2026)",
      "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "",
@@ -644,7 +644,7 @@
      "phuTrach": "Phòng KT",
      "han": "2026-10-31",
      "hanRaw": "",
-     "trangThai": "Đang làm",
+     "trangThai": "Hoàn thành",
      "capNhat": "Hạn nộp 31.10.2026",
      "tuanCN": 43,
      "vuongMac": "",
