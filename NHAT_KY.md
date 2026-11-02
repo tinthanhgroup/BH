@@ -6,6 +6,30 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 | Ngày | Sự kiện |
 |---|---|
+| 28/10/2026 | Mục 4 (Nhân sự, Chấm công, Nhà cung cấp, Quy định nội bộ): sửa theo đánh giá UX lần 2 (font biểu đồ, KPI kiểu chung, nhãn chỉ tô khi cần chú ý, bỏ emoji, độ rộng cột) |
+| 28/10/2026 | Báo cáo tuần: doanh thu DV "Thực hiện" tự động từ `13. DV - Master Data/Doanh thu.xlsx` (Giá trị trước thuế, gồm xe ngập, theo ngày thanh toán; chỉ tiêu vẫn nhập tay); biểu đồ HĐ ký đổi sang tuần T2–CN như tuần báo cáo; chưa push, chờ dán script; xem `docs/module-baocaotuan.md` |
+| 28/10/2026 | Tiêu đề mục tab Hàng hóa đổi theo kiểu tab Bán hàng (chữ thường, màu nhấn, bỏ emoji); cảnh báo xe bán ngang giữ màu |
+| 28/10/2026 | Chuyển xong các trang module sang `chung.css` (MKT, Quảng cáo FB, Chấm công, Nhân sự, Chính sách, Quy định); Báo cáo tuần, Lợi nhuận, KQKD chỉ đồng bộ font/màu; xem `docs/giao-dien-va-phan-quyen.md` |
+| 28/10/2026 | Đánh giá lại giao diện toàn hệ thống (CRM 5,8 → 7,3/10); chữ phụ đậm hơn (`--muted #5E6E8A`, cả index); chung.css thêm bảng nhẹ, nhãn trung tính, tên nhãn cũ; sửa biểu đồ CRM; chuyển trang Nhà cung cấp sang chung.css |
+| 27/10/2026 | Chốt chuẩn giao diện mới theo tab Hàng hóa / Bán hàng, file chung `chung.css`; chuyển trang CRM trước (sửa sót Very Hot, cột ngày chưa cập nhật khách Hot, tách nguồn theo TVBH, thiếu Nguồn); xem `docs/giao-dien-va-phan-quyen.md`; đã push 27/10 |
+| 27/10/2026 | Chị Đào duyệt đặt bổ sung T10: 23 xe theo đề xuất 3 chi nhánh (NT 9 · ĐL 9 · PY 5, folder `2. Dat hang/T10 L2 v2/`); bảng Giả định đặt hàng PA5 đã push |
+| 27/10/2026 | Đồng bộ phong cách 5 trang module (Nhân sự, Chấm công, Quảng cáo FB, CRM, MKT): màu chữ phụ, bộ màu nhãn chung, tiêu đề mục chữ thường 15px, ngày dd/mm/yyyy, màu chi nhánh theo BC Bán hàng; quy ước ghi ở `docs/giao-dien-va-phan-quyen.md`; đã push 27/10 |
+| 27/10/2026 | Đã tách sheet Văn phòng Nha Trang (KT 3, CSKH 4, HCNS 15 việc); push trang Báo cáo tuần hiện nhóm CSKH / Kế toán / HCNS |
+| 27/10/2026 | Đã tách sheet Văn phòng Phú Yên (CSKH 12, HCNS 8 việc, giữ mã VP-); hiện lại cột E (ô Mã tiếp theo), xoá nội dung Lĩnh vực ở NT + PY; xem `docs/module-baocaotuan.md` |
+| 27/10/2026 | Chốt tách sheet Văn phòng báo cáo tuần thành CSKH / Kế toán / HCNS (nhận định VP viết chung), làm Phú Yên trước; đã viết script + sửa web (chưa push); xem `docs/module-baocaotuan.md` |
+| 27/10/2026 | Tab Admin: thẻ bot đổi tên "Bot và hệ thống agent", thêm nút "Hệ thống agent →" (`http://localhost:8765/he-thong`, Project A `dashboard/he_thong_agent.py`); repo chỉ chứa địa chỉ localhost; xem `docs/giao-dien-va-phan-quyen.md` |
+| 27/10/2026 | Tab 4 HCNS: sửa giao diện Nhân sự + Chấm công theo đánh giá UX (ngày dd/mm/yyyy, tương phản chữ, cảnh báo HĐ hết hạn lên mục 1, đánh số mục tự động…); đã push; xem `docs/module-nhansu.md`, `docs/module-chamcong.md` |
+| 26/10/2026 | Thêm tab 9 "KQKD" (Đánh giá KQKD chi nhánh, chỉ Admin + nhóm TGĐ), số liệu mã hóa bằng mật khẩu KQKD trong `kqkd.enc.json`; bỏ thẻ link claude.ai trong tab Admin; xem `docs/module-kqkd.md` |
+| 26/10/2026 | Xong rà soát bán hàng/quyết định đặt bổ sung (20/10), chốt Báo cáo tuần 42 và họp giao ban 21/10 (người dùng xác nhận) |
+| 25/10/2026 | Tab MKT › Quảng cáo FB: thêm panel 6 "Quy ước đặt tên chiến dịch" (mẫu `CHI NHÁNH CHƯƠNG TRÌNH KỲ XE ghi chú`, ví dụ cỡ lớn); đã push 27/10; xem `docs/module-fbads.md` |
+| 25/10/2026 | Tab Admin: thêm thẻ "Đánh giá KQKD chi nhánh" (nút mở trang claude.ai riêng tư của Project A 9. KQKD); repo chỉ chứa link, không số liệu; xem `docs/giao-dien-va-phan-quyen.md` |
+| 25/10/2026 | Tab Admin: thêm thẻ "Chi phí bot Telegram" (nút mở `http://localhost:8765/`, trang chi phí chạy trên máy anh Khanh, Project A `dashboard/trang_chi_phi.py`); repo chỉ chứa địa chỉ localhost, không mã tài khoản hay số liệu; xem `docs/giao-dien-va-phan-quyen.md` |
+| 23/10/2026 | Đổi thẻ 12 thành ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc (tab 2); bấm mở cửa sổ nổi chứa danh sách (loinhuan.html?tab=ky); vẫn quyền `ln` |
+| 23/10/2026 | Chuyển "Lợi nhuận xe" từ tab 9 riêng thành thẻ 12 trong tab 2 BC Bán hàng (`#ln-card`, vẫn quyền `ln`: Admin, GĐ/PGĐ, Bán hàng; MKT thấy tab 2 nhưng không thấy thẻ); gỡ tab 9 |
+| 23/10/2026 | Thêm tab 9 "Lợi nhuận xe" (`loinhuan.html` + `loinhuan.json`): bản đồ lợi nhuận gộp từng xe 2026, 2 tab con theo báo bán / theo ngày ký; khoá quyền `ln` chỉ Admin, GĐ/PGĐ, Bán hàng (xem docs/module-loinhuan.md; dữ liệu nhạy cảm nằm trong repo công khai, anh Khanh chấp nhận) |
+| 23/10/2026 | Trang Chính sách: thêm All New Palisade CKD (CV 125 giá/thanh toán, CV 126 tặng bảo hiểm PVI, TVBH 2,5tr; hạn ký HĐ 31/10), CV 159 thanh toán Q2 (Inactive); CV 125 xác nhận LX3 không tính thưởng kinh doanh; đã push |
+| 22/10/2026 | Đã thông báo QĐ 03.26 cho nhóm GĐBH (nhấn mạnh chia chi phí) và nhóm Kế toán; trả lời góp ý của Loan về trùng lãi nội bộ, chờ Loan gửi quy định cũ (nếu có) để rà soát |
+| 21/10/2026 | Ban hành Quy định xử lý xe tồn kho lâu và điều chuyển xe, Số 03.26, hiệu lực 21/10/2026 (TGĐ duyệt nguyên văn v8); bản gốc `3. Chính sách nội bộ/23. QD 03.26 Xu ly xe ton kho lau.docx`, đã thêm vào trang Quy định nội bộ; xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 20/10/2026 | Đã gửi TGĐ dự thảo Quy định xử lý kho tồn lâu v8 (sửa 17/10: lãi và vận chuyển tính khi bán xe theo số ngân hàng, 8%/năm chỉ để minh họa; phụ lục số liệu 17/10); xem `G:\My Drive\1. Project A\0. Quy dinh\xu-ly-kho-ton-lau.md` |
 | 19/10/2026 | Tab BC tuần mở cho mọi tài khoản đã đăng nhập (trưởng BP cùng xem để họp giao ban); xem `docs/giao-dien-va-phan-quyen.md` |
 | 17/10/2026 | Trang Chính sách: thêm 11 mục từ 12 công văn HTV T1–T6/2026 (722+723+bổ sung T1, T2, IONIQ 5, 73, 143 Custin, 151 Stargazer FL, 162, 3, 26, 27), PDF ở thư mục Drive `1. Chinh sach 2026`; đã push |
@@ -53,3 +77,11 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 - [x] 20/10/2026: rà soát bán hàng, quyết định đặt bổ sung
 - [x] 19/10/2026: kiểm tra số liệu tự động tuần 42 lên web; 20/10 sau 17h: kiểm tra bản chốt tuần 42
+
+### Lưu trữ 02/11/2026
+
+- [x] Báo cáo tuần: dán `TinThanh_DichVu_Sync.gs` mới (đọc thêm Doanh thu.xlsx) vào script.google.com, chạy ▶ `dichVuSyncNgay`, kiểm tra `dichvu.json` có `doanhThu`; push `baocaotuan.html` (doanh thu DV tự động, tuần HĐ T2–CN)
+- [x] Chuyển các trang module sang `chung.css` (28/10/2026; Báo cáo tuần, Lợi nhuận, KQKD chỉ đồng bộ font và màu)
+- [x] Tiêu đề tab Hàng hóa đổi theo kiểu tab Bán hàng (28/10/2026); anh Khanh xem trên web, không đẹp thì trả lại bằng git revert
+- [x] Báo cáo tuần: tách sheet Văn phòng thành CSKH / Kế toán / HCNS — Phú Yên (đã tách, dữ liệu đồng bộ đủ 20 việc)
+- [x] Báo cáo tuần: tách Văn phòng Nha Trang (KT 3, CSKH 4, HCNS 15 việc), push trang `baocaotuan.html` mới
