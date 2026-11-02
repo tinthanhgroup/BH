@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-02T10:37:03+07:00",
+ "updated_at": "2026-11-02T11:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1246,7 +1246,7 @@
        "stt": 3,
        "nhan": "Mất deal",
        "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
-       "traLoi": "[CẦN BỔ SUNG số deal mất]. Lý do chính vẫn là giá (Xforce, CX-5 giảm sâu cuối năm). Phần lớn khách Nhóm Tài dự báo chốt 25–31/10 chưa ký trong tháng."
+       "traLoi": "Lý do chính vẫn là giá (Xforce, CX-5 giảm sâu cuối năm). Phần lớn khách Nhóm Tài dự báo chốt 25–31/10 chưa ký trong tháng."
       },
       {
        "stt": 4,
@@ -1270,25 +1270,25 @@
        "stt": 7,
        "nhan": "Hồ sơ – giao xe",
        "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
-       "traLoi": "[CẦN BỔ SUNG báo bán DMS chốt T10] (đọc 30/10: 16/41, không đạt mốc 60%). Còn 2 xe chờ đóng tiền, 1 khách chưa có xe chuyển sang tháng 11."
+       "traLoi": ""
       },
       {
        "stt": 8,
        "nhan": "Đội ngũ TVBH",
        "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
-       "traLoi": "Hoàng dẫn đầu tháng (4 HĐ); Vinh, Vũ, My 3 HĐ. Tài, Tỵ, Tuấn chỉ 2 HĐ – thấp so với năng lực. Giang, Hùng, Quốc Duy chưa có HĐ tháng 10. Tuân thủ CRM kém đồng loạt ở cả 10 TVBH. [BỔ SUNG: có ai nghỉ / có dấu hiệu nghỉ không]"
+       "traLoi": "Hoàng dẫn đầu tháng (4 HĐ); Vinh, Vũ, My 3 HĐ. Tài, Tỵ, Tuấn chỉ 2 HĐ – thấp so với năng lực. Giang, Hùng, Quốc Duy chưa có HĐ tháng 10. Tuân thủ CRM kém đồng loạt ở cả 10 TVBH. Phan Rang có TVBH Chính nghỉ , cắt giảm biên chế theo chủ trương công ty."
       },
       {
        "stt": 9,
        "nhan": "MKT – sự kiện",
        "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
-       "traLoi": "Quảng cáo tuần 44 chi khoảng 7,9 tr – cao nhất tháng, hiệu quả tốt (Flash Sale, CDR Creta). \"Lái thử Ninh Thuận\" tốn 840 nghìn chỉ 1 khách → đề xuất dừng. Cả tháng dùng 60% ngân sách. Fanpage Nha Trang 0 bài thương hiệu từ tuần 40. [BỔ SUNG: lái thử / sự kiện tuần qua]"
+       "traLoi": "Quảng cáo tuần 44 chi khoảng 7,9 tr – cao nhất tháng, hiệu quả tốt (Flash Sale, CDR Creta). \"Lái thử Ninh Thuận\" tốn 840 nghìn chỉ 1 khách . Cả tháng dùng 60% ngân sách. Fanpage Nha Trang 0 bài thương hiệu từ tuần 40."
       },
       {
        "stt": 10,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; với nhịp hiện tại ~4 HĐ/tuần sẽ không đạt → cần 6–7 HĐ/tuần. Cần hỗ trợ: chính sách xả tồn dạng hỗ trợ lệ phí trước bạ cho Creta, Stargazer, Tucson; MKT đổi nội dung quảng cáo tháng 11; HTV giao Palisade đúng hạn."
+       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; với nhịp hiện tại ~4 HĐ/tuần sẽ không đạt → cần 6–7 HĐ/tuần. Cần thúc đẩy hoạt động MKT từ đầu tháng 11"
       }
      ]
     },
