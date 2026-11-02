@@ -3,8 +3,8 @@ Cập nhật: 02/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
-- **Việc gấp nhất:** Palisade LX3 (CV 126): ký HĐ chính thức các khách đặt xe trước 31/10/2026
-- **Đang chờ:** Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
+- **Việc gấp nhất:** Đặt bổ sung T10 (23 xe): theo dõi chi nhánh đặt và HTV xác nhận
+- **Đang chờ:** Phòng bán hàng: kết quả ký HĐ Palisade LX3 đến 31/10; Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
 
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
@@ -27,11 +27,12 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - Loan (KTT): góp ý 22/10 – PKT đang đối chiếu công nợ nội bộ và tính lãi nội bộ hằng tuần (cả xe bán ngang), cho rằng phần lãi sau điều chuyển của QĐ 03.26 bị trùng. Anh đã trả lời: đối chiếu định kỳ PKT tự sắp xếp; QĐ quy định chi phí thuộc chi nhánh nào trong 4 trường hợp; nhờ Loan gửi quy định trước đó (nếu có) để anh rà soát
 
 ## Mốc sắp tới
-- 31/10/2026: hạn ký HĐ chính thức Palisade LX3 (CV 126)
+—
 
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 02/11/2026 | Palisade LX3: hết hạn ký HĐ 31/10, phòng bán hàng chưa cập nhật số khách đã ký |
 | 02/11/2026 | Lợi nhuận gộp: `loinhuan.json` làm mới theo dữ liệu 02/11 (đứng từ 23/10, nên xe admin sửa chưa lên); từ nay tự làm mới 6h hằng ngày, xem `docs/module-loinhuan.md` |
 | 01/11/2026 | Báo cáo tuần: thử gộp số liệu + nhận định theo bộ phận rồi bỏ (anh Khanh không duyệt), giữ bố cục cũ; mặc định mở tuần đang diễn ra, bỏ mục "sau giờ chốt"; doanh thu DV = doanh thu nội bộ; xem `docs/module-baocaotuan.md` |
 | 01/11/2026 | Báo cáo tuần: chốt và áp đủ chuẩn Giao diện 1 – tinh tế (Inter, màu trung tính, cỡ chữ 14/16/24; thay quy ước 20/10, 28/10); đã sửa chữ "Chưa trả lời" đủ tương phản, lỗi nhập liệu tô vàng, mục 7 chia 3 nhóm, khối 1.3 Nhân sự gọn, biểu đồ vẽ theo bề rộng thật, khung 1280px; xem `docs/module-baocaotuan.md` |
