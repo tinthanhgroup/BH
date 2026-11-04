@@ -1,6 +1,6 @@
 # Quy tắc đặt hàng xe
 
-Cập nhật: 09/10/2026. Dùng khi lập đề xuất cho một đợt đặt hàng hoặc khi HTV yêu cầu đặt bổ sung.
+Cập nhật: 04/11/2026. Dùng khi lập đề xuất cho một đợt đặt hàng hoặc khi HTV yêu cầu đặt bổ sung.
 Bản dễ đọc cho GĐBH/chi nhánh (trang web riêng tư): https://claude.ai/artifact/VZnNwVdwA357a6pA7v6eN2 — nguồn `2. Dat hang/Quy tac dat hang.html`; sửa quy tắc ở đây thì nhớ sửa và đăng lại trang đó.
 Quy định điều chuyển xe và công nợ nội bộ: xem file Word "Quy dinh xu ly kho ton lau" (folder `2. Dat hang/`), tóm tắt ở mục 7.
 
@@ -82,13 +82,12 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 - [ ] Không có phiên bản tồn lâu / bán chậm.
 - [ ] Không phiên bản nào vượt 2,5 tháng (toàn công ty) sau khi đặt.
 - [ ] Đúng ràng buộc đặt / thả xe.
-- [ ] Creta N Line nhập khẩu (CBU) đủ xe CKD kẹp kèm (mục 6).
 - [ ] Xem ngày cập nhật KCK; nếu cũ thì hỏi lại.
 - [ ] Không tự bỏ model nào nếu không có lý do rõ ràng.
 
 ## 6. Quy tắc riêng
 
-- **Creta N Line CBU**: đặt 1 xe Creta **CKD** (bất kỳ phiên bản CKD nào) được xác nhận 3 xe N Line CBU. Nên dồn Creta của đợt về 1 đại lý đặt (thường ĐL, vì thả được ở NT/PY) rồi chia lại.
+- **Creta N Line CBU**: HTV đã bỏ quy định kẹp CKD (người dùng báo 04/11/2026), không cần đặt Creta CKD kèm khi đặt N Line nhập khẩu.
 - **Nhận diện Creta CKD**: màu có chữ "CKD" (xem mục Creta trong `module-hanghoa.md`).
 - **File đề xuất của chi nhánh**: VC037 = NT (gồm PR), VC048 = ĐL (gồm BL), VC079 = PY; sheet "ĐƠN ĐẶT HÀNG", cột U..AF. Có file chi nhánh thì số trong file là số chốt; phân bổ tự tính chỉ là gợi ý.
 

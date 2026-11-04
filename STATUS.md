@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 02/11/2026
+Cập nhật: 04/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -9,12 +9,13 @@ Cập nhật: 02/11/2026
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
+- [ ] Kế hoạch T11: rà đề xuất chi nhánh (NT 7 · ĐL 7, PY không đặt vì còn nhiều hàng) trên bảng Giả định đặt hàng, trình chị Đào duyệt
 - [ ] Tucson Hybrid (CV 139/2026): 3 chi nhánh đặt mỗi nơi 1 xe Trắng; theo dõi HTV xác nhận, cọc 15% trong 5 ngày làm việc, bảo lãnh/LC 85% trong 7 ngày làm việc
 - [x] Máy phụ: tạo token GitHub `.projecta/github_bh.json` (02/11, kiểm tra token đọc được repo)
 - [ ] Đã đăng ký tác vụ `ProjectA - Loi nhuan BH` (làm mới `loinhuan.json` 6h hằng ngày), kiểm tra log `dashboard/log/loinhuan_len_bh.log` sáng 03/11
 - [ ] Công nợ BH Phú Yên (báo cáo tuần): dán `TinThanh_CongNo_Sync.gs` vào script.google.com (điền token, bật Drive API, chạy ▶ `congNoSyncNgay` rồi `setupCongNoTrigger`), kế toán trưởng cập nhật file mỗi thứ 7 (kể cả đổi ngày "ĐẾN" ở ô A1); push `baocaotuan.html` + `congno.json`
 - [ ] Báo cáo tuần: dán hàm `doanhThuDVTuDong()` vào script Báo cáo tuần, chạy 1 lần (xoá + bỏ tô cam ô C15, sửa mục J Hướng dẫn ở NT, PY, file mẫu)
-- [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; lưu ý 6 Creta N Line CBU chưa có CKD kèm (PY đặt 5/6 xe HTV yêu cầu)
+- [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận (PY đặt 5/6 xe HTV yêu cầu)
 - [ ] Quy ước tên chiến dịch FB: chốt ý nghĩa VM (Vùng miền), CDR ghi theo quý, ngày áp dụng; phổ biến MKT chi nhánh; sau đó sửa `phanLoaiChienDich()` đọc theo mẫu
 - [ ] Nhận quy định cũ từ Loan (nếu có): rà soát trùng lặp với cách tính lãi nội bộ hằng tuần của PKT; cần thì đề xuất chị Đào sửa đổi QĐ 03.26
 - [ ] KCK: dán `TinThanh_KCK_Sync.gs` (bản 02/11, thêm chặn ghi đè lùi) vào script.google.com trước lần đồng bộ kế tiếp, nếu không `kck.json` bị kéo về bản HTV 20/10
@@ -35,6 +36,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 04/11/2026 | Kế hoạch T11: NT, ĐL gửi đề xuất đặt hàng (14 xe: NT 7 · ĐL 7), PY không đặt; đưa vào bảng Giả định đặt hàng, xoá các phương án T10; xem `docs/module-hanghoa.md` |
+| 04/11/2026 | HTV bỏ quy định kẹp Creta N Line CBU với CKD; đã sửa `docs/quy-tac-dat-hang.md` mục 6 và trang Quy tắc đặt hàng |
 | 02/11/2026 | KCK: cập nhật tay từ file HTV gửi 02/11 (link SharePoint vẫn bản 20/10): thêm Tucson Hybrid FWD, Creta CKD Cao cấp/Đặc biệt, bớt Santafe Turbo Calligraphy Đen; xem `docs/cap-nhat-thu-cong.md` |
 | 02/11/2026 | Tucson Hybrid: HTV yêu cầu đặt trong T11 (hạn 17h 02/11, không đặt thì cắt KM T11, ngưng giao LX3); chị Đào duyệt NT, ĐL, PY mỗi nơi 1 xe Trắng |
 | 02/11/2026 | Trang Chính sách: thêm CV 139/2026 (Tucson Hybrid), CV 157/2025 (tồn kho + B/O ≥ 1,5 tháng, thay CV 449/2024) |
