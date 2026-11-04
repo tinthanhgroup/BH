@@ -1,5 +1,5 @@
 {
-  "updated_vn": "03/11/2026 09:00",
+  "updated_vn": "04/11/2026 09:00",
   "cong_thuc": {
     "truoc_ba_pct": 10,
     "phi_5_cho": 3.4,
@@ -13,14 +13,14 @@
       "cho": 7,
       "niem_yet": 780,
       "giam_truc_tiep": 0,
-      "ho_tro_truoc_ba": 0,
-      "km": "Chưa có KM tháng 11 (KM T10: 100% trước bạ ~78 tr, đã hết hạn)",
+      "ho_tro_truoc_ba": "100%",
+      "km": "KM hãng T11: \"Ưu đãi tương đương 100% phí trước bạ (~ 78 triệu VNĐ)\"; thu cũ đổi mới 20 tr (đổi xe Mitsubishi) / 15 tr (xe hãng khác), 01/11–31/12/2026",
       "qua": "",
-      "han": "",
+      "han": "tháng 11/2026",
       "nguon_loai": "A",
-      "nguon": "mitsubishi-motors.com.vn",
-      "ngay": "2026-11-03",
-      "ghi_chu": "Banner Bitcar (không ghi ngày) còn ghi \"Destinator ưu đãi 35 triệu\", chưa xác nhận nên chưa cộng"
+      "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
+      "ngay": "2026-11-04",
+      "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh. Banner Bitcar (không ngày) ghi \"Destinator ưu đãi 35 triệu\""
     },
     {
       "model": "Tucson",
@@ -29,14 +29,14 @@
       "cho": 7,
       "niem_yet": 855,
       "giam_truc_tiep": 0,
-      "ho_tro_truoc_ba": 0,
-      "km": "Chưa có KM tháng 11 (KM T10: 50% trước bạ ~43 tr + phiếu nhiên liệu ~25 tr, đã hết hạn)",
-      "qua": "",
-      "han": "",
+      "ho_tro_truoc_ba": "50%",
+      "km": "KM hãng T11: 50% phí trước bạ (~43 tr); thu cũ đổi mới 20 tr / 15 tr, 01/11–31/12/2026",
+      "qua": "Phiếu nhiên liệu ~25 tr",
+      "han": "tháng 11/2026",
       "nguon_loai": "A",
-      "nguon": "mitsubishi-motors.com.vn",
-      "ngay": "2026-11-03",
-      "ghi_chu": "Hãng, toàn quốc"
+      "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
+      "ngay": "2026-11-04",
+      "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh"
     },
     {
       "model": "Tucson",
@@ -51,7 +51,7 @@
       "han": "",
       "nguon_loai": "B",
       "nguon": "nhatrangford.com.vn",
-      "ngay": "2026-11-03",
+      "ngay": "2026-11-04",
       "ghi_chu": "Bài KM mới nhất của đại lý 08/09/2026 (tháng 9)"
     },
     {
@@ -68,7 +68,7 @@
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "Dấu * = có điều kiện, trang không nêu; chưa đọc được giá niêm yết"
+      "ghi_chu": "* \"tùy theo mẫu xe, phiên bản và thị trường\"; chưa đọc được giá niêm yết"
     },
     {
       "model": "Creta",
@@ -77,14 +77,14 @@
       "cho": 5,
       "niem_yet": 599,
       "giam_truc_tiep": 0,
-      "ho_tro_truoc_ba": 0,
-      "km": "Chưa có KM tháng 11 (KM T10: 100% trước bạ ~60 tr, đã hết hạn)",
+      "ho_tro_truoc_ba": "100%",
+      "km": "KM hãng T11: 100% phí trước bạ (~60 tr); thu cũ đổi mới 10 tr / 5 tr nếu thuộc \"các dòng khác\", 01/11–31/12/2026",
       "qua": "",
-      "han": "",
-      "nguon_loai": "B",
-      "nguon": "mitsubishibitcarkhanhhoa.vn",
-      "ngay": "2026-11-03",
-      "ghi_chu": "Banner Bitcar (không ghi ngày) còn ghi \"Xforce 100% trước bạ\", chưa xác nhận; hãng ghi giá 605"
+      "han": "tháng 11/2026",
+      "nguon_loai": "A",
+      "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
+      "ngay": "2026-11-04",
+      "ghi_chu": "Giá niêm yết theo Bitcar 599; hãng ghi 605 (lăn bánh theo giá hãng 608,4 tr)"
     },
     {
       "model": "Creta",
@@ -131,8 +131,8 @@
       "han": "",
       "nguon_loai": "B",
       "nguon": "hondanhatrang.com.vn",
-      "ngay": "2026-11-03",
-      "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025"
+      "ngay": "2026-11-04",
+      "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025. Tuổi Trẻ 12/10/2026 nói City 2026 bỏ bản G (giá từ 539 tr), đại lý vẫn ghi G 499 tr"
     },
     {
       "model": "Accent",
@@ -164,7 +164,7 @@
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; dấu * = có điều kiện, trang không nêu"
+      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; * \"tùy theo mẫu xe, phiên bản và thị trường\""
     },
     {
       "model": "Stargazer",
@@ -173,14 +173,14 @@
       "cho": 7,
       "niem_yet": 568,
       "giam_truc_tiep": 0,
-      "ho_tro_truoc_ba": 0,
-      "km": "Chưa có KM tháng 11 (KM T10: 100% trước bạ ~57 tr + phiếu nhiên liệu ~10 tr, đã hết hạn)",
-      "qua": "",
-      "han": "",
-      "nguon_loai": "B",
-      "nguon": "mitsubishibitcarkhanhhoa.vn",
-      "ngay": "2026-11-03",
-      "ghi_chu": "Banner Bitcar (không ghi ngày) còn ghi \"Xpander 100% trước bạ\", chưa xác nhận"
+      "ho_tro_truoc_ba": "100%",
+      "km": "KM hãng T11: 100% phí trước bạ (~57 tr); thu cũ đổi mới 10 tr / 5 tr nếu thuộc \"các dòng khác\", 01/11–31/12/2026",
+      "qua": "Phiếu nhiên liệu ~10 tr",
+      "han": "tháng 11/2026",
+      "nguon_loai": "A",
+      "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
+      "ngay": "2026-11-04",
+      "ghi_chu": "Hãng, toàn quốc; Bitcar chưa đăng bài KM T11 riêng"
     },
     {
       "model": "Stargazer",
@@ -195,11 +195,15 @@
       "han": "không ghi",
       "nguon_loai": "B",
       "nguon": "kianhatrang.vn",
-      "ngay": "2026-11-03",
+      "ngay": "2026-11-04",
       "ghi_chu": "Bảng giá không ghi ngày; hai trang của đại lý ghi ưu đãi mâu thuẫn nhau, cần hỏi đại lý; chưa có bài KM tháng 11"
     }
   ],
   "thay_doi": [
+    {
+      "ngay": "2026-11-04",
+      "noi_dung": "Mitsubishi (hãng) có KM tháng 11, mức như T10: Destinator Premium 100% trước bạ (~78 tr), Ultimate 50% (~43 tr) + nhiên liệu ~25 tr; Xforce 100% (GLX ~60 tr); Xpander MT 100% (~57 tr) + nhiên liệu ~10 tr. Mới: thu cũ đổi mới 01/11–31/12, Destinator 20/15 tr, dòng khác 10/5 tr. Đại lý khác không đổi."
+    },
     {
       "ngay": "2026-11-03",
       "noi_dung": "KM tháng 11 mới (đăng 02/11): Mazda Nha Trang CX-5 và Mazda2 Sedan 100% lệ phí trước bạ (Mazda2 giá từ 394 tr); Toyota Nha Trang chung các dòng xe hỗ trợ đến 100% trước bạ, lãi suất từ 0%/năm 2 năm, tặng 1 năm BH vật chất (01–30/11), chưa rõ mức cho Yaris Cross, Vios. Mitsubishi, Kia, Ford, Honda chưa có KM tháng 11."
@@ -231,56 +235,56 @@
       "loai": "B",
       "link": "kianhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Toyota Nha Trang",
       "loai": "B",
       "link": "toyotanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Honda Ôtô Khánh Hòa",
       "loai": "B",
       "link": "hondanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Nha Trang Ford",
       "loai": "B",
       "link": "nhatrangford.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Mitsubishi Bitcar Khánh Hòa",
       "loai": "B",
       "link": "mitsubishibitcarkhanhhoa.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Mazda Nha Trang (Thaco)",
       "loai": "B",
       "link": "mazdanhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Mitsubishi Việt Nam (hãng)",
       "loai": "A",
       "link": "mitsubishi-motors.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     },
     {
       "ten": "Ngọc Hải – Kia Mazda Cam Ranh",
       "loai": "C",
       "link": "facebook.com/profile.php?id=61582370495626",
       "trang_thai": "mot_phan",
-      "ngay": "2026-11-03"
+      "ngay": "2026-11-04"
     }
   ],
   "tvbh": []
