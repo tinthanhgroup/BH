@@ -17,6 +17,10 @@ Mục "Xe chưa xuất hóa đơn" cần xem lại được **trạng thái tạ
 - Muốn thêm 1 loại snapshot mới (vd theo quý): nhân bản đúng pattern `weeklySnapshot`/`monthlySnapshot` (backend, trong `apps-script/TinThanh_AutoSync.gs`) + `hhSelectWeek`/`hhSelectMonth` (frontend), tái sử dụng `buildChuaHDSnapshot_()` ở backend để đảm bảo các loại snapshot luôn khớp field với nhau.
 - **Snapshot Tuần/Tháng** dùng `buildChuaHDFromRecords()` để dựng lại đúng các field trên từ dữ liệu lịch sử. Nếu thêm field mới vào `allData.chuaHD`, nhớ thêm cả vào `buildChuaHDSnapshot_()` (backend `.gs`) lẫn `buildChuaHDFromRecords()` (frontend) để snapshot cũ/mới nhất quán.
 
+## KPI BO: đã xác nhận / dự kiến xác nhận (05/11/2026)
+
+BO có 2 loại: **đã xác nhận** và **dự kiến xác nhận** (Ngày xác nhận ĐH `ngayXacNhanDH` **sau hôm nay**, HTV hẹn xác nhận trong tương lai). Ô KPI BO (`mkStats()` ở `index.html`, `kv-bo` ở `mobile.html`) hiện số **đã xác nhận**, số dự kiến trong ngoặc, vd. `66 (31)`. Hàm chung `_boDuKien(r)` (có bản sao ở `mobile.html`). Chỉ đổi ô KPI: ô Tổng, bảng Model/Phiên bản, Giả định đặt hàng vẫn đếm đủ cả 2 loại BO.
+
 ## "Giả định đặt hàng" (`renderDatHang()`, thêm 09/2026)
 
 Bảng tạm thời cho **1 đợt đặt hàng cụ thể** — chỉ liệt kê các Model+Phiên bản đang đặt thêm (không phải toàn bộ danh mục), bấm vào tile "📦 Đặt hàng" trong `mkStats()` để xem (`toggleType('dathang')`, chỉ có ở `index.html`, không có ở `mobile.html`).

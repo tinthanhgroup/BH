@@ -594,9 +594,10 @@ function parseJsonRecords(records){
     var khach    = (r.khDatCoc||'').trim();
     var ngayCoc  = r.ngayDatCoc  ? new Date(r.ngayDatCoc)  : null;
     var ngayPhan = r.ngayPhanXe  ? new Date(r.ngayPhanXe)  : null;
+    var ngayXN   = r.ngayXacNhanDH ? new Date(r.ngayXacNhanDH) : null;
 
     var base = {model:model,phienBan:phienBan,mau:mau,namSX:namSX,
-                kho:kho,soKhung:soKhung,tvbh:tvbh,khach:khach,ngayCoc:ngayCoc};
+                kho:kho,soKhung:soKhung,tvbh:tvbh,khach:khach,ngayCoc:ngayCoc,ngayXN:ngayXN};
 
     if(tt==='Xe đã về kho'&&!ngayPhan){
       allData.stock.push(Object.assign({type:'stock'},base));
@@ -669,11 +670,19 @@ function matchFilter(r){
   return true;
 }
 
+// BO "dự kiến xác nhận" (05/11/2026): xe BO có Ngày xác nhận ĐH SAU hôm nay = HTV mới hẹn
+// xác nhận, chưa xác nhận thật. KPI BO (bản sao từ index.html) chỉ đếm xe đã xác nhận, số dự kiến hiện trong ngoặc.
+function _boDuKien(r){
+  if(!(r.ngayXN instanceof Date)||isNaN(r.ngayXN)) return false;
+  var t=new Date(); t.setHours(0,0,0,0); t.setDate(t.getDate()+1);
+  return r.ngayXN.getTime()>=t.getTime();
+}
 // ─── RENDER ALL ───
 function renderAll(){
   function cnt(arr){return arr.filter(matchFilter).length;}
   document.getElementById('kv-stock').textContent=cnt(allData.stock);
-  document.getElementById('kv-bo').textContent=cnt(allData.bo);
+  var boDK=allData.bo.filter(function(r){return matchFilter(r)&&_boDuKien(r);}).length;
+  document.getElementById('kv-bo').innerHTML=(cnt(allData.bo)-boDK)+(boDK?' <span style="font-size:.6em;opacity:.7">('+boDK+')</span>':'');
   document.getElementById('kv-lxx').textContent=cnt(allData.lxx);
   document.getElementById('kv-debt').textContent=cnt(allData.debt);
 

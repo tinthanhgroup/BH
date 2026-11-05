@@ -525,6 +525,13 @@ var _mktActiveSub = 'fbads'; // sub-tab đang chọn trong tab "MKT": 'fbads' (Q
 var hhFilters = {q:'',kho:[],nam:''};
 var oldMinDays=60; // mốc lọc trong view "Tồn >60 ngày": 60 / 90 / 150 (nút bấm, thêm 09/10/2026 — khớp mốc Quy định xử lý kho tồn lâu)
 var boDateFilter=null; // lọc theo "Ngày xác nhận đơn hàng" trong KPI BO — xem mkStats()/toggleType()/renderHH()
+// BO "dự kiến xác nhận" (05/11/2026): xe BO có Ngày xác nhận ĐH SAU hôm nay = HTV mới hẹn
+// xác nhận, chưa xác nhận thật. KPI BO chỉ đếm xe đã xác nhận, số dự kiến hiện trong ngoặc.
+function _boDuKien(r){
+  if(!(r.ngayXN instanceof Date)||isNaN(r.ngayXN)) return false;
+  var t=new Date(); t.setHours(0,0,0,0); t.setDate(t.getDate()+1);
+  return r.ngayXN.getTime()>=t.getTime();
+}
 function khoActive(){return hhFilters.kho&&hhFilters.kho.length>0;}
 function khoMatch(k){return !khoActive()||hhFilters.kho.indexOf(k)!==-1;}
 var typeFilter = null;
@@ -3830,6 +3837,8 @@ function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;boDateF
 // còn mặc định (chưa bấm gì) vẫn đếm theo Tồn kho (xem khoBreakdownSrc()).
 function hhClickTong(){hhFilters={q:'',kho:[],nam:''};typeFilter=(typeFilter==='tong'?null:'tong');boDateFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
+  var totBdk=allData.bo.filter(function(r){return khoMatch(r.kho)&&_boDuKien(r);}).length;
+  var boVal=(totB-totBdk)+(totBdk?' <span style="font-size:13px;font-weight:600;opacity:.7" title="Dự kiến xác nhận (Ngày xác nhận ĐH sau hôm nay)">('+totBdk+')</span>':'');
   var totCXN=allData.chuaXN?allData.chuaXN.filter(function(r){return khoMatch(r.kho);}).length:0;
   var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(function(r){return khoMatch(r.kho)&&isPalisadeLX3(r);}).length:0;
   var totD_LX3=allData.debt.filter(function(r){return khoMatch(r.kho)&&isPalisadeLX3(r);}).length;
@@ -3856,7 +3865,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">'
     +statEl('stock','Tồn kho',totS,'blue','var(--c-stock)','border-radius:0;border:none')
     +'<div style="width:1px;background:var(--border)"></div>'
-    +statEl('bo','BO',totB,'','#0369a1','border-radius:0;border:none')
+    +statEl('bo','BO',boVal,'','#0369a1','border-radius:0;border:none')
     +'<div style="width:1px;background:var(--border)"></div>'
     +statEl('lxx','LXX',totL,'amber','var(--c-lxx)','border-radius:0;border:none')
     +'</div>'
