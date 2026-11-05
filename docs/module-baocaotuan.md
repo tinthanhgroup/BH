@@ -69,7 +69,7 @@ Lý do: khối văn phòng đề nghị (họp quản lý 27/10/2026) vì nhiề
 ## Khối Công nợ bảo hiểm — chỉ Phú Yên (29/10/2026, anh Khanh chốt)
 
 Mục đích: xem mức kiểm soát công nợ bảo hiểm của xưởng DV Phú Yên theo từng tuần. Hiện trong mục Chỉ số trọng yếu (`renderCongNo()`), chỉ khi xem chi nhánh Phú Yên.
-- **Nguồn:** file `Cong no bao hiem .xlsx` (kế toán trưởng cập nhật **thứ 7** hằng tuần) trong thư mục Drive chia sẻ `1. Cong no BH` (lối tắt `8. Dich vu\Cong no BH.lnk` ở Project A). `TinThanh_CongNo_Sync.gs` đọc → `congno.json` (`PY.tuan["yyyy-mm-dd"]`, khoá = ngày "ĐẾN" ở ô A1; **gộp** như FBAds, mỗi tuần thêm 1 điểm, giữ 160 tuần). Số tiền là đồng.
+- **Nguồn:** file `Cong no bao hiem .xlsx` (kế toán trưởng cập nhật **thứ 7** hằng tuần) trong thư mục Drive chia sẻ `1. Cong no BH` (lối tắt `8. Dich vu\Cong no BH.lnk` ở Project A). `TinThanh_CongNo_Sync.gs` đọc → `congno.json` (`PY.tuan["yyyy-mm-dd"]`, đọc **mọi sheet** — kế toán thêm 1 sheet mỗi tuần ("43", "44"…), sửa 05/11/2026; khoá = ngày "ĐẾN" ở ô A1 từng sheet; **gộp** như FBAds, mỗi tuần thêm 1 điểm, giữ 160 tuần). Số tiền là đồng.
 - **Hiển thị:** tỷ lệ quá hạn / tổng nợ (so tuần trước), cột chồng 4 loại (trong hạn · quá hạn trong 30 ngày · trên 30 ngày · trên 3 tháng; triệu đồng; 10 tuần gần nhất), bảng đơn vị còn nợ quá hạn của tuần mới nhất, số hồ sơ xe xuất trong tuần / luỹ kế tháng.
 - **Điểm đầu tiên** (16/10/2026) nhập tay từ file kế toán; chưa có các tuần trước. Script chưa dán lên Apps Script nên chưa tự đồng bộ.
 - Chưa đặt ngưỡng cảnh báo %: tạm tô đỏ số % khi ≥ 30%. Quy định thu hồi công nợ BH: `0. Quy dinh\cong-no-bao-hiem.md` (Project A).
