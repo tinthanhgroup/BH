@@ -189,12 +189,124 @@
      "gtTuan": 66589943,
      "gtThang": 158184937
     }
+   },
+   "2026-10-31": {
+    "trongHan": 284320534,
+    "qh30": 16021454,
+    "qhTren30": 27736740,
+    "qhTren3t": 8504136,
+    "donVi": [
+     {
+      "ten": "BẢO HIỂM MIC PHÚ YÊN",
+      "trongHan": 50659128,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM PJICO PHÚ YÊN",
+      "trongHan": 5969668,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BIDV BÌNH ĐỊNH",
+      "trongHan": 0,
+      "qh30": 3899124,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO MINH PHÚ YÊN",
+      "trongHan": 11233188,
+      "qh30": 12122330,
+      "qhTren30": 5505840,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BƯU ĐIỆN BÌNH ĐỊNH",
+      "trongHan": 4977800,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO VIỆT PHÚ YÊN",
+      "trongHan": 41391548,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM VIETINBANK KHÁNH HÒA",
+      "trongHan": 6783480,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BẢO LONG- CÔNG TY BẢO HIỂM BẢO LONG PHÚ YÊN",
+      "trongHan": 6109500,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM NGÂN HÀNG NÔNG NGHIỆP - CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 13042080,
+      "qh30": 0,
+      "qhTren30": 22230900,
+      "qhTren3t": 8504136
+     },
+     {
+      "ten": "BẢO HIỂM DBV - CHI NHÁNH TRUNG TRUNG BỘ",
+      "trongHan": 85005083,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM DBV-CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 32891519,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM TASCO",
+      "trongHan": 18268200,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM PVI - CHI NHÁNH BẢO HIỂM PVI GIA LAI",
+      "trongHan": 3723340,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM LPBANK - CHI NHÁNH NAM TRUNG BỘ",
+      "trongHan": 4266000,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     }
+    ],
+    "xuatHS": {
+     "slTuan": 13,
+     "slThang": 29,
+     "gtTuan": 189634811,
+     "gtThang": 347819748
+    }
    }
   },
   "nguongMienPhi": 90000000
  },
- "updated_at": "2026-11-02T05:49:24.989Z",
- "updated_vn": "02/11/2026 12:49",
+ "updated_at": "2026-11-05T07:37:34.514Z",
+ "updated_vn": "05/11/2026 14:37",
  "nguon_file": "Cong no bao hiem  .xlsx",
  "nguon_cap_nhat": "02/11/2026 12:28"
 }
