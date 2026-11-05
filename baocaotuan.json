@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-05T14:37:03+07:00",
+ "updated_at": "2026-11-05T19:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -3813,7 +3813,36 @@
    "ngayBaoCao": "2026-10-31",
    "ngayDuLieu": "2026-11-05",
    "canhBao": [],
-   "viec": [],
+   "viec": [
+    {
+     "boPhan": "BH",
+     "dong": 9,
+     "ma": "BH-001",
+     "nguon": "Bộ phận bổ sung",
+     "thang": null,
+     "linhVuc": "",
+     "noiDung": "Quay chương trình bán hàng T11",
+     "phuTrach": "",
+     "han": "",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "Đã lên kịch bản, đang quay, đang hậu kỳ Thứ 7 đăng bài (không có tiến triển)",
+     "tuanCN": 44,
+     "vuongMac": "",
+     "deXuat": "Đglkgdlkg",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "Có",
+     "ghiChuGD": "",
+     "gdXuLy": "Chuyển thông tin TGĐ",
+     "duyetTT": "",
+     "loaiHD": "4. Cải tiến",
+     "maTCT": "TCT-001",
+     "nguoiCapNhat": ""
+    }
+   ],
    "tct": [],
    "nhanDinh": [],
    "chiSo": [
