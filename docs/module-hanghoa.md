@@ -17,9 +17,9 @@ Mục "Xe chưa xuất hóa đơn" cần xem lại được **trạng thái tạ
 - Muốn thêm 1 loại snapshot mới (vd theo quý): nhân bản đúng pattern `weeklySnapshot`/`monthlySnapshot` (backend, trong `apps-script/TinThanh_AutoSync.gs`) + `hhSelectWeek`/`hhSelectMonth` (frontend), tái sử dụng `buildChuaHDSnapshot_()` ở backend để đảm bảo các loại snapshot luôn khớp field với nhau.
 - **Snapshot Tuần/Tháng** dùng `buildChuaHDFromRecords()` để dựng lại đúng các field trên từ dữ liệu lịch sử. Nếu thêm field mới vào `allData.chuaHD`, nhớ thêm cả vào `buildChuaHDSnapshot_()` (backend `.gs`) lẫn `buildChuaHDFromRecords()` (frontend) để snapshot cũ/mới nhất quán.
 
-## KPI BO: đã xác nhận / dự kiến xác nhận (05/11/2026)
+## BO dự kiến xác nhận = Chờ XN (05/11/2026)
 
-BO có 2 loại: **đã xác nhận** và **dự kiến xác nhận** (Ngày xác nhận ĐH `ngayXacNhanDH` **sau hôm nay**, HTV hẹn xác nhận trong tương lai). Ô KPI BO (`mkStats()` ở `index.html`, `kv-bo` ở `mobile.html`) hiện số **đã xác nhận**, số dự kiến trong ngoặc, vd. `66 (31)`. Hàm chung `_boDuKien(r)` (có bản sao ở `mobile.html`). Chỉ đổi ô KPI: ô Tổng, bảng Model/Phiên bản, Giả định đặt hàng vẫn đếm đủ cả 2 loại BO.
+Xe trạng thái **BO** có Ngày xác nhận ĐH (`ngayXacNhanDH`) **sau hôm nay** là HTV mới hẹn xác nhận → khi đọc dữ liệu (`parseJsonRecords()` và `parseRawRows()` ở `index.html`) đưa vào `allData.chuaXN` (cờ `boDuKien:true`), **không** vào `allData.bo`. Vì vậy ô BO, Tổng, bảng Model/Phiên bản, Giả định đặt hàng chỉ còn BO đã xác nhận; xe dự kiến hiện ở ô Chờ XN. `mobile.html` (không hiện Chờ XN) bỏ hẳn xe này. Hàm chung `_boDuKien(r)`, có bản sao ở `mobile.html`. Đến ngày xác nhận, xe tự về BO.
 
 ## "Giả định đặt hàng" (`renderDatHang()`, thêm 09/2026)
 

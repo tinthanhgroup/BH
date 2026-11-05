@@ -607,6 +607,8 @@ function parseJsonRecords(records){
       // Xe đã bán — không hiện tồn kho
     } else if(tt==='DS nợ'){
       allData.debt.push(Object.assign({type:'debt'},base,{kho:khoFromTVBH(tvbh)||kho}));
+    } else if(tt==='BO'&&_boDuKien(base)){
+      // dự kiến xác nhận = Chờ XN, bỏ qua
     } else if(tt==='BO'){
       allData.bo.push(Object.assign({type:'bo'},base,{kho:daly||kho,namSX:namSX||'2026'}));
     } else if(tt==='LXX'){
@@ -670,8 +672,8 @@ function matchFilter(r){
   return true;
 }
 
-// BO "dự kiến xác nhận" (05/11/2026): xe BO có Ngày xác nhận ĐH SAU hôm nay = HTV mới hẹn
-// xác nhận, chưa xác nhận thật. KPI BO (bản sao từ index.html) chỉ đếm xe đã xác nhận, số dự kiến hiện trong ngoặc.
+// BO "dự kiến xác nhận" (05/11/2026, bản sao từ index.html): xe BO có Ngày xác nhận ĐH SAU hôm
+// nay coi là Chờ XN → không vào BO (trang này không hiện Chờ XN).
 function _boDuKien(r){
   if(!(r.ngayXN instanceof Date)||isNaN(r.ngayXN)) return false;
   var t=new Date(); t.setHours(0,0,0,0); t.setDate(t.getDate()+1);
@@ -681,8 +683,7 @@ function _boDuKien(r){
 function renderAll(){
   function cnt(arr){return arr.filter(matchFilter).length;}
   document.getElementById('kv-stock').textContent=cnt(allData.stock);
-  var boDK=allData.bo.filter(function(r){return matchFilter(r)&&_boDuKien(r);}).length;
-  document.getElementById('kv-bo').innerHTML=(cnt(allData.bo)-boDK)+(boDK?' <span style="font-size:.6em;opacity:.7">('+boDK+')</span>':'');
+  document.getElementById('kv-bo').textContent=cnt(allData.bo);
   document.getElementById('kv-lxx').textContent=cnt(allData.lxx);
   document.getElementById('kv-debt').textContent=cnt(allData.debt);
 

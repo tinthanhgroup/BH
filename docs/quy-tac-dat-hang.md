@@ -116,7 +116,7 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 | Số liệu | Trường / điều kiện |
 |---|---|
 | Đơn của đợt | `soDonHang` bắt đầu bằng `YYMM` (vd. `2610…`), đếm theo `daiLyDatHang` |
-| Đã xác nhận / chưa | `trangThai` = `BO` / `Chờ XN` |
+| Đã xác nhận / chưa | `trangThai` = `BO` / `Chờ XN`; BO có `ngayXacNhanDH` sau hôm nay (dự kiến xác nhận) tính là Chờ XN |
 | Tồn chưa BC DMS | `trangThai` = "Xe đã về kho", `baoCaoDMS` = false |
 | Xe tồn lâu | Tồn chưa phân khách (`ngayPhanXe` trống), `ngayNhapKho` quá 90 ngày; kho thực tế ở `khoXe` |
 | Hợp đồng | `ngayDatCoc`, nguồn khách `nguonKhach`. Số HĐ dùng cho đặt hàng (tốc độ bán, công văn gửi HTV): **bỏ Palisade** (đơn riêng) và nguồn KHÁC — vd. công văn 10/10/2026: Q2 57, Q3 54 HĐ/tháng. Tổng HĐ ký của công ty (Báo cáo tuần, biểu đồ HĐ ký) **tính cả Palisade** → Q3 64 HĐ/tháng; hai số khác nhau là đúng |

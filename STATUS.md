@@ -36,7 +36,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
-| 05/11/2026 | KPI BO chỉ đếm xe đã xác nhận, xe dự kiến xác nhận (ngày XN sau hôm nay) hiện trong ngoặc: 66 (31); xem `docs/module-hanghoa.md` |
+| 05/11/2026 | BO dự kiến xác nhận (ngày XN sau hôm nay) chuyển sang Chờ XN, bỏ khỏi BO ở mọi bảng: BO 66, Chờ XN 31; xem `docs/module-hanghoa.md` |
 | 05/11/2026 | Kế hoạch T11: NT giảm 1 Tucson XĐB Đỏ + 1 Trắng → 12 xe (NT 5 · ĐL 7); đã sửa bảng Giả định đặt hàng |
 | 04/11/2026 | Kế hoạch T11: NT, ĐL gửi đề xuất đặt hàng (14 xe: NT 7 · ĐL 7), PY không đặt; đưa vào bảng Giả định đặt hàng, xoá các phương án T10; xem `docs/module-hanghoa.md` |
 | 04/11/2026 | HTV bỏ quy định kẹp Creta N Line CBU với CKD; đã sửa `docs/quy-tac-dat-hang.md` mục 6 và trang Quy tắc đặt hàng |
