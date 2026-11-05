@@ -21,6 +21,8 @@ Mục "Xe chưa xuất hóa đơn" cần xem lại được **trạng thái tạ
 
 Xe trạng thái **BO** có Ngày xác nhận ĐH (`ngayXacNhanDH`) **sau hôm nay** là HTV mới hẹn xác nhận → khi đọc dữ liệu (`parseJsonRecords()` và `parseRawRows()` ở `index.html`) đưa vào `allData.chuaXN` (cờ `boDuKien:true`), **không** vào `allData.bo`. Vì vậy ô BO, Tổng, bảng Model/Phiên bản, Giả định đặt hàng chỉ còn BO đã xác nhận; xe dự kiến hiện ở ô Chờ XN. `mobile.html` (không hiện Chờ XN) bỏ hẳn xe này. Hàm chung `_boDuKien(r)`, có bản sao ở `mobile.html`. Đến ngày xác nhận, xe tự về BO.
 
+Trang riêng `palisade.html` (05/11/2026; nhúng iframe ở tab "Palisade LX3" trong Giả định đặt hàng, cạnh tab "Đặt hàng kế hoạch" — `_dhChonTab()`, chiều cao gửi qua postMessage): Palisade Hybrid (LX3, bỏ bản đời cũ) theo phiên bản × màu, cột Tồn / BO / LXX / Nợ / BO dự kiến, HĐ ký TB/tháng 90 ngày (bán lẻ, theo ngày cọc) và số tháng bán hết phần dư; nút ẩn/hiện màu, lọc chi nhánh. Cách đếm chép theo `parseJsonRecords()` + `_khopLxxPhanKhach()`: sửa cách đếm ở `index.html` thì sửa cả trang này.
+
 ## "Giả định đặt hàng" (`renderDatHang()`, thêm 09/2026)
 
 Bảng tạm thời cho **1 đợt đặt hàng cụ thể** — chỉ liệt kê các Model+Phiên bản đang đặt thêm (không phải toàn bộ danh mục), bấm vào tile "📦 Đặt hàng" trong `mkStats()` để xem (`toggleType('dathang')`, chỉ có ở `index.html`, không có ở `mobile.html`).

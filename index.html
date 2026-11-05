@@ -1843,7 +1843,37 @@ function _kckColorsFor(model,phienBan){
 function _isKckAvailable(kckColors,mau){
   return !!(kckColors&&kckColors[_mauToKckKey(mau)]);
 }
+// 2 tab trong "Giả định đặt hàng" (05/11/2026): 'kh' = Đặt hàng kế hoạch (bảng 1 + 2 như cũ),
+// 'lx3' = Palisade LX3 — nhúng iframe palisade.html (trang riêng, tự đọc data.json; tải khi mở
+// tab lần đầu). Đổi tab chỉ ẩn/hiện, không vẽ lại. Chiều cao iframe do palisade.html gửi qua postMessage.
+var _dhTab='kh';
+function _dhTabBtn(t,ten){
+  var on=_dhTab===t;
+  return '<button onclick="_dhChonTab(\''+t+'\')" data-dhtab="'+t+'" style="padding:7px 16px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;border:1px solid '+(on?'var(--border)':'transparent')+';border-bottom:none;border-radius:8px 8px 0 0;background:'+(on?'var(--surface,#fff)':'transparent')+';color:'+(on?'var(--accent)':'var(--muted)')+'">'+ten+'</button>';
+}
+function _dhChonTab(t){
+  _dhTab=t;
+  var kh=document.getElementById('dh-tab-kh'), lx=document.getElementById('dh-tab-lx3');
+  if(!kh||!lx) return;
+  kh.style.display=t==='kh'?'':'none';
+  lx.style.display=t==='lx3'?'':'none';
+  var fr=document.getElementById('dh-lx3-iframe');
+  if(t==='lx3'&&fr&&!fr.getAttribute('src')) fr.setAttribute('src','palisade.html');
+  var bar=document.getElementById('dh-tabbar');
+  if(bar) bar.innerHTML=_dhTabBtn('kh','Đặt hàng kế hoạch')+_dhTabBtn('lx3','Palisade LX3');
+}
+window.addEventListener('message',function(e){
+  var d=e.data, fr=document.getElementById('dh-lx3-iframe');
+  if(d&&d.palisadeH&&fr) fr.style.height=(d.palisadeH+20)+'px';
+});
 function renderDatHang(){
+  return '<div id="dh-tabbar" style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin:4px 0 14px">'
+    +_dhTabBtn('kh','Đặt hàng kế hoạch')+_dhTabBtn('lx3','Palisade LX3')+'</div>'
+    +'<div id="dh-tab-lx3" style="display:'+(_dhTab==='lx3'?'':'none')+'">'
+    +'<iframe id="dh-lx3-iframe"'+(_dhTab==='lx3'?' src="palisade.html"':'')+' style="width:100%;height:1400px;border:none;display:block"></iframe></div>'
+    +'<div id="dh-tab-kh" style="display:'+(_dhTab==='kh'?'':'none')+'">'+_renderDatHangKeHoach()+'</div>';
+}
+function _renderDatHangKeHoach(){
   // Bảng 1 "Tốc độ bán hàng" + bảng 2 = đợt đặt hàng đang xét (DAT_HANG_ORDERS). Các phương
   // án cũ của đợt T10 đã xoá 04/11/2026; giãn cách margin-top 40px giữa các bảng.
   return renderTocDoBanHang()

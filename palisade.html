@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích Palisade Hybrid — Tín Thanh Group</title>
+<link rel="stylesheet" href="chung.css">
+<style>
+  /* Riêng trang Phân tích Palisade (05/11/2026). Dữ liệu: data.json — cách đếm Tồn/BO/LXX/Nợ
+     chép theo parseJsonRecords() + _khopLxxPhanKhach() của index.html; sửa cách đếm ở đó thì sửa cả đây. */
+  .wrap{max-width:1040px;}
+  body.nhung .wrap{margin:0;padding:0 0 20px;} /* nhúng trong index.html: căn trái, bỏ lề */
+  .cuon{overflow-x:auto;}
+  table.pal th,table.pal td{text-align:center;white-space:nowrap;padding:6px 8px;}
+  table.pal thead th{white-space:normal;line-height:1.25;vertical-align:bottom;}
+  table.pal th.l,table.pal td.l{text-align:left;}
+  table.pal td.mau{padding-left:22px;color:var(--muted);}
+  table.pal thead tr.so th{background:#fff;color:#999;font-size:10px;font-weight:700;padding:2px 8px;border-bottom:1px solid var(--border);}
+  table.pal .ct{display:block;font-weight:400;font-size:10px;opacity:.85;}
+  table.pal.an-mau tr.m{display:none;}
+  .thanh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  tr.pb td{background:var(--card2);font-weight:700;color:var(--blue);}
+  tr.pb:hover{background:var(--card2);}
+  tr.tong td{background:#e8eefb;font-weight:800;border-top:2px solid var(--blue);}
+  td.am{color:var(--red);font-weight:700;}
+  td.duong{color:var(--amber);font-weight:700;}
+  td.dk{background:#fff8e6;}
+  th.dk{background:#b7791f !important;}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;border:1px solid #bbb;margin-right:6px;vertical-align:-1px;}
+  @media(max-width:700px){.wrap{padding:12px 10px 40px;} .kpi-row.c4{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div style="font-size:18px;font-weight:700">Phân tích Palisade Hybrid (LX3)</div>
+      <div class="sub" id="capNhat">Đang tải…</div>
+    </div>
+    <div class="filter-btns" id="chips"></div>
+  </div>
+
+  <div class="kpi-row c4" id="kpi"></div>
+
+  <div class="panel">
+    <h3><span class="chart-num">1</span> Tồn, BO, LXX, Nợ theo phiên bản và màu</h3>
+    <p class="desc">BO (cột 3) chỉ gồm xe HTV đã xác nhận đơn; xe có ngày xác nhận sau hôm nay tách riêng ở cột 7. Cột 6, 8 âm = thiếu xe cho khách đang chờ; dương = xe chưa có khách, phải ký hợp đồng mới. Cột 9: trung bình hợp đồng bán lẻ ký mỗi tháng trong 90 ngày gần nhất (theo ngày đặt cọc, kể cả hợp đồng đã giao xe). Cột 10: số tháng để bán hết số xe dư ở cột 8. Chi nhánh: NT gồm PR, ĐL gồm BL.</p>
+    <div class="thanh">
+      <span id="kyGhiChu" style="font-size:12px;color:var(--muted)"></span>
+      <button class="reset-btn" id="nutMau" onclick="hienMau=!hienMau;ve()"></button>
+    </div>
+    <div class="table-wrap cuon">
+      <table class="pal" id="bang">
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">2</span> Danh sách BO dự kiến xác nhận</h3>
+    <p class="desc">Xe trạng thái BO có ngày xác nhận ĐH sau hôm nay (tab Hàng hóa xếp vào Chờ XN).</p>
+    <div class="table-wrap cuon">
+      <table>
+        <thead><tr><th>#</th><th>Ngày dự kiến XN</th><th>Chi nhánh</th><th>Phiên bản</th><th>Màu</th></tr></thead>
+        <tbody id="dsDuKien"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="footnote">Nguồn: data.json (đồng bộ từ Google Sheet bán hàng). Số liệu tự cập nhật khi tải lại trang.</div>
+</div>
+
+<script>
+var BASE='https://raw.githubusercontent.com/tinthanhgroup/BH/main/';
+var CN=[['','Tất cả'],['NT','Nha Trang'],['ĐL','Đà Lạt'],['PY','Phú Yên']];
+var CN_GOP={PR:'NT',BL:'ĐL',DL:'ĐL'};
+var chon='', D=null, hienMau=false;
+var KY_NGAY=90; // như DH_KY_DAYS của bảng Giả định đặt hàng (index.html)
+
+function normKho(k){k=(k||'').toString().trim().toUpperCase(); k=k==='DL'?'ĐL':k; return CN_GOP[k]||k;}
+function khoTuTVBH(t){t=(t||'').toString().trim(); var i=t.lastIndexOf('.'); return i>=0?normKho(t.substring(i+1)):'';}
+function normMau(m){m=(m||'').toString().trim(); var i=m.indexOf('/'); if(i>=0) m=m.substring(0,i).trim(); return m||'—';}
+function ngay(s){var d=s?new Date(s):null; return d&&!isNaN(d)?d:null;}
+function fmt(d){return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2);}
+function mauDot(m){
+  m=m.toLowerCase();
+  if(m.includes('trắng')) return '#f4f3ee'; if(m.includes('đen')) return '#222'; if(m.includes('đỏ')) return '#8b1c1c';
+  if(m.includes('bạc')) return '#b0b0b0'; if(m.includes('lục')) return '#1f6f5c'; if(m.includes('xanh')) return '#1f3a68';
+  if(m.includes('xám')) return '#888'; return '#ccc';
+}
+// BO "dự kiến xác nhận": ngày XN sau hôm nay — giống _boDuKien() của index.html
+// Nhúng trong tab "Giả định đặt hàng › Palisade LX3" của index.html: báo chiều cao để trang mẹ chỉnh iframe
+function baoChieuCao(){ if(window.parent!==window) setTimeout(function(){ window.parent.postMessage({palisadeH:document.body.offsetHeight},'*'); },0); }
+window.addEventListener('resize',baoChieuCao);
+if(window.parent!==window) document.body.classList.add('nhung');
+function boDuKien(d){ if(!d) return false; var t=new Date(); t.setHours(0,0,0,0); t.setDate(t.getDate()+1); return d.getTime()>=t.getTime(); }
+
+function phanLoai(records, mocKy){
+  var ds={ton:[],bo:[],dk:[],lxx:[],no:[],ky:[]};
+  records.forEach(function(r){
+    // Chỉ Palisade Hybrid (LX3) — bỏ bản đời cũ (Exclusive…), người dùng chốt 05/11/2026
+    if(!/palisade/i.test(r.model||'')||!/hybrid/i.test(r.phienBan||'')) return;
+    var tt=(r.trangThai||'').trim();
+    var x={pb:(r.phienBan||'').trim()||'—', mau:normMau(r.mau), khung:(r.soKhung||'').trim().toUpperCase(), xn:ngay(r.ngayXacNhanDH)};
+    // Hợp đồng ký trong KY_NGAY ngày: theo ngày đặt cọc, chỉ bán lẻ (nguồn khách ≠ KHÁC) — như _spdIsRetail
+    var coc=ngay(r.ngayDatCoc), nk=(r.nguonKhach||'').trim();
+    if(coc&&coc>=mocKy&&nk.toUpperCase()!=='KHÁC') ds.ky.push({pb:x.pb,mau:x.mau,cn:normKho(nk)});
+    var daly=normKho(r.daiLyDatHang), kho=normKho(r.khoXe);
+    if(tt==='Xe đã về kho'&&!r.ngayPhanXe){ x.cn=daly||kho; ds.ton.push(x); }
+    else if(tt==='DS nợ'){ x.cn=khoTuTVBH(r.tvbh)||kho; ds.no.push(x); }
+    else if(tt==='BO'){ x.cn=daly||kho; (boDuKien(x.xn)?ds.dk:ds.bo).push(x); }
+    else if(tt==='LXX'){ x.cn=daly||kho; ds.lxx.push(x); }
+  });
+  // LXX đã phân khách (giống _khopLxxPhanKhach): khớp số khung DS nợ → bỏ cả xe lẫn khách;
+  // khớp xe đã về kho/đã bán → bỏ xe (dòng ĐƠN HÀNG chưa dọn)
+  var dt={}, noK={}, boNo={};
+  records.forEach(function(r){var tt=(r.trangThai||'').trim(), k=(r.soKhung||'').trim().toUpperCase(); if(k&&(tt==='Xe đã về kho'||tt==='Đã bán')) dt[k]=1;});
+  ds.no.forEach(function(x){ if(x.khung) noK[x.khung]=1; });
+  ds.lxx=ds.lxx.filter(function(x){
+    if(x.khung&&noK[x.khung]){ boNo[x.khung]=1; return false; }
+    return !(x.khung&&dt[x.khung]);
+  });
+  ds.no=ds.no.filter(function(x){ return !(x.khung&&boNo[x.khung]); });
+  return ds;
+}
+
+function ve(){
+  var loc=function(a){return a.filter(function(x){return !chon||x.cn===chon;});};
+  var L={ton:loc(D.ton),bo:loc(D.bo),dk:loc(D.dk),lxx:loc(D.lxx),no:loc(D.no),ky:loc(D.ky)};
+  var COT=['ton','bo','lxx','no','dk','ky'];
+  var moi=function(){return {ton:0,bo:0,lxx:0,no:0,dk:0,ky:0};};
+  var nhom={};
+  COT.forEach(function(c){ L[c].forEach(function(x){
+    var g=nhom[x.pb]=nhom[x.pb]||{mau:{}};
+    var m=g.mau[x.mau]=g.mau[x.mau]||moi();
+    m[c]++;
+  });});
+  var ngayDk={}; D.dk.forEach(function(x){ ngayDk[fmt(x.xn)]=1; });
+  var nhanDk=Object.keys(ngayDk).sort(function(a,b){return a.slice(3)+a.slice(0,2)<b.slice(3)+b.slice(0,2)?-1:1;}).join(', ');
+  var thang=KY_NGAY/30;
+
+  document.getElementById('thead').innerHTML=
+    '<tr class="so">'+[1,2,3,4,5,6,7,8,9,10].map(function(i){return '<th>'+i+'</th>';}).join('')+'</tr>'
+   +'<tr><th class="l">Phiên bản / màu</th><th>Tồn</th><th>BO<span class="ct">đã xác nhận</span></th><th>LXX</th><th>Nợ<span class="ct">khách chờ</span></th>'
+   +'<th>Dư / thiếu<span class="ct">6 = 2+3+4−5</span></th><th class="dk">BO dự kiến<span class="ct">'+(nhanDk||'—')+'</span></th><th>Dư sau dự kiến<span class="ct">8 = 6+7</span></th>'
+   +'<th>HĐ ký TB/tháng<span class="ct">'+KY_NGAY+' ngày</span></th><th>Số tháng bán hết<span class="ct">10 = 8 ÷ 9</span></th></tr>';
+
+  function o(n){return n?n:'<span class="dash">–</span>';}
+  function ocLech(n){return '<td class="'+(n<0?'am':n>0?'duong':'')+'">'+(n>0?'+':'')+(n||'<span class="dash">0</span>')+'</td>';}
+  function ocThang(du,tb){
+    if(du<=0) return '<td><span class="dash">–</span></td>';
+    if(!tb) return '<td class="am" title="Chưa ký hợp đồng nào trong '+KY_NGAY+' ngày">∞</td>';
+    var t=du/tb;
+    return '<td class="'+(t>4?'am':t>2?'duong':'')+'">'+(Math.round(t*10)/10).toLocaleString('vi-VN')+'</td>';
+  }
+  function dong(cls,ten,s){
+    var lech=s.ton+s.bo+s.lxx-s.no, tb=s.ky/thang;
+    return '<tr class="'+cls+'"><td class="l'+(cls==='m'?' mau':'')+'">'+ten+'</td><td>'+o(s.ton)+'</td><td>'+o(s.bo)+'</td><td>'+o(s.lxx)+'</td><td>'+o(s.no)+'</td>'
+      +ocLech(lech)+'<td class="dk">'+o(s.dk)+'</td>'+ocLech(lech+s.dk)
+      +'<td>'+(tb?(Math.round(tb*10)/10).toLocaleString('vi-VN'):'<span class="dash">0</span>')+'</td>'+ocThang(lech+s.dk,tb)+'</tr>';
+  }
+  function cong(a,b){COT.forEach(function(c){a[c]+=b[c];});}
+  var tong=moi(), html='';
+  // Phiên bản xếp theo tên; màu xếp theo tổng xe giảm dần
+  Object.keys(nhom).sort().forEach(function(pb){
+    var g=nhom[pb], s=moi();
+    var maus=Object.keys(g.mau).sort(function(a,b){var A=g.mau[a],B=g.mau[b]; return (B.ton+B.bo+B.lxx+B.no+B.dk)-(A.ton+A.bo+A.lxx+A.no+A.dk);});
+    maus.forEach(function(m){cong(s,g.mau[m]);});
+    cong(tong,s);
+    html+=dong('pb',pb,s);
+    maus.forEach(function(m){ html+=dong('m','<span class="dot" style="background:'+mauDot(m)+'"></span>'+m,g.mau[m]); });
+  });
+  html+=dong('tong','Tổng Palisade Hybrid',tong);
+  document.getElementById('tbody').innerHTML=html||'<tr><td colspan="10" class="empty">Không có xe</td></tr>';
+  document.getElementById('bang').className='pal'+(hienMau?'':' an-mau');
+  document.getElementById('nutMau').textContent=hienMau?'Ẩn màu chi tiết':'Hiện màu chi tiết';
+  baoChieuCao();
+  document.getElementById('kyGhiChu').textContent='Hợp đồng ký từ '+fmt(D.mocKy)+'/'+D.mocKy.getFullYear()+': '+tong.ky+' xe';
+
+  var lech=tong.ton+tong.bo+tong.lxx-tong.no;
+  document.getElementById('kpi').innerHTML=
+     '<div class="kpi"><div class="kpi-label">Tồn + BO + LXX</div><div class="kpi-num">'+(tong.ton+tong.bo+tong.lxx)+'</div><div class="kpi-sub">Tồn '+tong.ton+' · BO '+tong.bo+' · LXX '+tong.lxx+'</div></div>'
+    +'<div class="kpi"><div class="kpi-label">Nợ khách</div><div class="kpi-num">'+tong.no+'</div><div class="kpi-sub">khách đã cọc, chờ xe</div></div>'
+    +'<div class="kpi canh"><div class="kpi-label">BO dự kiến '+(nhanDk||'')+'</div><div class="kpi-num">'+tong.dk+'</div><div class="kpi-sub">chưa được HTV xác nhận</div></div>'
+    +'<div class="kpi '+(lech+tong.dk>0?'xau':'tot')+'"><div class="kpi-label">Dư sau dự kiến</div><div class="kpi-num">'+(lech+tong.dk>0?'+':'')+(lech+tong.dk)+'</div><div class="kpi-sub">hiện tại '+(lech>0?'+':'')+lech+' · phải ký mới nếu dương</div></div>';
+
+  var dk=L.dk.slice().sort(function(a,b){return a.xn-b.xn||a.cn.localeCompare(b.cn)||a.pb.localeCompare(b.pb)||a.mau.localeCompare(b.mau);});
+  document.getElementById('dsDuKien').innerHTML=dk.length?dk.map(function(x,i){
+    return '<tr><td>'+(i+1)+'</td><td>'+fmt(x.xn)+'/'+x.xn.getFullYear()+'</td><td>'+(x.cn||'—')+'</td><td>'+x.pb+'</td><td><span class="dot" style="background:'+mauDot(x.mau)+'"></span>'+x.mau+'</td></tr>';
+  }).join(''):'<tr><td colspan="5" class="empty">Không có xe BO dự kiến</td></tr>';
+
+  document.getElementById('chips').innerHTML=CN.map(function(c){
+    return '<button class="filter-btn'+(c[0]===chon?' active':'')+'" onclick="chon=\''+c[0]+'\';ve()">'+c[1]+'</button>';
+  }).join('');
+}
+
+fetch(BASE+'data.json?t='+Date.now()).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(function(j){
+    var ref=ngay(j.updated_at)||new Date(), mocKy=new Date(ref.getTime()-KY_NGAY*86400000);
+    D=phanLoai(j.records||[], mocKy); D.mocKy=mocKy;
+    document.getElementById('capNhat').textContent='Dữ liệu cập nhật '+(j.updated_vn||'—');
+    ve();
+  })
+  .catch(function(e){ document.getElementById('capNhat').textContent='Không tải được data.json: '+e.message; });
+</script>
+</body>
+</html>
