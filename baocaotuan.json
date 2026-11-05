@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-05T11:37:03+07:00",
+ "updated_at": "2026-11-05T12:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -2005,12 +2005,12 @@
      "trangThai": "Hoàn thành",
      "capNhat": "Lượng khách chưa đạt kỳ vòng, 1-2 khách/ngày",
      "tuanCN": 42,
-     "vuongMac": "",
+     "vuongMac": "Mức giảm giá chưa thật sự hấp dẫn.\nViệc truyển thông đến khách hàng chỉ dừng mức độ nhắn tin ZBS  (90%  gửi tin nhắn thành công). Chưa đánh giá được  hiệu quả truyền thông",
      "deXuat": "",
-     "keHoach": "",
-     "ngayHT": "",
+     "keHoach": "PDV đánh giá khả năng quay lại kỳ tiếp theo của khách hàng qua lại trong thời gian 12 tháng để đánh giá hiệu quả chương trình",
+     "ngayHT": "2026-10-31",
      "ngayHTRaw": "",
-     "ketQua": "",
+     "ketQua": "Kết quả : 44 khách hàng tham gia ( 20 lượt xe ngoài doanh sách ). Tổng doanh thu dịch vụ: 90 triệu",
      "trongTamTuan": "",
      "ghiChuGD": "",
      "gdXuLy": "",
@@ -2087,7 +2087,7 @@
      "han": "",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "",
+     "capNhat": "CVDV chưa chủ động khơi gợi nhu cầu khách hàng",
      "tuanCN": 42,
      "vuongMac": "Nhu cầu sơn tút làm đẹp xe giảm",
      "deXuat": "Giảm 10 -20% chi phí nhân công. Đề xuất sử dụng phụ tùng OEM các trường hợp cạnh tranh về giá, chế tài",
