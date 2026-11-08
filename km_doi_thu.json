@@ -1,5 +1,5 @@
 {
-  "updated_vn": "07/11/2026 09:00",
+  "updated_vn": "08/11/2026 09:00",
   "cong_thuc": {
     "truoc_ba_pct": 10,
     "phi_5_cho": 3.4,
@@ -19,7 +19,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh. Banner Bitcar (không ngày) ghi \"Destinator ưu đãi 35 triệu\""
     },
     {
@@ -35,7 +35,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh"
     },
     {
@@ -51,7 +51,7 @@
       "han": "",
       "nguon_loai": "B",
       "nguon": "nhatrangford.com.vn",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Bài KM mới nhất của đại lý 08/09/2026 (tháng 9)"
     },
     {
@@ -83,7 +83,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Giá niêm yết theo Bitcar 599; hãng ghi 605 (lăn bánh theo giá hãng 608,4 tr)"
     },
     {
@@ -131,7 +131,7 @@
       "han": "",
       "nguon_loai": "B",
       "nguon": "hondanhatrang.com.vn",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025. Tuổi Trẻ 12/10/2026 nói City 2026 bỏ bản G (giá từ 539 tr), đại lý vẫn ghi G 499 tr"
     },
     {
@@ -179,7 +179,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Hãng, toàn quốc; Bitcar chưa đăng bài KM T11 riêng"
     },
     {
@@ -195,11 +195,15 @@
       "han": "không ghi",
       "nguon_loai": "B",
       "nguon": "kianhatrang.vn",
-      "ngay": "2026-11-07",
+      "ngay": "2026-11-08",
       "ghi_chu": "Bảng giá không ghi ngày; hai trang của đại lý ghi ưu đãi mâu thuẫn nhau, cần hỏi đại lý; chưa có bài KM tháng 11"
     }
   ],
   "thay_doi": [
+    {
+      "ngay": "2026-11-08",
+      "noi_dung": "Không có KM mới, đổi hay hết hạn"
+    },
     {
       "ngay": "2026-11-07",
       "noi_dung": "Không có KM mới, đổi hay hết hạn"
@@ -247,56 +251,56 @@
       "loai": "B",
       "link": "kianhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Toyota Nha Trang",
       "loai": "B",
       "link": "toyotanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Honda Ôtô Khánh Hòa",
       "loai": "B",
       "link": "hondanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Nha Trang Ford",
       "loai": "B",
       "link": "nhatrangford.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Mitsubishi Bitcar Khánh Hòa",
       "loai": "B",
       "link": "mitsubishibitcarkhanhhoa.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Mazda Nha Trang (Thaco)",
       "loai": "B",
       "link": "mazdanhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Mitsubishi Việt Nam (hãng)",
       "loai": "A",
       "link": "mitsubishi-motors.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     },
     {
       "ten": "Ngọc Hải – Kia Mazda Cam Ranh",
       "loai": "C",
       "link": "facebook.com/profile.php?id=61582370495626",
       "trang_thai": "mot_phan",
-      "ngay": "2026-11-07"
+      "ngay": "2026-11-08"
     }
   ],
   "tvbh": []
