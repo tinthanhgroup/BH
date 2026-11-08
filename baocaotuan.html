@@ -1011,6 +1011,17 @@ function dvDoanhThu(a){
   if(!coSo) return null;
   return {th:Math.round(tong/1e6), tu:tu, den:(moiNhat && moiNhat<den)?moiNhat:den, thang:ref.getMonth()+1, gop:cn==='LD'};
 }
+// ── Dịch vụ — "Chỉ tiêu" doanh thu TỰ ĐỘNG (08/11/2026, anh Khanh chốt): chỉ tiêu NỘI BỘ theo tháng (trước thuế, cùng
+// cách tính với Thực hiện) từ chitieu_dv.json {thang:{"yyyy-MM":{"NT"|"PY"|"LD": triệu đồng}}}, do
+// Bao cao tuan/chitieu_dv.py chép từ Dropbox "Chi tieu thang NB.xlsx". Tháng = tháng của ngày mốc. Có số thì THAY ô C14.
+const CT_JSON_URL = 'chitieu_dv.json';
+let CTX = null;
+function dvChiTieu(a){
+  if(!CTX || !CTX.thang) return null;
+  var cn=DT_CN[branchCode(a.b.chiNhanh)]; if(!cn) return null;
+  var ref=new Date(a.ref), m=CTX.thang[ref.getFullYear()+'-'+String(ref.getMonth()+1).padStart(2,'0')];
+  return (m && m[cn]) ? m[cn] : null;
+}
 // ── Bán hàng — Lead & khách hot (thêm 28/09/2026). Khối sheet "Bán hàng | Tự động | Nhập tay | Ghi chú":
 // ô Nhập tay có số → ƯU TIÊN (kèm Ghi chú nhập tay); trống → lấy từ CRM Bizfly (crm.json).
 // Lead = khách TẠO MỚI trong tuần báo cáo (T2–CN chứa ngày mốc); Khách hot = trạng thái Hot/Very Hot HIỆN TẠI,
@@ -1113,6 +1124,10 @@ function renderChiSo(a){
     // Khối có "Chỉ tiêu" + "Thực hiện" → thanh tiến độ % hoàn thành; khối khác → liệt kê số
     var get=function(re){ var r=(sec.dong||[]).filter(function(x){ return re.test(stripVN(x.nhan)); })[0]; return r?(r.giaTri||[])[0]:null; };
     var ct=get(/chi tieu|ke hoach|muc tieu/), th=get(/thuc hien|dat duoc|ket qua/);
+    // ô Chỉ tiêu trống thì converter lấy chữ "Thực hiện" làm tiêu đề khối (vd Đà Lạt) → xét cả tiêu đề
+    var laDT=/chi tieu|thuc hien/.test(stripVN(sec.tieuDe||'')) || (sec.dong||[]).some(function(x){ return /chi tieu|thuc hien/.test(stripVN(x.nhan)); });
+    var ctAuto=(sec.boPhan==='DV' && laDT) ? dvChiTieu(a) : null;
+    if(ctAuto){ ct=ctAuto; if(/chi tieu|thuc hien/.test(stripVN(sec.tieuDe||''))) sec=Object.assign({}, sec, {tieuDe:''}); }
     var h='', dt=(sec.boPhan==='DV' && ct!=null) ? dvDoanhThu(a) : null;
     if(dt){
       var dm=function(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); };
@@ -1125,7 +1140,8 @@ function renderChiSo(a){
       h+='<div class="cs-bar" title="Thực hiện '+fmtN(th)+' / Chỉ tiêu '+fmtN(ct)+'"><div class="cs-fill'+(ok?' ok':'')+'" style="width:'+Math.min(100,pct/Math.max(100,pct)*100)+'%"></div><div class="cs-mark" style="left:'+(100/Math.max(100,pct)*100)+'%"></div></div>';
       h+='<div class="cs-kv"><span>Thực hiện <b>'+fmtN(th)+'</b></span><span>Chỉ tiêu <b>'+fmtN(ct)+'</b></span><span>'+(th>=ct?'Vượt':'Còn thiếu')+' <b>'+fmtN(Math.abs(th-ct))+'</b></span></div>';
       if(dt) h+=csNote('Thực hiện tự động từ dichvu.json — Doanh thu.xlsx (thư mục Drive 13. DV - Master Data): doanh thu nội bộ: cột Giá trị (trước thuế), theo Ngày thanh toán, gồm xe ngập nước; không tính lệnh bảo hành, phụ kiện, bán phụ tùng, PDI, nội bộ, xe của Cty Tín Thanh'+
-        (dt.gop?', Đà Lạt + Bảo Lộc gộp chung (file doanh thu không tách)':'')+(DVX.dt_cap_nhat?' · file nguồn lưu lúc '+esc(DVX.dt_cap_nhat):'')+'. Chỉ tiêu nhập tay trong sheet Chi so trong yeu.');
+        (dt.gop?', Đà Lạt + Bảo Lộc gộp chung (file doanh thu không tách)':'')+(DVX.dt_cap_nhat?' · file nguồn lưu lúc '+esc(DVX.dt_cap_nhat):'')+'. '+
+        (ctAuto?'Chỉ tiêu nội bộ tháng (trước thuế) từ Dropbox, file Chi tieu thang NB.xlsx'+(dt.gop?', Đà Lạt + Bảo Lộc gộp':'')+'.':'Chỉ tiêu nhập tay trong sheet Chi so trong yeu.'));
     } else {
       h+='<div class="cs-kv">'+(sec.dong||[]).map(function(x){ return '<span>'+esc(x.nhan)+' <b>'+(x.giaTri||[]).map(fmtN).join(' · ')+'</b></span>'; }).join('')+'</div>';
     }
@@ -1502,6 +1518,8 @@ async function load(){
     .catch(function(e){ console.warn('Không tải được chamcong.json:', e); CC=null; });
   var dvP=getJ(DV_JSON_URL).then(function(j){ DVX=j; })
     .catch(function(e){ console.warn('Không tải được dichvu.json — dùng số nhập tay trong sheet:', e); DVX=null; });
+  var ctP=getJ(CT_JSON_URL).then(function(j){ CTX=j; })
+    .catch(function(e){ console.warn('Không tải được chitieu_dv.json — dùng chỉ tiêu nhập tay trong sheet:', e); CTX=null; });
   var cnP=getJ(CN_JSON_URL).then(function(j){ CNX=j; })
     .catch(function(e){ console.warn('Không tải được congno.json — bỏ qua khối Công nợ bảo hiểm:', e); CNX=null; });
   var crmP=getJ(CRM_JSON_URL).then(function(j){ CRMD=(j.records&&j.records.leads)||null; })
@@ -1510,7 +1528,7 @@ async function load(){
     var res=await fetch(BCT_JSON_URL+'?t='+Date.now());
     if(!res.ok) throw new Error('HTTP '+res.status);
     DATA=await res.json();
-    await salesP; await nsP; await ccP; await dvP; await crmP; await cnP;
+    await salesP; await nsP; await ccP; await dvP; await ctP; await crmP; await cnP;
   }catch(e){
     document.getElementById('app').innerHTML='<div class="error">Không tải được baocaotuan.json ('+esc(e.message)+').</div>';
     document.getElementById('updatedTag').textContent='Lỗi tải dữ liệu';

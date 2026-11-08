@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 05/11/2026
+Cập nhật: 08/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -36,6 +36,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 08/11/2026 | Báo cáo tuần: chỉ tiêu doanh thu DV tự lấy chỉ tiêu nội bộ từ Dropbox (`chitieu_dv.json`), thay ô nhập tay; xem `docs/module-baocaotuan.md` mục "Chỉ tiêu" |
 | 05/11/2026 | BO dự kiến xác nhận (ngày XN sau hôm nay) chuyển sang Chờ XN, bỏ khỏi BO ở mọi bảng: BO 66, Chờ XN 31; xem `docs/module-hanghoa.md` |
 | 05/11/2026 | Kế hoạch T11: NT giảm 1 Tucson XĐB Đỏ + 1 Trắng → 12 xe (NT 5 · ĐL 7); đã sửa bảng Giả định đặt hàng |
 | 04/11/2026 | Kế hoạch T11: NT, ĐL gửi đề xuất đặt hàng (14 xe: NT 7 · ĐL 7), PY không đặt; đưa vào bảng Giả định đặt hàng, xoá các phương án T10; xem `docs/module-hanghoa.md` |
