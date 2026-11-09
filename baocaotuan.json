@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-09T12:37:03+07:00",
+ "updated_at": "2026-11-09T14:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1298,7 +1298,7 @@
        "stt": 2,
        "nhan": "Lợi nhuận gộp",
        "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
-       "traLoi": "Rủi ro: Creta vẫn phải giảm sâu để cạnh tranh; xe giải kho bán ở mức LN 0% sẽ kéo LN trung bình tháng xuống."
+       "traLoi": "Rủi ro: Creta vẫn phải giảm sâu để cạnh tranh; các đối thủ gia hạn CTKM giảm 100% LPTB đến hết 31/12/2026"
       },
       {
        "stt": 3,
@@ -1316,13 +1316,13 @@
        "stt": 5,
        "nhan": "Đối thủ",
        "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
-       "traLoi": "Đáng lo hơn tuần trước: Mitsubishi hỗ trợ 100% LPTB (Xforce, Xpander, Destinator) kéo dài đến 31/12; Toyota Yaris Cross giảm 50–74 tr; Mazda 100% LPTB (Mazda 2, CX-5). Ảnh hưởng trực tiếp Creta, Stargazer, Tucson. Honda, Ford chưa có KM."
+       "traLoi": "Đáng lo hơn tuần trước: Mitsubishi hỗ trợ 100% LPTB (Xforce, Xpander, Destinator) kéo dài đến 31/12; Toyota Yaris Cross giảm 50–74 tr; Mazda 100% LPTB (Mazda 2, CX-5). Ảnh hưởng trực tiếp Creta, Stargazer, Tucson. Hãng đối thủ Honda, Ford chưa có KM mới."
       },
       {
        "stt": 6,
        "nhan": "Nguồn xe & tồn kho",
        "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
-       "traLoi": "Vẫn THỪA: tồn kho 2,77 tháng (tuần trước 3,02 – giảm nhưng còn nguy cơ thừa), 24 xe tồn trên 60 ngày → đã lập chương trình giải kho 8 xe giá hòa vốn. Palisade HEV: đã điều chỉnh giảm đơn hàng 6 xe (34 → 28); 24 xe đang nợ khách (21 xe Palisade) chưa có đơn/số khung."
+       "traLoi": "Vẫn THỪA: tồn kho 24 xe tồn trên 60 ngày → đã lập chương trình giải kho 8 xe giá hòa vốn. Tổng 24 xe đang nợ khách (21 xe Palisade) chưa có LXX."
       },
       {
        "stt": 7,
@@ -1334,7 +1334,7 @@
        "stt": 8,
        "nhan": "Đội ngũ TVBH",
        "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
-       "traLoi": "Vũ 2 HĐ dẫn đầu; Vinh, Hoàng, My (PR) 1 HĐ; Cẩm Giang (TVBH mới) có HĐ đầu tiên. Tài, Tỵ, Tuấn, Nhân chưa có HĐ – thấp so với năng lực. Phan Rang 3/4 TVBH chưa có HĐ. 3 TVBH mới chấm KPIS tuần 45: Giang 61% (B), Hùng 45% và Quốc Duy 24,5% (C)."
+       "traLoi": "Vũ , Giang 2 HĐ dẫn đầu; Vinh, Hoàng, My (PR) ; TVBH Giang (TVBH mới) có 02 HĐ trong tháng 11 , hoạt động bán hàng tốt . Tiếp tục kèm cặp và bám sát KPIS tháng 11 . Tài, Tỵ, Tuấn, Nhân chưa có HĐ – thấp so với năng lực. Phan Rang 3/4 TVBH chưa có HĐ. 3 TVBH mới chấm KPIS tuần 45: Giang 61% (B), Hùng 45% và Quốc Duy 24,5% (C)."
       },
       {
        "stt": 9,
@@ -1346,7 +1346,7 @@
        "stt": 10,
        "nhan": "Dự báo & cần hỗ trợ",
        "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; nếu báo bán hết 8 xe đã phân/chờ tiền cũng mới 9 xe → khó đạt nếu không tăng lên 7–8 HĐ/tuần. Nhóm Tài dự báo 5 khách chốt 11–13/11 (Palisade 2, Creta 2, Venue). Cần hỗ trợ: duyệt chương trình giải kho; chính sách hỗ trợ LPTB cho Creta/Stargazer để cạnh tranh; MKT đổi nội dung QC theo CTKM T11; HTV giao Palisade HEV đúng hạn."
+       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; nếu báo bán hết 8 xe đã phân/chờ tiền cũng mới 9 xe → khó đạt nếu không tăng lên 7–8 HĐ/tuần. Nhóm Tài dự báo 5 khách chốt 11–13/11 (Palisade 2, Creta 2, Venue). Cần hỗ trợ: duyệt chương trình giải kho; chính sách hỗ trợ LPTB cho Creta/Stargazer để cạnh tranh; MKT đổi nội dung QC theo CTKM T11."
       }
      ]
     },
@@ -2484,7 +2484,7 @@
      "keHoach": "Gửi Boadcast Zalo OA đến từng khách hàng: Thông điệp truyền thông về việc chuyển đổi dầu động cơ với chi phí tiết kiệm hơn",
      "ngayHT": "2026-10-24",
      "ngayHTRaw": "",
-     "ketQua": "",
+     "ketQua": "Chưa hoàn thành",
      "trongTamTuan": "",
      "ghiChuGD": "",
      "gdXuLy": "",
@@ -2517,7 +2517,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2545,7 +2545,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2573,7 +2573,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "1. Vận hành thường xuyên",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2601,7 +2601,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "4. Cải tiến",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
@@ -2629,7 +2629,7 @@
      "ghiChuGD": "",
      "gdXuLy": "",
      "duyetTT": "",
-     "loaiHD": "",
+     "loaiHD": "4. Cải tiến",
      "maTCT": "",
      "nguoiCapNhat": ""
     },
