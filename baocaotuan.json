@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-09T10:37:04+07:00",
+ "updated_at": "2026-11-09T11:37:04+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -1283,70 +1283,70 @@
    "nhanDinhBP": [
     {
      "nam": 2026,
-     "tuan": 44,
-     "ngay": "2026-10-31",
-     "boPhan": "BH",
-     "nguoiViet": "Nguyễn Ngọc Duy – Giám đốc bán hàng",
+     "tuan": 45,
+     "ngay": "2026-11-07",
+     "boPhan": "VP",
+     "nguoiViet": "",
      "items": [
       {
        "stt": 1,
-       "nhan": "Hợp đồng",
-       "cauHoi": "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
-       "traLoi": "Tuần cuối tháng giữ nhịp như tuần trước (Nha Trang 4, Phan Rang 2) nhưng không bứt lên được. Cả tháng 10 ký 25 HĐ, giảm 9 HĐ so với tháng 9; Nha Trang giảm mạnh, Phan Rang tăng. Lý do: khách tiềm năng hụt đầu tháng do cắt quảng cáo tuần 41–42, Creta/Tucson thua giá đối thủ."
+       "nhan": "Biến động nhân sự",
+       "cauHoi": "Tuyển mới, nghỉ việc, dấu hiệu nghỉ, vị trí đang thiếu và ảnh hưởng?",
+       "traLoi": "Tháng 10: tuyển mới 1 MKT, 1 KTV Sơn; Nghỉ việc 1 KTV (do chăm ba bệnh), đang thiếu 1 bảo vệ ca 24h làm sắp xếp lịch làm việc bị ảnh hưởng khi bảo vệ nghỉ phép"
       },
       {
        "stt": 2,
-       "nhan": "Lợi nhuận gộp",
-       "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
-       "traLoi": "LN trung bình : 1,8%. Rủi ro giữ nguyên: Creta phải giảm sâu để cạnh tranh nên LN mỏng."
+       "nhan": "Tuyển dụng",
+       "cauHoi": "Đang tuyển vị trí nào, có bao nhiêu ứng viên, khó ở đâu?",
+       "traLoi": "Đang tuyển dụng bảo vệ, tháng 10 chưa có ứng viên  do mức lương thiếu cạnh tranh và tin đăng tuyển kéo dài (2 tháng) lượng quan tâm thông tin tuyển dụng không còn"
       },
       {
        "stt": 3,
-       "nhan": "Mất deal",
-       "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
-       "traLoi": "Lý do chính vẫn là giá (Xforce, CX-5 giảm sâu cuối năm). Phần lớn khách Nhóm Tài dự báo chốt 25–31/10 chưa ký trong tháng."
+       "nhan": "Tinh thần – kỷ luật",
+       "cauHoi": "Có mâu thuẫn, vi phạm, bất thường về chấm công không?",
+       "traLoi": "Nhân sự đi trễ phát sinh trường hợp không sinh phép"
       },
       {
        "stt": 4,
-       "nhan": "KH tiềm năng",
-       "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
-       "traLoi": "Ổn định ở mức cao (tuần 44 khoảng 140 khách nhắn tin, bằng tuần 43, chi phí/khách tốt). Điểm yếu lớn: chăm sóc trên CRM rất kém – rà ngày 02/11 chỉ 1/72 khách tháng 10 đạt chuẩn, 88 khách quá hạn xử lý; qua cuối tuần chỉ 1 khách được xử lý."
+       "nhan": "Công nợ – dòng tiền",
+       "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 06/11/2026: 497,802,721đ (trong đó quá hạn trên 03 tháng là 42,366,067đ). Công nợ quá hạn KD: 479.100.000  gồm Sở XD KH 34.100.000đ + Nguyễn Thúy Hà 329,000,000đ + Trần Thị Hoa 116,000,000đ"
       },
       {
        "stt": 5,
-       "nhan": "Đối thủ",
-       "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
-       "traLoi": "Không đổi so với tuần trước: các hãng đua \"hỗ trợ 100% lệ phí trước bạ + bảo hiểm\" cuối năm, kéo khách Creta, Tucson, Stargazer."
+       "nhan": "Chứng từ – hồ sơ",
+       "cauHoi": "Có chậm xuất HĐ, giải ngân, quyết toán với HTV không?",
+       "traLoi": "Không"
       },
       {
        "stt": 6,
-       "nhan": "Nguồn xe & tồn kho",
-       "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
-       "traLoi": "Đáng lo theo hướng THỪA và đang tăng: tồn kho 3,02 tháng (tuần trước ~2,9). HTV bắt đầu yêu cầu gửi dự báo đặt hàng – bán lẻ – tồn kho 3 tháng từ 03/11 → cần đặt thận trọng. Palisade LX3: HTV ra thông báo báo bán lẻ ngày 31/10, 24 xe đang nợ khách."
+       "nhan": "CSVC – an toàn",
+       "cauHoi": "Hư hỏng, PCCC, an ninh, chuẩn bị mùa mưa bão?",
+       "traLoi": "Hư hỏng bóng đèn, thạch cao và hiện tượng dột tại phòng kế toán (đang tim nguyên nhân)"
       },
       {
        "stt": 7,
-       "nhan": "Hồ sơ – giao xe",
-       "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
-       "traLoi": ""
+       "nhan": "Tuân thủ",
+       "cauHoi": "Có đoàn kiểm tra, vấn đề thuế, môi trường, pháp lý phát sinh không?",
+       "traLoi": "Diễn tập PCCC tại công ty ngày 10/10/2026"
       },
       {
        "stt": 8,
-       "nhan": "Đội ngũ TVBH",
-       "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
-       "traLoi": "Hoàng dẫn đầu tháng (4 HĐ); Vinh, Vũ, My 3 HĐ. Tài, Tỵ, Tuấn chỉ 2 HĐ – thấp so với năng lực. Giang, Hùng, Quốc Duy chưa có HĐ tháng 10. Tuân thủ CRM kém đồng loạt ở cả 10 TVBH. Phan Rang có TVBH Chính nghỉ , cắt giảm biên chế theo chủ trương công ty."
+       "nhan": "Chi phí",
+       "cauHoi": "Có chi phí vượt kế hoạch hoặc bất thường không?",
+       "traLoi": "Không"
       },
       {
        "stt": 9,
-       "nhan": "MKT – sự kiện",
-       "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
-       "traLoi": "Quảng cáo tuần 44 chi khoảng 7,9 tr – cao nhất tháng, hiệu quả tốt (Flash Sale, CDR Creta). \"Lái thử Ninh Thuận\" tốn 840 nghìn chỉ 1 khách . Cả tháng dùng 60% ngân sách. Fanpage Nha Trang 0 bài thương hiệu từ tuần 40."
+       "nhan": "Phối hợp",
+       "cauHoi": "Yêu cầu nào của các bộ phận còn tồn đọng, phối hợp vướng ở đâu?",
+       "traLoi": ""
       },
       {
        "stt": 10,
-       "nhan": "Dự báo & cần hỗ trợ",
-       "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
-       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; với nhịp hiện tại ~4 HĐ/tuần sẽ không đạt → cần 6–7 HĐ/tuần. Cần thúc đẩy hoạt động MKT từ đầu tháng 11"
+       "nhan": "Tuần tới & cần hỗ trợ",
+       "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
+       "traLoi": ""
       }
      ]
     },
@@ -1416,6 +1416,75 @@
        "nhan": "Tuần tới & cần hỗ trợ",
        "cauHoi": "Việc ưu tiên, rủi ro, cần hỗ trợ gì?",
        "traLoi": ""
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 44,
+     "ngay": "2026-10-31",
+     "boPhan": "BH",
+     "nguoiViet": "Nguyễn Ngọc Duy – Giám đốc bán hàng",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Hợp đồng",
+       "cauHoi": "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
+       "traLoi": "Tuần cuối tháng giữ nhịp như tuần trước (Nha Trang 4, Phan Rang 2) nhưng không bứt lên được. Cả tháng 10 ký 25 HĐ, giảm 9 HĐ so với tháng 9; Nha Trang giảm mạnh, Phan Rang tăng. Lý do: khách tiềm năng hụt đầu tháng do cắt quảng cáo tuần 41–42, Creta/Tucson thua giá đối thủ."
+      },
+      {
+       "stt": 2,
+       "nhan": "Lợi nhuận gộp",
+       "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
+       "traLoi": "LN trung bình : 1,8%. Rủi ro giữ nguyên: Creta phải giảm sâu để cạnh tranh nên LN mỏng."
+      },
+      {
+       "stt": 3,
+       "nhan": "Mất deal",
+       "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
+       "traLoi": "Lý do chính vẫn là giá (Xforce, CX-5 giảm sâu cuối năm). Phần lớn khách Nhóm Tài dự báo chốt 25–31/10 chưa ký trong tháng."
+      },
+      {
+       "stt": 4,
+       "nhan": "KH tiềm năng",
+       "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
+       "traLoi": "Ổn định ở mức cao (tuần 44 khoảng 140 khách nhắn tin, bằng tuần 43, chi phí/khách tốt). Điểm yếu lớn: chăm sóc trên CRM rất kém – rà ngày 02/11 chỉ 1/72 khách tháng 10 đạt chuẩn, 88 khách quá hạn xử lý; qua cuối tuần chỉ 1 khách được xử lý."
+      },
+      {
+       "stt": 5,
+       "nhan": "Đối thủ",
+       "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
+       "traLoi": "Không đổi so với tuần trước: các hãng đua \"hỗ trợ 100% lệ phí trước bạ + bảo hiểm\" cuối năm, kéo khách Creta, Tucson, Stargazer."
+      },
+      {
+       "stt": 6,
+       "nhan": "Nguồn xe & tồn kho",
+       "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
+       "traLoi": "Đáng lo theo hướng THỪA và đang tăng: tồn kho 3,02 tháng (tuần trước ~2,9). HTV bắt đầu yêu cầu gửi dự báo đặt hàng – bán lẻ – tồn kho 3 tháng từ 03/11 → cần đặt thận trọng. Palisade LX3: HTV ra thông báo báo bán lẻ ngày 31/10, 24 xe đang nợ khách."
+      },
+      {
+       "stt": 7,
+       "nhan": "Hồ sơ – giao xe",
+       "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
+       "traLoi": ""
+      },
+      {
+       "stt": 8,
+       "nhan": "Đội ngũ TVBH",
+       "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
+       "traLoi": "Hoàng dẫn đầu tháng (4 HĐ); Vinh, Vũ, My 3 HĐ. Tài, Tỵ, Tuấn chỉ 2 HĐ – thấp so với năng lực. Giang, Hùng, Quốc Duy chưa có HĐ tháng 10. Tuân thủ CRM kém đồng loạt ở cả 10 TVBH. Phan Rang có TVBH Chính nghỉ , cắt giảm biên chế theo chủ trương công ty."
+      },
+      {
+       "stt": 9,
+       "nhan": "MKT – sự kiện",
+       "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
+       "traLoi": "Quảng cáo tuần 44 chi khoảng 7,9 tr – cao nhất tháng, hiệu quả tốt (Flash Sale, CDR Creta). \"Lái thử Ninh Thuận\" tốn 840 nghìn chỉ 1 khách . Cả tháng dùng 60% ngân sách. Fanpage Nha Trang 0 bài thương hiệu từ tuần 40."
+      },
+      {
+       "stt": 10,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": "Tháng 11 chỉ tiêu 42 xe, mốc 60% = 26 xe; với nhịp hiện tại ~4 HĐ/tuần sẽ không đạt → cần 6–7 HĐ/tuần. Cần thúc đẩy hoạt động MKT từ đầu tháng 11"
       }
      ]
     },
