@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 08/11/2026
+Cập nhật: 09/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -21,6 +21,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] KCK: dán `TinThanh_KCK_Sync.gs` (bản 02/11, thêm chặn ghi đè lùi) vào script.google.com trước lần đồng bộ kế tiếp, nếu không `kck.json` bị kéo về bản HTV 20/10
 - [ ] Sửa hàm `uploadKCK()` (nút Admin): đang nhận diện "xe sắp hết" theo năm SX, đúng ra phải theo chữ đỏ ở ô "Năm SX"
 - [ ] Báo cáo tuần: xoá 2 bản sao lưu "… sao luu truoc tach VP …" (NT, PY) trên Drive khi chạy ổn vài ngày
+- [ ] Báo cáo tuần – quyền file: chuyển chủ sở hữu NT, PY (đang là khanhpt235) sang tinthanhgroup123 (làm tay, tinthanhgroup123 bấm chấp nhận); thêm khanhpt235 vào file ĐL; sau đó cấp quyền sửa theo email từng người (cần danh sách email NT, PY) rồi khoá link về chỉ xem
 - [ ] Báo cáo tuần Đà Lạt: đã tạo file (`1-_MDVNi…`, 31/10) và thêm vào `SHEET_IDS`; còn dán script → ▶ `setupBaoCaoTuanTriggers` → ▶ `syncBaoCaoTuan`, chia sẻ file cho ĐL
 - [ ] Kiểm tra admin chạy .bat có dòng "Da chep Master Data len Google Drive" và `dichvu.json` cập nhật ngày mới
 - [ ] Kiểm tra log `apDungLichMoi`: câu chữ hạn chót trong Hướng dẫn / sheet 6 / sheet 7 đã đổi hết
@@ -36,6 +37,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 09/11/2026 | Báo cáo tuần NT: link bị hạ về chỉ xem (chi nhánh nhập ẩn danh qua link nên không nhập được T45) → mở lại "ai có link đều sửa được"; PY vẫn mở sửa |
 | 08/11/2026 | Báo cáo tuần: chỉ tiêu doanh thu DV tự lấy chỉ tiêu nội bộ từ Dropbox (`chitieu_dv.json`), thay ô nhập tay; xem `docs/module-baocaotuan.md` mục "Chỉ tiêu" |
 | 05/11/2026 | BO dự kiến xác nhận (ngày XN sau hôm nay) chuyển sang Chờ XN, bỏ khỏi BO ở mọi bảng: BO 66, Chờ XN 31; xem `docs/module-hanghoa.md` |
 | 05/11/2026 | Kế hoạch T11: NT giảm 1 Tucson XĐB Đỏ + 1 Trắng → 12 xe (NT 5 · ĐL 7); đã sửa bảng Giả định đặt hàng |
