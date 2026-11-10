@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-09T15:37:03+07:00",
+ "updated_at": "2026-11-10T11:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-09",
+   "ngayDuLieu": "2026-11-10",
    "canhBao": [],
    "viec": [
     {
@@ -779,10 +779,10 @@
      "linhVuc": "",
      "noiDung": "Gửi bổ sung tin nhắn nhắc BD (số lượng Fail còn lại)",
      "phuTrach": "Liễu",
-     "han": "2026-11-15",
+     "han": "2026-11-11",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "SL gửi thất bại: khoảng 48% ~ 500 tin\nGửi thử 65 KH công ty -> thành công 25% -> Nguyên nhân lỗi vẫn như cũ, chưa khắc phục được\nLỗi cũ: Ngày giờ sai định dạng, KH không sử dụng zalo, số Đt sai định dạng",
+     "capNhat": "SL gửi thất bại lần 1: khoảng 48% ~ 500 tin\nPhương án: Xử lý lỗi sai DATETIME nên đã gửi gần như thành công số còn lại (~95%).\nTổng hợp SL: 1.033 tin nhắn\nLỗi còn lại (KH không dùng zalo): 64 -> Dự kiến gọi/sms BRN",
      "tuanCN": null,
      "vuongMac": "",
      "deXuat": "",
@@ -840,11 +840,11 @@
      "han": "2026-12-31",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "Đã hoàn thiện tờ khai 2022, đang rà kiểm tra lại lương TNCN 2022, đã kiểm tra xong ngân hàng 2023 2024, đang tiếp tục ra kiểm tra lại mua vào bán ra 2023 2024 để chạy lại tờ khai và kiểm tra tài khoản 331 131 (ttrung chủ đạo phần này) => Tuần 44: đã hoàn thiện TK 2023 đến T11,2023, đã kiểm xong tài khoản 331 năm 2023, bán ra 2024, 01 phần mua vào 2024",
+     "capNhat": "Đã hoàn thiện tờ khai 2022, đang rà kiểm tra lại lương TNCN 2022, đã kiểm tra xong ngân hàng 2022 2023, đang tiếp tục ra kiểm tra lại mua vào bán ra 2023 để chạy lại tờ khai và kiểm tra tài khoản 331 131 (ttrung chủ đạo phần này) => Tuần 44: đã hoàn thiện TK 2023 , đã kiểm xong tài khoản 331 năm 2023, bán ra 2024, 01 phần mua vào 2024",
      "tuanCN": 43,
      "vuongMac": "",
      "deXuat": "có nhận lệnh tăng ca CN từ KTT để chạy kịp lại hết các sổ thuế trước khi kết thúc năm và PKT đã tiến hành tăng ca",
-     "keHoach": "Dự kiến tuần 44 chạy xong tờ khai 2024, kiểm tra tài khoản 131 năm 2023 và đi tiếp phần còn lại 2024, làm lương + TNCN năm 2023",
+     "keHoach": "Dự kiến tuần 45 chạy xong tờ khai 2024, kiểm tra tài khoản 131 năm 2023 và đi tiếp phần còn lại 2024, làm lương + TNCN năm 2023",
      "ngayHT": "",
      "ngayHTRaw": "",
      "ketQua": "",
@@ -1603,7 +1603,7 @@
        "stt": 4,
        "nhan": "Công nợ – dòng tiền",
        "cauHoi": "Công nợ quá hạn (khách, bảo hiểm, HTV), khoản thu chi lớn sắp tới?",
-       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 06/11/2026: 497,802,721đ (trong đó quá hạn trên 03 tháng là 42,366,067đ). Công nợ quá hạn KD: 479.100.000  gồm Sở XD KH 34.100.000đ + Nguyễn Thúy Hà 329,000,000đ + Trần Thị Hoa 116,000,000đ"
+       "traLoi": "Tổng công  nợ bảo hiểm quá hạn đến 06/11/2026: 497,802,721đ (trong đó quá hạn trên 03 tháng là 42,366,067đ). Công nợ quá hạn KD: 479.100.000  gồm Sở XD KH 34.100.000đ + Nguyễn Thúy Hà 329,000,000đ + Trần Thị Hoa 116,000,000đ .   Dự kiến chi lương T10,2026 vào tuần 45: khoảng 800.000.000đ"
       },
       {
        "stt": 5,
@@ -2126,7 +2126,7 @@
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-09",
+   "ngayDuLieu": "2026-11-10",
    "canhBao": [],
    "viec": [
     {
@@ -4888,7 +4888,7 @@
    "chiNhanh": "Đà Lạt",
    "file": "Bao cao tuan - Da Lat",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-09",
+   "ngayDuLieu": "2026-11-10",
    "canhBao": [],
    "viec": [],
    "tct": [],
