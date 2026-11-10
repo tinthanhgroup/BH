@@ -10,7 +10,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 
 ## Việc tiếp theo
 - [x] Kế hoạch T11: NT 5 · ĐL 7 đã đặt (07/11)
-- [ ] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2, đủ phần tối thiểu để HTV trả Palisade; phần còn lại của CV157 đã email xin hoãn): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; PY chưa gửi file đề xuất
+- [ ] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2, đủ phần tối thiểu để HTV trả Palisade; phần còn lại của CV157 email xin gia hạn đến 20/11, nháp 10/11 chờ gửi): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; PY chưa gửi file đề xuất
 - [ ] Tucson Hybrid (CV 139/2026): 3 chi nhánh đặt mỗi nơi 1 xe Trắng; theo dõi HTV xác nhận, cọc 15% trong 5 ngày làm việc, bảo lãnh/LC 85% trong 7 ngày làm việc
 - [x] Máy phụ: tạo token GitHub `.projecta/github_bh.json` (02/11, kiểm tra token đọc được repo)
 - [ ] Đã đăng ký tác vụ `ProjectA - Loi nhuan BH` (làm mới `loinhuan.json` 6h hằng ngày), kiểm tra log `dashboard/log/loinhuan_len_bh.log` sáng 03/11
@@ -39,7 +39,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 | Ngày | Sự kiện |
 |---|---|
 | 10/11/2026 | Đặt bổ sung T11 theo file chi nhánh (`2. Dat hang/T11 BS/`): NT 9, ĐL 7, PY 2 (Creta N Line Đỏ, Tucson XĐB Đỏ); thay bảng Giả định đặt hàng |
-| 10/11/2026 | Palisade Hybrid: chị Đào giữ nguyên đơn (thừa xe có thể bán ngang ra Bắc, theo anh Sơn HTV), bỏ CV xin giảm; HTV yêu cầu đặt đủ tồn tối thiểu CV157 (49 xe) mới trả Palisade, đã email xin hoãn phần còn lại |
+| 10/11/2026 | Palisade Hybrid: chị Đào giữ nguyên đơn (thừa xe có thể bán ngang ra Bắc, theo anh Sơn HTV), bỏ CV xin giảm; HTV yêu cầu đặt đủ tồn tối thiểu CV157 (49 xe) mới trả Palisade; dự kiến được trả 18–19 xe (70% Cali 7 chỗ, 30% Cali 8 chỗ, anh Nam báo) |
 | 09/11/2026 | Tab Hàng hóa: ô KPI BO và Tổng hiện số LX3 trong ngoặc như ô Xe nợ (BO 105 gồm 61 LX3) |
 | 09/11/2026 | Báo cáo tuần NT: link bị hạ về chỉ xem (chi nhánh nhập ẩn danh qua link nên không nhập được T45) → mở lại "ai có link đều sửa được"; PY vẫn mở sửa |
 | 08/11/2026 | Báo cáo tuần: chỉ tiêu doanh thu DV tự lấy chỉ tiêu nội bộ từ Dropbox (`chitieu_dv.json`), thay ô nhập tay; xem `docs/module-baocaotuan.md` mục "Chỉ tiêu" |
