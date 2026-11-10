@@ -1883,8 +1883,8 @@ function _renderDatHangKeHoach(){
   // Bảng 1 "Tốc độ bán hàng" + bảng 2 = đợt đặt hàng đang xét (DAT_HANG_ORDERS). Các phương
   // án cũ của đợt T10 đã xoá 04/11/2026; giãn cách margin-top 40px giữa các bảng.
   return renderTocDoBanHang()
-    +'<details open style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">2. Giả định đặt hàng — Kế hoạch T11/2026 (đề xuất của chi nhánh, 05/11/2026)</summary>'
-    +'<div style="font-size:12px;color:#4b5563;line-height:1.6;margin:6px 0 8px">Đề xuất của chi nhánh: <b>12 xe: NT 5 · ĐL 7</b>; Phú Yên không đặt (còn nhiều hàng). Số chi nhánh tự đề xuất, chưa điều chỉnh theo quy tắc. Bấm "Hiện cột phụ" để xem Tồn / BO / LXX.</div>'
+    +'<details open style="margin-top:40px"><summary class="sec-title" style="cursor:pointer;border-bottom:none">2. Giả định đặt hàng — Bổ sung T11/2026 (đề xuất của chi nhánh, 10/11/2026)</summary>'
+    +'<div style="font-size:12px;color:#4b5563;line-height:1.6;margin:6px 0 8px">Đặt bổ sung để HTV trả Palisade (phần còn lại của tồn kho tối thiểu CV157 đã xin hoãn): <b>18 xe: NT 9 · ĐL 7 · PY 2</b>. Đợt kế hoạch T11 (NT 5 · ĐL 7) đã đặt 07/11. Bấm "Hiện cột phụ" để xem Tồn / BO / LXX.</div>'
     +'<div id="dh-tbl-main">'+_datHangTableHtml(DAT_HANG_ORDERS,'')+'</div>'
     +'</details>'
     // Khoảng trống cuối trang để có thể cuộn tiếp, đưa bảng lên giữa màn hình xem cho
