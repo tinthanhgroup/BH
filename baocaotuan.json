@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-10T11:37:03+07:00",
+ "updated_at": "2026-11-10T15:37:04+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -779,10 +779,10 @@
      "linhVuc": "",
      "noiDung": "Gửi bổ sung tin nhắn nhắc BD (số lượng Fail còn lại)",
      "phuTrach": "Liễu",
-     "han": "2026-11-11",
+     "han": "2026-11-10",
      "hanRaw": "",
-     "trangThai": "Đang làm",
-     "capNhat": "SL gửi thất bại lần 1: khoảng 48% ~ 500 tin\nPhương án: Xử lý lỗi sai DATETIME nên đã gửi gần như thành công số còn lại (~95%).\nTổng hợp SL: 1.033 tin nhắn\nLỗi còn lại (KH không dùng zalo): 64 -> Dự kiến gọi/sms BRN",
+     "trangThai": "Hoàn thành",
+     "capNhat": "SL gửi thất bại lần 1: khoảng 48% ~ 500 tin\nPhương án: Xử lý lỗi sai DATETIME nên đã gửi gần như thành công số còn lại (~95%).\nTổng hợp SL: 1.033 tin nhắn\nLỗi còn lại (KH không dùng zalo): 64 -> Đã gửi sms BRN",
      "tuanCN": null,
      "vuongMac": "",
      "deXuat": "",
