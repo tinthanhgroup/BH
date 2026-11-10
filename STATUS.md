@@ -38,7 +38,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
-| 10/11/2026 | Đặt bổ sung T11 theo file chi nhánh (`2. Dat hang/T11 BS/`): NT 9, ĐL 7, PY 2 (i10 AT Trắng, Tucson XĐB Đỏ); thay bảng Giả định đặt hàng |
+| 10/11/2026 | Đặt bổ sung T11 theo file chi nhánh (`2. Dat hang/T11 BS/`): NT 9, ĐL 7, PY 2 (Creta N Line Đỏ, Tucson XĐB Đỏ); thay bảng Giả định đặt hàng |
 | 10/11/2026 | Palisade Hybrid: chị Đào giữ nguyên đơn (thừa xe có thể bán ngang ra Bắc, theo anh Sơn HTV), bỏ CV xin giảm; HTV yêu cầu đặt đủ tồn tối thiểu CV157 (49 xe) mới trả Palisade, đã email xin hoãn phần còn lại |
 | 09/11/2026 | Tab Hàng hóa: ô KPI BO và Tổng hiện số LX3 trong ngoặc như ô Xe nợ (BO 105 gồm 61 LX3) |
 | 09/11/2026 | Báo cáo tuần NT: link bị hạ về chỉ xem (chi nhánh nhập ẩn danh qua link nên không nhập được T45) → mở lại "ai có link đều sửa được"; PY vẫn mở sửa |
