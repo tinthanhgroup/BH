@@ -1,5 +1,5 @@
 {
- "updated_at": "2026-11-11T12:37:03+07:00",
+ "updated_at": "2026-11-11T14:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
@@ -4961,14 +4961,14 @@
      "han": "2026-11-04",
      "hanRaw": "",
      "trangThai": "Hoàn thành",
-     "capNhat": "Số lượng tham dự: 30 KH\nSố lượng tin gửi: 2553 KH\n- Số lượng không thành công: 421, trong đó: \n+ KH không dùng ZaloL 417 KH\n+ Thiết bị KH không tương thích version Zalo: 02 KH \n+ KH từ chối tin nhắn người lạ: 02 KH\n==> 421 KH trên được chuyển đổi cho chương trình kế tiếp không gửi tin nhắn thêm (nguồn đồng ý: Thông tin từ GDDV - 04/11/2026)",
+     "capNhat": "Số lượng tham dự: 30 KH\nSố lượng tin gửi: 2553 KH",
      "tuanCN": 45,
      "vuongMac": "",
      "deXuat": "GDDV thông tin: Chương trình - Thời gian - Địa chỉ\nMKT: Hỗ trợ đăng bài",
      "keHoach": "",
      "ngayHT": "",
      "ngayHTRaw": "",
-     "ketQua": "",
+     "ketQua": "- Số lượng không thành công: 421, trong đó: \n+ KH không dùng ZaloL 417 KH\n+ Thiết bị KH không tương thích version Zalo: 02 KH \n+ KH từ chối tin nhắn người lạ: 02 KH\n==> 421 KH trên được chuyển đổi cho chương trình kế tiếp không gửi tin nhắn thêm (nguồn đồng ý: Thông tin từ GDDV - 04/11/2026)",
      "trongTamTuan": "",
      "ghiChuGD": "",
      "gdXuLy": "",
