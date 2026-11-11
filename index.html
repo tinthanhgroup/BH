@@ -920,9 +920,17 @@ function _khopLxxPhanKhach(records){
   allData.debtKhop=allData.debt.filter(function(d){return khungKhopNo[nk(d.soKhung)];});
   allData.debt=allData.debt.filter(function(d){return !khungKhopNo[nk(d.soKhung)];});
 }
+// Xe LXX đã khớp khách DS nợ (11/11/2026, người dùng yêu cầu): vẫn tính vào ô KPI LXX
+// (ghi "(N đã phân xe)" bên dưới) và cộng vào ô Đã phân xe. Chỉ ở ô KPI và danh sách khi
+// bấm ô; allData.lxx (bảng Model, Tổng − Nợ, đặt hàng) giữ nguyên = LXX chưa phân khách.
+function _lxxDaPhan(){
+  return (allData.lxxPhan||[]).filter(function(r){return r.khopVoi==='DS nợ';}).map(function(r){
+    return Object.assign({},r,{khach:r.khachKhop,tvbh:r.tvbhKhop,daly:r.kho,isLxxPhan:true});
+  });
+}
 // Ghi chú dưới danh sách LXX/Nợ: các xe đã tách ra theo _khopLxxPhanKhach() — để số
 // không "biến mất" mà không ai biết. Lọc theo chi nhánh đang chọn giống danh sách chính.
-function _lxxPhanNoteHtml(){
+function _lxxPhanNoteHtml(anKhopNo){
   // Tách 2 nhóm (05/10/2026, người dùng yêu cầu — trước gộp chung "đã phân khách" gây
   // hiểu nhầm cho xe đã về kho chưa có khách): (1) khớp khách DS nợ; (2) đã có ở DATA
   // TỔNG (về kho/đã bán) — dòng ĐƠN HÀNG chưa dọn. Chỉ đổi chữ hiển thị, không đổi cách đếm.
@@ -943,7 +951,7 @@ function _lxxPhanNoteHtml(){
   var no=rows.filter(function(r){return r.khopVoi==='DS nợ';});
   var dt=rows.filter(function(r){return r.khopVoi!=='DS nợ';});
   return '<div style="margin-top:4px">'
-    +block(no,'🔗 <b>'+no.length+'</b> xe LXX đã khớp khách DS nợ (không tính vào LXX, khách đó cũng không tính vào Nợ)')
+    +(anKhopNo?'':block(no,'🔗 <b>'+no.length+'</b> xe LXX đã khớp khách DS nợ (tính vào LXX và Đã phân xe, khách đó không tính vào Nợ)'))
     +block(dt,'📥 <b>'+dt.length+'</b> xe LXX đã về kho / đã bán — dòng ĐƠN HÀNG chưa dọn (không tính vào LXX để khỏi đếm 2 lần)')
     +'</div>';
 }
@@ -2655,6 +2663,15 @@ function prepareBH(raw,fileDate){
     const key=modelVal+'|'+mauVal;
     tonKhoTrongMap[key]=(tonKhoTrongMap[key]||0)+1;
   }
+  // Khách DS nợ đã có xe LXX khớp số khung (11/11/2026, người dùng yêu cầu): tính vào
+  // "Đã phân xe" (dmsKhop) thay vì Chờ đóng tiền / Chưa có xe — cùng cách khớp _khopLxxPhanKhach()
+  const cSoKhung=col(keys,['so khung','sokhung']);
+  const khungLxx={};
+  if(cSoKhung) for(const r of raw){
+    const ttVal=cTrangThai?String(r[cTrangThai]||'').trim():'';
+    const k=String(r[cSoKhung]||'').trim().toUpperCase();
+    if(ttVal==='LXX'&&k) khungLxx[k]=true;
+  }
   const daKy={NT:0,DL:0,PY:0};
   const daKyChoTien={NT:0,DL:0,PY:0};
   const daKyChuaXe={NT:0,DL:0,PY:0};
@@ -2666,6 +2683,11 @@ function prepareBH(raw,fileDate){
     const modelVal=cModel?normModelBH(modelRaw):'';
     const namSXVal=r['NĂM SX']?String(r['NĂM SX']).trim():'';
     if(modelVal==='Palisade'&&namSXVal==='2026') continue;
+    if(cSoKhung&&khungLxx[String(r[cSoKhung]||'').trim().toUpperCase()]){
+      const brL=r[cBranch]?String(r[cBranch]).trim():'';
+      for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(brL)){ dmsKhop[g]=(dmsKhop[g]||0)+1; }
+      continue;
+    }
     const mauRaw=cMau?String(r[cMau]||'').trim():'';
     const mauVal=mauRaw.toUpperCase(); // dùng để so khớp tồn kho, không dùng để hiển thị
     const phienBanRaw=cPhienBan?String(r[cPhienBan]||'').trim():'';
@@ -3815,10 +3837,10 @@ function khoBreakdownSrc(){
   switch(typeFilter){
     case 'stock': case 'inventory': return {rows:allData.stock,field:'kho'};
     case 'bo': return {rows:allData.bo,field:'kho'};
-    case 'lxx': return {rows:allData.lxx,field:'kho'};
+    case 'lxx': return {rows:allData.lxx.concat(_lxxDaPhan()),field:'kho'};
     case 'debt': return {rows:allData.debt,field:'kho'};
     case 'chuaXN': return {rows:allData.chuaXN||[],field:'kho'};
-    case 'daphan': return {rows:allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;}),field:'daly'};
+    case 'daphan': return {rows:allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;}).concat(_lxxDaPhan()),field:'daly'};
     case 'yr2025': return {rows:allData.stock.concat(allData.bo).filter(function(r){return parseInt(r.namSX)===2025;}),field:'kho'};
     case 'old60': return {rows:allData.stock.filter(function(r){return daysSince(r.ngayNhap)>60;}),field:'kho'};
     case 'nhamay': return {rows:allData.stock.filter(function(r){return !!r.isNhaMay;}),field:'kho'};
@@ -3875,23 +3897,27 @@ function hhClearFilters(){hhFilters={q:'',kho:[],nam:''};typeFilter=null;boDateF
 // còn mặc định (chưa bấm gì) vẫn đếm theo Tồn kho (xem khoBreakdownSrc()).
 function hhClickTong(){hhFilters={q:'',kho:[],nam:''};typeFilter=(typeFilter==='tong'?null:'tong');boDateFilter=null;drillModel=null;drillVersion=null;renderHH();}
 function mkStats(totS,totB,totL,totD,totDaPhan){
+  var lxxDP=_lxxDaPhan().filter(function(r){return khoMatch(r.kho);});
+  totL+=lxxDP.length; totDaPhan+=lxxDP.length; // xem _lxxDaPhan()
+  var totDP_LX3=lxxDP.filter(isPalisadeLX3).length
+    +allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon&&khoMatch(r.daly)&&isPalisadeLX3(r);}).length;
   var totCXN=allData.chuaXN?allData.chuaXN.filter(function(r){return khoMatch(r.kho);}).length:0;
   var totCXN_LX3=allData.chuaXN?allData.chuaXN.filter(function(r){return khoMatch(r.kho)&&isPalisadeLX3(r);}).length:0;
   var totD_LX3=allData.debt.filter(function(r){return khoMatch(r.kho)&&isPalisadeLX3(r);}).length;
   function demLX3(arr){return arr.filter(function(r){return khoMatch(r.kho)&&isPalisadeLX3(r);}).length;}
   var totB_LX3=demLX3(allData.bo);
-  var totTong_LX3=demLX3(allData.stock)+totB_LX3+demLX3(allData.lxx);
+  var totTong_LX3=demLX3(allData.stock)+totB_LX3+demLX3(allData.lxx)+lxxDP.filter(isPalisadeLX3).length;
   var tot2025=0;
   allData.stock.concat(allData.bo).forEach(function(r){if(parseInt(r.namSX)===2025&&khoMatch(r.kho)) tot2025++;});
   var tot120=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return daysSince(r.ngayNhap)>60;}).length;
   var totNM=allData.stock.filter(function(r){if(!khoMatch(r.kho))return false;return !!r.isNhaMay;}).length;
   var fmtMod=fileLastModified?fileLastModified.toLocaleString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-  function statEl(type,label,val,colorCls,accentColor,extraStyle,lx3Count){
+  function statEl(type,label,val,colorCls,accentColor,extraStyle,lx3Count,subText){
     var isActive=typeFilter===type;
     var ac=isActive?accentColor:'transparent';
     var bg=isActive?'#f0f5ff':'#fff';
     var dot=isActive?'<span class="pulse-dot"></span>':'';
-    var lx3Sub=(lx3Count>0)?`<div style="font-size:10px;font-weight:600;opacity:.75">(${lx3Count} LX3)</div>`:'';
+    var lx3Sub=subText?`<div style="font-size:10px;font-weight:600;opacity:.75">(${subText})</div>`:(lx3Count>0)?`<div style="font-size:10px;font-weight:600;opacity:.75">(${lx3Count} LX3)</div>`:'';
     return `<div class="stat clickable${isActive?' active-filter':''}" onclick="toggleType('${type}')" style="border-left:3px solid ${ac};background:${bg};${extraStyle||''}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">${label}${dot}</div><div class="stat-num ${colorCls}">${val}</div>${lx3Sub}</div>`;
   }
   // NEW badge: hiện trong 3 ngày kể từ KCK_DATE
@@ -3906,7 +3932,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +'<div style="width:1px;background:var(--border)"></div>'
     +statEl('bo','BO',totB,'','#0369a1','border-radius:0;border:none',totB_LX3)
     +'<div style="width:1px;background:var(--border)"></div>'
-    +statEl('lxx','LXX',totL,'amber','var(--c-lxx)','border-radius:0;border:none')
+    +statEl('lxx','LXX',totL,'amber','var(--c-lxx)','border-radius:0;border:none',0,lxxDP.length?lxxDP.length+' đã phân xe':'')
     +'</div>'
     +`<div class="stat clickable${typeFilter==='tong'?' active-filter':''}" onclick="hhClickTong()" title="Tổng Tồn kho+BO+LXX — bấm để xem đếm theo chi nhánh gộp cả 3, bấm lại để về Tồn kho" style="cursor:pointer;min-width:96px;border-left:3px solid ${typeFilter==='tong'?'var(--c-stock)':'transparent'};background:${typeFilter==='tong'?'#f0f5ff':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">Tổng${typeFilter==='tong'?'<span class="pulse-dot"></span>':''}</div><div class="stat-num gray">${totS+totB+totL}</div>${totTong_LX3>0?`<div style="font-size:10px;font-weight:600;opacity:.75">(${totTong_LX3} LX3)</div>`:''}</div>`
     +'<div class="stat-sep"></div>'
@@ -3915,7 +3941,7 @@ function mkStats(totS,totB,totL,totD,totDaPhan){
     +(_canSeeDatHang()?'<div class="stat clickable'+(typeFilter==='dathang'?' active-filter':'')+'" onclick="toggleType(\'dathang\')" style="border-left:3px solid '+(typeFilter==='dathang'?'#4f46e5':'transparent')+';background:'+(typeFilter==='dathang'?'#eef2ff':'#fff')+'"><div class="stat-label" style="color:#4f46e5">📦 Đặt hàng</div><div class="stat-num" style="font-size:13px;color:#4f46e5;font-weight:600">Giả định</div></div>':'')
     +'<div class="stat-sep"></div>'
     +statEl('debt','Xe nợ',totD,'red','var(--c-debt)',undefined,totD_LX3)
-    +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03')
+    +statEl('daphan','Đã phân xe',totDaPhan,'','#7c4a03',undefined,totDP_LX3)
     +'<div class="stat-sep"></div>'
     +'<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">'
     +`<div class="stat clickable${isInv?' active-filter':''}" onclick="toggleType('inventory')" style="border-radius:0;border:none;border-left:3px solid ${isInv?'var(--blue)':'transparent'};background:${isInv?'#f0f5ff':'#fff'}"><div class="stat-label" style="display:flex;align-items:center;gap:4px">Chi tiết TK${isInv?'<span class="pulse-dot"></span>':''}</div><div class="stat-num blue">${totS}</div></div>`
@@ -4390,9 +4416,9 @@ function renderHH(){
   if(typeFilter==='bo'||typeFilter==='lxx'||typeFilter==='debt'||typeFilter==='daphan'||typeFilter==='yr2025'||typeFilter==='inventory'||typeFilter==='old60'||typeFilter==='nhamay'||typeFilter==='chuaXN'){
     var srcArr;
     if(typeFilter==='bo') srcArr=allData.bo;
-    else if(typeFilter==='lxx') srcArr=allData.lxx;
+    else if(typeFilter==='lxx') srcArr=allData.lxx.concat(_lxxDaPhan());
     else if(typeFilter==='debt') srcArr=allData.debt;
-    else if(typeFilter==='daphan') srcArr=allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;});
+    else if(typeFilter==='daphan') srcArr=allData.chuaGiao.filter(function(r){return r.ngayPhan&&!r.isNhaMayMuon;}).concat(_lxxDaPhan());
     else if(typeFilter==='inventory'||typeFilter==='old60') srcArr=allData.stock;
     else if(typeFilter==='nhamay') srcArr=allData.stock;
     else if(typeFilter==='chuaXN') srcArr=allData.chuaXN;
@@ -4522,8 +4548,9 @@ function renderHH(){
       var nmBadge=r.isNhaMay?'<span style=\"font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:#dcfce7;color:#166534;border:1px solid #bbf7d0;margin-left:4px;white-space:nowrap\">Nhà máy</span>':'';
       dtbody+='<tr><td style="color:#aaa;font-size:11px;white-space:nowrap">'+(i+1)+'</td>'+modelTd+'<td>'+_pbHtml(r.phienBan||'—')+nmBadge+'</td><td style="white-space:nowrap"><span class="cdot" style="background:'+colorDot(r.mau)+'"></span>'+(r.mau||'—')+'</td>'+yrCell(r.namSX)+'<td style="white-space:nowrap">'+khoLabel(r.kho)+'</td>';
       if(isDebt){var dd=daysSince(r.ngayCoc);var ds=dd>90?'color:#a32d2d;font-weight:700':dd>30?'color:#b8860b':'';dtbody+='<td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayCoc)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+ds+'">'+(dd!==null?dd+'n':'—')+'</span></td>';}
+      else if(isDaPhan&&r.isLxxPhan) dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap;color:#b45309">LXX – đang về</td><td style="text-align:center">—</td>';
       else if(isDaPhan){var dp=daysSince(r.ngayPhan);var dsp=dp>30?'color:#a32d2d;font-weight:700':dp>15?'color:#b8860b':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="font-weight:500;white-space:nowrap">'+(r.khach||'—')+'</td><td style="font-size:11px;color:#555;white-space:nowrap">'+(r.tvbh||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayPhan)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsp+'">'+(dp!==null?dp+'n':'—')+'</span></td>';}
-      else if(isLxx) dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayXN)+'</td>';
+      else if(isLxx) dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+(r.isLxxPhan?' <span style="font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#7c4a03;white-space:nowrap" title="Đã khớp khách DS nợ">Đã phân: '+(r.khach||'—')+'</span>':'')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayXN)+'</td>';
       else if(is2025t){var d25=daysSince(r.ngayNhap);var ds25=d25>90?'color:#a32d2d;font-weight:700':d25>60?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="text-align:center;white-space:nowrap"><span style="'+ds25+'">'+(d25!==null?d25+'n':'—')+'</span></td>';}
       else if(isInvT||isOld60){var dInv=daysSince(r.ngayNhap);var dsInv=dInv>150?'color:#a32d2d;font-weight:700':dInv>90?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayNhap)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsInv+'">'+(dInv!==null?dInv+'n':'—')+'</span></td><td style="text-align:center;font-size:11px;color:#888;white-space:nowrap">'+getLCBaoLanh(r.model,r.phienBan)+'</td>';}
       else if(isNM){var dNM=daysSince(r.ngayNhap);var dsNM=dNM>120?'color:#a32d2d;font-weight:700':dNM>90?'color:#b8860b;font-weight:600':'';dtbody+='<td class="vin" style="white-space:nowrap">'+(r.soKhung||'—')+'</td><td style="white-space:nowrap">'+fmtDateHH(r.ngayNhap)+'</td><td style="text-align:center;white-space:nowrap"><span style="'+dsNM+'">'+(dNM!==null?dNM+'n':'—')+'</span></td>';}
@@ -4535,7 +4562,7 @@ function renderHH(){
     var colors={bo:'#0369a1',lxx:'var(--amber)',debt:'var(--red)',daphan:'#7c4a03',yr2025:'#c0392b',inventory:'var(--blue)',old60:'#7b2d8b',nhamay:'#0d7c66',chuaXN:'#0d7c66'};
     if(isOld60) titles.old60='Xe tồn trên '+oldMinDays+' ngày'+(oldDupOnly?' — kho có từ 2 xe cùng phiên bản':'');
     if(!isCXN) bodyContent='<div class="sec-title">'+( titles[typeFilter]||typeFilter)+' ('+dRows.length+')</div>'+(typeFilter==='bo'?boDateBtns:'')+oldDayBtns+'<div class="table-wrap"><div class="table-scroll"><table><thead><tr>'+ths+'</tr></thead><tbody>'+dtbody+'</tbody></table></div></div>'
-      +(isLxx||isDebt?_lxxPhanNoteHtml():''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
+      +(isLxx||isDebt?_lxxPhanNoteHtml(isLxx):''); // xe LXX đã phân khách, xem _khopLxxPhanKhach()
   }
   } else {
     bodyContent='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--muted);align-items:center;"><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-stock);border-radius:2px"></div>Tồn kho</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-bo);border-radius:2px"></div>BO</div><div style="display:flex;align-items:center;gap:4px"><div style="width:12px;height:12px;background:var(--c-lxx);border-radius:2px"></div>Có LXX</div><span style="color:#bbb;font-size:11px;margin-left:6px">+N = xe nợ (không tính tổng)</span></div>'
