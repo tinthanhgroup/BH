@@ -6,6 +6,23 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 | Ngày | Sự kiện |
 |---|---|
+| 05/11/2026 | Kế hoạch T11: NT giảm 1 Tucson XĐB Đỏ + 1 Trắng → 12 xe (NT 5 · ĐL 7); đã sửa bảng Giả định đặt hàng |
+| 04/11/2026 | Kế hoạch T11: NT, ĐL gửi đề xuất đặt hàng (14 xe: NT 7 · ĐL 7), PY không đặt; đưa vào bảng Giả định đặt hàng, xoá các phương án T10; xem `docs/module-hanghoa.md` |
+| 04/11/2026 | HTV bỏ quy định kẹp Creta N Line CBU với CKD; đã sửa `docs/quy-tac-dat-hang.md` mục 6 và trang Quy tắc đặt hàng |
+| 02/11/2026 | KCK: cập nhật tay từ file HTV gửi 02/11 (link SharePoint vẫn bản 20/10): thêm Tucson Hybrid FWD, Creta CKD Cao cấp/Đặc biệt, bớt Santafe Turbo Calligraphy Đen; xem `docs/cap-nhat-thu-cong.md` |
+| 02/11/2026 | Tucson Hybrid: HTV yêu cầu đặt trong T11 (hạn 17h 02/11, không đặt thì cắt KM T11, ngưng giao LX3); chị Đào duyệt NT, ĐL, PY mỗi nơi 1 xe Trắng |
+| 02/11/2026 | Trang Chính sách: thêm CV 139/2026 (Tucson Hybrid), CV 157/2025 (tồn kho + B/O ≥ 1,5 tháng, thay CV 449/2024) |
+| 02/11/2026 | Palisade LX3: hết hạn ký HĐ 31/10, phòng bán hàng chưa cập nhật số khách đã ký |
+| 02/11/2026 | Lợi nhuận gộp: `loinhuan.json` làm mới theo dữ liệu 02/11 (đứng từ 23/10, nên xe admin sửa chưa lên); từ nay tự làm mới 6h hằng ngày, xem `docs/module-loinhuan.md` |
+| 01/11/2026 | Báo cáo tuần: thử gộp số liệu + nhận định theo bộ phận rồi bỏ (anh Khanh không duyệt), giữ bố cục cũ; mặc định mở tuần đang diễn ra, bỏ mục "sau giờ chốt"; doanh thu DV = doanh thu nội bộ; xem `docs/module-baocaotuan.md` |
+| 01/11/2026 | Báo cáo tuần: chốt và áp đủ chuẩn Giao diện 1 – tinh tế (Inter, màu trung tính, cỡ chữ 14/16/24; thay quy ước 20/10, 28/10); đã sửa chữ "Chưa trả lời" đủ tương phản, lỗi nhập liệu tô vàng, mục 7 chia 3 nhóm, khối 1.3 Nhân sự gọn, biểu đồ vẽ theo bề rộng thật, khung 1280px; xem `docs/module-baocaotuan.md` |
+| 01/11/2026 | Báo cáo tuần: hoàn tất các mục còn lại của đánh giá Giao diện 1 (danh sách tổng quan trên điện thoại, vùng bấm 40px, bo góc 8px, ngày dd/mm, ô trống "–"); xem `docs/module-baocaotuan.md` |
+| 31/10/2026 | Báo cáo tuần: sửa giao diện theo đánh giá Giao diện 1 (hết tràn ngang điện thoại, bỏ đậm 600, dòng tóm tắt việc 2 mẩu, bỏ viền màu và biểu tượng, bớt màu KPI, đầu bảng nền nhạt); xem `docs/module-baocaotuan.md` |
+| 31/10/2026 | Báo cáo tuần: chốt 3 file — NT (gồm Phan Rang, bán hàng PR do Duy báo cáo), PY, ĐL (gồm Bảo Lộc); không tạo file riêng PR, BL; xem `docs/module-baocaotuan.md` |
+| 31/10/2026 | Báo cáo tuần: thêm hàm `taoFileDaLat()` tạo file Đà Lạt bằng cách chép file Phú Yên (đã tách VP, GMT+7) rồi xoá dữ liệu; xem `docs/module-baocaotuan.md` mục Tách Văn phòng |
+| 30/10/2026 | Tab MKT thêm mục 5.3 KM đối thủ (`km_doi_thu.html` + `km_doi_thu.json` từ project 16); xem `docs/module-kmdoithu.md` |
+| 29/10/2026 | Báo cáo tuần Phú Yên: thêm khối Công nợ bảo hiểm (biểu đồ theo tuần từ `congno.json`, điểm đầu 16/10); xem `docs/module-baocaotuan.md` |
+| 28/10/2026 | Nhân sự, Chấm công: dựng lại bố cục (KPI → so sánh chi nhánh → bất thường/xu hướng luôn hiện, chi tiết thu gọn; Phan Rang tách riêng; tuổi/thâm niên theo nhóm); đổi quy tắc thu gọn, xem `docs/giao-dien-va-phan-quyen.md` |
 | 28/10/2026 | Mục 4 (Nhân sự, Chấm công, Nhà cung cấp, Quy định nội bộ): sửa theo đánh giá UX lần 2 (font biểu đồ, KPI kiểu chung, nhãn chỉ tô khi cần chú ý, bỏ emoji, độ rộng cột) |
 | 28/10/2026 | Báo cáo tuần: doanh thu DV "Thực hiện" tự động từ `13. DV - Master Data/Doanh thu.xlsx` (Giá trị trước thuế, gồm xe ngập, theo ngày thanh toán; chỉ tiêu vẫn nhập tay); biểu đồ HĐ ký đổi sang tuần T2–CN như tuần báo cáo; chưa push, chờ dán script; xem `docs/module-baocaotuan.md` |
 | 28/10/2026 | Tiêu đề mục tab Hàng hóa đổi theo kiểu tab Bán hàng (chữ thường, màu nhấn, bỏ emoji); cảnh báo xe bán ngang giữ màu |
@@ -85,3 +102,14 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 - [x] Tiêu đề tab Hàng hóa đổi theo kiểu tab Bán hàng (28/10/2026); anh Khanh xem trên web, không đẹp thì trả lại bằng git revert
 - [x] Báo cáo tuần: tách sheet Văn phòng thành CSKH / Kế toán / HCNS — Phú Yên (đã tách, dữ liệu đồng bộ đủ 20 việc)
 - [x] Báo cáo tuần: tách Văn phòng Nha Trang (KT 3, CSKH 4, HCNS 15 việc), push trang `baocaotuan.html` mới
+
+### Lưu trữ 11/11/2026
+
+- [x] Kế hoạch T11: NT 5 · ĐL 7 đã đặt (07/11)
+- [x] Máy phụ: tạo token GitHub `.projecta/github_bh.json` (02/11, kiểm tra token đọc được repo)
+- [x] Đã đăng ký tác vụ `ProjectA - Loi nhuan BH` (làm mới `loinhuan.json` 6h hằng ngày); log chạy được từ 03/11
+
+### Lưu trữ 11/11/2026
+
+- [x] (Xong, anh Khanh báo 11/11) Tucson Hybrid (CV 139/2026): 3 chi nhánh đặt mỗi nơi 1 xe Trắng; theo dõi HTV xác nhận, cọc 15% trong 5 ngày làm việc, bảo lãnh/LC 85% trong 7 ngày làm việc
+- [x] (Bỏ theo dõi, admin đã báo cáo HTV – 11/11) Palisade LX3 (CV 126): rà khách đặt xe đến 16/10, ký HĐ chính thức trước 31/10/2026 để được tặng bảo hiểm PVI và thưởng TVBH
