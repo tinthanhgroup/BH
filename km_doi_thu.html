@@ -21,7 +21,13 @@
   .lb-low .lb{color:var(--accent);}
   .lb-low .lb-bar{background:var(--accent);opacity:.7;}
   /* chia cột cố định để cột Khuyến mãi rộng, không cuộn ngang ở 1300px — 12/11/2026 */
-  table.km{table-layout:fixed;min-width:900px;}
+  table.km{table-layout:fixed;min-width:1000px;}
+  /* dòng Hyundai (Tín Thanh Nha Trang) đầu mỗi nhóm, để so trực tiếp — 12/11/2026 */
+  table.km thead th{white-space:normal;vertical-align:bottom;}
+  td.num .phu{white-space:normal;}
+  tr.hy td{background:#f7f9fe;}
+  tr.hy .rival{color:var(--blue);}
+  tr.hy-cuoi td{border-bottom:1.5px solid var(--border);}
   .nguon{overflow-wrap:anywhere;}
   .nguon a{color:var(--blue);text-decoration:none;}
   .nguon a:hover{text-decoration:underline;}
@@ -46,14 +52,14 @@
   <div class="kpi-row c4" id="kpiRow"></div>
 
   <div class="panel">
-    <h3><span class="chart-num">1</span> Giá lăn bánh tạm tính của đối thủ theo model Hyundai</h3>
-    <p class="desc">Giá đối thủ tại Khánh Hòa sau khuyến mãi. Số màu xanh dương là mức lăn bánh thấp nhất trong nhóm (đối thủ cạnh tranh giá mạnh nhất). "Chưa rõ" là chưa có giá niêm yết hoặc số tiền KM đáng tin. Nguồn: A hãng · B đại lý · C tư vấn bán hàng.</p>
+    <h3><span class="chart-num">1</span> Giá lăn bánh tạm tính: Hyundai và đối thủ theo model</h3>
+    <p class="desc">Dòng nền xanh nhạt là Hyundai: giá bán thực tế của Tín Thanh cho khách Nha Trang (ký hợp đồng 90 ngày gần nhất) từng phiên bản. Dòng còn lại là KM công bố của đối thủ tại Khánh Hòa. Giá trị KM ước lượng chỉ cộng khoản chắc chắn (giảm trực tiếp, hỗ trợ trước bạ, quà có ghi số tiền); thu cũ đổi mới, lãi suất không cộng. Số màu xanh dương là mức lăn bánh thấp nhất của đối thủ trong nhóm. "Chưa rõ" là chưa có giá niêm yết hoặc số tiền KM đáng tin. Nguồn: A hãng · B đại lý · C tư vấn bán hàng.</p>
     <div class="filter-btns" id="chips" style="margin-bottom:12px"></div>
     <div class="table-wrap cuon">
       <table class="km">
-        <colgroup><col style="width:140px"><col style="width:84px"><col><col style="width:116px"><col style="width:160px"><col style="width:200px"></colgroup>
+        <colgroup><col style="width:150px"><col style="width:84px"><col><col style="width:100px"><col style="width:110px"><col style="width:160px"><col style="width:190px"></colgroup>
         <thead><tr>
-          <th>Đối thủ</th><th class="num">Niêm yết (tr)</th><th>Khuyến mãi</th><th>Hạn</th>
+          <th>Mẫu xe</th><th class="num">Niêm yết (tr)</th><th>Khuyến mãi</th><th class="num">Giá trị KM ước lượng (tr)</th><th>Hạn</th>
           <th class="num">Lăn bánh tạm tính (tr)</th><th>Nguồn</th>
         </tr></thead>
         <tbody id="kmBody"></tbody>
@@ -119,6 +125,57 @@ function lanBanh(r){
   return r.niem_yet - (r.giam_truc_tiep || 0) + Math.max(tb - ht, 0) + phi;
 }
 
+// Giá trị KM ước lượng (triệu) = giảm trực tiếp + hỗ trợ trước bạ quy tiền + quà có ghi số tiền (qua_tien)
+function giaTriKM(r){
+  let ht = 0;
+  if(typeof r.ho_tro_truoc_ba === 'string' && r.ho_tro_truoc_ba.endsWith('%')){
+    if(r.niem_yet == null) return null;
+    ht = r.niem_yet * DATA.cong_thuc.truoc_ba_pct / 100 * parseFloat(r.ho_tro_truoc_ba) / 100;
+  } else if(typeof r.ho_tro_truoc_ba === 'number') ht = r.ho_tro_truoc_ba;
+  return (r.giam_truc_tiep || 0) + ht + (r.qua_tien || 0);
+}
+
+// Hyundai: giá bán thực tế từ data.json (khách nguồn NT, ký hợp đồng 90 ngày gần nhất), từng phiên bản.
+// Niêm yết lấy từ km_doi_thu.json → hyundai_niem_yet {"Model|PHIÊN BẢN data.json": triệu}.
+let HY = null;
+const HY_NGAY = 90;
+function tinhHyundai(records){
+  const lim = new Date(Date.now() - HY_NGAY * 864e5).toISOString().slice(0, 10);
+  const g = {};
+  records.forEach(x => {
+    if(x.nguonKhach !== 'NT' || !x.giaBan || String(x.ngayDatCoc || '') < lim) return;
+    const k = x.loaiXe2 + '|' + x.phienBan;
+    (g[k] = g[k] || {model: x.loaiXe2, pb: x.phienBan, gia: [], qua: [], cp: []});
+    g[k].gia.push(x.giaBan / 1e6);
+    const cp = parseFloat(String(x.chiPhiKM || '').replace(/[^\d]/g, ''));
+    g[k].cp.push(isNaN(cp) ? 0 : cp / 1e6);
+    if(x.quaKM) g[k].qua.push(x.quaKM);
+  });
+  const ny = DATA.hyundai_niem_yet || {};
+  return Object.entries(g).map(([k, v]) => {
+    const n = v.gia.length, tb = v.gia.reduce((a, b) => a + b, 0) / n, cp = v.cp.reduce((a, b) => a + b, 0) / n;
+    const qua = Object.entries(v.qua.reduce((m, q) => (m[q] = (m[q] || 0) + 1, m), {})).sort((a, b) => b[1] - a[1])[0];
+    const niem = ny[k] != null ? ny[k] : null;
+    return {model: v.model, pb: v.pb, n, tb, lo: Math.min(...v.gia), hi: Math.max(...v.gia), cp, qua: qua ? qua[0] : '', niem,
+      ktri: niem != null ? niem - tb + cp : null,
+      lb: niem != null ? tb + niem * DATA.cong_thuc.truoc_ba_pct / 100 + (/stargazer/i.test(v.model) ? DATA.cong_thuc.phi_7_cho : DATA.cong_thuc.phi_5_cho) : null};
+  }).sort((a, b) => a.tb - b.tb);
+}
+function hyRow(h, cuoi){
+  const kmCell = 'Giá bán thực tế bình quân <b>' + fmt(h.tb) + '</b>' + (h.n > 1 ? ' (' + fmt(h.lo) + '–' + fmt(h.hi) + ')' : '')
+    + (h.niem != null ? ', giảm ~' + fmt(h.niem - h.tb) + ' so với niêm yết' : '')
+    + (h.qua ? '<span class="phu">+ Quà thường gặp: ' + esc(h.qua) + (h.cp ? ' (chi phí bình quân ' + fmt(h.cp) + ' tr)' : '') + '</span>' : '');
+  return '<tr class="hy' + (cuoi ? ' hy-cuoi' : '') + '">'
+    + '<td><span class="rival">Hyundai ' + esc(h.model) + '</span><div class="muted small">' + esc(h.pb) + '</div></td>'
+    + '<td class="num">' + (h.niem != null ? fmt(h.niem) : '<span class="na">chưa rõ</span>') + '</td>'
+    + '<td>' + kmCell + '</td>'
+    + '<td class="num">' + (h.ktri != null ? '<b>' + fmt(h.ktri) + '</b>' : '<span class="na">chưa rõ</span>') + '</td>'
+    + '<td class="small muted">—</td>'
+    + '<td class="num">' + (h.lb != null ? '<div class="lb">' + fmt(h.lb) + '</div>' : '<span class="na">chưa rõ</span>') + '</td>'
+    + '<td class="small muted">Tín Thanh Nha Trang<div>' + h.n + ' xe ký ' + HY_NGAY + ' ngày</div></td>'
+    + '</tr>';
+}
+
 function renderKpi(){
   const km = DATA.km;
   const coGia = km.filter(r => r.niem_yet != null).length;
@@ -148,9 +205,14 @@ function renderTable(){
     const grp = rows.filter(r => r.model === m);
     const vals = grp.map(lanBanh).filter(v => v != null);
     const lo = vals.length ? Math.min(...vals) : null, hi = vals.length ? Math.max(...vals) : null;
-    html += '<tr class="grp"><td colspan="6">Hyundai ' + esc(m) + '</td></tr>';
+    html += '<tr class="grp"><td colspan="7">Hyundai ' + esc(m) + '</td></tr>';
+    if(HY){
+      const hs = HY.filter(h => h.model.toLowerCase() === m.toLowerCase());
+      hs.forEach((h, i) => html += hyRow(h, i === hs.length - 1));
+      if(!hs.length) html += '<tr class="hy hy-cuoi"><td colspan="7" class="small muted">Hyundai ' + esc(m) + ': chưa có xe ký cho khách Nha Trang trong ' + HY_NGAY + ' ngày gần nhất</td></tr>';
+    }
     grp.forEach(r => {
-      const lb = lanBanh(r);
+      const lb = lanBanh(r), kt = giaTriKM(r);
       const low = lb != null && vals.length > 1 && lb === lo;
       const barW = lb != null && hi ? Math.max(8, Math.round(lb / hi * 100)) : 0;
       const kmCell = esc(r.km) + (r.qua ? '<span class="phu">+ ' + esc(r.qua) + '</span>' : '')
@@ -159,13 +221,14 @@ function renderTable(){
         + '<td><span class="rival">' + esc(r.doi_thu) + '</span>' + (r.phien_ban ? '<div class="muted small">' + esc(r.phien_ban) + '</div>' : '') + '</td>'
         + '<td class="num">' + (r.niem_yet != null ? fmt(r.niem_yet) : '<span class="na">chưa rõ</span>') + '</td>'
         + '<td>' + kmCell + '</td>'
+        + '<td class="num">' + (kt != null && r.nguon_loai ? (kt ? fmt(kt) : '0') + (r.qua && r.qua_tien == null ? '<span class="phu">+ quà chưa rõ tiền</span>' : '') : '<span class="na">chưa rõ</span>') + '</td>'
         + '<td class="small muted">' + fmtHan(r.han) + '</td>'
         + '<td class="num ' + (low ? 'lb-low' : '') + '">' + (lb != null ? '<div class="lb">' + fmt(lb) + '</div><div class="lb-bar" style="width:' + barW + '%"></div>' : '<span class="na">chưa rõ</span>') + '</td>'
         + '<td class="small nguon">' + (r.nguon_loai ? '<span class="loai">' + esc(r.nguon_loai) + '</span>' + nguonLink(r.nguon) + '<div class="muted">' + fmtDate(r.ngay) + '</div>' : '<span class="na">chưa có nguồn</span>') + '</td>'
         + '</tr>';
     });
   });
-  document.getElementById('kmBody').innerHTML = html || '<tr><td colspan="6" class="empty">Chưa có dữ liệu</td></tr>';
+  document.getElementById('kmBody').innerHTML = html || '<tr><td colspan="7" class="empty">Chưa có dữ liệu</td></tr>';
 }
 
 function renderLog(){
@@ -198,7 +261,9 @@ function renderFormula(){
     '<p><code>Lăn bánh = Niêm yết − Giảm trực tiếp + Trước bạ (sau hỗ trợ) + Phí cố định</code></p>'
     + '<p>Trước bạ = ' + c.truoc_ba_pct + '% giá niêm yết. "Hỗ trợ 100%" thì trước bạ bằng 0; "hỗ trợ N triệu" thì trừ N.</p>'
     + '<p>Phí cố định ước tính: ' + fmt(c.phi_5_cho) + ' triệu (xe 5 chỗ), ' + fmt(c.phi_7_cho) + ' triệu (xe 7 chỗ), gồm biển số, đăng kiểm, phí đường bộ, bảo hiểm bắt buộc. Chưa gồm bảo hiểm vật chất, phụ kiện, phí dịch vụ của đại lý.</p>'
-    + '<p>Quà tặng (phiếu nhiên liệu, bảo hiểm, phụ kiện) không trừ vào giá lăn bánh. Giá là tạm tính, cần xác nhận với đại lý.</p>';
+    + '<p>Quà tặng (phiếu nhiên liệu, bảo hiểm, phụ kiện) không trừ vào giá lăn bánh. Giá là tạm tính, cần xác nhận với đại lý.</p>'
+    + '<p><code>Giá trị KM ước lượng = Giảm trực tiếp + Hỗ trợ trước bạ (quy tiền) + Quà có ghi số tiền</code>. Thu cũ đổi mới, hỗ trợ lãi suất có điều kiện nên không cộng.</p>'
+    + '<p>Hyundai: giá bán thực tế bình quân của các xe ký hợp đồng ' + HY_NGAY + ' ngày gần nhất, khách nguồn Nha Trang (dữ liệu bán hàng BH). <code>Giá trị KM = Niêm yết − Giá bán bình quân + Chi phí quà bình quân</code>; <code>Lăn bánh = Giá bán bình quân + Trước bạ trên giá niêm yết + Phí cố định</code>.</p>';
 }
 
 function render(){
@@ -208,7 +273,13 @@ function render(){
 
 fetch('km_doi_thu.json', {cache:'no-store'})
   .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
-  .then(d => { DATA = d; render(); })
+  .then(d => {
+    DATA = d; render();
+    // Dòng Hyundai: tải data.json sau, lỗi thì bảng vẫn hiện đối thủ
+    return fetch('data.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null)
+      .then(x => { if(x && x.records){ HY = tinhHyundai(x.records); renderTable(); } })
+      .catch(() => {});
+  })
   .catch(e => { document.getElementById('updatedText').textContent = 'Không tải được dữ liệu: ' + e; });
 </script>
 </body>
