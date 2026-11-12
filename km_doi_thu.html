@@ -263,6 +263,7 @@ function renderFormula(){
     + '<p>Phí cố định ước tính: ' + fmt(c.phi_5_cho) + ' triệu (xe 5 chỗ), ' + fmt(c.phi_7_cho) + ' triệu (xe 7 chỗ), gồm biển số, đăng kiểm, phí đường bộ, bảo hiểm bắt buộc. Chưa gồm bảo hiểm vật chất, phụ kiện, phí dịch vụ của đại lý.</p>'
     + '<p>Quà tặng (phiếu nhiên liệu, bảo hiểm, phụ kiện) không trừ vào giá lăn bánh. Giá là tạm tính, cần xác nhận với đại lý.</p>'
     + '<p><code>Giá trị KM ước lượng = Giảm trực tiếp + Hỗ trợ trước bạ (quy tiền) + Quà có ghi số tiền</code>. Thu cũ đổi mới, hỗ trợ lãi suất có điều kiện nên không cộng.</p>'
+    + '<p>Niêm yết Hyundai: ' + esc(DATA.hyundai_niem_yet_nguon || 'chưa có') + '.</p>'
     + '<p>Hyundai: giá bán thực tế bình quân của các xe ký hợp đồng ' + HY_NGAY + ' ngày gần nhất, khách nguồn Nha Trang (dữ liệu bán hàng BH). <code>Giá trị KM = Niêm yết − Giá bán bình quân + Chi phí quà bình quân</code>; <code>Lăn bánh = Giá bán bình quân + Trước bạ trên giá niêm yết + Phí cố định</code>.</p>';
 }
 
