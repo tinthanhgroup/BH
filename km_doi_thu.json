@@ -1,5 +1,5 @@
 {
-  "updated_vn": "12/11/2026 09:00",
+  "updated_vn": "12/11/2026 18:00",
   "cong_thuc": {
     "truoc_ba_pct": 10,
     "phi_5_cho": 3.4,
@@ -105,18 +105,34 @@
     {
       "model": "Creta",
       "doi_thu": "VinFast VF 6",
-      "phien_ban": "",
+      "phien_ban": "Eco",
       "cho": 5,
       "niem_yet": null,
       "giam_truc_tiep": 0,
       "ho_tro_truoc_ba": 0,
-      "km": "Chưa có nguồn đại lý",
+      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 587,86 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
       "qua": "",
-      "han": "",
-      "nguon_loai": "",
-      "nguon": "",
-      "ngay": "",
-      "ghi_chu": "Tạm bỏ qua"
+      "han": "tháng 11/2026",
+      "nguon_loai": "C",
+      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
+      "ngay": "2026-11-02",
+      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt (chưa có nguồn A/B). Giá niêm yết: vinfastauto.com không đọc được (HTTP 403, tra 12/11) nên để trống; giá trên là giá chào TVBH. Ưu đãi 9% theo chương trình VTLX2, điều kiện khách hàng chưa rõ"
+    },
+    {
+      "model": "Creta",
+      "doi_thu": "VinFast VF 6",
+      "phien_ban": "Plus",
+      "cho": 5,
+      "niem_yet": null,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 636,09 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
+      "qua": "",
+      "han": "tháng 11/2026",
+      "nguon_loai": "C",
+      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
+      "ngay": "2026-11-02",
+      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt. Giá niêm yết chưa đọc được (vinfastauto.com 403, tra 12/11). TVBH Diệu bán xe VinFast (TikTok, 02/11) báo khác: \"hiện tại VF6 Plus chỉ 620 lăn bánh\" (đã gồm lăn bánh, chưa rõ điều kiện, lệch với số trên)"
     },
     {
       "model": "Accent",
@@ -197,12 +213,28 @@
       "nguon": "https://kianhatrang.vn/gia-xe",
       "ngay": "2026-11-12",
       "ghi_chu": "Bảng giá không ghi ngày; 11/11 đổi: Luxury 10 tr → 5 tr + 1 năm BHVC, IVT 5 tr → không ưu đãi. Bài T11: https://kianhatrang.vn/tin-tuc/chi-tiet/thang-11-so-huu-xe-kia-voi-dac-quyen-uu-dai-hap-dan"
+    },
+    {
+      "model": "Stargazer",
+      "doi_thu": "Toyota Veloz Cross",
+      "phien_ban": "CVT",
+      "cho": 7,
+      "niem_yet": 638,
+      "giam_truc_tiep": 0,
+      "ho_tro_truoc_ba": 0,
+      "km": "KM T11 chung các dòng xe Toyota: \"Hỗ trợ đến 100% lệ phí trước bạ\", lãi suất cố định 2 năm từ 0%/năm; không nêu mức riêng cho Veloz Cross",
+      "qua": "1 năm bảo hiểm vật chất xe",
+      "han": "01/11/2026 – 30/11/2026",
+      "nguon_loai": "B",
+      "nguon": "https://www.toyotanhatrang.com.vn/items/veloz-cross",
+      "ngay": "2026-11-12",
+      "ghi_chu": "Thêm 12/11/2026 (nhóm Stargazer, anh Khanh duyệt). Giá niêm yết CVT \"giá từ 638 triệu\" (bản CVT TOP không đọc được giá do trang lỗi). TVBH Sang Toyota Nha Trang (TikTok, 04/11) xác nhận hỗ trợ trước bạ + tặng phụ kiện chính hãng, không nêu số tiền cụ thể. Hỗ trợ trước bạ chưa rõ mức nên chưa trừ (nếu đủ 100%: lăn bánh ~641,8 tr)"
     }
   ],
   "thay_doi": [
     {
       "ngay": "2026-11-12",
-      "noi_dung": "Không có KM mới, đổi hay hết hạn"
+      "noi_dung": "Sáng: không có KM mới, đổi hay hết hạn. Chiều, chạy lại thủ công theo quy tắc mới: thêm Toyota Veloz Cross (Stargazer, niêm yết CVT 638 tr, KM T11 chung) và VinFast VF 6 Eco/Plus (Creta, giá chào TVBH TikTok, nguồn C, chưa có giá niêm yết)"
     },
     {
       "ngay": "2026-11-11",
