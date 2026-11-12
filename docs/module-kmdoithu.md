@@ -8,4 +8,4 @@
 
 **Giá lăn bánh tạm tính** tính ở trang (`lanBanh()`): niêm yết − giảm trực tiếp + trước bạ sau hỗ trợ + phí cố định 5/7 chỗ. Công thức gốc: README project 16 mục "Giá lăn bánh tạm tính".
 
-Giao diện: `chung.css`, không `<h1>`. Quyền: dùng chung quyền tab 5 như 5.1, 5.2.
+Giao diện: `chung.css`, không `<h1>`. Bảng mục 1 (chốt 12/11/2026, theo chấm điểm giao diện): `table-layout:fixed` + `<colgroup>` (cột Khuyến mãi tự giãn, không cuộn ngang ở 1300px); cột Nguồn chỉ hiện tên miền, link đầy đủ ở `title`; lăn bánh thấp nhất nhóm tô xanh dương `--accent` (không xanh lá, vì là đối thủ cạnh tranh giá mạnh nhất); số trong bảng không dùng font Mono. Quyền: dùng chung quyền tab 5 như 5.1, 5.2.
