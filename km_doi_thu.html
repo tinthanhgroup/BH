@@ -127,6 +127,7 @@ function lanBanh(r){
 
 // Giá trị KM ước lượng (triệu) = giảm trực tiếp + hỗ trợ trước bạ quy tiền + quà có ghi số tiền (qua_tien)
 function giaTriKM(r){
+  if(r.niem_yet == null) return null;  // chưa có niêm yết (vd VF 6 chỉ có giá chào TVBH): chưa rõ
   let ht = 0;
   if(typeof r.ho_tro_truoc_ba === 'string' && r.ho_tro_truoc_ba.endsWith('%')){
     if(r.niem_yet == null) return null;
