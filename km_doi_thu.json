@@ -319,5 +319,23 @@
       "ngay": "2026-11-12"
     }
   ],
-  "tvbh": []
+  "tvbh": [],
+  "hyundai_niem_yet": {
+    "Accent|1.5 AT": 489.0,
+    "Accent|1.5 AT CAO CẤP": 569.0,
+    "Accent|1.5 AT ĐẶC BIỆT": 529.0,
+    "Accent|1.5 MT": 439.0,
+    "Stargazer|TIÊU CHUẨN": 489.0,
+    "Stargazer|CAO CẤP FL 2026": 615.0,
+    "Stargazer|ĐẶC BIỆT FL 2026": 569.0,
+    "Tucson|1.6 TURBO 2024": 979.0,
+    "Tucson|2.0 XĂNG ĐẶC BIỆT 2024": 859.0,
+    "Tucson|2.0 XĂNG TIÊU CHUẨN 2024": 769.0,
+    "Tucson|N LINE": 989.0,
+    "Creta|1.5 N LINE FACELIFT": 715.0,
+    "Creta|1.5 CAO CẤP FACELIFT": 705.0,
+    "Creta|1.5 ĐẶC BIỆT FACELIFT": 659.0,
+    "Creta|1.5 TIÊU CHUẨN FACELIFT": 599.0
+  },
+  "hyundai_niem_yet_nguon": "Giá bán lẻ khuyến nghị HTV, CV 38/2026/CV-HTV ngày 11/06/2026"
 }
