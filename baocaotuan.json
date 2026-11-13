@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-12T10:37:03+07:00",
+ "updated_at": "2026-11-13T08:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-12",
+   "ngayDuLieu": "2026-11-13",
    "canhBao": [],
    "viec": [
     {
@@ -2068,7 +2068,7 @@
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-12",
+   "ngayDuLieu": "2026-11-13",
    "canhBao": [],
    "viec": [
     {
@@ -2474,11 +2474,11 @@
      "phuTrach": "Đỉnh",
      "han": "2026-12-31",
      "hanRaw": "",
-     "trangThai": "Kế hoạch",
-     "capNhat": "",
+     "trangThai": "Đang làm",
+     "capNhat": "Đã gửi Paner thông tin chương trình cho các đơn vị bảo hiểm.  Chạy quảng cáo Brand trên  fanpage.",
      "tuanCN": 42,
      "vuongMac": "",
-     "deXuat": "Đề xuất mức hỗ trợ 500K miễn thường bảo hiểm  ( Doanh thu công > 3 triệu).",
+     "deXuat": "Đề xuất mức hỗ trợ 540K miễn thường bảo hiểm : Doanh thu công > 4 triệu hoặc quyết toán > 5 triệu ( Chưa VAT)",
      "keHoach": "",
      "ngayHT": "",
      "ngayHTRaw": "",
@@ -2678,7 +2678,7 @@
      "keHoach": "BP MKT đăng bài truyền trông Fanpge, gửi tin nhắn  Broadcast cho 128 khách hàng đủ điều kiện gia hạn bảo hành .",
      "ngayHT": "",
      "ngayHTRaw": "",
-     "ketQua": "",
+     "ketQua": "Đã tiến hành đăng ký cho các xe vào xưởng nhóm D ( tri ân)",
      "trongTamTuan": "",
      "ghiChuGD": "",
      "gdXuLy": "",
@@ -4830,7 +4830,7 @@
    "chiNhanh": "Đà Lạt",
    "file": "Bao cao tuan - Da Lat",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-12",
+   "ngayDuLieu": "2026-11-13",
    "canhBao": [],
    "viec": [
     {
