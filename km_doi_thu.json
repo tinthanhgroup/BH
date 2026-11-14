@@ -1,5 +1,5 @@
 {
-  "updated_vn": "13/11/2026 09:30",
+  "updated_vn": "14/11/2026 09:40",
   "cong_thuc": {
     "truoc_ba_pct": 10,
     "phi_5_cho": 3.4,
@@ -16,10 +16,11 @@
       "ho_tro_truoc_ba": "100%",
       "km": "KM hãng T11: \"Ưu đãi tương đương 100% phí trước bạ (~ 78 triệu VNĐ)\"; thu cũ đổi mới 20 tr (đổi xe Mitsubishi) / 15 tr (xe hãng khác), 01/11–31/12/2026",
       "qua": "",
+      "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh. Banner Bitcar (không ngày) ghi \"Destinator ưu đãi 35 triệu\""
     },
     {
@@ -32,10 +33,11 @@
       "ho_tro_truoc_ba": "50%",
       "km": "KM hãng T11: 50% phí trước bạ (~43 tr); thu cũ đổi mới 20 tr / 15 tr, 01/11–31/12/2026",
       "qua": "Phiếu nhiên liệu ~25 tr",
+      "qua_tien": 25,
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh"
     },
     {
@@ -48,10 +50,11 @@
       "ho_tro_truoc_ba": 0,
       "km": "Không có KM đang chạy",
       "qua": "",
+      "qua_tien": 0,
       "han": "",
       "nguon_loai": "B",
       "nguon": "nhatrangford.com.vn",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Bài KM mới nhất của đại lý 08/09/2026 (tháng 9)"
     },
     {
@@ -64,11 +67,12 @@
       "ho_tro_truoc_ba": "100%",
       "km": "Ưu đãi 100% lệ phí trước bạ* (KM tháng 11/2026, đăng 02/11)",
       "qua": "Quà tặng đặc biệt tại showroom (không ghi)",
+      "qua_tien": null,
       "han": "tháng 11/2026",
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "* \"tùy theo mẫu xe, phiên bản và thị trường\"; chưa đọc được giá niêm yết"
+      "ghi_chu": "* \"tùy theo mẫu xe, phiên bản và thị trường\"; chưa đọc được giá niêm yết. 14/11 mazdanhatrang.vn lỗi 500, chưa kiểm tra lại"
     },
     {
       "model": "Creta",
@@ -79,12 +83,13 @@
       "giam_truc_tiep": 0,
       "ho_tro_truoc_ba": "100%",
       "km": "KM hãng T11: 100% phí trước bạ (~60 tr); thu cũ đổi mới 10 tr / 5 tr nếu thuộc \"các dòng khác\", 01/11–31/12/2026",
-      "qua": "",
+      "qua": "2 năm bảo hiểm thân vỏ (18 tr)",
+      "qua_tien": 18,
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-13",
-      "ghi_chu": "Giá niêm yết theo Bitcar 599; hãng ghi 605 (lăn bánh theo giá hãng 608,4 tr)"
+      "ngay": "2026-11-14",
+      "ghi_chu": "Giá niêm yết theo Bitcar 599; hãng ghi 605 (lăn bánh theo giá hãng 608,4 tr). Quà BH thân vỏ ghi nhận 14/11, chưa rõ có từ đầu tháng. TVBH Văn Thuận (TikTok 13/11): \"Siêu ưu đãi cuối năm cho Xforce\", không nêu số"
     },
     {
       "model": "Creta",
@@ -96,11 +101,12 @@
       "ho_tro_truoc_ba": 0,
       "km": "KM T11 chung các dòng xe Toyota: \"Hỗ trợ đến 100% lệ phí trước bạ\", lãi suất cố định 2 năm từ 0%/năm; không nêu mức cho Yaris Cross",
       "qua": "1 năm bảo hiểm vật chất xe",
+      "qua_tien": null,
       "han": "30/11/2026",
       "nguon_loai": "B",
       "nguon": "https://www.toyotanhatrang.com.vn/news/thang-11-nhe-ganh-tai-chinh-vung-buoc-cung-toyota",
       "ngay": "2026-11-02",
-      "ghi_chu": "KM áp dụng 01/11–30/11/2026. Hỗ trợ trước bạ chưa rõ mức cho Yaris Cross nên chưa trừ (nếu đủ 100%: lăn bánh ~653,4 tr)"
+      "ghi_chu": "KM áp dụng 01/11–30/11/2026. Hỗ trợ trước bạ chưa rõ mức cho Yaris Cross nên chưa trừ (nếu đủ 100%: lăn bánh ~653,4 tr). Giá chào: tin rao bonbanh của Toyota Nha Trang (đăng 12/11) xe mới 1.5 D-CVT màu Xanh 600 tr, \"giảm tiền mặt + tặng phụ kiện chính hãng\", không ghi số tiền giảm; 3 tin khác 602–608 tr"
     },
     {
       "model": "Creta",
@@ -112,11 +118,12 @@
       "ho_tro_truoc_ba": 0,
       "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 587,86 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
       "qua": "",
+      "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "C",
       "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
       "ngay": "2026-11-02",
-      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt (chưa có nguồn A/B). Giá niêm yết: vinfastauto.com không đọc được (HTTP 403, tra 13/11) nên để trống; giá trên là giá chào TVBH. Ưu đãi 9% theo chương trình VTLX2, điều kiện khách hàng chưa rõ"
+      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt (chưa có nguồn A/B). Giá niêm yết: vinfastauto.com không đọc được (HTTP 403, tra 14/11) nên để trống; giá trên là giá chào TVBH. Ưu đãi 9% theo chương trình VTLX2, điều kiện khách hàng chưa rõ"
     },
     {
       "model": "Creta",
@@ -128,11 +135,12 @@
       "ho_tro_truoc_ba": 0,
       "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 636,09 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
       "qua": "",
+      "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "C",
       "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
       "ngay": "2026-11-02",
-      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt. Giá niêm yết chưa đọc được (vinfastauto.com 403, tra 13/11). TVBH Diệu bán xe VinFast (TikTok, 02/11) báo khác: \"hiện tại VF6 Plus chỉ 620 lăn bánh\" (đã gồm lăn bánh, chưa rõ điều kiện, lệch với số trên)"
+      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt. Giá niêm yết chưa đọc được (vinfastauto.com 403, tra 14/11). TVBH Diệu bán xe VinFast (TikTok, 02/11) báo khác: \"hiện tại VF6 Plus chỉ 620 lăn bánh\" (đã gồm lăn bánh, chưa rõ điều kiện, lệch với số trên)"
     },
     {
       "model": "Accent",
@@ -144,10 +152,11 @@
       "ho_tro_truoc_ba": 0,
       "km": "Không có KM",
       "qua": "",
+      "qua_tien": 0,
       "han": "",
       "nguon_loai": "B",
       "nguon": "hondanhatrang.com.vn",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025. Tuổi Trẻ 12/10/2026 nói City 2026 bỏ bản G (giá từ 539 tr), đại lý vẫn ghi G 499 tr"
     },
     {
@@ -160,6 +169,7 @@
       "ho_tro_truoc_ba": 0,
       "km": "KM T11 chung các dòng xe Toyota: \"Hỗ trợ đến 100% lệ phí trước bạ\", lãi suất cố định 2 năm từ 0%/năm; không nêu mức cho Vios",
       "qua": "1 năm bảo hiểm vật chất xe",
+      "qua_tien": null,
       "han": "30/11/2026",
       "nguon_loai": "B",
       "nguon": "https://www.toyotanhatrang.com.vn/news/thang-11-nhe-ganh-tai-chinh-vung-buoc-cung-toyota",
@@ -176,11 +186,12 @@
       "ho_tro_truoc_ba": "100%",
       "km": "\"Mazda2 Sedan được ưu đãi 100% lệ phí trước bạ*\" (KM tháng 11/2026, đăng 02/11)",
       "qua": "",
+      "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; * \"tùy theo mẫu xe, phiên bản và thị trường\""
+      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; * \"tùy theo mẫu xe, phiên bản và thị trường\". 14/11 mazdanhatrang.vn lỗi 500, chưa kiểm tra lại"
     },
     {
       "model": "Stargazer",
@@ -192,11 +203,12 @@
       "ho_tro_truoc_ba": "100%",
       "km": "KM hãng T11: 100% phí trước bạ (~57 tr); thu cũ đổi mới 10 tr / 5 tr nếu thuộc \"các dòng khác\", 01/11–31/12/2026",
       "qua": "Phiếu nhiên liệu ~10 tr",
+      "qua_tien": 10,
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-13",
-      "ghi_chu": "Hãng, toàn quốc; Bitcar chưa đăng bài KM T11 riêng"
+      "ngay": "2026-11-14",
+      "ghi_chu": "Hãng, toàn quốc; Bitcar chưa đăng bài KM T11 riêng. Bản AT, AT Premium có thêm 2 năm BH thân vỏ (17 tr, 22 tr), bản MT không"
     },
     {
       "model": "Stargazer",
@@ -208,10 +220,11 @@
       "ho_tro_truoc_ba": 0,
       "km": "Bản Deluxe không ưu đãi; IVT không ưu đãi; Luxury (609 tr) \"Ưu đãi lên đến 5.000.000 đ\" + tặng 1 năm BHVC. KM T11 đại lý (đăng 10/11): nhóm Sonet, Seltos, Carens, Carens Clavis \"giá bán sau ưu đãi chỉ từ 450 triệu đồng\", không nêu số riêng Carens",
       "qua": "",
+      "qua_tien": 0,
       "han": "chưa rõ",
       "nguon_loai": "B",
       "nguon": "https://kianhatrang.vn/gia-xe",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Bảng giá không ghi ngày hay hạn ưu đãi; bài KM tháng 11 của đại lý (đăng 10/11) chỉ ghi tháng 11/2026. 11/11 đổi: Luxury 10 tr → 5 tr + 1 năm BHVC, IVT 5 tr → không ưu đãi"
     },
     {
@@ -224,14 +237,19 @@
       "ho_tro_truoc_ba": 0,
       "km": "KM T11 chung các dòng xe Toyota: \"Hỗ trợ đến 100% lệ phí trước bạ\", lãi suất cố định 2 năm từ 0%/năm; không nêu mức riêng cho Veloz Cross",
       "qua": "1 năm bảo hiểm vật chất xe",
+      "qua_tien": null,
       "han": "30/11/2026",
       "nguon_loai": "B",
       "nguon": "https://www.toyotanhatrang.com.vn/items/veloz-cross",
-      "ngay": "2026-11-13",
+      "ngay": "2026-11-14",
       "ghi_chu": "Thêm 12/11/2026 (nhóm Stargazer, anh Khanh duyệt). Giá niêm yết CVT \"giá từ 638 triệu\" (bản CVT TOP không đọc được giá do trang lỗi). TVBH Sang Toyota Nha Trang (TikTok, 04/11) xác nhận hỗ trợ trước bạ + tặng phụ kiện chính hãng, không nêu số tiền cụ thể. Hỗ trợ trước bạ chưa rõ mức nên chưa trừ (nếu đủ 100%: lăn bánh ~641,8 tr)"
     }
   ],
   "thay_doi": [
+    {
+      "ngay": "2026-11-14",
+      "noi_dung": "Toyota Nha Trang rao bonbanh (đăng 12/11) Yaris Cross xe mới 600 tr (niêm yết 650 tr), \"giảm tiền mặt + tặng phụ kiện\", giá chào. Mitsubishi hãng T11: ghi nhận thêm 2 năm BH thân vỏ cho Xforce GLX (18 tr), chưa rõ có từ đầu tháng. Mazda Nha Trang lỗi 500, chưa kiểm tra lại. Đối thủ khác không đổi."
+    },
     {
       "ngay": "2026-11-13",
       "noi_dung": "Không có KM mới, đổi hay hết hạn"
@@ -303,49 +321,49 @@
       "loai": "B",
       "link": "kianhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Toyota Nha Trang",
       "loai": "B",
       "link": "toyotanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Honda Ôtô Khánh Hòa",
       "loai": "B",
       "link": "hondanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Nha Trang Ford",
       "loai": "B",
       "link": "nhatrangford.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Mitsubishi Bitcar Khánh Hòa",
       "loai": "B",
       "link": "mitsubishibitcarkhanhhoa.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Mazda Nha Trang (Thaco)",
       "loai": "B",
       "link": "mazdanhatrang.vn",
-      "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "trang_thai": "khong_doc_duoc",
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Mitsubishi Việt Nam (hãng)",
       "loai": "A",
       "link": "mitsubishi-motors.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-13"
+      "ngay": "2026-11-14"
     },
     {
       "ten": "Ngọc Hải – Kia Mazda Cam Ranh",
