@@ -1,12 +1,12 @@
 {
- "updated_at": "2026-11-14T15:37:03+07:00",
+ "updated_at": "2026-11-15T08:37:03+07:00",
  "nguon": "sheet",
  "branches": [
   {
    "chiNhanh": "Nha Trang",
    "file": "Bao cao tuan Nha Trang",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-14",
+   "ngayDuLieu": "2026-11-15",
    "canhBao": [],
    "viec": [
     {
@@ -21,8 +21,8 @@
      "han": "2026-11-30",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "T45: Báo bán 1/42; 4 xe đã phân + 4 xe chờ đóng tiền → đẩy báo bán 8 xe trong tuần 46; cần 7–8 HĐ/tuần.",
-     "tuanCN": 45,
+     "capNhat": "T45: Báo bán 1/42; 4 xe đã phân + 4 xe chờ đóng tiền → đẩy báo bán 8 xe trong tuần 46; cần 7–8 HĐ/tuần.\nT46: Báo bán 7/42 (+6 trong tuần); 3 xe đã phân chưa báo bán, 2 xe chờ đóng tiền; còn thiếu 19 xe so mốc 60%.",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -77,8 +77,8 @@
      "han": "2026-11-30",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "T45: 30 khách mới (10/người – đạt chỉ tiêu tuần); điểm tuần 45: Giang 61%, Hùng 45%, Quốc Duy 24,5%; Giang có HĐ đầu tiên.",
-     "tuanCN": 45,
+     "capNhat": "T45: 30 khách mới (10/người – đạt chỉ tiêu tuần); điểm tuần 45: Giang 61%, Hùng 45%, Quốc Duy 24,5%; Giang có HĐ đầu tiên.\nT46: ~10 khách mới (Giang 5, Quốc Duy 3, Hùng 2) – thấp hơn chỉ tiêu tuần; điểm tuần 46: Giang 32,9%, Hùng 28,5%, Quốc Duy 9,5% (loại C).",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -105,8 +105,8 @@
      "han": "2026-11-30",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "T45: Tuần 45 ký 6 HĐ (NT 5, PR 1); đến 09/11: 9 HĐ – đạt 64% kế hoạch lũy kế (14).",
-     "tuanCN": 45,
+     "capNhat": "T45: Tuần 45 ký 6 HĐ (NT 5, PR 1); đến 09/11: 9 HĐ – đạt 64% kế hoạch lũy kế (14).\nT46: Tuần 46 ký 5 HĐ (NT 4, PR 1); đến 15/11: 11 HĐ – khoảng 42% kế hoạch lũy kế (~26).",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -133,8 +133,8 @@
      "han": "2026-11-30",
      "hanRaw": "",
      "trangThai": "Đang làm",
-     "capNhat": "T45: 7 khách dự báo 08–13/11 (Palisade 2, Creta 2, i10, Tucson, Venue); 2 khách hẹn 08/11 chưa cập nhật kết quả.",
-     "tuanCN": 45,
+     "capNhat": "T45: 7 khách dự báo 08–13/11 (Palisade 2, Creta 2, i10, Tucson, Venue); 2 khách hẹn 08/11 chưa cập nhật kết quả.\nT46: Khách hẹn 12–13/11 chưa chốt (dời quyết định); danh sách mới 14/11: 7 khách dự báo 16–23/11 (Tucson 3, Palisade 2, Stargazer, Accent).",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -161,8 +161,8 @@
      "han": "2026-11-30",
      "hanRaw": "",
      "trangThai": "Kế hoạch",
-     "capNhat": "T45: Đã lập bảng giá giải kho theo CTKM T11 (8 xe: Accent, Venue, Elantra, Creta, Stargazer).",
-     "tuanCN": 45,
+     "capNhat": "T45: Đã lập bảng giá giải kho theo CTKM T11 (8 xe: Accent, Venue, Elantra, Creta, Stargazer).\nT46: CTGK tháng 11: 16 xe (i10 5, Accent 6, Venue 3, Elantra 2); đã lập bảng giá flashsale 14/11.",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "Đã đề xuất , đợi BGĐ phản hồi",
      "keHoach": "",
@@ -387,6 +387,34 @@
      "trangThai": "Tạm dừng",
      "capNhat": "T45: Giảm ĐH 6 xe (34 → 28), giữ đơn có khách cọc; 24 xe nợ khách (21 Palisade) chưa có LXX. Tạm dừng theo dõi trên BC tuần từ 09/11.",
      "tuanCN": 45,
+     "vuongMac": "",
+     "deXuat": "",
+     "keHoach": "",
+     "ngayHT": "",
+     "ngayHTRaw": "",
+     "ketQua": "",
+     "trongTamTuan": "",
+     "ghiChuGD": "",
+     "gdXuLy": "",
+     "duyetTT": "",
+     "loaiHD": "2. Phát sinh không thường xuyên",
+     "maTCT": "",
+     "nguoiCapNhat": ""
+    },
+    {
+     "boPhan": "BH",
+     "dong": 23,
+     "ma": "BH-015",
+     "nguon": "Bộ phận bổ sung",
+     "thang": 11,
+     "linhVuc": "Doanh số",
+     "noiDung": "Khảo sát giá bán thực tế 6 đại lý đối thủ tại Khánh Hòa (32 phiên bản) để điều chỉnh giá Tucson, Stargazer, Venue",
+     "phuTrach": "Duy + TVBH",
+     "han": "2026-11-22",
+     "hanRaw": "",
+     "trangThai": "Đang làm",
+     "capNhat": "T46: Đã lập file khảo sát (giá hãng công bố + cột giá thực tế), phân công khảo sát trực tiếp.",
+     "tuanCN": 46,
      "vuongMac": "",
      "deXuat": "",
      "keHoach": "",
@@ -1509,6 +1537,75 @@
      "nam": 2026,
      "tuan": 46,
      "ngay": "2026-11-14",
+     "boPhan": "BH",
+     "nguoiViet": "Nguyễn Ngọc Duy – Giám đốc bán hàng",
+     "items": [
+      {
+       "stt": 1,
+       "nhan": "Hợp đồng",
+       "cauHoi": "Ký bao nhiêu HĐ, tăng hay giảm so với tuần trước, cao hay thấp so với kế hoạch, vì sao?",
+       "traLoi": "Tuần 46 ký 5 HĐ (Nha Trang 4, Phan Rang 1), giảm nhẹ so với tuần trước (6) và thấp so với kế hoạch: lũy kế tháng 11 HĐ, đạt khoảng 42% kế hoạch HĐPS lũy kế (~26). Lý do: khách hẹn chốt 12–13/11 dời quyết định (cân đối tài chính, chờ ngân hàng); Nha Trang 2 ngày 12–13/11 không có HĐ; Phan Rang tiếp tục yếu."
+      },
+      {
+       "stt": 2,
+       "nhan": "Lợi nhuận gộp",
+       "cauHoi": "LN gộp cao hay thấp, model nào bất thường, có phải giảm giá sâu để chốt không?",
+       "traLoi": "Rủi ro: Tucson phải giảm ở mức tối đa (~79 tr) vẫn đắt hơn Mazda CX-5 khoảng 48 tr; Creta vẫn giảm sâu. Đối thủ giữ hỗ trợ 100% LPTB đến 31/12/2026 nên áp lực giá còn kéo dài."
+      },
+      {
+       "stt": 3,
+       "nhan": "Mất deal",
+       "cauHoi": "Mất bao nhiêu deal, lý do chính (giá, không có xe, đối thủ, tài chính…)?",
+       "traLoi": "Lý do chính vẫn là giá và tài chính: khách so Tucson với CX-5 / Destinator, Venue với Kia Sonet; nhiều khách xin thêm giá hoặc chưa đủ tài chính, hẹn cuối năm."
+      },
+      {
+       "stt": 4,
+       "nhan": "KH tiềm năng",
+       "cauHoi": "Phát sinh bao nhiêu KH mới, từ nguồn nào, tốc độ chăm sóc và chuyển đổi ra sao?",
+       "traLoi": "Giảm nhẹ: quảng cáo tuần 46 có 69 khách (tuần 45: 82), chi 4,6 tr (~66 nghìn/khách). Creta tốt (~51 nghìn/khách), Tucson đắt (~105 nghìn/khách – chi phí hiển thị tăng). 3 TVBH mới tự khai thác ~10 khách (tuần 45: 30). Chưa đánh giá được tốc độ chăm sóc vì CRM Bizfly đang sửa."
+      },
+      {
+       "stt": 5,
+       "nhan": "Đối thủ",
+       "cauHoi": "Đối thủ có động thái gì mới (giá, khuyến mãi, mẫu mới), ảnh hưởng tới Hyundai thế nào?",
+       "traLoi": "Không có thay đổi lớn: Mitsubishi giữ 100% LPTB (Xforce, Xpander, Destinator) + thu cũ đổi mới đến 31/12; Toyota, Mazda hỗ trợ đến 100% LPTB; báo chí ghi nhận đại lý giảm thêm ngoài chương trình hãng (Vios, CX-5). Kia Nha Trang giảm ưu đãi Carens. Hãng đối thủ Honda, Ford chưa có KM mới."
+      },
+      {
+       "stt": 6,
+       "nhan": "Nguồn xe & tồn kho",
+       "cauHoi": "Model nào thiếu hoặc thừa, xe tồn lâu, xe chờ HTV giao có làm mất doanh số không?",
+       "traLoi": "Vẫn THỪA: chương trình giải kho tháng 11 gồm 16 xe (i10, Accent, Venue, Elantra) đã có bảng giá. 20 xe đang nợ khách (chủ yếu Palisade) chưa có LXX; đã đổi xe với Hyundai Đắk Lắk lấy trước 1 Palisade 8C, trả 1 xe 7C ngày 23/11."
+      },
+      {
+       "stt": 7,
+       "nhan": "Hồ sơ – giao xe",
+       "cauHoi": "Có vướng xuất HĐ, giải ngân ngân hàng, đăng ký hay chứng từ HTV không?",
+       "traLoi": "Cải thiện: báo bán DMS 7/42 (tuần trước 1); còn 3 xe đã phân chưa báo bán (Tucson Turbo – Vinh đã đủ ĐK, 6 ngày) + 2 xe chờ đóng tiền; chiều 14/11 phân thêm 3 xe (2 Palisade, 1 Venue) → tuần 47 có 5–6 xe sẵn để báo bán. Lý do chậm: khách chờ giải ngân / bổ sung hồ sơ đăng ký."
+      },
+      {
+       "stt": 8,
+       "nhan": "Đội ngũ TVBH",
+       "cauHoi": "Năng suất, ai nổi bật, ai yếu, có người nghỉ hay dấu hiệu nghỉ không?",
+       "traLoi": "Lũy kế tháng đến 15/11: Giang, Vũ, Vinh 2 HĐ – hoạt động bán hàng tốt. Tiếp tục kèm cặp và bám sát KPIS tháng 11. Tuấn có HĐ đầu tiên trong tháng; Hoàng, Nhân, My, Tiến Phát 1 HĐ. Tài, Tỵ chưa có HĐ – thấp so với năng lực. Phan Rang 2/4 TVBH chưa có HĐ. KPIS tuần 46 TVBH mới giảm: Giang 32,9%, Hùng 28,5%, Quốc Duy 9,5% (đều loại C)."
+      },
+      {
+       "stt": 9,
+       "nhan": "MKT – sự kiện",
+       "cauHoi": "Hoạt động MKT, lái thử, sự kiện tuần qua có hiệu quả không?",
+       "traLoi": "Trung bình: chi tháng 11 mới 10,6 tr (~30% ngân sách 34,85 tr); các chiến dịch vẫn tên \"T10\"; Fanpage Nha Trang tuần 46 không có bài. Báo cáo Meta 12/11 đề xuất giảm ngân sách Tucson, tăng dần Creta, thêm 2–3 mẫu mỗi chiến dịch. Đào tạo nội bộ Quy trình bán hàng (giới thiệu xe & lái thử) ngày 12/11."
+      },
+      {
+       "stt": 10,
+       "nhan": "Dự báo & cần hỗ trợ",
+       "cauHoi": "Tuần tới hay tháng này có đạt chỉ tiêu không, rủi ro lớn nhất, cần hỗ trợ gì?",
+       "traLoi": "Mốc 60% (26 xe) còn thiếu 19 xe trong 15 ngày → khó đạt nếu không tăng lên 8–10 HĐ/tuần. Nhóm Tài dự báo 7 khách chốt 16–23/11 (Tucson 3, Palisade 2, Stargazer, Accent). Cần hỗ trợ: chính sách giá Tucson để cạnh tranh CX-5 / Destinator; MKT làm lại mẫu QC Tucson, đổi nội dung theo CTKM T11 và chi đủ ngân sách."
+      }
+     ]
+    },
+    {
+     "nam": 2026,
+     "tuan": 46,
+     "ngay": "2026-11-14",
      "boPhan": "VP",
      "nguoiViet": "",
      "items": [
@@ -2195,7 +2292,7 @@
    "chiNhanh": "Phú Yên",
    "file": "Bao cao tuan Phu Yen",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-14",
+   "ngayDuLieu": "2026-11-15",
    "canhBao": [],
    "viec": [
     {
@@ -5345,7 +5442,7 @@
    "chiNhanh": "Đà Lạt",
    "file": "Bao cao tuan - Da Lat",
    "ngayBaoCao": "2026-11-07",
-   "ngayDuLieu": "2026-11-14",
+   "ngayDuLieu": "2026-11-15",
    "canhBao": [],
    "viec": [
     {
