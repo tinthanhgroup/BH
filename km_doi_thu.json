@@ -1,5 +1,5 @@
 {
-  "updated_vn": "14/11/2026 09:40",
+  "updated_vn": "16/11/2026 09:45",
   "cong_thuc": {
     "truoc_ba_pct": 10,
     "phi_5_cho": 3.4,
@@ -20,7 +20,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh. Banner Bitcar (không ngày) ghi \"Destinator ưu đãi 35 triệu\""
     },
     {
@@ -37,7 +37,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Hãng, toàn quốc; thu cũ đổi mới có điều kiện nên không trừ vào lăn bánh"
     },
     {
@@ -48,14 +48,31 @@
       "niem_yet": 739,
       "giam_truc_tiep": 0,
       "ho_tro_truoc_ba": 0,
-      "km": "Không có KM đang chạy",
+      "km": "KM hãng \"Chốt Ford liền tay – Siêu deal phú quý\" 06/11–21/11/2026: Territory \"được hỗ trợ lên đến 100% lệ phí trước bạ tùy phiên bản\"; không nêu mức cho Trend",
       "qua": "",
       "qua_tien": 0,
-      "han": "",
-      "nguon_loai": "B",
-      "nguon": "nhatrangford.com.vn",
-      "ngay": "2026-11-14",
-      "ghi_chu": "Bài KM mới nhất của đại lý 08/09/2026 (tháng 9)"
+      "han": "21/11/2026",
+      "nguon_loai": "A",
+      "nguon": "https://vietbao.vn/ford-viet-nam-tung-uu-dai-thang-11-ho-tro-100-le-phi-truoc-ba-mua-xe-co-co-hoi-trung-vang-9999-615138.html",
+      "ngay": "2026-11-09",
+      "ghi_chu": "Chương trình Ford Việt Nam theo báo đưa tin 09/11 (ford.com.vn không đọc được, 403); Nha Trang Ford đăng poster cùng chương trình trên TikTok 13/11, website đại lý chưa có bài. Hỗ trợ trước bạ chưa rõ mức cho Trend nên chưa trừ (nếu đủ 100%: lăn bánh ~742,4 tr). Giá niêm yết theo nhatrangford.com.vn, tra 16/11"
+    },
+    {
+      "model": "Tucson",
+      "doi_thu": "Ford Territory",
+      "phien_ban": "Titanium 1.5L AT",
+      "cho": 5,
+      "niem_yet": 819,
+      "giam_truc_tiep": 58,
+      "ho_tro_truoc_ba": 0,
+      "km": "KM hãng \"Chốt Ford liền tay – Siêu deal phú quý\" 06/11–21/11/2026: Titanium, Titanium X, Platinum giảm 58 tr; Territory \"được hỗ trợ lên đến 100% lệ phí trước bạ tùy phiên bản\"",
+      "qua": "Nâng cấp logo phát sáng",
+      "qua_tien": null,
+      "han": "21/11/2026",
+      "nguon_loai": "A",
+      "nguon": "https://vietbao.vn/ford-viet-nam-tung-uu-dai-thang-11-ho-tro-100-le-phi-truoc-ba-mua-xe-co-co-hoi-trung-vang-9999-615138.html",
+      "ngay": "2026-11-09",
+      "ghi_chu": "Thêm 16/11/2026 vì bản này có giảm tiền. Hỗ trợ trước bạ chưa rõ mức cho Titanium nên chưa trừ (nếu thêm đủ 100%: lăn bánh ~764,4 tr). Có bốc thăm giải vàng 9999 ngày 21/11 tại đại lý. Giá niêm yết theo nhatrangford.com.vn, tra 16/11"
     },
     {
       "model": "Tucson",
@@ -72,7 +89,7 @@
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "* \"tùy theo mẫu xe, phiên bản và thị trường\"; chưa đọc được giá niêm yết. 14/11 mazdanhatrang.vn lỗi 500, chưa kiểm tra lại"
+      "ghi_chu": "* \"tùy theo mẫu xe, phiên bản và thị trường\"; trang CX-5 không có số giá nên chưa có giá niêm yết. Bài KM đọc lại được 16/11, không đổi"
     },
     {
       "model": "Creta",
@@ -88,7 +105,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Giá niêm yết theo Bitcar 599; hãng ghi 605 (lăn bánh theo giá hãng 608,4 tr). Quà BH thân vỏ ghi nhận 14/11, chưa rõ có từ đầu tháng. TVBH Văn Thuận (TikTok 13/11): \"Siêu ưu đãi cuối năm cho Xforce\", không nêu số"
     },
     {
@@ -116,14 +133,14 @@
       "niem_yet": null,
       "giam_truc_tiep": 0,
       "ho_tro_truoc_ba": 0,
-      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 587,86 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
+      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 15/11): \"Tổng giảm: 100,14 triệu\", \"Lăn bánh Khánh Hòa: khoảng 559 triệu\"",
       "qua": "",
       "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "C",
-      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
-      "ngay": "2026-11-02",
-      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt (chưa có nguồn A/B). Giá niêm yết: vinfastauto.com không đọc được (HTTP 403, tra 14/11) nên để trống; giá trên là giá chào TVBH. Ưu đãi 9% theo chương trình VTLX2, điều kiện khách hàng chưa rõ"
+      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7708339983769439506",
+      "ngay": "2026-11-15",
+      "ghi_chu": "Ngoại lệ anh Khanh duyệt 12/11 (chưa có nguồn A/B). Giá niêm yết: vinfastauto.com không đọc được (HTTP 403, tra 16/11) nên để trống, chưa trừ được số giảm. \"Ưu đãi dành cho khách đủ điều kiện VTLX2\". Trước đó (02/11) cùng TVBH báo còn 587,86 tr, chưa lăn bánh"
     },
     {
       "model": "Creta",
@@ -133,14 +150,14 @@
       "niem_yet": null,
       "giam_truc_tiep": 0,
       "ho_tro_truoc_ba": 0,
-      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 02/11): còn 636,09 tr sau ưu đãi 9% theo VTLX2, chưa tính lăn bánh",
+      "km": "Giá chào TVBH TikTok (Nhân Huỳnh VinFast, 15/11): \"Tổng giảm: 104,91 triệu\", \"Lăn bánh Khánh Hòa: khoảng 608 triệu\"",
       "qua": "",
       "qua_tien": 0,
       "han": "tháng 11/2026",
       "nguon_loai": "C",
-      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7703439340243930376",
-      "ngay": "2026-11-02",
-      "ghi_chu": "Thêm 12/11/2026, ngoại lệ anh Khanh duyệt. Giá niêm yết chưa đọc được (vinfastauto.com 403, tra 14/11). TVBH Diệu bán xe VinFast (TikTok, 02/11) báo khác: \"hiện tại VF6 Plus chỉ 620 lăn bánh\" (đã gồm lăn bánh, chưa rõ điều kiện, lệch với số trên)"
+      "nguon": "https://www.tiktok.com/@nhanhuynhvinfast/video/7708339983769439506",
+      "ngay": "2026-11-15",
+      "ghi_chu": "Ngoại lệ anh Khanh duyệt 12/11. Giá niêm yết chưa đọc được (vinfastauto.com 403, tra 16/11). \"Ưu đãi dành cho khách đủ điều kiện VTLX2\". TVBH Diệu bán xe VinFast (TikTok, 02/11) báo: \"hiện tại VF6 Plus chỉ 620 lăn bánh\"; trước đó (02/11) Nhân Huỳnh báo còn 636,09 tr, chưa lăn bánh"
     },
     {
       "model": "Accent",
@@ -156,7 +173,7 @@
       "han": "",
       "nguon_loai": "B",
       "nguon": "hondanhatrang.com.vn",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Bài KM mới nhất của đại lý là năm 2025. Tuổi Trẻ 12/10/2026 nói City 2026 bỏ bản G (giá từ 539 tr), đại lý vẫn ghi G 499 tr"
     },
     {
@@ -191,7 +208,7 @@
       "nguon_loai": "B",
       "nguon": "https://mazdanhatrang.vn/offers/offers/b16-offers/cung-mazda-khoi-sac-hanh-trinh-moi-uu-dai-den-100-phi-truoc-ba-qua-tang-dac-biet-thang-11/",
       "ngay": "2026-11-02",
-      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; * \"tùy theo mẫu xe, phiên bản và thị trường\". 14/11 mazdanhatrang.vn lỗi 500, chưa kiểm tra lại"
+      "ghi_chu": "394 tr là \"giá bán từ\" trong bài KM, chưa rõ phiên bản; * \"tùy theo mẫu xe, phiên bản và thị trường\". Bài KM đọc lại được 16/11, không đổi"
     },
     {
       "model": "Stargazer",
@@ -207,7 +224,7 @@
       "han": "tháng 11/2026",
       "nguon_loai": "A",
       "nguon": "https://www.mitsubishi-motors.com.vn/tin-tuc/chuong-trinh-khuyen-mai-mua-xe-thang-112026-n154227.html",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Hãng, toàn quốc; Bitcar chưa đăng bài KM T11 riêng. Bản AT, AT Premium có thêm 2 năm BH thân vỏ (17 tr, 22 tr), bản MT không"
     },
     {
@@ -224,7 +241,7 @@
       "han": "chưa rõ",
       "nguon_loai": "B",
       "nguon": "https://kianhatrang.vn/gia-xe",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Bảng giá không ghi ngày hay hạn ưu đãi; bài KM tháng 11 của đại lý (đăng 10/11) chỉ ghi tháng 11/2026. 11/11 đổi: Luxury 10 tr → 5 tr + 1 năm BHVC, IVT 5 tr → không ưu đãi"
     },
     {
@@ -241,11 +258,15 @@
       "han": "30/11/2026",
       "nguon_loai": "B",
       "nguon": "https://www.toyotanhatrang.com.vn/items/veloz-cross",
-      "ngay": "2026-11-14",
+      "ngay": "2026-11-16",
       "ghi_chu": "Thêm 12/11/2026 (nhóm Stargazer, anh Khanh duyệt). Giá niêm yết CVT \"giá từ 638 triệu\" (bản CVT TOP không đọc được giá do trang lỗi). TVBH Sang Toyota Nha Trang (TikTok, 04/11) xác nhận hỗ trợ trước bạ + tặng phụ kiện chính hãng, không nêu số tiền cụ thể. Hỗ trợ trước bạ chưa rõ mức nên chưa trừ (nếu đủ 100%: lăn bánh ~641,8 tr)"
     }
   ],
   "thay_doi": [
+    {
+      "ngay": "2026-11-16",
+      "noi_dung": "Ford Territory có KM hãng 06–21/11 \"Chốt Ford liền tay – Siêu deal phú quý\": hỗ trợ lên đến 100% lệ phí trước bạ tùy phiên bản; Titanium, Titanium X, Platinum giảm 58 tr + logo phát sáng (báo đưa tin 09/11; Nha Trang Ford đăng poster TikTok 13/11). VinFast VF 6: giá chào TVBH mới (Nhân Huỳnh, 15/11) Eco tổng giảm 100,14 tr, lăn bánh Khánh Hòa khoảng 559 tr; Plus tổng giảm 104,91 tr, khoảng 608 tr. Mazda Nha Trang đọc lại được, không đổi. Đối thủ khác không đổi."
+    },
     {
       "ngay": "2026-11-14",
       "noi_dung": "Toyota Nha Trang rao bonbanh (đăng 12/11) Yaris Cross xe mới 600 tr (niêm yết 650 tr), \"giảm tiền mặt + tặng phụ kiện\", giá chào. Mitsubishi hãng T11: ghi nhận thêm 2 năm BH thân vỏ cho Xforce GLX (18 tr), chưa rõ có từ đầu tháng. Mazda Nha Trang lỗi 500, chưa kiểm tra lại. Đối thủ khác không đổi."
@@ -321,49 +342,56 @@
       "loai": "B",
       "link": "kianhatrang.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Toyota Nha Trang",
       "loai": "B",
       "link": "toyotanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Honda Ôtô Khánh Hòa",
       "loai": "B",
       "link": "hondanhatrang.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Nha Trang Ford",
       "loai": "B",
       "link": "nhatrangford.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Mitsubishi Bitcar Khánh Hòa",
       "loai": "B",
       "link": "mitsubishibitcarkhanhhoa.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Mazda Nha Trang (Thaco)",
       "loai": "B",
       "link": "mazdanhatrang.vn",
-      "trang_thai": "khong_doc_duoc",
-      "ngay": "2026-11-14"
+      "trang_thai": "doc_duoc",
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Mitsubishi Việt Nam (hãng)",
       "loai": "A",
       "link": "mitsubishi-motors.com.vn",
       "trang_thai": "doc_duoc",
-      "ngay": "2026-11-14"
+      "ngay": "2026-11-16"
+    },
+    {
+      "ten": "Ford Việt Nam (hãng)",
+      "loai": "A",
+      "link": "ford.com.vn",
+      "trang_thai": "khong_doc_duoc",
+      "ngay": "2026-11-16"
     },
     {
       "ten": "Ngọc Hải – Kia Mazda Cam Ranh",
