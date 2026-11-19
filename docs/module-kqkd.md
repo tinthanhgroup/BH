@@ -1,6 +1,6 @@
 # Tab 9 "KQKD" – Đánh giá KQKD chi nhánh (`kqkd.html`)
 
-Thêm 26/10/2026 theo yêu cầu anh Khanh, thay trang riêng tư trên claude.ai (không cần chia sẻ từng người nữa). Nội dung: kết quả kinh doanh từng hạng mục của 4 chi nhánh theo tháng, 5 tab con (Tổng quan, Phòng kinh doanh, Xưởng dịch vụ, Lưu ý, Cách tính). Người xem: Ban lãnh đạo (chị Đào).
+Thêm 26/10/2026 theo yêu cầu anh Khanh, thay trang riêng tư trên claude.ai (không cần chia sẻ từng người nữa). Nội dung (bố cục từ 19/11/2026): trang chính "Theo tháng" (lợi nhuận phòng KD, xưởng từng tháng của hệ thống hoặc từng chi nhánh, xe bán lẻ, lãi gộp/xe, bảng chi nhánh × tháng) và nút chọn từng tháng (từ T9/2026); mỗi tháng có 5 tab con (Tổng quan, Phòng kinh doanh, Xưởng dịch vụ, Lưu ý, Cách tính). `kqkd.enc.json` chứa dữ liệu mọi tháng; `kqkd.html` không đổi. Người xem: Ban lãnh đạo (chị Đào).
 
 ## Quyền và bảo mật
 
