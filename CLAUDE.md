@@ -29,7 +29,7 @@ Chỉ mở file `docs/` của phần đang sửa, không đọc hết.
 `index.html` (desktop, các tab + Admin), `mobile.html` (rút gọn, không có HCNS/MKT), và các trang module nhúng iframe, lazy-load khi mở: `chamcong`, `nhansu`, `nhacungcap`, `quy_dinh_noi_bo` (sub-tab của tab 4 HCNS), `fbads`, `mkt`, `km_doi_thu` (sub-tab của tab 5 MKT), `theo_doi_chinh_sach` (tab 6, mở tự do), `crm` (tab 7), `baocaotuan` (tab 8), `kqkd` (tab 9, số liệu mã hóa). Bảng đầy đủ: `docs/giao-dien-va-phan-quyen.md`.
 
 - `index.html` và `mobile.html` **trùng dữ liệu có chủ đích** (`KCK_DATA`, `KCK_DATE`): sửa một file thì kiểm tra file kia.
-- Trang module **không có `<h1>`**. Chuẩn giao diện từ 27/10/2026: phong cách tab Hàng hóa / Bán hàng, dùng file chung `chung.css` (đang chuyển dần từng trang, danh sách trang đã chuyển trong `docs/giao-dien-va-phan-quyen.md`).
+- Trang module **không có `<h1>`**. Chuẩn giao diện từ 27/10/2026: phong cách tab Hàng hóa / Bán hàng, dùng file chung `chung.css`; từ 21/11/2026 trang tab 4–9 nạp thêm `giao-dien-1.css` ("Giao diện 1 – tinh tế", chỉ dùng trên máy tính). Chi tiết: `docs/giao-dien-va-phan-quyen.md`.
 - Phân quyền là khoá **client-side** (ẩn hiển thị), không phải bảo mật thật; không tự nâng cấp. Mục "Xe chưa xuất HĐ" dùng cờ `_isAdmin`/`_isGD` riêng, giữ tách biệt với quyền tab Nhân sự.
 
 ## Bẫy bắt buộc nhớ khi sửa `.gs`

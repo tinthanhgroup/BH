@@ -1,0 +1,65 @@
+/* giao-dien-1.css — "Giao diện 1 – tinh tế" cho các trang tab 4–9 (người dùng chốt 21/11/2026).
+   Chỉ dùng trên máy tính. Thông số gốc: G:\My Drive\1. Project A\Kien truc agent\giao-dien-1-tinh-te\QUY_CHUAN.md
+   Nạp SAU chung.css và SAU <style> riêng của trang (đặt ngay trước </head>) để ghi đè cả kiểu riêng.
+   Tab 1–3 (index.html, loinhuan, palisade) KHÔNG nạp file này. Quy ước: docs/giao-dien-va-phan-quyen.md */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root{
+  --bg:#f4f5f8; --card:#ffffff; --card2:#f7f8fa; --border:#e6e8ee; --head:#f7f8fa;
+  --text:#1f2329; --muted:#6b7280; --hint:#9aa1ad;
+  --accent:#3b5bdb; --accent-hover:#324fc4; --accent-soft:#eef2ff;
+  --blue:#3b5bdb; --blue-mid:#5c7cfa;
+  --red:#c62828; --red-bg:#fdecec; --amber:#a35f00; --amber-bg:#fff4e0; --green:#2e7d32; --green-bg:#e8f5e9;
+  --shadow:0 1px 2px rgba(16,24,40,.04);
+  --mono:Inter,system-ui,sans-serif;
+  --navy:var(--accent); --ink:var(--text); --ink-soft:var(--muted); --panel:var(--card);
+}
+
+/* Chữ: một font Inter, chữ số đều cột, không in hoa, không giãn chữ */
+body{background:var(--bg);color:var(--text);font:400 14px/1.5 Inter,system-ui,sans-serif;letter-spacing:-0.01em;font-variant-numeric:tabular-nums;}
+body *{font-family:Inter,system-ui,sans-serif !important;text-transform:none !important;letter-spacing:inherit !important;}
+
+/* Độ đậm: nội dung 400; chỉ 500 cho tiêu đề, đầu bảng, số lớn thẻ chỉ số, chữ được nhấn */
+body *{font-weight:400 !important;}
+h1,h2,h3,h4,h5,h6,summary,thead th,b,strong,
+.kpi-num,.kpi .num,.chart-num,.filter-btn.active,
+[style*="font-weight:600"],[style*="font-weight:700"],[style*="font-weight:800"],
+[style*="font-weight: 600"],[style*="font-weight: 700"],[style*="font-weight: 800"],
+[style*="font-weight:bold"]{font-weight:500 !important;}
+
+/* Khối */
+.panel{border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:16px;}
+.panel h3,.panel summary{font-size:16px;color:var(--text);margin-bottom:8px;}
+.panel .desc{font-size:13px;color:var(--muted);}
+.grid2,.grid3{gap:16px;margin-bottom:16px;}
+.table-wrap{border-color:var(--border);border-radius:8px;}
+
+/* Thẻ chỉ số: nhãn 13px chữ phụ ở trên, số 26px/500 */
+.kpi-row{gap:12px;margin-bottom:16px;}
+.kpi{border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:14px 16px;}
+.kpi-label,.kpi .lbl{font-size:13px;color:var(--muted);}
+.kpi-num,.kpi .num{font-size:26px;line-height:1.2;}
+.kpi-sub{font-size:12px;color:var(--muted);}
+
+/* Bảng: đầu bảng nền xám nhạt, chỉ kẻ ngang */
+table{font-size:14px;}
+thead th{background:var(--head) !important;color:var(--text) !important;font-size:13px;padding:9px 12px;border-bottom:1px solid var(--border);}
+thead th:hover{background:var(--head) !important;color:var(--text) !important;}
+tbody tr{border-bottom:1px solid #eef0f4;}
+tbody tr:hover{background:var(--head);}
+tbody td{padding:8px 12px;}
+table.bang-nhe thead th{background:none !important;color:var(--muted) !important;}
+
+/* Nhãn */
+.badge,.tag{font-size:12px;border-radius:4px;padding:2px 8px;}
+.tag{background:#f2f3f5;color:#4b5563;border:none;}
+
+/* Bộ lọc, ô nhập, nút */
+.filters input,.filters select,select,input[type=text],input[type=search],input[type=password]{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--text);}
+input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+.reset-btn,.btn-clear{height:36px;padding:0 14px;font-size:14px;border-radius:6px;}
+.filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:14px;}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.legend-item{font-size:12px;}
+.footnote{font-size:12px;}
