@@ -504,12 +504,110 @@
      "gtTuan": 75091099,
      "gtThang": 108362469
     }
+   },
+   "2026-11-21": {
+    "trongHan": 262196133,
+    "qh30": 51787944,
+    "qhTren30": 27276890,
+    "qhTren3t": 8479876,
+    "donVi": [
+     {
+      "ten": "BẢO HIỂM PJICO PHÚ YÊN",
+      "trongHan": 8321400,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO MINH PHÚ YÊN",
+      "trongHan": 22559688,
+      "qh30": 0,
+      "qhTren30": 9581630,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM BƯU ĐIỆN BÌNH ĐỊNH",
+      "trongHan": 13221815,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO VIỆT PHÚ YÊN",
+      "trongHan": 60533520,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM VIETINBANK KHÁNH HÒA",
+      "trongHan": 7070760,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM NGÂN HÀNG NÔNG NGHIỆP - CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 30527280,
+      "qh30": 0,
+      "qhTren30": 17695260,
+      "qhTren3t": 4756536
+     },
+     {
+      "ten": "BẢO HIỂM DBV - CHI NHÁNH TRUNG TRUNG BỘ",
+      "trongHan": 62929019,
+      "qh30": 33519744,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM DBV-CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 42259979,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM TASCO",
+      "trongHan": 0,
+      "qh30": 18268200,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM PVI - CHI NHÁNH BẢO HIỂM PVI GIA LAI",
+      "trongHan": 0,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 3723340
+     },
+     {
+      "ten": "BẢO HIỂM HÙNG VƯƠNG - CHI NHÁNH BÌNH ĐỊNH",
+      "trongHan": 9426672,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     },
+     {
+      "ten": "BẢO HIỂM LPBANK - CHI NHÁNH NAM TRUNG BỘ",
+      "trongHan": 5346000,
+      "qh30": 0,
+      "qhTren30": 0,
+      "qhTren3t": 0
+     }
+    ],
+    "xuatHS": {
+     "slTuan": 7,
+     "slThang": 47,
+     "gtTuan": 37963592,
+     "gtThang": 146326061
+    }
    }
   },
   "nguongMienPhi": 90000000
  },
- "updated_at": "2026-11-14T05:49:30.695Z",
- "updated_vn": "14/11/2026 12:49",
+ "updated_at": "2026-11-21T05:49:26.524Z",
+ "updated_vn": "21/11/2026 12:49",
  "nguon_file": "Cong no bao hiem  .xlsx",
- "nguon_cap_nhat": "14/11/2026 12:13"
+ "nguon_cap_nhat": "21/11/2026 12:24"
 }
