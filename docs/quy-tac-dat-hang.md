@@ -1,6 +1,6 @@
 # Quy tắc đặt hàng xe
 
-Cập nhật: 04/11/2026. Dùng khi lập đề xuất cho một đợt đặt hàng hoặc khi HTV yêu cầu đặt bổ sung.
+Cập nhật: 19/11/2026. Dùng khi lập đề xuất cho một đợt đặt hàng hoặc khi HTV yêu cầu đặt bổ sung.
 Bản dễ đọc cho GĐBH/chi nhánh (trang web riêng tư): https://claude.ai/artifact/VZnNwVdwA357a6pA7v6eN2 — nguồn `2. Dat hang/Quy tac dat hang.html`; sửa quy tắc ở đây thì nhớ sửa và đăng lại trang đó.
 Quy định điều chuyển xe và công nợ nội bộ: xem file Word "Quy dinh xu ly kho ton lau" (folder `2. Dat hang/`), tóm tắt ở mục 7.
 
@@ -86,6 +86,13 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 - [ ] Không tự bỏ model nào nếu không có lý do rõ ràng.
 
 ## 6. Quy tắc riêng
+
+- **Mùa Tết** (người dùng chốt 19/11/2026):
+  - Khoảng 10 ngày trước Tết gần như không bán được, vì khách không kịp đăng ký biển số. Mốc bán cuối tính là Tết − 10 ngày (Tết 2027: 06/02, mốc bán cuối khoảng 27/01).
+  - Sau Tết khoảng 1–2 tuần bán rất ít.
+  - Khi xem số xe sắp đặt, lập bảng tồn theo tuần (tồn chưa báo cáo DMS + BO + LXX, trừ báo bán dự kiến). Tính đến mốc bán cuối, rồi xem số xe nằm qua Tết.
+  - Xe từ xác nhận đơn đến về kho mất trung vị 12 ngày (90% trong vòng 40 ngày). Từ nhận cọc đến báo bán mất 8–10 ngày (khách vay ngân hàng thì lâu hơn). Vì vậy đơn đặt trong khoảng 1 tháng trước mốc bán cuối (vd. kỳ 05/01 với Tết đầu tháng 2) phần lớn nằm qua Tết: đặt ở mức tối thiểu hoặc đề nghị hoãn.
+  - Khi HTV yêu cầu đặt bổ sung sát kỳ kế hoạch cuối năm, có thể đề nghị tính phần bổ sung thay cho đơn kế hoạch kỳ sau, để không dồn xe trước Tết.
 
 - **Creta N Line CBU**: HTV đã bỏ quy định kẹp CKD (người dùng báo 04/11/2026), không cần đặt Creta CKD kèm khi đặt N Line nhập khẩu.
 - **Nhận diện Creta CKD**: màu có chữ "CKD" (xem mục Creta trong `module-hanghoa.md`).
