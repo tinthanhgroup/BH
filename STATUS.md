@@ -34,6 +34,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 21/11/2026 | FB Ads mục 6 "Quy ước đặt tên": còn 3 cỡ chữ (16/14/12–13px), khối công thức thành nhãn nền nhạt, ví dụ 14px; quy chuẩn Giao diện 1 thêm "tối đa 3 cỡ chữ trong một khối" |
 | 21/11/2026 | Tab 4–9 đợt 2: sửa chung `giao-dien-1.css` (ô tìm kiếm, màu nhấn, nhãn, chữ ≥ 12px), FB Ads ghi số kiểu Việt, bỏ cột STT/"Hôm nay"/emoji; chấm lại tăng 0,8–2,0 điểm/trang; xem `docs/giao-dien-va-phan-quyen.md` |
 | 21/11/2026 | Tab 4–9 chuyển sang "Giao diện 1 – tinh tế", chỉ dùng trên máy tính: thêm `giao-dien-1.css`, nạp vào 9 trang module tab 4–7 ; xem `docs/giao-dien-va-phan-quyen.md` mục "Quy ước giao diện chung" |
 | 11/11/2026 | Tab Hàng hóa (`index.html`): ô LXX và Đã phân xe cộng xe LXX đã khớp khách DS nợ, ô LXX ghi "(N đã phân xe)"; bảng Thực hiện chỉ tiêu chuyển khách đó sang cột Đã phân xe; mobile giữ nguyên; xem `docs/module-hanghoa.md` mục "LXX đã phân khách" |
