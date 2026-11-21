@@ -16,16 +16,16 @@
   /* Ô chi nhánh đầu trang (lưới, không phải bảng) */
   .branch-grid{display:grid;grid-template-columns:170px repeat(4,1fr);align-items:stretch;padding:4px 0 6px;}
   .bg-blank{font-size:11px;color:var(--muted);display:flex;align-items:flex-end;padding:0 4px 16px 12px;}
-  .branch-pill{border-radius:11px;padding:12px 10px;margin:0 6px 12px;cursor:pointer;border:1.5px solid var(--border);text-align:center;background:var(--card2);}
+  .branch-pill{border-radius:8px;padding:12px 10px;margin:0 6px 12px;cursor:pointer;border:1px solid var(--border);text-align:center;background:var(--card);}
   .branch-pill:hover{border-color:var(--accent);}
-  .branch-pill.active{border-color:var(--accent);border-top:3px solid var(--accent);background:var(--card);box-shadow:var(--shadow);}
+  .branch-pill.active{border-color:var(--accent);background:var(--accent-soft);}
   .branch-pill.disabled{cursor:not-allowed;opacity:.5;}
   .branch-pill .bp-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
-  .branch-pill .bp-num{font-size:30px;font-weight:800;font-family:var(--mono);color:var(--text);line-height:1.1;}
+  .branch-pill .bp-num{font-size:26px;font-weight:500 !important;color:var(--text);line-height:1.2;}
   .branch-pill .bp-sub{font-size:11px;color:var(--muted);}
   .branch-pill .bp-pending{font-size:12px;color:var(--muted);font-weight:600;padding:14px 0 8px;}
   .bg-label{font-size:12px;color:var(--muted);font-weight:500;display:flex;align-items:center;padding:9px 8px 9px 12px;}
-  .bg-value{text-align:center;font-weight:600;color:var(--text);border-left:1px solid var(--border);padding:9px 6px;font-size:13px;font-variant-numeric:tabular-nums;}
+  .bg-value{text-align:center;font-weight:600;color:var(--text);border-left:1px solid var(--border);padding:9px 6px;font-size:14px;font-variant-numeric:tabular-nums;}
   .bg-value .pct{color:var(--muted);font-weight:500;font-size:11.5px;}
   .bg-value .pct.t-canh{color:var(--amber);font-weight:600;} .bg-value .pct.t-xau{color:var(--red);font-weight:600;}
   .bg-value.empty{color:var(--muted);font-weight:400;font-size:11px;}
@@ -54,7 +54,7 @@
   .badge.neutral{background:var(--card2);color:var(--muted);}
   .bar-cell{display:flex;align-items:center;gap:8px;}
   .bar-track{flex:1;height:8px;background:var(--card2);border-radius:4px;overflow:hidden;min-width:60px;}
-  .bar-fill{height:100%;background:var(--cam);border-radius:4px;}
+  .bar-fill{height:100%;background:#c5cdf0;border-radius:4px;}
 
   .chart-box{position:relative;height:260px;}
   .chart-box.small{height:200px;}
@@ -67,13 +67,16 @@
   /* Thanh ngữ cảnh: chi nhánh + ngày đang xem (28/10/2026) */
   .ctx-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--text);padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--border);}
   .ctx-bar .sub{font-size:12px;color:var(--muted);}
-  .ctx-sep{color:var(--border);}
+  .ctx-sep{color:var(--muted);}
   .ctx-bar select{margin-left:4px;}
   .bg-note{font-size:11px;color:var(--muted);margin-top:6px;}
   .hang-ngay .panel{display:flex;flex-direction:column;}
   .hang-ngay .chart-box{flex:1;min-height:240px;}
   .kt-block{margin-top:16px;padding-top:12px;border-top:1px solid var(--border);}
   .kt-block:first-of-type{border-top:none;padding-top:0;}
+  /* 22/11/2026: số đếm cạnh tiêu đề là chữ phụ (13px, xám) */
+  .panel h3 .dem,.panel summary .dem{font-size:13px;color:var(--muted);font-weight:400 !important;}
+  .hang-ngay td:first-child{white-space:nowrap;}
 </style>
 <link rel="stylesheet" href="giao-dien-1.css"><!-- Giao diện 1 – tinh tế (21/11/2026): nạp sau cùng để ghi đè -->
 </head>
@@ -96,9 +99,9 @@
     <div class="bg-note" id="branchNote"></div>
   </div>
 
-  <div class="grid3 hang-ngay">
+  <div class="grid2 hang-ngay">
     <div class="panel">
-      <h3><span class="chart-num">2</span> Đi trễ ngày <span class="ngay-chon"></span> <span id="todayTreCount" class="t-canh"></span></h3>
+      <h3><span class="chart-num">2</span> Đi trễ <span id="todayTreCount" class="dem"></span></h3>
       <div class="table-wrap ngan">
         <table id="todayTreTable">
           <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Buổi</th><th class="num">Giờ vào</th><th class="num">Trễ</th></tr></thead>
@@ -107,7 +110,7 @@
       </div>
     </div>
     <div class="panel">
-      <h3><span class="chart-num">3</span> Nghỉ / vắng ngày <span class="ngay-chon"></span> <span id="todayVangCount" style="color:var(--muted);font-weight:500;"></span></h3>
+      <h3><span class="chart-num">3</span> Nghỉ / vắng <span id="todayVangCount" class="dem"></span></h3>
       <div class="table-wrap ngan">
         <table id="todayVangTable">
           <thead><tr><th>Nhân viên</th><th>Phòng ban</th><th>Tổ/Nhóm</th></tr></thead>
@@ -115,11 +118,12 @@
         </table>
       </div>
     </div>
-    <div class="panel">
-      <h3><span class="chart-num">4</span> Xu hướng 10 ngày gần nhất</h3>
-      <p class="desc">Lượt đi trễ và số người nghỉ mỗi ngày, toàn chi nhánh</p>
-      <div class="chart-box"><canvas id="chartTreTheoNgay"></canvas></div>
-    </div>
+  </div>
+
+  <div class="panel">
+    <h3><span class="chart-num">4</span> Xu hướng 10 ngày gần nhất</h3>
+    <p class="desc">Lượt đi trễ và số người nghỉ mỗi ngày, toàn chi nhánh</p>
+    <div class="chart-box" style="height:240px;"><canvas id="chartTreTheoNgay"></canvas></div>
   </div>
 
   <div class="panel">
@@ -172,7 +176,7 @@
     <summary>Kiểm tra dữ liệu &amp; thiết lập giờ chuẩn <span id="kiemTraDem"></span></summary>
     <div class="kt-block" id="chuaKhopPanel">
       <div class="sub-title" id="chuaKhopSummary">Nhân sự chưa khớp với dữ liệu Nhân sự</div>
-    <p class="desc">Danh sách nhân viên xuất hiện trong file chấm công nhưng KHÔNG khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.</p>
+    <p class="desc" title="Danh sách nhân viên xuất hiện trong file chấm công nhưng không khớp được với sheet Nhân sự (theo Mã NV hoặc tên+chi nhánh). Thường do lệch tên/thiếu dấu giữa 2 nguồn, hoặc người đó chưa được thêm vào sheet Nhân sự. Sửa lại tên hoặc bổ sung Mã NV trong sheet Nhân sự rồi chạy lại đồng bộ để hết cảnh báo.">Có trong file chấm công nhưng chưa khớp với sheet Nhân sự (lệch tên, thiếu Mã NV); sửa sheet Nhân sự rồi chạy lại đồng bộ.</p>
     <div class="table-wrap">
     <table id="chuaKhopTable">
       <thead><tr>
@@ -187,7 +191,7 @@
     </div>
     <div class="kt-block" id="trungVanTayPanel">
       <div class="sub-title" id="trungVanTaySummary">Cần kiểm tra thủ công</div>
-    <p class="desc">Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp KHÔNG tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).</p>
+    <p class="desc" title="Hệ thống tự động phát hiện và gộp các trường hợp 1 người có nhiều Mã NV (do đăng ký nhiều dấu vân tay) — dựa vào cùng tên + chi nhánh, mã nào có ít ngày công hẳn so với mã còn lại sẽ tự gộp vào mã có nhiều công nhất, không cần chỉnh sửa gì trong sheet Nhân sự. Danh sách dưới đây chỉ hiện những trường hợp không tự gộp được — tức cả 2 (hoặc nhiều) mã đều có nhiều ngày công gần nhau — nhiều khả năng là 2 người khác nhau trùng tên trong cùng chi nhánh, cần bạn xác nhận lại thủ công (nếu đúng là 1 người, hãy sửa tên trong sheet Nhân sự cho hơi khác nhau, ví dụ thêm số thứ tự, để hệ thống không nhầm lẫn).">Nhiều Mã NV cùng tên, cùng chi nhánh, số công gần nhau nên không tự gộp được; cần xác nhận là 1 người hay 2 người.</p>
     <div class="table-wrap">
     <table id="trungVanTayTable">
       <thead><tr>
@@ -201,7 +205,7 @@
     </div>
     <div class="kt-block" id="thieuChamCongPanel">
       <div class="sub-title" id="thieuChamCongSummary">Nhân sự đang làm nhưng chưa có dữ liệu chấm công</div>
-    <p class="desc">Danh sách người ĐANG LÀM VIỆC theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng KHÔNG xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.</p>
+    <p class="desc" title="Danh sách người đang làm việc theo sheet Nhân sự (đúng chi nhánh đang xem) nhưng không xuất hiện dù chỉ 1 dòng trong file chấm công. Lý do thường gặp: nhân viên mới chưa đăng ký vân tay trên máy, nhân sự văn phòng/quản lý không bắt buộc chấm công máy, hoặc admin chưa upload đủ dữ liệu tháng.">Đang làm việc theo sheet Nhân sự nhưng chưa có dòng nào trong file chấm công.</p>
     <div class="table-wrap">
     <table id="thieuChamCongTable">
       <thead><tr>
@@ -234,7 +238,7 @@
 
 
 <script>
-if(window.Chart){ Chart.defaults.font.family = "'Be Vietnam Pro', sans-serif"; Chart.defaults.color = '#5E6E8A'; }
+if(window.Chart){ Chart.defaults.font.family = "Inter, system-ui, sans-serif"; Chart.defaults.color = '#6b7280'; }
 let ATT = [];
 const CHAMCONG_JSON_URL = 'https://raw.githubusercontent.com/tinthanhgroup/BH/main/chamcong.json';
 let NHANSU_ACTIVE = []; // toàn bộ nhân sự đang làm việc, dùng để đối chiếu ngược (ai không có dữ liệu chấm công)
@@ -422,12 +426,12 @@ function renderPhongTable(rows){
       <td class="num">${g.sotrechieu}</td>
       <td class="num">
         <div class="bar-cell">
-          <span style="min-width:20px;text-align:right;font-weight:700;color:${g.sotre>0?'var(--bad)':'var(--ink-soft)'}">${g.sotre}</span>
+          <span style="min-width:20px;text-align:right;color:${g.sotre>0?'var(--text)':'var(--muted)'}">${g.sotre}</span>
           <div class="bar-track"><div class="bar-fill" style="width:${(g.sotre/maxTre*100).toFixed(0)}%"></div></div>
         </div>
       </td>
       <td class="num">${g.tyle.toFixed(0)}%</td>
-      <td class="num">${g.giotb.toFixed(1)}h</td>
+      <td class="num">${g.giotb.toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})}h</td>
       <td class="num">${g.sosom}</td>
       <td class="num">${g.sothieu}</td>
     </tr>`).join('');
@@ -548,7 +552,7 @@ const barValueLabelPlugin = {
         if(value === null || value === undefined) return;
         ctx.save();
         ctx.fillStyle = dataset.labelColor || dataset.borderColor || dataset.backgroundColor;
-        ctx.font = "700 10px 'Be Vietnam Pro', sans-serif";
+        ctx.font = "500 11px Inter, system-ui, sans-serif";
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText(value, bar.x, bar.y - 3);
@@ -569,13 +573,14 @@ function renderCharts(rows){
     data:{
       labels: ngayListDay.map(fmtNgayNgan),
       datasets:[
-        { label:'Trễ', data:treTheoNgay, backgroundColor:'#E0793C', borderRadius:4, maxBarThickness:24 },
-        { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#9FCBEA', labelColor:'#2E5C8A', borderRadius:4, maxBarThickness:24 },
+        { label:'Trễ', data:treTheoNgay, backgroundColor:'#3b5bdb', labelColor:'#6b7280', borderRadius:4, maxBarThickness:24 },
+        { label:'Nghỉ', data:nghiTheoNgay, backgroundColor:'#c5cdf0', labelColor:'#6b7280', borderRadius:4, maxBarThickness:24 },
       ]
     },
     options: {
-      plugins:{ legend:{display:true, position:'top', align:'end', labels:{boxWidth:10, font:{size:11}}} },
-      scales:{ y:{beginAtZero:true, ticks:{precision:0}, grid:{color:'#E4EAF3'}}, x:{grid:{display:false}} },
+      maintainAspectRatio:false,
+      plugins:{ legend:{display:true, position:'top', align:'end', labels:{boxWidth:10, font:{size:12}}} },
+      scales:{ y:{beginAtZero:true, ticks:{precision:0}, grid:{color:'#eef0f4'}}, x:{grid:{display:false}} },
       layout:{ padding:{top:16} },
     },
     plugins:[barValueLabelPlugin],
@@ -597,7 +602,7 @@ function populateTodaySelect(rows){
 
 function renderToday(rows){
   const dayRows = rows.filter(r=>r.ngay===selectedDate);
-  document.querySelectorAll('.ngay-chon').forEach(el=>{ el.textContent = selectedDate ? fmtNgay(selectedDate) : '–'; });
+  document.querySelectorAll('.ngay-chon').forEach(el=>{ el.textContent = selectedDate ? fmtNgay(selectedDate) : '–'; }); // .ngay-chon không còn trong tiêu đề 2–3 (ngày đã có ở thanh ngữ cảnh, 22/11/2026)
 
   const treList = [];
   dayRows.forEach(r=>{
@@ -605,7 +610,7 @@ function renderToday(rows){
     if(r.trechieu) treList.push({ten:r.ten_hr, phong:r.phong, buoi:'Chiều', gio:r.giovao_chieu, phut:r.phutTreChieu, ngoaiLe:r.ngoaiLe});
   });
   treList.sort((a,b)=>b.phut-a.phut);
-  document.getElementById('todayTreCount').textContent = treList.length ? `(${treList.length} lượt)` : '';
+  document.getElementById('todayTreCount').textContent = treList.length ? `· ${treList.length} lượt` : '';
   document.getElementById('todayTreTbody').innerHTML = treList.length ? treList.map(t=>`
     <tr>
       <td>${t.ten}${t.ngoaiLe?' <span class="badge neutral">chế độ riêng</span>':''}</td>
@@ -618,7 +623,7 @@ function renderToday(rows){
   const laChuNhat = dayRows.some(r=>r.thu==='CN');
   const vangList = laChuNhat ? [] : dayRows.filter(r=>!r.cocong).map(r=>({ten:r.ten_hr, phong:r.phong, to:r.to}));
   vangList.sort((a,b)=>a.ten.localeCompare(b.ten));
-  document.getElementById('todayVangCount').textContent = vangList.length ? `(${vangList.length} người)` : '';
+  document.getElementById('todayVangCount').textContent = vangList.length ? `· ${vangList.length} người` : '';
   document.getElementById('todayVangTbody').innerHTML = laChuNhat
     ? `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:12px;">Chủ nhật - ngày nghỉ theo lịch, không tính vắng</td></tr>`
     : (vangList.length ? vangList.map(v=>`
@@ -704,14 +709,14 @@ function renderBranchKPI(){
   }
 
   // % chỉ tô màu khi vượt ngưỡng chú ý (canh) / xấu (xau) — ngưỡng hiển thị, đặt 28/10/2026
-  const pctNguong = (v, so, canh, xau) => `<span class="pct ${v>=xau?'t-xau':v>=canh?'t-canh':''}">(${v.toFixed(so)}%)</span>`;
-  metricRow('Nghỉ/vắng (hôm nay)', '', o=>`${o.nghiHomNay}`);
-  metricRow('Đi muộn (hôm nay)', '', o=>`${o.treHomNay}`);
+  const pctNguong = (v, so, canh, xau) => `<span class="pct ${v>=xau?'t-xau':v>=canh?'t-canh':''}">(${v.toLocaleString('vi-VN',{maximumFractionDigits:0})}%)</span>`; // 22/11/2026: mọi tỷ lệ 0 chữ số thập phân
+  metricRow('Nghỉ/vắng trong ngày', '', o=>`${o.nghiHomNay}`);
+  metricRow('Đi trễ trong ngày', '', o=>`${o.treHomNay}`);
 
   cells.push(`<div class="bg-full-divider"><span>Lũy kế từ đầu tháng</span></div>`);
 
   metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} ${pctNguong(o.tyLeNghi, 0, 10, 20)}`);
-  metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} ${pctNguong(o.tyLeNVTre, 0, 20, 40)}`);
+  metricRow('NV đi trễ (%)', '', o=>`${o.soNVTre} ${pctNguong(o.tyLeNVTre, 0, 20, 40)}`);
   metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} ${pctNguong(o.tyLeTreNgayCong, 1, 10, 20)}`);
   metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat ? fmtNgay(o.ngayCapNhat) : '–'}`);
 
@@ -815,7 +820,7 @@ function renderAll(){
 function demKiemTra(){
   const n = ['chuaKhopPanel','trungVanTayPanel','thieuChamCongPanel']
     .filter(id=>document.getElementById(id).style.display !== 'none').length;
-  document.getElementById('kiemTraDem').innerHTML = n ? `<span class="t-canh">· ${n} danh sách cần xem</span>` : '';
+  document.getElementById('kiemTraDem').innerHTML = n ? `<span class="dem">· ${n} danh sách cần xem</span>` : '';
 }
 
 // Đánh lại số mục theo thứ tự các mục đang hiện (mục chưa khớp / trùng vân tay / thiếu chấm công tự ẩn khi không có gì)

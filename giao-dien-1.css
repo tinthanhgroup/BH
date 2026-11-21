@@ -58,14 +58,14 @@ table.bang-nhe thead th{background:none !important;color:var(--muted) !important
 .tag{background:#f2f3f5;color:#4b5563;border:none;}
 
 /* Bộ lọc, ô nhập, nút */
-.filters input,.filters select,select,input[type=text],input[type=search],input[type=password]{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--text);}
+.filters input,.filters select,select,input[type=text],input[type=search],input[type=password],input[type=number],input[type=time]{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--text);}
 input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 .reset-btn,.btn-clear{height:36px;padding:0 14px;font-size:14px;border-radius:6px;}
 .filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:14px;color:var(--text);background:#fff;}
 .filter-btn:hover{border-color:var(--accent);}
 .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 /* Ô tìm kiếm có biểu tượng kính lúp (Quy định nội bộ): giữ lề trái cho biểu tượng */
-.search-box input{padding-left:32px;padding-right:30px;}
+.search-box:has(svg) input{padding-left:32px;padding-right:30px;}
 
 .legend-item{font-size:12px;}
 .footnote{font-size:12px;}
@@ -87,3 +87,8 @@ input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 
 .mini-chart-sub,.pyr-label,.dep-meta,.dep-ago,.branch-subtitle,.branch-detail-line,.dep-date,.phong-label,
 .qtab .qsub,.run-badge,.trend-legend-item,.ten-phan small{font-size:12px !important;}
 .kpi .lbl,.mini-kpi .lbl{font-size:13px !important;}
+
+/* 22/11/2026 (chấm lại 4.2): tiêu đề nhỏ trong khối 14px/500, không nhỏ hơn nội dung (QUY_CHUAN dòng Cỡ chữ) */
+.sub-title{font-size:14px !important;font-weight:500 !important;color:var(--text) !important;margin:0 0 6px;}
+/* Dòng mờ trong bảng: chỉ đổi màu, không in nghiêng */
+tr.row-muted td{font-style:normal !important;}
