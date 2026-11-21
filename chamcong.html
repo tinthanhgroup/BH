@@ -500,7 +500,7 @@ function renderChuaKhop(rows){
   document.getElementById('chuaKhopTbody').innerHTML = list.length ? list.map(v=>`
     <tr>
       <td>${v.ten}</td>
-      <td>${v.manv||'—'}</td>
+      <td>${v.manv||'–'}</td>
       <td>${v.chinhanh}</td>
       <td class="num">${v.songay}</td>
     </tr>`).join('') : '';
@@ -696,7 +696,7 @@ function renderBranchKPI(){
     cells.push(`<div class="bg-label ${rowClass||''}">${label}</div>`);
     COT.forEach(b=>{
       if(!BRANCHES_CO_DATA.has(b)){
-        cells.push(`<div class="bg-value empty ${rowClass||''}">—</div>`);
+        cells.push(`<div class="bg-value empty ${rowClass||''}">–</div>`);
       } else {
         cells.push(`<div class="bg-value ${rowClass||''}">${getValueHtml(branchOverview(b))}</div>`);
       }
@@ -713,7 +713,7 @@ function renderBranchKPI(){
   metricRow('Ngày nghỉ / Tổng công', '', o=>`${o.soNghi}/${o.tongCongCanCham} ${pctNguong(o.tyLeNghi, 0, 10, 20)}`);
   metricRow('NV đi muộn (%)', '', o=>`${o.soNVTre} ${pctNguong(o.tyLeNVTre, 0, 20, 40)}`);
   metricRow('Trễ / tổng ngày làm', '', o=>`${o.soLuotTre}/${o.tongCongThucTe} ${pctNguong(o.tyLeTreNgayCong, 1, 10, 20)}`);
-  metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat ? fmtNgay(o.ngayCapNhat) : '—'}`);
+  metricRow('Cập nhật', 'bg-updated', o=>`${o.ngayCapNhat ? fmtNgay(o.ngayCapNhat) : '–'}`);
 
   const grid = document.getElementById('branchGrid');
   grid.style.gridTemplateColumns = `170px repeat(${Math.max(COT.length,1)},1fr)`;

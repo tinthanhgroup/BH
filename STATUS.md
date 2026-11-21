@@ -34,7 +34,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
-| 21/11/2026 | Tab 4–9 chuyển sang "Giao diện 1 – tinh tế", chỉ dùng trên máy tính: thêm `giao-dien-1.css`, nạp vào 9 trang module tab 4–7 (chưa push); xem `docs/giao-dien-va-phan-quyen.md` mục "Quy ước giao diện chung" |
+| 21/11/2026 | Tab 4–9 đợt 2: sửa chung `giao-dien-1.css` (ô tìm kiếm, màu nhấn, nhãn, chữ ≥ 12px), FB Ads ghi số kiểu Việt, bỏ cột STT/"Hôm nay"/emoji; chấm lại tăng 0,8–2,0 điểm/trang; xem `docs/giao-dien-va-phan-quyen.md` |
+| 21/11/2026 | Tab 4–9 chuyển sang "Giao diện 1 – tinh tế", chỉ dùng trên máy tính: thêm `giao-dien-1.css`, nạp vào 9 trang module tab 4–7 ; xem `docs/giao-dien-va-phan-quyen.md` mục "Quy ước giao diện chung" |
 | 11/11/2026 | Tab Hàng hóa (`index.html`): ô LXX và Đã phân xe cộng xe LXX đã khớp khách DS nợ, ô LXX ghi "(N đã phân xe)"; bảng Thực hiện chỉ tiêu chuyển khách đó sang cột Đã phân xe; mobile giữ nguyên; xem `docs/module-hanghoa.md` mục "LXX đã phân khách" |
 | 11/11/2026 | Tucson Hybrid 3 chi nhánh đã xong; Palisade LX3 (ký HĐ đến 31/10) bỏ theo dõi, admin đã báo cáo HTV |
 | 11/11/2026 | Đã gửi email HTV xin gia hạn đặt đủ tồn tối thiểu CV157 đến 20/11; chờ HTV phản hồi |

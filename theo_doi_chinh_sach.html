@@ -314,8 +314,9 @@
 
   /* Đầu bảng theo chuẩn chung: nền xanh, chữ trắng */
   .policy-table thead th{color:#fff;border-bottom:none;font-weight:600;letter-spacing:0;}
-  .policy-table tr.policy-row.is-active{background:#eef3fd;}
-  .policy-table tr.policy-row.is-active:hover{background:#e3ebfb;}
+  /* 21/11/2026 (Giao diện 1): dòng còn hiệu lực không tô nền, nhãn "Đang áp dụng" đủ phân biệt */
+  .policy-table tr.policy-row.is-active{background:none;}
+  .policy-table tr.policy-row.is-active:hover{background:#f7f8fa;}
 </style>
 <link rel="stylesheet" href="giao-dien-1.css"><!-- Giao diện 1 – tinh tế (21/11/2026): nạp sau cùng để ghi đè -->
 </head>
@@ -326,7 +327,6 @@
     <div>
       <p>Hyundai Thành Công Việt Nam · Danh mục công văn theo hiệu lực áp dụng</p>
     </div>
-    <div class="today-tag" id="todayTag"></div>
   </div>
 
   <div class="filter-bar" id="filterBar"></div>
@@ -1580,7 +1580,7 @@ function renderTable(t){
 }
 
 function render(){
-  document.getElementById('todayTag').textContent = 'Hôm nay: ' + fmtDate(TODAY);
+  // 21/11/2026: bỏ ô "Hôm nay" (Giao diện 1, thông tin thừa)
   const list = document.getElementById('list');
 
   // Dựng bộ lọc phân loại từ danh sách category thực có trong policies
@@ -1612,13 +1612,11 @@ function render(){
 
   const rows = withStatus.map(({ p, originalIdx, isActive }, displayIdx) => {
     const i = originalIdx;
-    const stt = displayIdx + 1;
     return `
     <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
-      <td class="col-stt">${stt}</td>
-      <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '—'}</span>` : (p.category || '—')}</td>
+      <td class="col-dept">${isActive ? `<span class="dept-pill">${p.category || '–'}</span>` : (p.category || '–')}</td>
       <td class="col-title">
-        <div class="name">${p.name}${p.important ? ' <span class="important-badge">⭐ Nổi bật</span>' : ''}${isNewPolicy(p) ? ' <span class="new-badge">🆕 Mới</span>' : ''}</div>
+        <div class="name">${p.name}${p.important ? ' <span class="important-badge">Nổi bật</span>' : ''}${isNewPolicy(p) ? ' <span class="new-badge">Mới</span>' : ''}</div>
       </td>
       <td class="col-code">${(p.code || '').split(' · ')[0]}</td>
       <td class="col-updated">${p.updated}</td>
@@ -1635,7 +1633,7 @@ function render(){
       </td>
     </tr>
     <tr class="policy-detail-row" data-idx="${i}">
-      <td colspan="8">
+      <td colspan="7">
         <div class="policy-body" id="body-${i}">
           <div class="policy-body-inner">
             <div class="summary-grid">
@@ -1673,7 +1671,6 @@ function render(){
   list.innerHTML = `
     <table class="policy-table">
       <colgroup>
-        <col style="width:40px">
         <col style="width:150px">
         <col>
         <col style="width:200px">
@@ -1684,7 +1681,6 @@ function render(){
       </colgroup>
       <thead>
         <tr>
-          <th>STT</th>
           <th>Phòng ban</th>
           <th>Chính sách</th>
           <th>Số công văn</th>

@@ -58,8 +58,29 @@ table.bang-nhe thead th{background:none !important;color:var(--muted) !important
 .filters input,.filters select,select,input[type=text],input[type=search],input[type=password]{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;color:var(--text);}
 input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 .reset-btn,.btn-clear{height:36px;padding:0 14px;font-size:14px;border-radius:6px;}
-.filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:14px;}
+.filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:14px;color:var(--text);background:#fff;}
+.filter-btn:hover{border-color:var(--accent);}
 .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* Ô tìm kiếm có biểu tượng kính lúp (Quy định nội bộ): giữ lề trái cho biểu tượng */
+.search-box input{padding-left:32px;padding-right:30px;}
 
 .legend-item{font-size:12px;}
 .footnote{font-size:12px;}
+
+/* Màu nhấn chỉ cho liên kết, nút, mục đang chọn — chữ thường (tên chi nhánh, tháng) dùng màu chữ chính */
+:root{--navy:var(--text);}
+/* Khối cùng hàng không kéo cao bằng nhau */
+.grid2,.grid3{align-items:start;}
+/* Nhãn theo trang (Chính sách HTV): bo 4px, không viền */
+.status,.dept-pill,.important-badge,.new-badge{border-radius:4px !important;padding:2px 8px !important;font-size:12px !important;border:none !important;}
+/* Ghi chú: không viền trái màu */
+.note{border-left:none !important;background:#f7f8fa !important;border-radius:6px;}
+
+/* Cỡ chữ: biến cỡ chữ của các trang + chữ phụ tối thiểu 12px (không áp chữ nằm trong cột biểu đồ) */
+:root{--fs-base:14px;--fs-sm:13px;--fs-xs:12px;}
+.small,.phu,.loai,.kpi .sub,.kpi .sub2,
+.bg-blank,.branch-pill .bp-sub,.bg-value .pct,.bg-value.empty,.bg-full-divider span,.bg-updated .bg-label,.bg-updated .bg-value,
+.config-item label,.config-note,.bg-note,
+.mini-chart-sub,.pyr-label,.dep-meta,.dep-ago,.branch-subtitle,.branch-detail-line,.dep-date,.phong-label,
+.qtab .qsub,.run-badge,.trend-legend-item,.ten-phan small{font-size:12px !important;}
+.kpi .lbl,.mini-kpi .lbl{font-size:13px !important;}

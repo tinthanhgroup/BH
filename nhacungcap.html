@@ -179,23 +179,23 @@ function render(){
     const isNewGroup = i===0 || (rows[i-1].chiNhanh+'|'+rows[i-1].nhom) !== groupKey;
     if(!isNewGroup){
       html += `<tr>
-        <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
-        <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
-        <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
-        <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
-        <td class="col-ghichu">${r.ghiChu || '<span class="dash">—</span>'}</td>
+        <td class="col-hangmuc">${r.hangMuc || '<span class="dash">–</span>'}</td>
+        <td class="col-lienhe">${r.lienHe || '<span class="dash">–</span>'}</td>
+        <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">–</span>'}</td>
+        <td class="col-congty">${r.congTy || '<span class="dash">–</span>'}</td>
+        <td class="col-ghichu">${r.ghiChu || '<span class="dash">–</span>'}</td>
       </tr>`;
       continue;
     }
     let span = 1;
     while(i+span<rows.length && (rows[i+span].chiNhanh+'|'+rows[i+span].nhom)===groupKey) span++;
     html += `<tr>
-      <td class="col-nhom" rowspan="${span}">${r.nhom ? `<span class="tag">${r.nhom}</span>` : '<span class="dash">—</span>'}</td>
-      <td class="col-hangmuc">${r.hangMuc || '<span class="dash">—</span>'}</td>
-      <td class="col-lienhe">${r.lienHe || '<span class="dash">—</span>'}</td>
-      <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">—</span>'}</td>
-      <td class="col-congty">${r.congTy || '<span class="dash">—</span>'}</td>
-      <td class="col-ghichu">${r.ghiChu || '<span class="dash">—</span>'}</td>
+      <td class="col-nhom" rowspan="${span}">${r.nhom ? `<span class="tag">${r.nhom}</span>` : '<span class="dash">–</span>'}</td>
+      <td class="col-hangmuc">${r.hangMuc || '<span class="dash">–</span>'}</td>
+      <td class="col-lienhe">${r.lienHe || '<span class="dash">–</span>'}</td>
+      <td class="col-sdt">${r.sdt ? `<a href="tel:${r.sdt.replace(/\s+/g,'')}">${r.sdt}</a>` : '<span class="dash">–</span>'}</td>
+      <td class="col-congty">${r.congTy || '<span class="dash">–</span>'}</td>
+      <td class="col-ghichu">${r.ghiChu || '<span class="dash">–</span>'}</td>
     </tr>`;
   }
   document.getElementById('tbody').innerHTML = html;

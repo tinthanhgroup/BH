@@ -93,7 +93,7 @@
     <p class="desc">Very Hot trên cùng, trong từng nhóm khách lâu chưa cập nhật nhất lên đầu. Cột "Chưa cập nhật": vàng từ 7 ngày, đỏ từ 14 ngày (khách Hot lâu không cập nhật cần làm nguội hoặc chăm sóc lại). Không hiện toàn bộ lead (xem đầy đủ trên ứng dụng CRM). Chi nhánh in nghiêng = trống ở CRM, suy luận theo email nhân viên.</p>
     <table>
       <thead><tr>
-        <th>#</th><th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
+        <th>Tên</th><th>SĐT</th><th>Chi nhánh</th><th>Nhân viên</th><th>Model</th>
         <th>Tiến trình hiện tại</th><th>Trạng thái</th><th>Cập nhật gần nhất</th><th class="num">Chưa cập nhật</th>
       </tr></thead>
       <tbody id="hotTable"></tbody>
@@ -105,7 +105,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">5</span> Theo Nhóm nguồn</summary>
       <table>
-        <thead><tr><th>#</th><th>Nhóm nguồn</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
+        <thead><tr><th>Nhóm nguồn</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
         <tbody id="sourceTable"></tbody>
       </table>
     </details>
@@ -113,7 +113,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">6</span> Theo Chi nhánh</summary>
       <table>
-        <thead><tr><th>#</th><th>Chi nhánh</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
+        <thead><tr><th>Chi nhánh</th><th class="num">Lead</th><th class="num">Ký HĐ</th><th class="num">Tỷ lệ</th></tr></thead>
         <tbody id="branchTable"></tbody>
       </table>
     </details>
@@ -121,7 +121,7 @@
     <details class="panel" open>
       <summary><span class="chart-num">7</span> Model quan tâm nhất</summary>
       <table>
-        <thead><tr><th>#</th><th>Model</th><th class="num">Lead</th><th class="num">Ký HĐ</th></tr></thead>
+        <thead><tr><th>Model</th><th class="num">Lead</th><th class="num">Ký HĐ</th></tr></thead>
         <tbody id="modelTable"></tbody>
       </table>
     </details>
@@ -131,7 +131,7 @@
     <summary><span class="chart-num">8</span> Lead theo Nhân viên phụ trách</summary>
     <p class="desc">Lead công ty = nhóm nguồn Facebook, Website, TikTok (công ty chạy và chia về). Nguồn khác = nhóm "Khác" (TVBH, Hotline, HTV…). Cột "% lead công ty" tô vàng khi từ 80% và có từ 10 lead: TVBH gần như chỉ nhập lead công ty chia về, chưa nhập khách tự khai thác.</p>
     <table>
-      <thead><tr><th>#</th><th>Nhân viên</th><th>Chi nhánh</th><th class="num">Số lead</th><th class="num">Lead công ty</th><th class="num">Nguồn khác</th><th class="num">Chưa ghi nguồn</th><th class="num">% lead công ty</th><th class="num">Đã ký HĐ</th></tr></thead>
+      <thead><tr><th>Nhân viên</th><th>Chi nhánh</th><th class="num">Số lead</th><th class="num">Lead công ty</th><th class="num">Nguồn khác</th><th class="num">Chưa ghi nguồn</th><th class="num">% lead công ty</th><th class="num">Đã ký HĐ</th></tr></thead>
       <tbody id="staffTable"></tbody>
     </table>
   </details>
@@ -140,7 +140,7 @@
     <summary><span class="chart-num">9</span> Dữ liệu thiếu (<span id="missingCount">0</span> lead thiếu ít nhất 1 thông tin)</summary>
     <p class="desc">Lead thiếu Tiến trình, Model hoặc Nguồn theo từng nhân viên, để GĐBH chấn chỉnh trong giai đoạn triển khai CRM. "% lead thiếu" tô đỏ khi từ 50%.</p>
     <table>
-      <thead><tr><th>#</th><th>Chi nhánh</th><th>Nhân viên</th><th class="num">Tổng lead</th><th class="num">Thiếu Tiến trình</th><th class="num">Thiếu Model</th><th class="num">Thiếu Nguồn</th><th class="num">% lead thiếu</th></tr></thead>
+      <thead><tr><th>Chi nhánh</th><th>Nhân viên</th><th class="num">Tổng lead</th><th class="num">Thiếu Tiến trình</th><th class="num">Thiếu Model</th><th class="num">Thiếu Nguồn</th><th class="num">% lead thiếu</th></tr></thead>
       <tbody id="missingTable"></tbody>
     </table>
   </details>
@@ -413,24 +413,22 @@ function renderSourceTable(list){
   const rows = groupCount(list, l=>l.nhomNguon);
   document.getElementById('sourceTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td style="font-weight:600;">${r.key}</td>
       <td class="num">${r.total}</td>
       <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
       <td class="num">${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderBranchTable(list){
   const rows = theoThuTuCN(groupCount(list, l=>l.chiNhanh), r=>r.key);
   document.getElementById('branchTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td style="font-weight:600;">${r.key}</td>
       <td class="num">${r.total}</td>
       <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
       <td class="num">${fmtPct(r.won,r.total)}</td>
-    </tr>`).join('') : `<tr><td colspan="5" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function staffLabel(l){
@@ -462,27 +460,25 @@ function renderStaffTable(list){
     const pct = r.total>0 ? Math.round(r.cty/r.total*100) : 0;
     const canh = pct>=80 && r.total>=10;
     return `<tr>
-      <td>${i+1}</td>
       <td style="font-weight:600;">${r.label}</td>
-      <td>${r.chinhanh||'<span class="dash">—</span>'}</td>
+      <td>${r.chinhanh||'<span class="dash">–</span>'}</td>
       <td class="num">${r.total}</td>
       <td class="num">${so(r.cty)}</td>
       <td class="num">${so(r.khac)}</td>
       <td class="num">${so(r.trong)}</td>
       <td class="num">${canh?`<span class="badge canh">${pct}%</span>`:pct+'%'}</td>
       <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
-    </tr>`;}).join('') : `<tr><td colspan="9" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`;}).join('') : `<tr><td colspan="8" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 function renderModelTable(list){
   const rows = groupCount(list, l=>l.model);
   document.getElementById('modelTable').innerHTML = rows.length ? rows.map((r,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td style="font-weight:600;">${r.key}</td>
       <td class="num">${r.total}</td>
       <td class="num" style="color:var(--green);font-weight:700;">${r.won||''}</td>
-    </tr>`).join('') : `<tr><td colspan="4" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="3" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // Thứ tự ưu tiên trạng thái — Veryhot lên đầu bảng chi tiết để GĐBH
@@ -508,7 +504,7 @@ function trangThaiBadge(t){
   if(n==='veryhot') return '<span class="badge" style="font-weight:800;">Very Hot</span>';
   if(n==='hot') return '<span class="badge">Hot</span>';
   if(n==='warm') return '<span class="badge">Warm</span>';
-  return t ? t : '<span class="dash">—</span>';
+  return t ? t : '<span class="dash">–</span>';
 }
 
 function renderHotList(list){
@@ -523,16 +519,15 @@ function renderHotList(list){
   document.getElementById('hotEmptyMsg').style.display = sorted.length ? 'none' : 'block';
   document.getElementById('hotTable').innerHTML = sorted.map((l,i)=>{
     const d = daysSince(l);
-    const ngay = d===null ? '<span class="dash">—</span>'
+    const ngay = d===null ? '<span class="dash">–</span>'
       : d>=14 ? `<span class="badge xau">${d} ngày</span>` : d>=7 ? `<span class="badge canh">${d} ngày</span>` : d+' ngày';
     return `<tr>
-      <td>${i+1}</td>
-      <td style="font-weight:600;">${l.ten||'<span class="dash">—</span>'}${l.isTest?' <span class="badge">test</span>':''}</td>
-      <td>${maskPhone(l.sdtHienThi)||'<span class="dash">—</span>'}</td>
-      <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">—</span>'}</td>
+      <td style="font-weight:600;">${l.ten||'<span class="dash">–</span>'}${l.isTest?' <span class="badge">test</span>':''}</td>
+      <td>${maskPhone(l.sdtHienThi)||'<span class="dash">–</span>'}</td>
+      <td${l.chiNhanhSuyLuan?' style="font-style:italic;"':''}>${l.chiNhanh||'<span class="dash">–</span>'}</td>
       <td>${staffLabel(l)}</td>
-      <td>${l.model||'<span class="dash">—</span>'}</td>
-      <td>${l.tienTrinh||'<span class="dash">—</span>'}</td>
+      <td>${l.model||'<span class="dash">–</span>'}</td>
+      <td>${l.tienTrinh||'<span class="dash">–</span>'}</td>
       <td>${trangThaiBadge(l.trangThai)}</td>
       <td style="white-space:nowrap;">${fmtNgayGio(l._ngayCapNhatTs)}</td>
       <td class="num">${ngay}</td>
@@ -729,9 +724,9 @@ function _escHtml(s){
     if(!el) return;
     const w = (_weeklyNoModel[el.dataset.b]||[])[+el.dataset.w];
     if(!w || !w.noModel.length) return;
-    const rows = w.noModel.map((l,i)=>`<tr><td>${i+1}</td><td>${_escHtml(l.ten||'—')}</td><td>${_escHtml(staffLabel(l))}</td></tr>`).join('');
+    const rows = w.noModel.map((l,i)=>`<tr><td>${_escHtml(l.ten||'—')}</td><td>${_escHtml(staffLabel(l))}</td></tr>`).join('');
     tip.innerHTML = `<div class="nomodel-tip-title">${String(w.noModel.length).padStart(2,'0')} khách chưa nhập model</div>
-      <table class="bang-nhe"><thead><tr><th>#</th><th>Tên khách hàng</th><th>Nhân viên</th></tr></thead><tbody>${rows}</tbody></table>`;
+      <table class="bang-nhe"><thead><tr><th>Tên khách hàng</th><th>Nhân viên</th></tr></thead><tbody>${rows}</tbody></table>`;
     tip.style.display = 'block';
     place(e);
   });
@@ -763,7 +758,6 @@ function renderMissingDataTable(list){
   document.getElementById('missingTable').innerHTML = rows.length ? rows.map((r,i)=>{
     const pct = Math.round(r.thieuAny/r.total*100);
     return `<tr>
-      <td>${i+1}</td>
       <td style="font-weight:600;">${r.chiNhanh}</td>
       <td>${r.label}</td>
       <td class="num">${r.total}</td>
@@ -771,7 +765,7 @@ function renderMissingDataTable(list){
       <td class="num">${so(r.thieuModel)}</td>
       <td class="num">${so(r.thieuNguon)}</td>
       <td class="num">${pct>=50?`<span class="badge xau">${pct}%</span>`:pct+'%'}</td>
-    </tr>`;}).join('') : `<tr><td colspan="8" class="empty">Không có lead thiếu dữ liệu</td></tr>`;
+    </tr>`;}).join('') : `<tr><td colspan="7" class="empty">Không có lead thiếu dữ liệu</td></tr>`;
 }
 
 // Parse "HH:mm:ss dd/MM/yyyy" (chuỗi ngày giờ crm.json trả về) -> timestamp

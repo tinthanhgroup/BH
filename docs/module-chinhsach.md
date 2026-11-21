@@ -12,7 +12,7 @@
 
 **Bộ lọc `category`** (nút bấm dạng pill) **tự ẩn** nếu tất cả policy chỉ thuộc đúng 1 category — chỉ hiện khi có ≥2 category khác nhau trong mảng, tránh giao diện rối khi chưa cần.
 
-**Badge "🆕 Mới" (thêm 09/2026):** hiện đúng `NEW_BADGE_DAYS` (=3) ngày kể từ ngày `updated` của policy, tự ẩn sau đó — tính theo `TODAY` qua hàm `isNewPolicy()`, không hardcode ngày hết hạn. Hiện ở 2 nơi:
+**Badge "Mới" (thêm 09/2026; bỏ biểu tượng 🆕/⭐, cột STT, ô "Hôm nay" và nền xanh dòng còn hiệu lực 21/11/2026 theo Giao diện 1):** hiện đúng `NEW_BADGE_DAYS` (=3) ngày kể từ ngày `updated` của policy, tự ẩn sau đó — tính theo `TODAY` qua hàm `isNewPolicy()`, không hardcode ngày hết hạn. Hiện ở 2 nơi:
 1. Ngay trong tiêu đề chính sách (cạnh `important-badge` nếu có) trong `theo_doi_chinh_sach.html` — tự động, không cần sửa gì thêm khi thêm policy mới.
 2. Trên nhãn tab "6. Chính sách HTV" ở `index.html` — **PHẢI sửa tay** hằng số `POLICY_LATEST_UPDATE` (khai báo ngay sau khối `<div class="tabs">`, dòng ~322) thành ngày `updated` mới nhất trong `policies[]`, vì tab 6 lazy-load iframe nên không đọc được mảng đó trước khi người dùng bấm vào — đây là **bản sao chép tay ngày, trùng lặp có chủ đích** giống cơ chế `KCK_DATE` giữa `index.html`/`mobile.html`. Quên cập nhật hằng số này thì badge trên tab sẽ không hiện (nhưng badge trong tiêu đề chính sách vẫn đúng vì tự tính). `mobile.html` không có tab Chính sách HTV nên không cần sửa.
 

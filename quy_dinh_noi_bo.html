@@ -240,7 +240,6 @@
     <div>
       <p>Hyundai Tín Thanh · Tra cứu quy định/quy chế nội bộ theo hiệu lực áp dụng</p>
     </div>
-    <div class="today-tag" id="todayTag"></div>
   </div>
 
   <div class="toolbar">
@@ -1037,7 +1036,7 @@ function flattenSearchText(p){
 }
 
 function render(){
-  document.getElementById('todayTag').textContent = 'Hôm nay: ' + fmtDate(TODAY);
+  // 21/11/2026: bỏ ô "Hôm nay" (Giao diện 1, thông tin thừa)
   const list = document.getElementById('list');
 
   const categories = [...new Set(quyDinh.map(p => p.category).filter(Boolean))];
@@ -1077,15 +1076,13 @@ function render(){
 
   const rows = withStatus.map(({ p, originalIdx, isActive, isNew }, displayIdx) => {
     const i = originalIdx;
-    const stt = displayIdx + 1;
     return `
     <tr class="policy-row${isActive ? ' is-active' : ''}" data-idx="${i}" onclick="toggle(${i})">
-      <td class="col-stt">${stt}</td>
-      <td class="col-dept">${p.category ? `<span class="tag">${p.category}</span>` : '—'}</td>
+      <td class="col-dept">${p.category ? `<span class="tag">${p.category}</span>` : '–'}</td>
       <td class="col-title">
         <div class="name">${highlight(p.name, q)}${isNew ? '<span class="badge canh" style="margin-left:6px;vertical-align:middle;">Mới</span>' : ''}</div>
       </td>
-      <td class="col-code">${highlight(p.code || '—', q)}</td>
+      <td class="col-code">${highlight(p.code || '–', q)}</td>
       <td class="col-updated">${p.updated}</td>
       <td class="col-range">${p.fromLabel} — ${p.toLabel}</td>
       <td class="col-status">
@@ -1100,7 +1097,7 @@ function render(){
       </td>
     </tr>
     <tr class="policy-detail-row" data-idx="${i}">
-      <td colspan="8">
+      <td colspan="7">
         <div class="policy-body" id="body-${i}">
           <div class="policy-body-inner">
             <div class="summary-grid">
@@ -1129,7 +1126,6 @@ function render(){
   list.innerHTML = `
     <table class="policy-table">
       <colgroup>
-        <col style="width:44px">
         <col style="width:170px">
         <col>
         <col style="width:100px">
@@ -1140,7 +1136,6 @@ function render(){
       </colgroup>
       <thead>
         <tr>
-          <th>STT</th>
           <th>Phân loại</th>
           <th>Quy định</th>
           <th>Số hiệu</th>

@@ -16,8 +16,8 @@
   thead th{white-space:normal;}
   tbody td{vertical-align:top;}
   tbody tr.xau{background:#fdf4f4;}
-  /* Cột số căn phải: bảng cảnh báo (cột 4–6) và các khung chi phí theo chi nhánh */
-  table.warn-table th:nth-child(n+4):nth-child(-n+6), table.warn-table td:nth-child(n+4):nth-child(-n+6),
+  /* Cột số căn phải: bảng cảnh báo (cột 3–5; bỏ cột STT 21/11/2026) và các khung chi phí theo chi nhánh */
+  table.warn-table th:nth-child(n+3):nth-child(-n+5), table.warn-table td:nth-child(n+3):nth-child(-n+5),
   .budget-box:not(.budget-box-thang) th, .budget-box:not(.budget-box-thang) td{text-align:right;font-variant-numeric:tabular-nums;}
   /* Nhãn: "Tốt" để trung tính (chỉ tô khi bất thường); tên cũ canhbao / na */
   .badge.tot{background:var(--card2);color:var(--muted);}
@@ -136,7 +136,7 @@
     <div>
       <div class="sub" id="updatedText">Đang tải dữ liệu…</div>
     </div>
-    <a class="huongdan-link" href="#quyUocTen">📋 Quy ước đặt tên chiến dịch</a>
+    <a class="huongdan-link" href="#quyUocTen">Quy ước đặt tên chiến dịch</a>
   </div>
 
   <div class="kpi-row" id="kpiRow"></div>
@@ -172,15 +172,15 @@
   <div class="panel">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
       <h3 style="margin:0;"><span class="chart-num">3</span> Cảnh báo hiệu quả theo Chiến dịch</h3>
-      <button class="reset-btn" onclick="xuatExcelCanhBao()">⬇️ Xuất Excel</button>
+      <button class="reset-btn" onclick="xuatExcelCanhBao()">Xuất Excel</button>
     </div>
     <p class="desc" id="warnDesc"></p>
     <table class="warn-table">
       <colgroup>
-        <col style="width:4%"><col style="width:11%"><col style="width:33%">
+        <col style="width:12%"><col style="width:36%">
         <col style="width:12%"><col style="width:12%"><col style="width:12%"><col style="width:16%">
       </colgroup>
-      <thead><tr><th>STT</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả (nghìn đ)</th><th>Trạng thái</th></tr></thead>
+      <thead><tr><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Kết quả (Messenger bắt đầu)</th><th>Chi phí / Kết quả (nghìn đ)</th><th>Trạng thái</th></tr></thead>
       <tbody id="warnTable"></tbody>
     </table>
   </div>
@@ -190,7 +190,7 @@
     <p class="desc">Toàn bộ chỉ số tương tác, cộng dồn theo khoảng thời gian đang chọn ở trên.</p>
     <table>
       <thead><tr>
-        <th>STT</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Lượt click Link</th><th>Xem Video</th>
+        <th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Lượt click Link</th><th>Xem Video</th>
         <th>Tương tác bài viết</th><th>Reaction</th><th>Like</th><th>Comment</th>
         <th>Messenger bắt đầu</th><th>Messenger trả lời</th><th>Tổng kết nối Messenger</th>
       </tr></thead>
@@ -202,7 +202,7 @@
     <summary><span class="chart-num">5</span> Nhật ký theo ngày (<span id="logCount">0</span>)</summary>
     <p class="desc">Từng dòng = 1 chiến dịch trong 1 ngày, mới nhất lên đầu.</p>
     <table>
-      <thead><tr><th>STT</th><th>Ngày</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
+      <thead><tr><th>Ngày</th><th>Chi nhánh</th><th>Chiến dịch</th><th>Chi phí (nghìn đ)</th><th>Messenger bắt đầu</th><th>Click Link</th><th>Xem Video</th></tr></thead>
       <tbody id="logTable"></tbody>
     </table>
     <div class="empty" id="emptyMsg" style="display:none;">Không có dữ liệu khớp bộ lọc.</div>
@@ -270,15 +270,14 @@ let state = { range: 0, chiNhanh: '' }; // range: số ngày gần nhất, 0 = t
 
 function fmtVND(n){ return Math.round(n||0).toLocaleString('vi-VN') + 'đ'; }
 // ── Định dạng số riêng cho từng bảng (thêm 23/09/2026, theo yêu cầu người dùng) ──
-// Bảng 1 (biểu đồ xu hướng): làm tròn TRIỆU đồng, 1 số thập phân (vd 0.5, 1.2).
-function fmtTrieu(n){ return (Math.round((n||0)/100000)/10).toFixed(1); }
+// Bảng 1 (biểu đồ xu hướng): làm tròn TRIỆU đồng, 1 số thập phân (vd 0,5; 1,2).
+function fmtTrieu(n){ return (Math.round((n||0)/100000)/10).toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1}); } // 21/11/2026: dấu phẩy thập phân (Giao diện 1)
 function fmtTrieuNhan(n){ return fmtTrieu(n) + ' triệu'; }
 // Các bảng còn lại (2/3/4/5): làm tròn CHỤC NGÀN đồng, hiển thị theo đơn vị nghìn
-// đồng, dùng dấu phẩy phân cách nghìn (vd 1,260) — khác fmtVND (đơn vị đồng, dấu
-// chấm kiểu Việt) vì người dùng yêu cầu rõ định dạng riêng cho các bảng chi tiết.
+// đồng (vd 1.260) — khác fmtVND (đơn vị đồng) vì người dùng yêu cầu đơn vị riêng cho các bảng chi tiết.
 function fmtNgan(n){
   const nghin = Math.round((n||0)/10000) * 10; // làm tròn chục ngàn, quy đổi ra đơn vị nghìn đồng
-  return nghin.toLocaleString('en-US');
+  return nghin.toLocaleString('vi-VN'); // 21/11/2026: ngăn nghìn bằng dấu chấm (Giao diện 1), thay dấu phẩy cũ
 }
 
 // ── Màu & thứ tự hiển thị theo chi nhánh (dùng cho biểu đồ xếp chồng + legend, thêm 23/09/2026) ──
@@ -431,10 +430,10 @@ function renderKPI(list){
   const soCanhBao = camps.filter(c=>c.loai==='xau' || c.loai==='canhbao').length;
   const kpis = [
     {label:'Tổng chi phí', num:fmtVND(totalChiPhi), sub:'trong khoảng đang chọn', cls:''},
-    {label:'Kết quả Messenger', num:totalKQ, sub:'cuộc trò chuyện bắt đầu', cls:''},
-    {label:'Chi phí / Kết quả TB', num: chiPhiMoiKQ!=null ? fmtVND(chiPhiMoiKQ) : '—', sub:'trung bình toàn bộ', cls:''},
-    {label:'Chiến dịch cần chú ý', num:soCanhBao, sub:'trên tổng '+camps.length+' chiến dịch', cls: soCanhBao>0?'red':''},
-    {label:'Tổng tương tác bài viết', num:totalEngage, sub:'like + comment + click...', cls:''},
+    {label:'Kết quả Messenger', num:totalKQ.toLocaleString('vi-VN'), sub:'cuộc trò chuyện bắt đầu', cls:''},
+    {label:'Chi phí / Kết quả TB', num: chiPhiMoiKQ!=null ? fmtVND(chiPhiMoiKQ) : '–', sub:'trung bình toàn bộ', cls:''},
+    {label:'Chiến dịch cần chú ý', num:soCanhBao.toLocaleString('vi-VN'), sub:'trên tổng '+camps.length+' chiến dịch', cls: soCanhBao>0?'red':''},
+    {label:'Tổng tương tác bài viết', num:totalEngage.toLocaleString('vi-VN'), sub:'like + comment + click...', cls:''},
   ];
   document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
     <div class="kpi ${k.cls}">
@@ -709,14 +708,13 @@ function renderWarnTable(list){
   const badgeMap = {tot:'tot', canhbao:'canhbao', xau:'xau', na:'na'};
   document.getElementById('warnTable').innerHTML = camps.length ? camps.map((c,i)=>`
     <tr class="${c.loai==='xau'?'xau':''}">
-      <td>${i+1}</td>
       <td>${esc(c.chiNhanh)}</td>
       <td style="font-weight:700;color:var(--navy);">${tenChienDichHtml(c.chiNhanh, c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
       <td>${fmtNgan(c.chiPhi)}</td>
       <td>${c.messengerBatDau}</td>
-      <td>${c.chiPhiMoiKQ!=null ? fmtNgan(c.chiPhiMoiKQ) : '<span class="dash">—</span>'}</td>
+      <td>${c.chiPhiMoiKQ!=null ? fmtNgan(c.chiPhiMoiKQ) : '<span class="dash">–</span>'}</td>
       <td><span class="badge ${badgeMap[c.loai]}">${c.nhan}</span></td>
-    </tr>`).join('') : `<tr><td colspan="7" class="empty">Không có dữ liệu</td></tr>`;
+    </tr>`).join('') : `<tr><td colspan="6" class="empty">Không có dữ liệu</td></tr>`;
 }
 
 // ── Panel 4: chi tiết chỉ số theo chiến dịch ──
@@ -724,7 +722,6 @@ function renderDetailTable(list){
   const camps = aggregateByCampaign(list);
   document.getElementById('detailTable').innerHTML = camps.length ? camps.map((c,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td>${esc(c.chiNhanh)}</td>
       <td style="font-weight:700;color:var(--navy);">${tenChienDichHtml(c.chiNhanh, c.chienDich)}${trangThaiBadge(c.chiNhanh, c.chienDich)}</td>
       <td>${fmtNgan(c.chiPhi)}</td>
@@ -750,7 +747,6 @@ function renderLogTable(list){
   document.getElementById('emptyMsg').style.display = sorted.length ? 'none' : 'block';
   document.getElementById('logTable').innerHTML = sorted.map((x,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td>${fmtNgayVN(x.ngay)}</td>
       <td>${esc(x.chiNhanh||'')}</td>
       <td style="font-weight:700;">${esc(x.chienDich)}</td>

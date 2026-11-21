@@ -112,7 +112,7 @@ function nguonLink(u){
 }
 // Khoảng ngày "a – b": không để dấu gạch đứng riêng một dòng
 function fmtHan(s){ return esc(s || '—').replace(/ ([–-]) /g, ' $1&nbsp;'); }
-function fmtDate(iso){ if(!iso) return '—'; const p = iso.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : iso; }
+function fmtDate(iso){ if(!iso) return '–'; const p = iso.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : iso; }
 
 // Lăn bánh = niêm yết − giảm trực tiếp + trước bạ (sau hỗ trợ) + phí cố định
 function lanBanh(r){
@@ -172,7 +172,7 @@ function hyRow(h, cuoi){
     + '<td class="num">' + (h.niem != null ? fmt(h.niem) : '<span class="na">chưa rõ</span>') + '</td>'
     + '<td>' + kmCell + '</td>'
     + '<td class="num">' + (h.ktri != null ? '<b>' + fmt(h.ktri) + '</b>' : '<span class="na">chưa rõ</span>') + '</td>'
-    + '<td class="small muted">—</td>'
+    + '<td class="small muted">–</td>'
     + '<td class="num">' + (h.lb != null ? '<div class="lb">' + fmt(h.lb) + '</div>' : '<span class="na">chưa rõ</span>') + '</td>'
     + '<td class="small muted">Tín Thanh Nha Trang<div>' + h.n + ' xe ký ' + HY_NGAY + ' ngày</div></td>'
     + '</tr>';

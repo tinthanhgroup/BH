@@ -63,7 +63,7 @@
   #diaDiemTable td.vr{cursor:help;}
   #diaDiemTable .so-lon{font-family:var(--mono);font-size:18px;color:var(--navy);}
   tr.dong-tong td{border-top:1.5px solid var(--border);}
-  #bienDongTable td:nth-child(2),#bienDongTable td:nth-child(3),#bienDongTable td:nth-child(5),#bienDongTable td:nth-child(6){white-space:nowrap;}
+  #bienDongTable td:nth-child(1),#bienDongTable td:nth-child(2),#bienDongTable td:nth-child(4),#bienDongTable td:nth-child(5){white-space:nowrap;} /* 21/11/2026: bỏ cột STT, dồn số thứ tự cột */
   #diaDiemTable .pos{color:var(--green);} #diaDiemTable .neg{color:var(--red);}
   @media (max-width:900px){ .hang-2,.hang-sau{grid-template-columns:1fr;} }
   .chart-box{position:relative;height:230px;overflow:hidden;}
@@ -179,7 +179,7 @@
       <p class="desc">Nhận việc / nghỉ việc trên toàn hệ thống</p>
       <div class="table-wrap cao">
         <table>
-          <thead><tr><th>STT</th><th>Ngày</th><th>Loại</th><th>Nhân sự</th><th>Địa điểm</th><th>Khối</th><th>Chức vụ</th></tr></thead>
+          <thead><tr><th>Ngày</th><th>Loại</th><th>Nhân sự</th><th>Địa điểm</th><th>Khối</th><th>Chức vụ</th></tr></thead>
           <tbody id="bienDongTable"></tbody>
         </table>
       </div>
@@ -369,7 +369,7 @@ function renderOrgKpi(){
 
   // Bảng theo địa điểm
   function nhanDinhBien(loc){
-    if(loc==='Phan Rang') return '<span class="dash">—</span>';
+    if(loc==='Phan Rang') return '<span class="dash">–</span>';
     const items = [];
     if(loc==='Bảo Lộc'){
       const r1 = dinhBienRowMerged('Bảo Lộc', ['Đồng','SCC'], 'Đồng+SCC');
@@ -921,7 +921,6 @@ function renderBienDong(){
 
   document.getElementById('bienDongTable').innerHTML = top.map((e,i)=>`
     <tr>
-      <td>${i+1}</td>
       <td>${fmtNgayVN(e.ngay)}</td>
       <td><span class="tag">${e.loai}</span></td>
       <td><strong>${e.ten}</strong>${tenureBadge(e)}</td>
@@ -955,7 +954,7 @@ function renderDinhBien(){
     <div class="kpi"><div class="num">${totalHienCo}</div><div class="lbl">Hiện có (KTV+Quản đốc)</div></div>
     <div class="kpi${totalThieu>0?' canh':''}"><div class="num">${totalThieu}</div><div class="lbl">Tổng thiếu (${soCaThieu} vị trí)</div></div>
     <div class="kpi"><div class="num">+${totalDu}</div><div class="lbl">Tổng dư</div></div>
-    <div class="kpi${worst?' canh':''}"><div class="num" style="font-size:20px;">${worst? worst.to+' '+worst.loc : '—'}</div><div class="lbl">Thiếu nhiều nhất${worst? ' ('+worst.gap+')':''}</div></div>
+    <div class="kpi${worst?' canh':''}"><div class="num" style="font-size:20px;">${worst? worst.to+' '+worst.loc : '–'}</div><div class="lbl">Thiếu nhiều nhất${worst? ' ('+worst.gap+')':''}</div></div>
   `;
 
   const clsNhan = {cao:'badge xau', theodoi:'badge canh', ondinh:'tag', thua:'tag'};
@@ -1025,7 +1024,7 @@ function renderGianTiepTables(){
   sub.forEach(d=>{ tong[nhom(d)] = (tong[nhom(d)]||0)+1; });
   const dong = Object.keys(tong).filter(k=>k!=='Vệ sinh xe').sort((a,b)=>tong[b]-tong[a]);
   if(tong['Vệ sinh xe']) dong.push('Vệ sinh xe');
-  const o = (loc, k) => { const n = sub.filter(d=>d.diadiem===loc && nhom(d)===k).length; return n ? n : '<span class="dash">—</span>'; };
+  const o = (loc, k) => { const n = sub.filter(d=>d.diadiem===loc && nhom(d)===k).length; return n ? n : '<span class="dash">–</span>'; };
   document.getElementById('giantiepTable').innerHTML = `
     <thead><tr><th>Chức vụ</th>${locs.map(l=>`<th class="num">${l}</th>`).join('')}<th class="num">Tổng</th></tr></thead>
     <tbody>
