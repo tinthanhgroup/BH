@@ -226,7 +226,7 @@ function daysSince(l){
   return l._ngayCapNhatTs ? Math.floor((Date.now()-l._ngayCapNhatTs)/86400000) : null;
 }
 function fmtNgayGio(ts){
-  if(!ts) return '—';
+  if(!ts) return '–';
   const d = new Date(ts), z = n=>String(n).padStart(2,'0');
   return `${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`;
 }
@@ -234,7 +234,7 @@ function fmtNgayGio(ts){
 // Số 0 trong bảng: hiện "0" màu nhạt (thống nhất giữa các bảng)
 function so(n){ return n ? n : '<span class="so0">0</span>'; }
 
-function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '—'; }
+function fmtPct(n,d){ return d>0 ? Math.round(n/d*100)+'%' : '–'; }
 
 // Màu từng tầng phễu — cycle nếu số bước nhiều hơn số màu.
 // Một tông xanh (theo --blue) nhạt dần theo bước; bước "Ký hợp đồng" tô xanh lá. Chữ trắng trên 3 tầng đậm.
@@ -724,7 +724,7 @@ function _escHtml(s){
     if(!el) return;
     const w = (_weeklyNoModel[el.dataset.b]||[])[+el.dataset.w];
     if(!w || !w.noModel.length) return;
-    const rows = w.noModel.map((l,i)=>`<tr><td>${_escHtml(l.ten||'—')}</td><td>${_escHtml(staffLabel(l))}</td></tr>`).join('');
+    const rows = w.noModel.map((l,i)=>`<tr><td>${_escHtml(l.ten||'–')}</td><td>${_escHtml(staffLabel(l))}</td></tr>`).join('');
     tip.innerHTML = `<div class="nomodel-tip-title">${String(w.noModel.length).padStart(2,'0')} khách chưa nhập model</div>
       <table class="bang-nhe"><thead><tr><th>Tên khách hàng</th><th>Nhân viên</th></tr></thead><tbody>${rows}</tbody></table>`;
     tip.style.display = 'block';

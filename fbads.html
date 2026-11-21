@@ -321,7 +321,7 @@ function tenChienDichHtml(chiNhanh, chienDich){
 }
 function fmtNgayVN(iso){
   const m = (iso||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'—');
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : (iso||'–');
 }
 function uniqSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
 // Định dạng ngày "yyyy-MM-dd" theo GIỜ LOCAL của trình duyệt (phát hiện lỗi
@@ -576,7 +576,7 @@ function phanLoaiChienDich(ten){
 function thangCuaNgay(iso){ return (iso||'').slice(0,7); } // "yyyy-MM"
 function fmtThangVN(ym){
   const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
-  return m ? `Tháng ${parseInt(m[2],10)}/${m[1]}` : (ym||'—');
+  return m ? `Tháng ${parseInt(m[2],10)}/${m[1]}` : (ym||'–');
 }
 // Nhãn tháng RÚT GỌN, không kèm năm (thêm 23/09/2026, theo yêu cầu người dùng:
 // "Tháng 7" thay vì "Tháng 07/2026") — chỉ dùng cho trục X ở chế độ "Theo tháng"
@@ -584,7 +584,7 @@ function fmtThangVN(ym){
 // đầy đủ như cũ vì không nằm cạnh nhau liên tiếp để dễ hiểu lầm khác năm.
 function fmtThangNgan(ym){
   const m = (ym||'').match(/^(\d{4})-(\d{2})$/);
-  return m ? `Tháng ${parseInt(m[2],10)}` : (ym||'—');
+  return m ? `Tháng ${parseInt(m[2],10)}` : (ym||'–');
 }
 // (đổi 23/09/2026, theo thiết kế người dùng cung cấp — ảnh mẫu) Mỗi chi nhánh 1
 // bảng DUY NHẤT (không phải 3 bảng con nữa): cột = Tháng + CSC + Khác + CDR, dòng

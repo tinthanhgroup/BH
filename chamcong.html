@@ -305,7 +305,7 @@ function ngayKey(s){
 function soSanhNgay(a, b){ const x = ngayKey(a), y = ngayKey(b); return x < y ? -1 : x > y ? 1 : 0; }
 // Hiển thị dd/mm/yyyy (đủ) hoặc dd/mm (nhãn biểu đồ)
 function fmtNgay(s){
-  const d = ngayDate(s); if(!d) return s || '—';
+  const d = ngayDate(s); if(!d) return s || '–';
   return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
 }
 function fmtNgayNgan(s){ return fmtNgay(s).slice(0,5); }
@@ -338,7 +338,7 @@ function computeDerived(rows, cfg){
     const vesom = r.giora_cuoi && raCuoiMin!==null && raCuoiMin < cfg.raChieu - cfg.nguong;
     const phutTreSang = tresang ? (vaoSangMin - cfg.vaoSang) : 0;
     const phutTreChieu = trechieu ? (vaoChieuMin - vaoChieuChuan) : 0;
-    return Object.assign({}, r, {ditre, tresang, trechieu, vesom, phutTreSang, phutTreChieu, quenChamCong, phong: r.phong_hr, to: r.to_hr || '—', ngoaiLe: !!PERSON_EXCEPTIONS[r.ten_hr]});
+    return Object.assign({}, r, {ditre, tresang, trechieu, vesom, phutTreSang, phutTreChieu, quenChamCong, phong: r.phong_hr, to: r.to_hr || '–', ngoaiLe: !!PERSON_EXCEPTIONS[r.ten_hr]});
   });
 }
 
@@ -597,7 +597,7 @@ function populateTodaySelect(rows){
 
 function renderToday(rows){
   const dayRows = rows.filter(r=>r.ngay===selectedDate);
-  document.querySelectorAll('.ngay-chon').forEach(el=>{ el.textContent = selectedDate ? fmtNgay(selectedDate) : '—'; });
+  document.querySelectorAll('.ngay-chon').forEach(el=>{ el.textContent = selectedDate ? fmtNgay(selectedDate) : '–'; });
 
   const treList = [];
   dayRows.forEach(r=>{

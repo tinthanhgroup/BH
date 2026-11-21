@@ -111,7 +111,7 @@ function nguonLink(u){
   return '<a href="' + esc(href) + '" target="_blank" rel="noopener" title="' + esc(u) + '">' + esc(host) + '</a>';
 }
 // Khoảng ngày "a – b": không để dấu gạch đứng riêng một dòng
-function fmtHan(s){ return esc(s || '—').replace(/ ([–-]) /g, ' $1&nbsp;'); }
+function fmtHan(s){ return esc(s || '–').replace(/ ([–-]) /g, ' $1&nbsp;'); }
 function fmtDate(iso){ if(!iso) return '–'; const p = iso.split('-'); return p.length === 3 ? p[2]+'/'+p[1]+'/'+p[0] : iso; }
 
 // Lăn bánh = niêm yết − giảm trực tiếp + trước bạ (sau hỗ trợ) + phí cố định

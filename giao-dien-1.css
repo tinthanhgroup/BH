@@ -27,6 +27,9 @@ h1,h2,h3,h4,h5,h6,summary,thead th,b,strong,
 [style*="font-weight: 600"],[style*="font-weight: 700"],[style*="font-weight: 800"],
 [style*="font-weight:bold"]{font-weight:500 !important;}
 
+/* Bề ngang tối đa 1280px — bằng BC tuần và KQKD (người dùng chốt 21/11/2026) */
+.wrap{max-width:1280px;}
+
 /* Khối */
 .panel{border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow);padding:16px 20px;margin-bottom:16px;}
 .panel h3,.panel summary{font-size:16px;color:var(--text);margin-bottom:8px;}
