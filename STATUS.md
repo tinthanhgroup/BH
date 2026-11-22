@@ -34,6 +34,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 22/11/2026 | Nhân sự (4.1): bỏ mục "Điểm nóng nhân sự" (trùng bảng 1), các mục sau đánh lại số; danh sách HĐ không tô đỏ dòng đã hết hạn; xem `docs/module-nhansu.md` |
 | 22/11/2026 | Tab 4–9: thêm lại cột STT cho mọi bảng danh sách (người dùng chốt, thay quyết định bỏ STT 21/11), tự đánh bằng CSS trong `giao-dien-1.css`; sửa chung sau chấm điểm (ô trống "–", bỏ kẻ dọc/chữ nghiêng, chữ SVG 12px, 4 nhãn lệch màu); xem `docs/giao-dien-va-phan-quyen.md` |
 | 22/11/2026 | Tab 4–9 chốt 3 cỡ chữ 12 / 13 / 16px (chữ phụ / nội dung / tiêu đề khối), số thẻ chỉ số 26px: sửa `giao-dien-1.css`, chamcong, fbads; quy chuẩn ở QUY_CHUAN.md (Giao diện 1) |
 | 22/11/2026 | Chấm công (4.2) sửa theo chấm điểm Giao diện 1 (5,7/10): bảng 2–3 lưới 2 cột, biểu đồ hàng riêng, số chi nhánh 26px, bỏ ngày/màu cam ở tiêu đề, màu biểu đồ xanh–xám, số thập phân dấu phẩy, "Đi trễ" thống nhất; `giao-dien-1.css`: tiêu đề nhỏ 14px, ô số/giờ 36px, bỏ chữ nghiêng |

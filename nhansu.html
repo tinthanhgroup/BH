@@ -173,7 +173,7 @@
     <table id="diaDiemTable"></table>
   </div>
 
-  <div class="hang-2">
+  <!-- 22/11/2026: bỏ mục "Điểm nóng nhân sự" (đã có ở bảng 1, dòng Định biên KTV) — mục 2 rộng hết hàng -->
     <div class="panel">
       <h3><span class="chart-num">2</span> Biến động 45 ngày gần nhất</h3>
       <p class="desc">Nhận việc / nghỉ việc trên toàn hệ thống</p>
@@ -184,20 +184,14 @@
         </table>
       </div>
     </div>
-    <div class="panel">
-      <h3><span class="chart-num">3</span> Điểm nóng nhân sự</h3>
-      <p class="desc">Thừa/thiếu định biên KTV theo doanh thu nhân công 2025 (chi tiết ở mục 5)</p>
-      <div class="risk-grid" id="riskGrid"></div>
-    </div>
-  </div>
 
   <details class="panel" id="hdPanel">
-    <summary><span class="chart-num">4</span> <span id="hdTitle">Danh sách hợp đồng hết hạn</span></summary>
+    <summary><span class="chart-num">3</span> <span id="hdTitle">Danh sách hợp đồng hết hạn</span></summary>
     <div id="hdCanXuLyBox" style="margin-top:10px;"></div>
   </details>
 
   <details class="panel" id="dvPanel" ontoggle="if(this.open) setTimeout(()=>window.dispatchEvent(new Event('resize')),50);">
-    <summary><span class="chart-num">5</span> Chuyên sâu khối Dịch vụ</summary>
+    <summary><span class="chart-num">4</span> Chuyên sâu khối Dịch vụ</summary>
     <p class="desc">Định biên KTV, nhân sự gián tiếp, lịch sử nghỉ việc, độ tuổi và thâm niên lao động trực tiếp</p>
 
     <div class="hang-sau">
@@ -247,7 +241,7 @@
   </details>
 
   <details class="panel">
-    <summary><span class="chart-num">6</span> Cơ cấu chi tiết theo địa điểm</summary>
+    <summary><span class="chart-num">5</span> Cơ cấu chi tiết theo địa điểm</summary>
     <p class="desc">Theo phòng, cấp bậc, khối, tính chất và nhân sự lõi</p>
     <table class="branch-table" id="branchTable"></table>
   </details>
@@ -875,9 +869,9 @@ function demThang(){
 function renderThangNay(){
   if(HD_HET_HAN.length>0){
     const soDangLam = DATA.filter(d=>d.trangthai==='Đang làm việc').length;
-    // Hết hạn lâu nhất lên đầu; nhãn đỏ = đã hết hạn, vàng = còn ≤ 30 ngày
+    // Hết hạn lâu nhất lên đầu; đã hết hạn: chữ thường (không tô, người dùng chốt 22/11/2026); vàng = còn ≤ 30 ngày
     const rows = HD_HET_HAN.slice().sort((a,b)=>a.songay-b.songay).map(h=>{
-      const trangthai = h.songay<0 ? `<span class="badge bad">Đã hết hạn ${Math.abs(h.songay)} ngày</span>`
+      const trangthai = h.songay<0 ? `Đã hết hạn ${Math.abs(h.songay).toLocaleString('vi-VN')} ngày` // 22/11/2026: không tô đỏ
         : h.songay<=30 ? `<span class="badge warn">Còn ${h.songay} ngày</span>`
         : `Còn ${h.songay} ngày`;
       const ngayHH = /^\d{4}-\d{2}-\d{2}$/.test(h.hethanhd||'') ? h.hethanhd.split('-').reverse().join('/') : (h.hethanhd||'');
@@ -982,7 +976,8 @@ function renderDinhBien(){
   thuaRows.forEach(r=> cards.push({cls:'thua', txt:`Thừa nhẹ: <b>${r.to} ${r.loc}</b> dư ${r.gap}`}));
   ondinhLocs.forEach(loc=> cards.push({cls:'ondinh', txt:`Ổn định: <b>${loc}</b> đủ định biên`}));
 
-  document.getElementById('riskGrid').innerHTML = cards.map(c=>`
+  const riskGrid = document.getElementById('riskGrid'); if(!riskGrid) return; // mục Điểm nóng đã bỏ 22/11/2026
+  riskGrid.innerHTML = cards.map(c=>`
     <div class="risk-card ${c.cls}"><div class="dot"></div><div class="txt">${c.txt}</div></div>`).join('');
 }
 
