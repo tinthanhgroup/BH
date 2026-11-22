@@ -164,7 +164,6 @@
 <body>
 <div class="wrap">
 
-  <div id="hdAlertBox"></div>
   <div class="kpi-row c6" id="kpiRow"></div>
 
   <div class="panel">
@@ -347,9 +346,7 @@ function renderOrgKpi(){
 
   const hdDaHet = HD_HET_HAN.filter(h=>h.songay<0).length;
   const hdSapHet = HD_HET_HAN.filter(h=>h.songay>=0 && h.songay<=30).length;
-  document.getElementById('hdAlertBox').innerHTML = (hdDaHet || hdSapHet) ? `
-    <div class="hd-alert" style="margin-top:0;margin-bottom:14px;">⚠ Hợp đồng lao động: <b>${hdDaHet} đã hết hạn</b> · <b>${hdSapHet} sắp hết hạn</b> (≤ 30 ngày)
-      <a onclick="moDanhSachHD()">Xem danh sách ›</a></div>` : '';
+  // 22/11/2026: bỏ dòng cảnh báo HĐ đầu trang (người dùng chốt); danh sách HĐ vẫn ở mục 3
 
   // Hàng KPI: tổng, 3 khối (tỷ trọng, so đầu năm), nghỉ việc / tuyển mới tháng này
   const deltaTong = khoiStats.reduce((a,k)=>a+k.delta,0);
