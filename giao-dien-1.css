@@ -103,3 +103,38 @@ tr.row-muted td{font-style:normal !important;}
 #diaDiemTable .so-lon{font-size:13px;font-weight:500 !important;}
 .block h4{font-size:13px !important;font-weight:500 !important;color:var(--text) !important;}
 .fb-hashtag-btn,.formula,.sbar-seg{font-size:12px !important;}
+
+/* ===== 22/11/2026 — Cột STT (người dùng chốt: mọi bảng danh sách có số thứ tự để gọi tên hạng mục) =====
+   Tự thêm cột "STT" đầu bảng bằng CSS: số tự đánh lại khi sắp xếp/lọc. Bảng có <thead> mới có STT.
+   Không đánh số: bảng ma trận chỉ tiêu (thêm class "khong-stt" vào <table>), dòng gộp ô (colspan: dòng trống, dòng chi tiết),
+   dòng nhóm/tổng (.section-head, .row-total, .dong-tong, .khong-stt). */
+table tbody{counter-reset:stt;}
+table:has(> thead):not(.khong-stt):not(#diaDiemTable):not(.branch-table) > thead > tr::before{
+  content:'';display:table-cell;width:1%;white-space:nowrap;background:var(--head);border-bottom:1px solid var(--border);padding:9px 8px 9px 12px;
+  font-size:12px;font-weight:500;color:var(--text);text-align:right;vertical-align:middle;position:sticky;top:0;}
+table:has(> thead):not(.khong-stt):not(#diaDiemTable):not(.branch-table) > thead > tr:first-child::before{content:'STT';}
+table:has(> thead):not(.khong-stt):not(#diaDiemTable):not(.branch-table) > tbody > tr::before{
+  content:'';display:table-cell;width:1%;white-space:nowrap;padding:8px 8px 8px 12px;font-size:12px;color:var(--muted);text-align:right;vertical-align:middle;}
+table:has(> thead):not(.khong-stt):not(#diaDiemTable):not(.branch-table) > tbody > tr:not(:has(> td[colspan])):not(.section-head):not(.row-total):not(.dong-tong):not(.khong-stt)::before{
+  counter-increment:stt;content:counter(stt);}
+
+/* ===== 22/11/2026 — sửa chung sau lần chấm tab 4–9 ===== */
+/* Ô trống ghi "–" */
+tbody td:empty::after{content:'–';color:var(--muted);}
+/* Bảng chỉ kẻ ngang, không kẻ dọc; ô bảng không in nghiêng */
+tbody td,thead th{border-left:none !important;border-right:none !important;}
+td,td *{font-style:normal !important;}
+/* Chữ trong biểu đồ SVG: tối thiểu 12px */
+svg text{font-size:12px;}
+/* Nhãn lệch màu chuẩn */
+.important-badge{background:#f2f3f5 !important;color:#4b5563 !important;}
+:root{--active-dot:var(--green);}
+.hd-alert{background:var(--amber-bg) !important;border:none !important;border-radius:8px;}
+.fb-hashtag-btn{background:#fff !important;color:var(--text) !important;border:1px solid var(--border) !important;}
+/* STT: dòng gộp ô (dòng chi tiết đang đóng) không chiếm chiều cao; bảng con FB Ads mục 2 chỉ đánh số ở cột Tháng */
+table > tbody > tr:has(> td[colspan])::before{padding:0 !important;}
+.budget-box:not(.budget-box-thang) table > thead > tr::before,.budget-box:not(.budget-box-thang) table > tbody > tr::before{content:none !important;display:none !important;}
+table > tbody > tr.budget-total::before{counter-increment:none !important;content:'' !important;}
+/* STT canh trên ở các bảng có ô canh trên (Quy định, Chính sách, KM đối thủ, Nhà cung cấp) */
+.policy-table > tbody > tr::before,table.km > tbody > tr::before,table.data-table > tbody > tr::before{vertical-align:top !important;padding-top:11px !important;}
+table.km > thead > tr::before{vertical-align:bottom !important;}
