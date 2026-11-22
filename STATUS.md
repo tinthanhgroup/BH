@@ -34,6 +34,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 22/11/2026 | Tab 4–9 chốt 3 cỡ chữ 12 / 13 / 16px (chữ phụ / nội dung / tiêu đề khối), số thẻ chỉ số 26px: sửa `giao-dien-1.css`, chamcong, fbads; quy chuẩn ở QUY_CHUAN.md (Giao diện 1) |
 | 22/11/2026 | Chấm công (4.2) sửa theo chấm điểm Giao diện 1 (5,7/10): bảng 2–3 lưới 2 cột, biểu đồ hàng riêng, số chi nhánh 26px, bỏ ngày/màu cam ở tiêu đề, màu biểu đồ xanh–xám, số thập phân dấu phẩy, "Đi trễ" thống nhất; `giao-dien-1.css`: tiêu đề nhỏ 14px, ô số/giờ 36px, bỏ chữ nghiêng |
 | 21/11/2026 | FB Ads mục 6 "Quy ước đặt tên": còn 3 cỡ chữ (16/14/12–13px), khối công thức thành nhãn nền nhạt, ví dụ 14px; quy chuẩn Giao diện 1 thêm "tối đa 3 cỡ chữ trong một khối" |
 | 21/11/2026 | Tab 4–9 đợt 2: sửa chung `giao-dien-1.css` (ô tìm kiếm, màu nhấn, nhãn, chữ ≥ 12px), FB Ads ghi số kiểu Việt, bỏ cột STT/"Hôm nay"/emoji; chấm lại tăng 0,8–2,0 điểm/trang; xem `docs/giao-dien-va-phan-quyen.md` |
