@@ -6,7 +6,7 @@ Chuyển nguyên văn từ `CLAUDE.md` ngày 15/10/2026. Đọc khi sửa tab/su
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (3 sub-tab, thêm 09/2026; 5.3 KM đối thủ thêm 30/10/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) · 9.KQKD (thêm 26/10/2026, chỉ Admin + TGĐ + KTT) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (3 sub-tab, thêm 09/2026; 5.3 KM đối thủ thêm 30/10/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) · 9.KQKD (thêm 26/10/2026, Admin, TGĐ, KTT, PGĐ, GĐ) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (HCNS) lẫn tab 5 (MKT/FB Ads) | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "2. Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "1. Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
@@ -19,7 +19,7 @@ Chuyển nguyên văn từ `CLAUDE.md` ngày 15/10/2026. Đọc khi sửa tab/su
 | `crm.html` | Báo cáo tổng hợp CRM (phễu chuyển đổi lead, nguồn, chi nhánh, nhân viên — dữ liệu từ CRM Bizfly), nhúng iframe trong tab 7 | Không tự có auth (như trên) — dùng chung quyền với tab Bán hàng | [docs/module-crm.md](docs/module-crm.md) |
 | `baocaotuan.html` | Báo cáo tuần chi nhánh (quá trình điều hành của GĐCN gửi TGĐ: đề xuất cần quyết, trọng tâm tuần, cải tiến, TCT giao, cảnh báo quá hạn/chưa cập nhật), nhúng iframe trong tab 8 (thêm 25/09/2026). Dữ liệu `baocaotuan.json` — **giai đoạn đầu chuyển tay từ Excel** bằng `Bao cao tuan/xlsx_to_json.ps1`, sau này Google Sheet + Apps Script ghi cùng cấu trúc | Không tự có auth (như trên) — khoá cấp tab key `bct`: **mọi tài khoản đã đăng nhập** (mở cho tất cả 19/10/2026; trước đó Admin + GĐ). Chưa đăng nhập: nút tab ẩn | [docs/module-baocaotuan.md](docs/module-baocaotuan.md) |
 | `loinhuan.html` | Bản đồ lợi nhuận gộp từng xe 2026 (mỗi xe một ô vuông tô màu; 2 tab con: theo xe báo bán để rà hỗ trợ HTV, theo xe ký để dự kiến lợi nhuận), mở từ ô KPI "Lợi nhuận gộp" cạnh ô Bảo Lộc ở tab 2 BC Bán hàng, trong cửa sổ nổi `#ln-modal` (thêm 23/10/2026; ban đầu là tab 9 riêng, rồi thẻ 12, cùng ngày chuyển thành ô KPI). Dữ liệu `loinhuan.json` (tạo tay, không tự đồng bộ) | Không tự có auth — `index.html` gác cổng bằng quyền `ln` (chỉ Admin, GĐ/PGĐ, Bán hàng; **MKT không xem**) | [docs/module-loinhuan.md](docs/module-loinhuan.md) |
-| `kqkd.html` | Đánh giá KQKD chi nhánh theo tháng (tổng quan, phòng kinh doanh, xưởng dịch vụ, lưu ý, cách tính), nhúng iframe trong tab 9 (thêm 26/10/2026, thay thẻ link trang claude.ai trong tab Admin). Giao diện + số liệu nằm trong `kqkd.enc.json` **đã mã hóa** | Hai lớp: `index.html` chỉ hiện tab với quyền `kqkd` (Admin, TGĐ); trang tự đòi **mật khẩu KQKD** để giải mã | [docs/module-kqkd.md](docs/module-kqkd.md) |
+| `kqkd.html` | Đánh giá KQKD chi nhánh theo tháng (tổng quan, phòng kinh doanh, xưởng dịch vụ, lưu ý, cách tính), nhúng iframe trong tab 9 (thêm 26/10/2026, thay thẻ link trang claude.ai trong tab Admin). Giao diện + số liệu nằm trong `kqkd.enc.json` **đã mã hóa** | Hai lớp: `index.html` chỉ hiện tab với quyền `kqkd` (Admin, TGĐ, KTT, PGĐ, GĐ); trang tự đòi **mật khẩu KQKD** để giải mã | [docs/module-kqkd.md](docs/module-kqkd.md) |
 
 ## Tab 4 (HCNS), tab 5 (MKT) và lazy-load
 
@@ -71,8 +71,8 @@ Quy ước cũ (Inter, navy `#1B4F8C`, `.chart-num` tròn), áp dụng cho trang
   | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, KQKD) |
   | `tgd` hoặc `tong giam doc` (Tổng Giám đốc, thêm 26/10/2026 — **phải xét trước** `pgd`/`gd` vì đều chứa "gd"/"giam doc") | Như Admin trừ tab Admin: Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, **KQKD** |
   | `ktt` hoặc `ke toan truong` (Kế toán trưởng, thêm 23/11/2026) | Bán hàng (kèm ô Lợi nhuận gộp), BC tuần, **KQKD** |
-  | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần |
-  | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026) |
+  | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, **KQKD** (23/11/2026) |
+  | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026), **KQKD** (23/11/2026) |
   | `hcns` / `nhan su` | HCNS, BC tuần |
   | `mkt` / `marketing` | Bán hàng, MKT, CRM, BC tuần |
   | `ban hang` (không khớp `mkt`/`marketing`) | Bán hàng, MKT, CRM, BC tuần |

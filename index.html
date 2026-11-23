@@ -1234,7 +1234,7 @@ function _classifyGroup(nhomRaw, isAdmin){
   // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN — mở cho MỌI nhóm đã đăng nhập (19/10/2026,
   // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" / "TGĐ" có nhánh riêng (từ 26/10/2026, thêm tab 9 KQKD), xét trước nhánh GĐ.
   // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu tab 9 riêng, rồi thẻ 12, cuối cùng là ô KPI cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) Bán hàng và KTT (23/11/2026) — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
-  // Tab 9 "KQKD" (kqkd, thêm 26/10/2026, anh Khanh): chỉ Admin và nhóm Tổng Giám đốc ("tong giam doc" / "tgd").
+  // Tab 9 "KQKD" (kqkd, thêm 26/10/2026, anh Khanh): Admin, Tổng Giám đốc, KTT; mở thêm cho PGĐ, GĐ (Ban giám đốc) 23/11/2026.
   // Nhánh TGĐ phải xét TRƯỚC "pgd"/"gd" vì "tgd" và "tong giam doc" đều chứa "gd"/"giam doc".
   // Số liệu trong kqkd.enc.json được mã hóa, cần thêm mật khẩu KQKD (khoá ở đây chỉ ẩn tab).
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
@@ -1246,8 +1246,8 @@ function _classifyGroup(nhomRaw, isAdmin){
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
   // (pho giam doc, có dấu cách nên không chứa liền "pgd").
-  if(n.indexOf('pgd')>=0 || n.indexOf('pho giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
-  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln']);
+  if(n.indexOf('pgd')>=0 || n.indexOf('pho giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
+  if(n.indexOf('gd')>=0 || n.indexOf('giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
   if(n.indexOf('hcns')>=0 || n.indexOf('nhan su')>=0 || n.indexOf('nhansu')>=0) return new Set(['ns','bct']);
   if(n.indexOf('mkt')>=0 || n.indexOf('marketing')>=0) return new Set(['bh','mkt','crm','bct']);
   if(n.indexOf('ban hang')>=0) return new Set(['bh','mkt','crm','bct','ln']);

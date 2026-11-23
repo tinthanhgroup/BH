@@ -1,10 +1,10 @@
 # Tab 9 "KQKD" – Đánh giá KQKD chi nhánh (`kqkd.html`)
 
-Thêm 26/10/2026 theo yêu cầu anh Khanh, thay trang riêng tư trên claude.ai (không cần chia sẻ từng người nữa). Nội dung (bố cục từ 19/11/2026): trang chính "Theo tháng" (lợi nhuận phòng KD, xưởng từng tháng của hệ thống hoặc từng chi nhánh, xe bán lẻ, lãi gộp/xe, bảng chi nhánh × tháng) và nút chọn từng tháng (từ T9/2026); mỗi tháng có 5 tab con (Tổng quan, Phòng kinh doanh, Xưởng dịch vụ, Lưu ý, Cách tính). `kqkd.enc.json` chứa dữ liệu mọi tháng; `kqkd.html` không đổi. Người xem: Ban lãnh đạo (chị Đào), Kế toán trưởng (từ 23/11/2026).
+Thêm 26/10/2026 theo yêu cầu anh Khanh, thay trang riêng tư trên claude.ai (không cần chia sẻ từng người nữa). Nội dung (bố cục từ 19/11/2026): trang chính "Theo tháng" (lợi nhuận phòng KD, xưởng từng tháng của hệ thống hoặc từng chi nhánh, xe bán lẻ, lãi gộp/xe, bảng chi nhánh × tháng) và nút chọn từng tháng (từ T9/2026); mỗi tháng có 5 tab con (Tổng quan, Phòng kinh doanh, Xưởng dịch vụ, Lưu ý, Cách tính). `kqkd.enc.json` chứa dữ liệu mọi tháng; `kqkd.html` không đổi. Người xem: Ban lãnh đạo (chị Đào); từ 23/11/2026 thêm Kế toán trưởng và Ban giám đốc (GĐ, PGĐ).
 
 ## Quyền và bảo mật
 
-- `index.html` chỉ hiện nút tab với quyền `kqkd`: Admin, nhóm chứa "tgd" / "Tổng Giám đốc" và nhóm Kế toán trưởng "ktt" / "Kế toán trưởng" (23/11/2026) (`_classifyGroup()`, xem `docs/giao-dien-va-phan-quyen.md`). GĐ, PGĐ chi nhánh không thấy.
+- `index.html` chỉ hiện nút tab với quyền `kqkd`: Admin, nhóm chứa "tgd" / "Tổng Giám đốc", nhóm Kế toán trưởng "ktt" / "Kế toán trưởng" và Ban giám đốc PGĐ, GĐ (cùng mở 23/11/2026) (`_classifyGroup()`, xem `docs/giao-dien-va-phan-quyen.md`).
 - Repo công khai, nên khoá tab không đủ. `kqkd.html` **không chứa số liệu**: giao diện và số liệu nằm chung trong `kqkd.enc.json`, mã hóa AES-GCM 256, khóa sinh từ **mật khẩu KQKD** qua PBKDF2-SHA256 (số vòng ghi trong file). Trang hỏi mật khẩu rồi giải mã ngay trong trình duyệt; sai mật khẩu thì báo "Mật khẩu không đúng".
 - Mật khẩu KQKD **không ghi trong repo, docs hay file nào trên Drive**; anh Khanh giữ và báo người xem. Ô "Nhớ trên máy này" lưu mật khẩu trong `localStorage` của máy đó (không tick: chỉ giữ đến khi đóng tab).
 - Đổi mật khẩu: chạy lại script dựng với mật khẩu mới rồi push; mật khẩu cũ hết tác dụng với file mới.
