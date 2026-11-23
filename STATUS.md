@@ -34,6 +34,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 23/11/2026 | KQKD (tab 9) chuyển sang Giao diện 1 sau chấm điểm 5,2/10: `kqkd.html` (font Inter, màu, khung mật khẩu) + khối ghi đè trong `dash_kqkd_khung.html`, STT bảng Xếp hạng, màu sơ đồ dòng tiền; chờ chạy lại `bh_kqkd.py` với mật khẩu thật rồi push; xem `docs/module-kqkd.md` |
 | 22/11/2026 | Nhân sự: bỏ dòng cảnh báo hợp đồng đầu trang |
 | 22/11/2026 | Nhân sự (4.1): bỏ mục "Điểm nóng nhân sự" (trùng bảng 1), các mục sau đánh lại số; danh sách HĐ không tô đỏ dòng đã hết hạn; xem `docs/module-nhansu.md` |
 | 22/11/2026 | Tab 4–9: thêm lại cột STT cho mọi bảng danh sách (người dùng chốt, thay quyết định bỏ STT 21/11), tự đánh bằng CSS trong `giao-dien-1.css`; sửa chung sau chấm điểm (ô trống "–", bỏ kẻ dọc/chữ nghiêng, chữ SVG 12px, 4 nhãn lệch màu); xem `docs/giao-dien-va-phan-quyen.md` |
