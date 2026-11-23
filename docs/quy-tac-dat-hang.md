@@ -87,6 +87,13 @@ Thứ tự ưu tiên khi hai lựa chọn gần nhau:
 
 ## 6. Quy tắc riêng
 
+- **Từ lúc HTV trả xe đến khi bắt đầu tính lãi** (người dùng giải thích 23/11/2026, dùng để tính toán nội bộ):
+  - HTV trả xe thì trên hệ thống xe chuyển sang LXX.
+  - Khoảng 5–7 ngày sau, vận tải đưa xe tới đại lý.
+  - Cùng lúc đó, HTV chuyển hồ sơ xe cho ngân hàng. Khoảng 10 ngày sau khi có LXX, hồ sơ về tới ngân hàng.
+  - Ngân hàng thanh toán cho HTV và **bắt đầu tính lãi vay** từ lúc đó.
+  - Vì vậy, xe BO một khi đã sang LXX thì khoảng 10 ngày sau Công ty bắt đầu chịu lãi. Muốn giảm tồn thì phải xin tạm dừng giao **trước khi** xe sang LXX.
+
 - **Mùa Tết** (người dùng chốt 19/11/2026):
   - Khoảng 10 ngày trước Tết gần như không bán được, vì khách không kịp đăng ký biển số. Mốc bán cuối tính là Tết − 10 ngày (Tết 2027: 06/02, mốc bán cuối khoảng 27/01).
   - Sau Tết khoảng 1–2 tuần bán rất ít.
