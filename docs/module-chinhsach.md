@@ -19,7 +19,7 @@
 ## Quy trình cập nhật khi có chính sách mới
 
 1. Người dùng nhận email chính sách mới → mở **Claude.ai (trình duyệt)**, dùng **Gmail connector** để Claude tìm/đọc email đó và tóm tắt nội dung chính (thời hạn áp dụng, điểm mới, ghi chú...). Connector tìm kiếm theo yêu cầu cụ thể (giống search Gmail), không quét toàn bộ hộp thư mỗi lần — nên hỏi cụ thể (người gửi/từ khóa/khoảng ngày) để đỡ tốn context nếu email dài.
-2. Người dùng tự tải file PDF gốc lên **Google Drive**, đặt chia sẻ công khai, lấy link.
+2. File PDF gốc đã có trên Drive (`G:\My Drive\1. Project A\21. Mail HTV\yyyy-mm\dinh_kem\`, chép tự động từ Outlook). **Claude tự bật chia sẻ "bất kỳ ai có link" (quyền xem)** qua Google Drive connector rồi lấy link (người dùng cho phép lâu dài 23/11/2026); file đã có bản công khai thì dùng lại link đó.
 3. Người dùng gửi cho Claude Code (phiên làm việc trong repo này): phần tóm tắt + link Drive.
 4. Claude Code thêm object mới vào mảng `policies[]` (gồm `pdfUrl`, `category`, `code`, `name`, `updated`, `from`/`to`, `fromLabel`/`toLabel`, `summary`) — người dùng xem lại trước khi commit/push.
 

@@ -34,6 +34,8 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 23/11/2026 | KQKD: bỏ dòng tiêu đề đầu và câu nhận xét, biểu đồ lợi nhuận ghi số từng tháng (nhãn nền tối chữ trắng); chờ chạy lại `bh_kqkd.py` với mật khẩu thật |
+| 23/11/2026 | Chính sách HTV: thêm CV 157 (khai báo bán lẻ, giao xe, bảo hành DMS), CV 158 & 159 (hỗ trợ lãi suất, 3 gói ưu đãi T11), CV 161 (hỗ trợ thanh toán đặt hàng T11); `POLICY_LATEST_UPDATE` = 20/11 |
 | 23/11/2026 | KQKD (tab 9) chuyển sang Giao diện 1 sau chấm điểm 5,2/10: `kqkd.html` (font Inter, màu, khung mật khẩu) + khối ghi đè trong `dash_kqkd_khung.html`, STT bảng Xếp hạng, màu sơ đồ dòng tiền; chờ chạy lại `bh_kqkd.py` với mật khẩu thật rồi push; xem `docs/module-kqkd.md` |
 | 22/11/2026 | Nhân sự: bỏ dòng cảnh báo hợp đồng đầu trang |
 | 22/11/2026 | Nhân sự (4.1): bỏ mục "Điểm nóng nhân sự" (trùng bảng 1), các mục sau đánh lại số; danh sách HĐ không tô đỏ dòng đã hết hạn; xem `docs/module-nhansu.md` |
