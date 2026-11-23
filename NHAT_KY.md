@@ -6,6 +6,7 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 | Ngày | Sự kiện |
 |---|---|
+| 08/11/2026 | Báo cáo tuần: chỉ tiêu doanh thu DV tự lấy chỉ tiêu nội bộ từ Dropbox (`chitieu_dv.json`), thay ô nhập tay; xem `docs/module-baocaotuan.md` mục "Chỉ tiêu" |
 | 05/11/2026 | Lợi nhuận gộp: tác vụ 6h lỗi `KeyError: 11` (`muc_ho_tro_htv.py` chưa có bảng T11), đã sửa, từ 06/11 chạy bình thường; xem `9. KQKD/README.md` quyết định 05/11 |
 | 05/11/2026 | BO dự kiến xác nhận (ngày XN sau hôm nay) chuyển sang Chờ XN, bỏ khỏi BO ở mọi bảng: BO 66, Chờ XN 31; xem `docs/module-hanghoa.md` |
 | 05/11/2026 | Kế hoạch T11: NT giảm 1 Tucson XĐB Đỏ + 1 Trắng → 12 xe (NT 5 · ĐL 7); đã sửa bảng Giả định đặt hàng |
