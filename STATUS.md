@@ -3,14 +3,15 @@ Cập nhật: 24/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
-- **Việc gấp nhất:** Đặt bổ sung T11 (NT 9 · ĐL 7 · PY 2), theo dõi HTV xác nhận và phản hồi email gia hạn CV157 đến 20/11
-- **Đang chờ:** HTV: phản hồi email xin gia hạn CV157 đến 20/11; Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
+- **Việc gấp nhất:** Theo dõi HTV trả lời CV 04/2026/CV-BHTT (không đặt 19 xe T11, giãn giao 17 xe BO đến 31/12)
+- **Đang chờ:** HTV: trả lời CV 04/2026/CV-BHTT (gửi 23/11); Loan (KTT): gửi quy định cũ về lãi nội bộ / xe bán ngang (nếu có) để rà soát trùng lặp với QĐ 03.26
 
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
 - [ ] Báo cáo tuần W47 chốt 17h30 thứ 4 25/11 (24/11 nghỉ lễ): đã dán script mới (24/11); còn báo chi nhánh hạn mới, thứ 4 trước 17h30 vẫn ghi Tuần CN = 47 (ô E3 hiện 48); họp giao ban dời theo
-- [ ] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2, đủ phần tối thiểu để HTV trả Palisade; phần còn lại của CV157 đã gửi email xin gia hạn đến 20/11, báo 11/11): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; PY chưa gửi file đề xuất
+- [x] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2): đã đặt, tháng 11 tổng 30 xe
+- [ ] HTV trả lời CV 04/2026/CV-BHTT: nếu đồng ý giãn giao thì theo dõi 17 xe BO không xuất xưởng trước 31/12; nếu HTV vẫn đòi 19 xe hoặc ghi vi phạm thì báo chị Đào (ghi chú: `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md`)
 - [ ] Công nợ BH Phú Yên (báo cáo tuần): dán `TinThanh_CongNo_Sync.gs` vào script.google.com (điền token, bật Drive API, chạy ▶ `congNoSyncNgay` rồi `setupCongNoTrigger`), kế toán trưởng cập nhật file mỗi thứ 7 (kể cả đổi ngày "ĐẾN" ở ô A1); push `baocaotuan.html` + `congno.json`
 - [ ] Báo cáo tuần: dán hàm `doanhThuDVTuDong()` vào script Báo cáo tuần, chạy 1 lần (xoá + bỏ tô cam ô C15, sửa mục J Hướng dẫn ở NT, PY, file mẫu)
 - [ ] Đặt bổ sung T10 (23 xe, chị Đào duyệt 27/10): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận (PY đặt 5/6 xe HTV yêu cầu)
@@ -26,15 +27,16 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 - [ ] Trang Chính sách: xác nhận IONIQ 5 còn áp dụng (đang hiện Active); tìm bản có số của T2, IONIQ 5, Bổ sung T1; bổ sung CV 160/161 (thưởng quý 2) nếu cần
 
 ## Đang chờ
-- HTV: phản hồi email xin gia hạn đặt đủ tồn tối thiểu CV157 đến 20/11/2026
+- HTV: trả lời CV 04/2026/CV-BHTT ngày 23/11/2026 (không đặt 19 xe còn thiếu T11; giãn giao 17 xe BO đến 31/12/2026)
 - Loan (KTT): góp ý 22/10 – PKT đang đối chiếu công nợ nội bộ và tính lãi nội bộ hằng tuần (cả xe bán ngang), cho rằng phần lãi sau điều chuyển của QĐ 03.26 bị trùng. Anh đã trả lời: đối chiếu định kỳ PKT tự sắp xếp; QĐ quy định chi phí thuộc chi nhánh nào trong 4 trường hợp; nhờ Loan gửi quy định trước đó (nếu có) để anh rà soát
 
 ## Mốc sắp tới
-- 20/11/2026: hạn đặt đủ tồn tối thiểu CV157 (đã xin HTV gia hạn, chờ phản hồi)
+- 31/12/2026: hết thời hạn xin giãn giao 17 xe BO (CV 04/2026/CV-BHTT)
 
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 24/11/2026 | Đặt hàng T11: đã gửi HTV CV 04/2026/CV-BHTT (23/11, ký số) – không đặt 19 xe còn thiếu, giãn giao 17 xe BO đến 31/12 (chị Đào chốt); mẫu đầu văn bản HTV chốt theo CV 04 (skill `van-ban-word` I-C); xem `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md` |
 | 24/11/2026 | Báo cáo tuần: đã dán `TinThanh_BaoCaoTuan_Sync.gs` mới (giờ chốt W47 17h30 thứ 4 25/11). Tab Hàng hóa: ô Tổng giữ nguyên gồm xe Nhà máy cho mượn (anh Khanh chốt) |
 | 23/11/2026 | Báo cáo tuần: W47 đổi giờ chốt sang 17h30 thứ 4 25/11 (24/11 nghỉ lễ, chỉ tuần này) — thêm `CHOT_DOI` trong script, chưa dán; xem `docs/module-baocaotuan.md` mục Lịch tuần |
 | 23/11/2026 | KQKD: bỏ dòng tiêu đề đầu và câu nhận xét, biểu đồ lợi nhuận ghi số từng tháng (nhãn nền tối chữ trắng); chờ chạy lại `bh_kqkd.py` với mật khẩu thật |
