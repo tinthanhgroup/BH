@@ -6,7 +6,7 @@ Chuyển nguyên văn từ `CLAUDE.md` ngày 15/10/2026. Đọc khi sửa tab/su
 
 | File | Vai trò | Auth | Chi tiết |
 |---|---|---|---|
-| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (3 sub-tab, thêm 09/2026; 5.3 KM đối thủ thêm 30/10/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) · 9.KQKD (thêm 26/10/2026, chỉ Admin + TGĐ) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
+| `index.html` | Trang chính, desktop. 7 tab: 1.Hàng hóa · 2.BC Bán hàng · 3.BC Dịch vụ · 4.HCNS (Nhân sự & Chấm công, 4 sub-tab đánh số trong cùng 1 tab) · 5.MKT (3 sub-tab, thêm 09/2026; 5.3 KM đối thủ thêm 30/10/2026, **đổi tên từ "MKT Thương hiệu" 09/2026**) · 6.Chính sách HTV (mở tự do) · 7.CRM · 8.BC tuần (thêm 25/09/2026) · 9.KQKD (thêm 26/10/2026, chỉ Admin + TGĐ + KTT) + tab Admin | Từng tab khoá riêng theo mật khẩu + nhóm quyền (xem bên dưới); riêng tab 4 khoá theo **từng sub-tab** (xem chi tiết ngay dưới bảng) | Tab Hàng hóa → [docs/module-hanghoa.md](docs/module-hanghoa.md) |
 | `mobile.html` | Bản rút gọn cho di động, KCK_DATA/KCK_DATE trùng với index.html — **sửa 1 nơi thì nhớ sửa nơi kia**. Không có tab 4 (HCNS) lẫn tab 5 (MKT/FB Ads) | — | — |
 | `chamcong.html` | Báo cáo chấm công chi tiết, nhúng iframe trong sub-tab "2. Chấm công" của tab 4 | Không tự có auth — được `index.html` gác cổng trước khi load iframe | [docs/module-chamcong.md](docs/module-chamcong.md) |
 | `nhansu.html` | Báo cáo nhân sự chi tiết, nhúng iframe trong sub-tab "1. Báo cáo Nhân sự" của tab 4 | Không tự có auth (như trên) | [docs/module-nhansu.md](docs/module-nhansu.md) |
@@ -70,6 +70,7 @@ Quy ước cũ (Inter, navy `#1B4F8C`, `.chart-num` tròn), áp dụng cho trang
   |---|---|
   | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, KQKD) |
   | `tgd` hoặc `tong giam doc` (Tổng Giám đốc, thêm 26/10/2026 — **phải xét trước** `pgd`/`gd` vì đều chứa "gd"/"giam doc") | Như Admin trừ tab Admin: Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, **KQKD** |
+  | `ktt` hoặc `ke toan truong` (Kế toán trưởng, thêm 23/11/2026) | BC tuần, **KQKD** |
   | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần |
   | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026) |
   | `hcns` / `nhan su` | HCNS, BC tuần |

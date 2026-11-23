@@ -1240,6 +1240,8 @@ function _classifyGroup(nhomRaw, isAdmin){
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
   var n = _stripDiacritics(nhomRaw);
   if(n.indexOf('tgd')>=0 || n.indexOf('tong giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
+  // Kế toán trưởng ("ktt" / "ke toan truong", thêm 23/11/2026, anh Khanh): xem KQKD + BC tuần như các nhóm khác.
+  if(n.indexOf('ktt')>=0 || n.indexOf('ke toan truong')>=0) return new Set(['bct','kqkd']);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
@@ -5017,6 +5019,7 @@ function _permMatrixHTML(){
   var rows=[
     {lbl:'Admin', nhom:'Admin', admin:true, note:'Cờ isAdmin=TRUE'},
     {lbl:'TGĐ', nhom:'Tổng Giám đốc', note:'"tgd" / "Tổng Giám đốc"'},
+    {lbl:'KTT', nhom:'KTT', note:'"ktt" / "Kế toán trưởng"'},
     {lbl:'PGĐ', nhom:'PGĐ', note:'"pgd" / "Phó Giám Đốc"'},
     {lbl:'GĐ', nhom:'GĐ', note:'"gd" / "Giám Đốc"'},
     {lbl:'MKT', nhom:'MKT', note:'"mkt" / "Marketing"'},
