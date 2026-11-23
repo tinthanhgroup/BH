@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 23/11/2026
+Cập nhật: 24/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -9,7 +9,7 @@ Cập nhật: 23/11/2026
 Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV xác nhận gần hết (NT 28/30, ĐL 10/10, PY 7/8). Đặt bổ sung T10: lần 1 xin tạm dừng (CV 10/10, HTV đồng ý 13/10); HTV yêu cầu lại 1,5 tháng chỉ tiêu (NT 9 · ĐL 9 · PY 6), Công ty gửi CV 02/2026/CV-BHTT ngày 24/10 xin chưa đặt; **27/10/2026 chị Đào duyệt đặt bổ sung 23 xe theo đề xuất chi nhánh (NT 9 · ĐL 9 · PY 5)** — bảng Giả định đặt hàng PA5. Quy tắc đặt hàng đã viết lại ở `docs/quy-tac-dat-hang.md`. Mô tả hệ thống: xem `CLAUDE.md` và `docs/`.
 
 ## Việc tiếp theo
-- [ ] Báo cáo tuần W47 chốt 17h30 thứ 4 25/11 (24/11 nghỉ lễ): dán `TinThanh_BaoCaoTuan_Sync.gs` mới vào script.google.com trước 17h15 thứ 3 24/11; báo chi nhánh hạn mới, thứ 4 trước 17h30 vẫn ghi Tuần CN = 47 (ô E3 hiện 48); họp giao ban dời theo
+- [ ] Báo cáo tuần W47 chốt 17h30 thứ 4 25/11 (24/11 nghỉ lễ): đã dán script mới (24/11); còn báo chi nhánh hạn mới, thứ 4 trước 17h30 vẫn ghi Tuần CN = 47 (ô E3 hiện 48); họp giao ban dời theo
 - [ ] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2, đủ phần tối thiểu để HTV trả Palisade; phần còn lại của CV157 đã gửi email xin gia hạn đến 20/11, báo 11/11): chi nhánh đặt trên hệ thống HTV, theo dõi HTV xác nhận; PY chưa gửi file đề xuất
 - [ ] Công nợ BH Phú Yên (báo cáo tuần): dán `TinThanh_CongNo_Sync.gs` vào script.google.com (điền token, bật Drive API, chạy ▶ `congNoSyncNgay` rồi `setupCongNoTrigger`), kế toán trưởng cập nhật file mỗi thứ 7 (kể cả đổi ngày "ĐẾN" ở ô A1); push `baocaotuan.html` + `congno.json`
 - [ ] Báo cáo tuần: dán hàm `doanhThuDVTuDong()` vào script Báo cáo tuần, chạy 1 lần (xoá + bỏ tô cam ô C15, sửa mục J Hướng dẫn ở NT, PY, file mẫu)
@@ -35,6 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 24/11/2026 | Báo cáo tuần: đã dán `TinThanh_BaoCaoTuan_Sync.gs` mới (giờ chốt W47 17h30 thứ 4 25/11). Tab Hàng hóa: ô Tổng giữ nguyên gồm xe Nhà máy cho mượn (anh Khanh chốt) |
 | 23/11/2026 | Báo cáo tuần: W47 đổi giờ chốt sang 17h30 thứ 4 25/11 (24/11 nghỉ lễ, chỉ tuần này) — thêm `CHOT_DOI` trong script, chưa dán; xem `docs/module-baocaotuan.md` mục Lịch tuần |
 | 23/11/2026 | KQKD: bỏ dòng tiêu đề đầu và câu nhận xét, biểu đồ lợi nhuận ghi số từng tháng (nhãn nền tối chữ trắng); chờ chạy lại `bh_kqkd.py` với mật khẩu thật |
 | 23/11/2026 | Chính sách HTV: thêm CV 157 (khai báo bán lẻ, giao xe, bảo hành DMS), CV 158 & 159 (hỗ trợ lãi suất, 3 gói ưu đãi T11), CV 161 (hỗ trợ thanh toán đặt hàng T11); `POLICY_LATEST_UPDATE` = 20/11 |
@@ -54,4 +55,3 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 | 10/11/2026 | Đặt bổ sung T11 theo file chi nhánh (`2. Dat hang/T11 BS/`): NT 9, ĐL 7, PY 2 (Creta N Line Đỏ, Tucson XĐB Đỏ); thay bảng Giả định đặt hàng |
 | 10/11/2026 | Palisade Hybrid: chị Đào giữ nguyên đơn (thừa xe có thể bán ngang ra Bắc, theo anh Sơn HTV), bỏ CV xin giảm; HTV yêu cầu đặt đủ tồn tối thiểu CV157 (49 xe) mới trả Palisade; dự kiến được trả 18–19 xe (70% Cali 7 chỗ, 30% Cali 8 chỗ, anh Nam báo) |
 | 09/11/2026 | Tab Hàng hóa: ô KPI BO và Tổng hiện số LX3 trong ngoặc như ô Xe nợ (BO 105 gồm 61 LX3) |
-| 09/11/2026 | Báo cáo tuần NT: link bị hạ về chỉ xem (chi nhánh nhập ẩn danh qua link nên không nhập được T45) → mở lại "ai có link đều sửa được"; PY vẫn mở sửa |
