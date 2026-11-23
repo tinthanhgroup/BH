@@ -1233,15 +1233,15 @@ function _classifyGroup(nhomRaw, isAdmin){
   // mở nốt cho GĐ thường 28/09/2026 — hiện Admin/PGĐ/GĐ/MKT/Bán hàng đều xem được.
   // Tab 8 "BC tuần" (bct, thêm 09/2026): báo cáo điều hành của GĐCN — mở cho MỌI nhóm đã đăng nhập (19/10/2026,
   // anh Khanh: trưởng BP cùng xem để họp giao ban). Nhóm "Tổng Giám đốc" / "TGĐ" có nhánh riêng (từ 26/10/2026, thêm tab 9 KQKD), xét trước nhánh GĐ.
-  // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu tab 9 riêng, rồi thẻ 12, cuối cùng là ô KPI cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) và Bán hàng — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
+  // Ô KPI "Lợi nhuận gộp" cạnh Bảo Lộc trong tab 2 (quyền 'ln', thêm 23/10/2026, anh Khanh; ban đầu tab 9 riêng, rồi thẻ 12, cuối cùng là ô KPI cùng ngày): chỉ Admin, Ban giám đốc (PGĐ, GĐ, Tổng GĐ) Bán hàng và KTT (23/11/2026) — MKT KHÔNG xem được dù MKT xem được tab Bán hàng.
   // Tab 9 "KQKD" (kqkd, thêm 26/10/2026, anh Khanh): chỉ Admin và nhóm Tổng Giám đốc ("tong giam doc" / "tgd").
   // Nhánh TGĐ phải xét TRƯỚC "pgd"/"gd" vì "tgd" và "tong giam doc" đều chứa "gd"/"giam doc".
   // Số liệu trong kqkd.enc.json được mã hóa, cần thêm mật khẩu KQKD (khoá ở đây chỉ ẩn tab).
   if(isAdmin) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
   var n = _stripDiacritics(nhomRaw);
   if(n.indexOf('tgd')>=0 || n.indexOf('tong giam doc')>=0) return new Set(['bh','dv','ns','mkt','crm','bct','ln','kqkd']);
-  // Kế toán trưởng ("ktt" / "ke toan truong", thêm 23/11/2026, anh Khanh): xem KQKD + BC tuần như các nhóm khác.
-  if(n.indexOf('ktt')>=0 || n.indexOf('ke toan truong')>=0) return new Set(['bct','kqkd']);
+  // Kế toán trưởng ("ktt" / "ke toan truong", thêm 23/11/2026, anh Khanh): xem KQKD + BC tuần; BC Bán hàng kèm ô Lợi nhuận gộp (mở thêm 23/11/2026).
+  if(n.indexOf('ktt')>=0 || n.indexOf('ke toan truong')>=0) return new Set(['bh','bct','ln','kqkd']);
   // Phải xét "pgd" TRƯỚC nhánh "gd" chung bên dưới — "PGĐ" bỏ dấu là "pgd",
   // vẫn chứa substring "gd" nên sẽ bị nhánh chung nuốt mất nếu đặt sau.
   // Khớp cả 2 cách ghi: viết tắt "PGĐ" (pgd) lẫn viết đầy đủ "Phó Giám Đốc"
@@ -3017,7 +3017,7 @@ function renderMonthlyByModel(){
   el.setAttribute('viewBox','0 0 '+W+' '+H);el.setAttribute('width',W);el.setAttribute('height',H);el.innerHTML=s;
 }
 
-// Ô KPI "Lợi nhuận gộp" (cạnh Bảo Lộc, tab 2): chỉ nhóm có quyền 'ln' (Admin, GĐ/PGĐ, Bán hàng); bấm mở danh sách
+// Ô KPI "Lợi nhuận gộp" (cạnh Bảo Lộc, tab 2): chỉ nhóm có quyền 'ln' (Admin, GĐ/PGĐ, Bán hàng, KTT); bấm mở danh sách
 // (loinhuan.html trong cửa sổ nổi). Con số lấy từ loinhuan.json (bộ "ky": theo xe ký) — tháng ký mới nhất, so với tháng trước.
 var _lnKpi=null, _lnKpiLoading=false;
 function _lnKpiHTML(){

@@ -70,7 +70,7 @@ Quy ước cũ (Inter, navy `#1B4F8C`, `.chart-num` tròn), áp dụng cho trang
   |---|---|
   | Admin (`isAdmin=TRUE`) | Tất cả (Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, KQKD) |
   | `tgd` hoặc `tong giam doc` (Tổng Giám đốc, thêm 26/10/2026 — **phải xét trước** `pgd`/`gd` vì đều chứa "gd"/"giam doc") | Như Admin trừ tab Admin: Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần, **KQKD** |
-  | `ktt` hoặc `ke toan truong` (Kế toán trưởng, thêm 23/11/2026) | BC tuần, **KQKD** |
+  | `ktt` hoặc `ke toan truong` (Kế toán trưởng, thêm 23/11/2026) | Bán hàng (kèm ô Lợi nhuận gộp), BC tuần, **KQKD** |
   | `pgd` hoặc `pho giam doc` (Phó Giám Đốc, khớp cả viết tắt lẫn viết đầy đủ — **phải xét trước** `gd` bên dưới vì "pgd" cũng chứa substring "gd") | Bán hàng, Dịch vụ, HCNS, MKT, CRM, BC tuần |
   | `gd` / `giam doc` (Giám Đốc thường) | Bán hàng, Dịch vụ, HCNS, MKT, CRM (mở 28/09/2026), BC tuần (mở 28/09/2026) |
   | `hcns` / `nhan su` | HCNS, BC tuần |
