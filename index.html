@@ -2732,6 +2732,23 @@ function prepareBH(raw,fileDate){
     }
   }
 
+  // Bảng 12: danh sách xe LX3 đã phân cho khách (có Ngày phân xe, đã hoặc chưa báo bán) + khách DS nợ khớp xe LXX
+  const lx3DS=[];
+  const dNgay=v=>{const d=v?new Date(v):null;return d&&!isNaN(d)?d:null;};
+  for(const r of raw){
+    if(cHist&&r[cHist]) continue;
+    if(!laLX3Raw(r)) continue;
+    const tt=cTrangThai?String(r[cTrangThai]||'').trim():'';
+    const khung=cSoKhung?String(r[cSoKhung]||'').trim().toUpperCase():'';
+    const px=dNgay(cPhanXe&&r[cPhanXe]);
+    const lxxDangVe=tt==='DS nợ'&&khung&&khungLxx[khung];
+    if(!px&&!lxxDangVe) continue;
+    lx3DS.push({cn:r[cBranch]?String(r[cBranch]).trim():'',pb:String((cPhienBan&&r[cPhienBan])||'').trim(),
+      mau:String((cMau&&r[cMau])||'').trim(),khung,kh:String((cKhDatCoc&&r[cKhDatCoc])||'').trim(),
+      tvbh:String((cTVBH&&r[cTVBH])||'').trim(),coc:dNgay(r[cDate]),px,bb:dNgay(cBaoBan&&r[cBaoBan]),lxxDangVe:!!lxxDangVe});
+  }
+  lx3DS.sort((a,b)=>(a.bb?0:1)-(b.bb?0:1)||((a.bb||a.px||0)-(b.bb||b.px||0)));
+
   const rows=[];
   for(const r of raw){
     const dv=r[cDate]; if(!dv) continue;
@@ -2905,7 +2922,7 @@ function prepareBH(raw,fileDate){
   const sold90=rows.filter(r=>r.date>=cut90).length;
   const avgMonth=sold90/3;
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth,noiBoByMonth,lx3BB,lx3Khop,lx3No,lx3NoList};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth,noiBoByMonth,lx3BB,lx3Khop,lx3No,lx3NoList,lx3DS};
 }
 
 function renderBH(data){
@@ -3793,37 +3810,65 @@ function renderTarget(data){
 // (báo bán theo Ngày báo bán + nhóm đại lý chỉ tiêu, Đã phân xe chưa báo bán, Đã ký chờ xe = DS nợ) — số từ prepareBH.
 function renderLX3(data){
   const wrap=document.getElementById('lx3-wrap'); if(!wrap) return;
-  const {lx3BB,lx3Khop,lx3No,lx3NoList,today,qMonthKeys,curQuarter}=data;
+  const {lx3BB,lx3Khop,lx3No,lx3NoList,lx3DS,today}=data;
   if(!lx3BB){ wrap.innerHTML='<div style="font-size:12px;color:var(--muted)">–</div>'; return; }
-  const y=today.getFullYear(), mk=`${y}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const y=today.getFullYear();
   const bb=(keys,g)=>keys.reduce((s,k)=>s+((lx3BB[k]||{})[g]||0),0);
   const namKeys=Object.keys(lx3BB).filter(k=>k.startsWith(y+'-'));
+  // Tồn / BO / LXX: lấy từ allData của tab Hàng hóa (cùng số ô KPI) — Tồn = xe về kho chưa phân,
+  // BO không gồm BO dự kiến xác nhận, LXX không gồm xe đã khớp khách DS nợ (_lxxDaPhan); nhóm theo kho/đại lý đặt hàng
+  const hh=(typeof allData!=='undefined'&&allData)||{};
+  const demKho=(arr,g)=>(arr||[]).filter(r=>isPalisadeLX3(r)&&GROUPS_BH[g].includes(r.kho)).length;
   const cols=[
-    {lb:'Báo bán T'+(today.getMonth()+1),f:g=>bb([mk],g)},
-    {lb:'Báo bán Q'+curQuarter,f:g=>bb(qMonthKeys||[],g)},
-    {lb:'Báo bán '+y,f:g=>bb(namKeys,g)},
-    {lb:'Đã phân xe',f:g=>(lx3Khop||{})[g]||0,tip:'Đã phân xe hoặc khớp xe LXX, chưa báo bán'},
-    {lb:'Đã ký chờ xe',f:g=>(lx3No||{})[g]||0,tip:'Khách đã ký (DS nợ), chưa có xe'},
+    {lb:'Báo bán T10',f:g=>bb([y+'-10'],g)},
+    {lb:'Báo bán T11',f:g=>bb([y+'-11'],g)},
+    {lb:'Báo bán T12',f:g=>bb([y+'-12'],g)},
+    {lb:'Tổng '+y,f:g=>bb(namKeys,g),dam:1},
+    {lb:'Đã phân xe',f:g=>(lx3Khop||{})[g]||0,tip:'Đã phân xe hoặc khớp xe LXX, chưa báo bán',vach:1},
+    {lb:'Đã ký chờ xe',f:g=>(lx3No||{})[g]||0,tip:'Khách đã ký (DS nợ), chưa có xe',ds:1},
+    {lb:'Tồn',f:g=>demKho(hh.stock,g),tip:'Xe đã về kho, chưa phân cho khách',vach:1},
+    {lb:'BO',f:g=>demKho(hh.bo,g),tip:'Không gồm BO dự kiến xác nhận'},
+    {lb:'LXX',f:g=>demKho(hh.lxx,g),tip:'Không gồm xe LXX đã phân cho khách'},
+    {lb:'Tồn + BO + LXX',f:g=>demKho(hh.stock,g)+demKho(hh.bo,g)+demKho(hh.lxx,g),dam:1},
   ];
-  const TH='padding:7px 8px;border:1px solid #dce3f0;font-size:11px;color:var(--muted);background:#eef1f7;font-weight:600;white-space:nowrap;';
-  const TD='padding:6px 8px;border:1px solid #dce3f0;text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600;';
+  const BD='border:1px solid #dce3f0;', VACH='border-left:2px solid #c7cedd;';
+  const TH='padding:7px 8px;'+BD+'font-size:11px;color:var(--muted);background:#eef1f7;font-weight:600;white-space:nowrap;';
+  const TD='padding:6px 8px;'+BD+'text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600;';
   const fmt=v=>v?v.toLocaleString('vi-VN'):'–';
-  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-  let h='<table style="border-collapse:collapse;font-size:12px;min-width:640px;"><thead><tr>'
+  const esc=t=>String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  let h='<table style="border-collapse:collapse;font-size:12px;width:100%;"><thead><tr>'
     +`<th style="${TH}text-align:center;width:48px">STT</th><th style="${TH}text-align:left">Nhóm</th>`
-    +cols.map(c=>`<th style="${TH}text-align:right"${c.tip?' title="'+c.tip+'"':''}>${c.lb}</th>`).join('')+'</tr></thead><tbody>';
+    +cols.map(c=>`<th style="${TH}text-align:right;${c.vach?VACH:''}"${c.tip?' title="'+c.tip+'"':''}>${c.lb}</th>`).join('')+'</tr></thead><tbody>';
   const tong=cols.map(()=>0);
   TARGET_GROUPS.forEach((g,i)=>{
-    h+=`<tr><td style="${TD}text-align:center;font-weight:400;color:var(--muted)">${i+1}</td><td style="padding:6px 8px;border:1px solid #dce3f0;font-weight:600;color:${g.color};white-space:nowrap">${g.label}</td>`;
+    h+=`<tr><td style="${TD}text-align:center;font-weight:400;color:var(--muted)">${i+1}</td><td style="padding:6px 8px;${BD}font-weight:600;color:${g.color};white-space:nowrap">${g.label}</td>`;
     cols.forEach((c,j)=>{
       const v=c.f(g.key); tong[j]+=v;
-      const list=(j===4&&lx3NoList&&lx3NoList[g.key])||[];
-      h+=`<td style="${TD}"${list.length?' title="'+esc(list.map((t,k)=>(k+1)+'. '+t).join('\n'))+'"':''}>${fmt(v)}</td>`;
+      const list=(c.ds&&lx3NoList&&lx3NoList[g.key])||[];
+      h+=`<td style="${TD}${c.vach?VACH:''}${c.dam?'font-weight:800;':''}"${list.length?' title="'+esc(list.map((t,k)=>(k+1)+'. '+t).join('\n'))+'"':''}>${fmt(v)}</td>`;
     });
     h+='</tr>';
   });
-  h+=`<tr style="background:#f8fafc"><td style="${TD}"></td><td style="padding:6px 8px;border:1px solid #dce3f0;font-weight:700">Tổng</td>`+tong.map(v=>`<td style="${TD}font-weight:800">${fmt(v)}</td>`).join('')+'</tr>';
-  h+='</tbody></table><div style="font-size:10.5px;color:var(--muted);margin-top:8px;font-style:italic;">* Palisade LX3 = All New Palisade Hybrid (phiên bản có "Hybrid"). HTV không tính vào chỉ tiêu bán hàng, chỉ tiêu đặt hàng (CV 82/2026, CV 125/2026 mục 2.3) nên bảng 9, 10, 11 không gồm LX3. Palisade đời cũ vẫn tính chỉ tiêu. Tồn kho, BO, đặt hàng LX3: tab Hàng hóa › Giả định đặt hàng › Palisade LX3.</div>';
+  h+=`<tr style="background:#f8fafc"><td style="${TD}"></td><td style="padding:6px 8px;${BD}font-weight:700">Tổng</td>`+tong.map((v,j)=>`<td style="${TD}${cols[j].vach?VACH:''}font-weight:800">${fmt(v)}</td>`).join('')+'</tr></tbody></table>';
+
+  // Danh sách xe đã phân cho khách (đã hoặc chưa báo bán)
+  const fd=d=>d?String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear():'–';
+  const ds=lx3DS||[];
+  const soBB=ds.filter(x=>x.bb).length;
+  h+=`<div style="font-size:12.5px;font-weight:700;color:var(--text);margin:16px 0 6px">Xe đã phân cho khách (${ds.length} xe: ${soBB} đã báo bán, ${ds.length-soBB} chưa báo bán)</div>`;
+  if(ds.length){
+    const L=['STT','Chi nhánh','Phiên bản','Màu','Số khung','Khách hàng','TVBH','Ngày cọc','Ngày phân xe','Ngày báo bán'];
+    h+='<table style="border-collapse:collapse;font-size:12px;width:100%;"><thead><tr>'+L.map((l,k)=>`<th style="${TH}text-align:${k===0?'center;width:48px':'left'}">${l}</th>`).join('')+'</tr></thead><tbody>';
+    const TL='padding:5px 8px;'+BD+'white-space:nowrap;';
+    ds.forEach((x,i)=>{
+      h+=`<tr><td style="${TL}text-align:center;color:var(--muted)">${i+1}</td><td style="${TL}">${esc(x.cn)||'–'}</td><td style="${TL}">${esc(toTitleCaseVN(x.pb))||'–'}</td><td style="${TL}">${esc(toTitleCaseVN(x.mau))||'–'}</td>`
+        +`<td style="${TL}font-family:'JetBrains Mono',monospace;font-size:11.5px">${esc(x.khung)||'–'}</td><td style="${TL}white-space:normal">${esc(x.kh)||'–'}</td><td style="${TL}">${esc(x.tvbh)||'–'}</td>`
+        +`<td style="${TL}">${fd(x.coc)}</td><td style="${TL}">${x.lxxDangVe&&!x.px?'LXX – đang về':fd(x.px)}</td>`
+        +`<td style="${TL}${x.bb?'':'color:#b45309;font-weight:600'}">${x.bb?fd(x.bb):'Chưa báo bán'}</td></tr>`;
+    });
+    h+='</tbody></table>';
+  }
+  h+='<div style="font-size:10.5px;color:var(--muted);margin-top:8px;font-style:italic;">* Palisade LX3 = All New Palisade Hybrid (phiên bản có "Hybrid"). HTV không tính vào chỉ tiêu bán hàng, chỉ tiêu đặt hàng (CV 82/2026, CV 125/2026 mục 2.3) nên bảng 9, 10, 11 không gồm LX3; Palisade đời cũ vẫn tính. Báo bán theo Ngày báo bán và nhóm đại lý chỉ tiêu; Tồn, BO, LXX theo kho / đại lý đặt hàng, cùng số tab Hàng hóa. Đặt hàng, dự báo tồn LX3: tab Hàng hóa › Giả định đặt hàng › Palisade LX3.</div>';
   wrap.innerHTML=h;
 }
 

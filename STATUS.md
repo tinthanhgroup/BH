@@ -35,7 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
-| 25/11/2026 | BC Bán hàng: Palisade LX3 (All New Palisade Hybrid) bỏ khỏi bảng 9/10/11 theo CV 82, CV 125 mục 2.3 (T11: báo bán 30 → 22, Q4 75 → 66); thêm bảng 12 theo dõi riêng LX3; chưa push; xem `docs/module-hanghoa.md` |
+| 25/11/2026 | BC Bán hàng: Palisade LX3 (All New Palisade Hybrid) bỏ khỏi bảng 9/10/11 theo CV 82, CV 125 mục 2.3 (T11: báo bán 30 → 22, Q4 75 → 66); thêm bảng 12 theo dõi riêng LX3 (báo bán T10–T12, năm; Tồn/BO/LXX; danh sách xe đã phân khách); xem `docs/module-hanghoa.md` |
 | 24/11/2026 | Đặt hàng T11: đã gửi HTV CV 04/2026/CV-BHTT (23/11, ký số) – không đặt 19 xe còn thiếu, giãn giao 17 xe BO đến 31/12 (chị Đào chốt); mẫu đầu văn bản HTV chốt theo CV 04 (skill `van-ban-word` I-C); xem `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md` |
 | 24/11/2026 | Báo cáo tuần: đã dán `TinThanh_BaoCaoTuan_Sync.gs` mới (giờ chốt W47 17h30 thứ 4 25/11). Tab Hàng hóa: ô Tổng giữ nguyên gồm xe Nhà máy cho mượn (anh Khanh chốt) |
 | 23/11/2026 | Báo cáo tuần: W47 đổi giờ chốt sang 17h30 thứ 4 25/11 (24/11 nghỉ lễ, chỉ tuần này) — thêm `CHOT_DOI` trong script, chưa dán; xem `docs/module-baocaotuan.md` mục Lịch tuần |
