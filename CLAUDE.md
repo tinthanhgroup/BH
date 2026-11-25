@@ -45,6 +45,7 @@ Chỉ mở file `docs/` của phần đang sửa, không đọc hết.
 - **"Xuất hồ sơ" = "Xuất hóa đơn" = "Xuất HĐ"** — cùng một field (`xuatHoSo`).
 - **"Bán ngang"** = bán xe cho đại lý khác — cột "Nguồn khách" = `"Khác"`.
 - **Xe ngập nước** (ô "KH đặt cọc" chứa "ngập nước") bị loại khỏi **mọi** báo cáo (`_initFromRecords()`). Ngoại lệ: xe ngập nước **có Ngày báo bán** = bán nội bộ làm xe công vụ → chỉ cộng vào bảng 9/10/11 "Thực hiện chỉ tiêu" (`window._banNoiBo`); không tính tốc độ bán, SL hợp đồng, doanh số bán lẻ, tồn kho.
+- **Palisade 2 phiên bản bán song song:** đời cũ (tính chỉ tiêu) và **LX3** = All New Palisade Hybrid (phiên bản có "Hybrid") — HTV không tính vào chỉ tiêu bán hàng, đặt hàng → bỏ khỏi bảng 9/10/11, theo dõi riêng ở bảng 12. Không nhận diện LX3 theo năm SX (đời cũ cũng có xe SX 2026). Chi tiết: `docs/module-hanghoa.md`.
 - **Creta CKD/CBU:** màu chứa "CKD" = lắp ráp trong nước, tách phiên bản có đuôi " CKD"; không có = nhập khẩu (CBU). Đã bỏ chữ "FACELIFT".
 - **Kho hàng hóa** (NT/ĐL/PY/PR/BL — 5 chi nhánh) ≠ **Kho MKT Fanpage** (NT/PY/ĐL — 3 chi nhánh).
 - **KCK** = "Kho hàng sẵn Nhà máy" (Hyundai Thành Công — **HTV**). Cờ "sắp hết" (`r:1`) theo **màu chữ ĐỎ ở ô "Năm SX"** trong file HTV, không theo giá trị năm. Code cũ của nút Admin `uploadKCK()` suy theo năm là sai, chưa dọn.

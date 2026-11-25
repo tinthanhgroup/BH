@@ -387,6 +387,10 @@ td.vin{font-family:monospace;font-size:11px;color:var(--muted);}
         <div class="card-title">11. Thực hiện chỉ tiêu 2026</div>
         <div id="target-wrap" style="overflow-x:auto;"></div>
       </div>
+      <div class="card" style="grid-column:1/-1;">
+        <div class="card-title">12. Palisade LX3 – theo dõi riêng <span class="badge">Không tính chỉ tiêu</span></div>
+        <div id="lx3-wrap" style="overflow-x:auto;"></div>
+      </div>
     </div>
   </div>
 
@@ -2635,6 +2639,11 @@ function prepareBH(raw,fileDate){
   const qMonths=[curQuarter*3-2,curQuarter*3-1,curQuarter*3];
   const qMonthKeys=qMonths.map(mm=>`${curYear}-${String(mm).padStart(2,'0')}`);
   const dmsKhop={NT:0,DL:0,PY:0}; // dùng chung cho cả biểu đồ tháng và quý
+  // Palisade LX3 (All New Palisade Hybrid — phiên bản có "Hybrid"): HTV không tính vào chỉ tiêu bán hàng,
+  // đặt hàng (CV 82/2026, CV 125/2026 mục 2.3) → BỎ khỏi bảng 9/10/11, đếm riêng vào lx3* cho bảng 12.
+  const cPB0=col(keys,['phien ban','phienban']);
+  const laLX3Raw=r=>normModelBH(String((cModel&&r[cModel])||'').trim())==='Palisade'&&/hybrid/i.test(String((cPB0&&r[cPB0])||''));
+  const lx3Khop={NT:0,DL:0,PY:0}, lx3No={NT:0,DL:0,PY:0}, lx3NoList={NT:[],DL:[],PY:[]}, lx3BB={};
   for(const r of raw){
     if(cHist&&r[cHist]) continue; // bỏ xe lịch sử
     const pxVal=cPhanXe?r[cPhanXe]:null; if(!pxVal) continue;
@@ -2644,11 +2653,12 @@ function prepareBH(raw,fileDate){
     const tvbhVal=cTVBH?String(r[cTVBH]||'').trim():'';
     if(!tvbhVal) continue; // TVBH trống = bán ngang cho đại lý khác, không tính vào "Khớp"
     const br=r[cBranch]?String(r[cBranch]).trim():'';
-    for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(br)) dmsKhop[g]=(dmsKhop[g]||0)+1;
+    const dichKhop=laLX3Raw(r)?lx3Khop:dmsKhop;
+    for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(br)) dichKhop[g]=(dichKhop[g]||0)+1;
   }
   const dmsKhopQ=dmsKhop; // cùng số liệu, không phân biệt theo kỳ
 
-  // ── Đã ký, chờ phân xe: Xe nợ (Trạng thái = "DS nợ"), loại Palisade SX 2026, theo nhóm NT/ĐL/PY ──
+  // ── Đã ký, chờ phân xe: Xe nợ (Trạng thái = "DS nợ"), loại Palisade LX3 (đếm riêng lx3No), theo nhóm NT/ĐL/PY ──
   // Tách 2 loại: "Chờ đóng tiền" (đúng Model+Màu đang có xe tồn kho trống,
   // chưa phân cho ai) và "Chưa có xe" (không có xe tồn kho trống khớp Model+Màu).
   // Đối chiếu theo kiểu FIFO: mỗi xe tồn kho trống chỉ "khớp" được 1 đơn DS nợ,
@@ -2683,8 +2693,16 @@ function prepareBH(raw,fileDate){
     if(ttVal!=='DS nợ') continue;
     const modelRaw=cModel?String(r[cModel]||'').trim():'';
     const modelVal=cModel?normModelBH(modelRaw):'';
-    const namSXVal=r['NĂM SX']?String(r['NĂM SX']).trim():'';
-    if(modelVal==='Palisade'&&namSXVal==='2026') continue;
+    if(laLX3Raw(r)){
+      const brX=r[cBranch]?String(r[cBranch]).trim():'';
+      const khX=cKhDatCoc?String(r[cKhDatCoc]||'').trim():'';
+      const coLxx=cSoKhung&&khungLxx[String(r[cSoKhung]||'').trim().toUpperCase()];
+      for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(brX)){
+        if(coLxx) lx3Khop[g]=(lx3Khop[g]||0)+1;
+        else { lx3No[g]=(lx3No[g]||0)+1; lx3NoList[g].push(toTitleCaseVN(String((cPhienBan&&r[cPhienBan])||''))+' — '+toTitleCaseVN(String((cMau&&r[cMau])||''))+(khX?' (KH: '+khX+')':'')); }
+      }
+      continue;
+    }
     if(cSoKhung&&khungLxx[String(r[cSoKhung]||'').trim().toUpperCase()]){
       const brL=r[cBranch]?String(r[cBranch]).trim():'';
       for(const g in GROUPS_BH) if(GROUPS_BH[g].includes(brL)){ dmsKhop[g]=(dmsKhop[g]||0)+1; }
@@ -2729,6 +2747,7 @@ function prepareBH(raw,fileDate){
     rows.push({
       date:dt,branch:br,branchForTarget,model:r[cModel]?String(r[cModel]).trim():'—',
       namSX:r['NĂM SX']?String(r['NĂM SX']).trim():'',
+      lx3:laLX3Raw(r),
       status:r[cStatus]?String(r[cStatus]).trim():null,
       kho:r[cKho]?String(r[cKho]).trim():null,
       tvbh:r[cTVBH]?String(r[cTVBH]).trim():null,
@@ -2823,6 +2842,11 @@ function prepareBH(raw,fileDate){
     if(!r.baoBan||isNaN(r.baoBan)) continue;
     if(r.baoBan.getFullYear()<2026) continue;
     const m=`${r.baoBan.getFullYear()}-${String(r.baoBan.getMonth()+1).padStart(2,'0')}`;
+    if(r.lx3){ // Palisade LX3: không tính chỉ tiêu → chỉ đếm riêng (bảng 12)
+      if(!lx3BB[m]) lx3BB[m]={NT:0,DL:0,PY:0};
+      const gX=branchGroupOf(r.branchForTarget); if(gX) lx3BB[m][gX]++;
+      continue;
+    }
     if(!bbMap[m]) bbMap[m]={NT:0,DL:0,PY:0};
     if(!bbGiaVonMap[m]) bbGiaVonMap[m]={NT:0,DL:0,PY:0};
     for(const [g,brs] of Object.entries(GROUPS))
@@ -2881,7 +2905,7 @@ function prepareBH(raw,fileDate){
   const sold90=rows.filter(r=>r.date>=cut90).length;
   const avgMonth=sold90/3;
 
-  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth,noiBoByMonth};
+  return {months,mmap,last15,last5,curWK,curW,topModels,kpi,inv,avgMonth,available,cmk,pmk,dayOfMonth,daysInPrevMonth,top10Month,top10YTD,today:fileDate,bbMap,bbGiaVonMap,GROUPS,ydayRows,ydayBranch,yday,insMap,dmsKhop,dmsMonthKey,daKy,daKyChoTien,daKyChuaXe,daKyChuaXeList,dmsKhopQ,qMonthKeys,curQuarter,transferLogByMonth,noiBoByMonth,lx3BB,lx3Khop,lx3No,lx3NoList};
 }
 
 function renderBH(data){
@@ -2900,6 +2924,7 @@ function renderBH(data){
   renderInsurance(data);
   renderTVBH(data);
   renderTarget(data);
+  renderLX3(data);
   document.getElementById('week-badge').textContent='Tuần '+data.curW;
   genCommentary(data);
 }
@@ -3761,6 +3786,45 @@ function renderTarget(data){
   const noteLines=quarterNotes.length?`<div style="margin-top:4px;">`+quarterNotes.join('')+`</div>`:'';
   html+=`</tbody></table><div style="font-size:10.5px;color:var(--muted);margin-top:8px;font-style:italic;">* Thực hiện = đếm xe có Ngày báo bán hệ thống trong năm 2026</div>${noteLines}`;
   wrap.innerHTML=html;
+}
+
+// Bảng 12 "Palisade LX3 – theo dõi riêng" (25/11/2026, anh Khanh yêu cầu): HTV không tính LX3 vào chỉ tiêu
+// bán hàng, đặt hàng (CV 82/2026, CV 125/2026 mục 2.3) nên bảng 9/10/11 đã bỏ; ở đây đếm riêng cùng cách
+// (báo bán theo Ngày báo bán + nhóm đại lý chỉ tiêu, Đã phân xe chưa báo bán, Đã ký chờ xe = DS nợ) — số từ prepareBH.
+function renderLX3(data){
+  const wrap=document.getElementById('lx3-wrap'); if(!wrap) return;
+  const {lx3BB,lx3Khop,lx3No,lx3NoList,today,qMonthKeys,curQuarter}=data;
+  if(!lx3BB){ wrap.innerHTML='<div style="font-size:12px;color:var(--muted)">–</div>'; return; }
+  const y=today.getFullYear(), mk=`${y}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  const bb=(keys,g)=>keys.reduce((s,k)=>s+((lx3BB[k]||{})[g]||0),0);
+  const namKeys=Object.keys(lx3BB).filter(k=>k.startsWith(y+'-'));
+  const cols=[
+    {lb:'Báo bán T'+(today.getMonth()+1),f:g=>bb([mk],g)},
+    {lb:'Báo bán Q'+curQuarter,f:g=>bb(qMonthKeys||[],g)},
+    {lb:'Báo bán '+y,f:g=>bb(namKeys,g)},
+    {lb:'Đã phân xe',f:g=>(lx3Khop||{})[g]||0,tip:'Đã phân xe hoặc khớp xe LXX, chưa báo bán'},
+    {lb:'Đã ký chờ xe',f:g=>(lx3No||{})[g]||0,tip:'Khách đã ký (DS nợ), chưa có xe'},
+  ];
+  const TH='padding:7px 8px;border:1px solid #dce3f0;font-size:11px;color:var(--muted);background:#eef1f7;font-weight:600;white-space:nowrap;';
+  const TD='padding:6px 8px;border:1px solid #dce3f0;text-align:right;font-family:"JetBrains Mono",monospace;font-weight:600;';
+  const fmt=v=>v?v.toLocaleString('vi-VN'):'–';
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  let h='<table style="border-collapse:collapse;font-size:12px;min-width:640px;"><thead><tr>'
+    +`<th style="${TH}text-align:center;width:48px">STT</th><th style="${TH}text-align:left">Nhóm</th>`
+    +cols.map(c=>`<th style="${TH}text-align:right"${c.tip?' title="'+c.tip+'"':''}>${c.lb}</th>`).join('')+'</tr></thead><tbody>';
+  const tong=cols.map(()=>0);
+  TARGET_GROUPS.forEach((g,i)=>{
+    h+=`<tr><td style="${TD}text-align:center;font-weight:400;color:var(--muted)">${i+1}</td><td style="padding:6px 8px;border:1px solid #dce3f0;font-weight:600;color:${g.color};white-space:nowrap">${g.label}</td>`;
+    cols.forEach((c,j)=>{
+      const v=c.f(g.key); tong[j]+=v;
+      const list=(j===4&&lx3NoList&&lx3NoList[g.key])||[];
+      h+=`<td style="${TD}"${list.length?' title="'+esc(list.map((t,k)=>(k+1)+'. '+t).join('\n'))+'"':''}>${fmt(v)}</td>`;
+    });
+    h+='</tr>';
+  });
+  h+=`<tr style="background:#f8fafc"><td style="${TD}"></td><td style="padding:6px 8px;border:1px solid #dce3f0;font-weight:700">Tổng</td>`+tong.map(v=>`<td style="${TD}font-weight:800">${fmt(v)}</td>`).join('')+'</tr>';
+  h+='</tbody></table><div style="font-size:10.5px;color:var(--muted);margin-top:8px;font-style:italic;">* Palisade LX3 = All New Palisade Hybrid (phiên bản có "Hybrid"). HTV không tính vào chỉ tiêu bán hàng, chỉ tiêu đặt hàng (CV 82/2026, CV 125/2026 mục 2.3) nên bảng 9, 10, 11 không gồm LX3. Palisade đời cũ vẫn tính chỉ tiêu. Tồn kho, BO, đặt hàng LX3: tab Hàng hóa › Giả định đặt hàng › Palisade LX3.</div>';
+  wrap.innerHTML=h;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -4808,6 +4872,7 @@ function buildBHFromExport(coc, hh, fileDate){
     rows.push({
       date:d, branch:br,
       model:r.model||'—',
+      lx3:normModelBH(r.model||'')==='Palisade'&&/hybrid/i.test(r.phienBan||''), // LX3 không tính chỉ tiêu (bảng 9/10/11)
       baoBan:r.ngayBan?new Date(r.ngayBan):null,
       hasBH:false, hasHD:false, hdDate:null,
       tvbh:r.tvbh||null, kho:r.kho||null,
@@ -4882,7 +4947,7 @@ function buildBHFromExport(coc, hh, fileDate){
   var GROUPS={NT:['NT','PR'],DL:['ĐL','BL','ĐN'],PY:['PY']};
   var bbMap={};
   rows.forEach(function(r){
-    if(!r.baoBan||isNaN(r.baoBan)) return;
+    if(!r.baoBan||isNaN(r.baoBan)||r.lx3) return;
     if(r.baoBan.getFullYear()<2026) return;
     var m=r.baoBan.getFullYear()+'-'+String(r.baoBan.getMonth()+1).padStart(2,'0');
     if(!bbMap[m]) bbMap[m]={NT:0,DL:0,PY:0};
