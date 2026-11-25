@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 24/11/2026
+Cập nhật: 25/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -10,7 +10,6 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 
 ## Việc tiếp theo
 - [ ] Báo cáo tuần W47 chốt 17h30 thứ 4 25/11 (24/11 nghỉ lễ): đã dán script mới (24/11); còn báo chi nhánh hạn mới, thứ 4 trước 17h30 vẫn ghi Tuần CN = 47 (ô E3 hiện 48); họp giao ban dời theo
-- [x] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2): đã đặt, tháng 11 tổng 30 xe
 - [ ] HTV trả lời CV 04/2026/CV-BHTT: nếu đồng ý giãn giao thì theo dõi 17 xe BO không xuất xưởng trước 31/12; nếu HTV vẫn đòi 19 xe hoặc ghi vi phạm thì báo chị Đào (ghi chú: `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md`)
 - [ ] Công nợ BH Phú Yên (báo cáo tuần): dán `TinThanh_CongNo_Sync.gs` vào script.google.com (điền token, bật Drive API, chạy ▶ `congNoSyncNgay` rồi `setupCongNoTrigger`), kế toán trưởng cập nhật file mỗi thứ 7 (kể cả đổi ngày "ĐẾN" ở ô A1); push `baocaotuan.html` + `congno.json`
 - [ ] Báo cáo tuần: dán hàm `doanhThuDVTuDong()` vào script Báo cáo tuần, chạy 1 lần (xoá + bỏ tô cam ô C15, sửa mục J Hướng dẫn ở NT, PY, file mẫu)
@@ -36,6 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 25/11/2026 | BC Bán hàng: Palisade LX3 (All New Palisade Hybrid) bỏ khỏi bảng 9/10/11 theo CV 82, CV 125 mục 2.3 (T11: báo bán 30 → 22, Q4 75 → 66); thêm bảng 12 theo dõi riêng LX3; chưa push; xem `docs/module-hanghoa.md` |
 | 24/11/2026 | Đặt hàng T11: đã gửi HTV CV 04/2026/CV-BHTT (23/11, ký số) – không đặt 19 xe còn thiếu, giãn giao 17 xe BO đến 31/12 (chị Đào chốt); mẫu đầu văn bản HTV chốt theo CV 04 (skill `van-ban-word` I-C); xem `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md` |
 | 24/11/2026 | Báo cáo tuần: đã dán `TinThanh_BaoCaoTuan_Sync.gs` mới (giờ chốt W47 17h30 thứ 4 25/11). Tab Hàng hóa: ô Tổng giữ nguyên gồm xe Nhà máy cho mượn (anh Khanh chốt) |
 | 23/11/2026 | Báo cáo tuần: W47 đổi giờ chốt sang 17h30 thứ 4 25/11 (24/11 nghỉ lễ, chỉ tuần này) — thêm `CHOT_DOI` trong script, chưa dán; xem `docs/module-baocaotuan.md` mục Lịch tuần |
@@ -56,4 +56,3 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 | 10/11/2026 | Trang Chính sách: thêm CV 59 (thanh toán đơn hàng T7–T12), CV 80 (phân bổ LX3, kèm thư 16/10, 31/10, 10/11), CV 82 (thưởng KD loại LX3), CV 61 & 103 (chi trả thưởng TVBH, PGBank), CV 33 (giữ xe sửa chữa lớn), CV 109 (điều kiện, hồ sơ thưởng DV-PT); PDF chép vào `1. Chinh sach 2026` |
 | 10/11/2026 | Đặt bổ sung T11 theo file chi nhánh (`2. Dat hang/T11 BS/`): NT 9, ĐL 7, PY 2 (Creta N Line Đỏ, Tucson XĐB Đỏ); thay bảng Giả định đặt hàng |
 | 10/11/2026 | Palisade Hybrid: chị Đào giữ nguyên đơn (thừa xe có thể bán ngang ra Bắc, theo anh Sơn HTV), bỏ CV xin giảm; HTV yêu cầu đặt đủ tồn tối thiểu CV157 (49 xe) mới trả Palisade; dự kiến được trả 18–19 xe (70% Cali 7 chỗ, 30% Cali 8 chỗ, anh Nam báo) |
-| 09/11/2026 | Tab Hàng hóa: ô KPI BO và Tổng hiện số LX3 trong ngoặc như ô Xe nợ (BO 105 gồm 61 LX3) |

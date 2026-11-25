@@ -6,6 +6,7 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 | Ngày | Sự kiện |
 |---|---|
+| 09/11/2026 | Tab Hàng hóa: ô KPI BO và Tổng hiện số LX3 trong ngoặc như ô Xe nợ (BO 105 gồm 61 LX3) |
 | 09/11/2026 | Báo cáo tuần NT: link bị hạ về chỉ xem (chi nhánh nhập ẩn danh qua link nên không nhập được T45) → mở lại "ai có link đều sửa được"; PY vẫn mở sửa |
 | 08/11/2026 | Báo cáo tuần: chỉ tiêu doanh thu DV tự lấy chỉ tiêu nội bộ từ Dropbox (`chitieu_dv.json`), thay ô nhập tay; xem `docs/module-baocaotuan.md` mục "Chỉ tiêu" |
 | 05/11/2026 | Lợi nhuận gộp: tác vụ 6h lỗi `KeyError: 11` (`muc_ho_tro_htv.py` chưa có bảng T11), đã sửa, từ 06/11 chạy bình thường; xem `9. KQKD/README.md` quyết định 05/11 |
@@ -117,3 +118,7 @@ Chuyển từ `STATUS.md` bằng `dashboard/luu_tru.py`. Chỉ thêm, không s�
 
 - [x] (Xong, anh Khanh báo 11/11) Tucson Hybrid (CV 139/2026): 3 chi nhánh đặt mỗi nơi 1 xe Trắng; theo dõi HTV xác nhận, cọc 15% trong 5 ngày làm việc, bảo lãnh/LC 85% trong 7 ngày làm việc
 - [x] (Bỏ theo dõi, admin đã báo cáo HTV – 11/11) Palisade LX3 (CV 126): rà khách đặt xe đến 16/10, ký HĐ chính thức trước 31/10/2026 để được tặng bảo hiểm PVI và thưởng TVBH
+
+### Lưu trữ 24/11/2026
+
+- [x] Đặt bổ sung T11 (18 xe: NT 9 · ĐL 7 · PY 2): đã đặt, tháng 11 tổng 30 xe
