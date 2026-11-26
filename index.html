@@ -5193,9 +5193,30 @@ function _chiPhiBotHTML(){
     +'</div>';
 }
 
+// Danh sách Artifact (trang claude.ai). Nguồn: Project A Artifact.md → dashboard/artifact_bh.py → artifact.json
+function _artifactCard(){
+  var box=document.getElementById('admin-artifact'); if(!box) return;
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  fetch('artifact.json?v='+Date.now()).then(function(r){return r.json();}).then(function(d){
+    var th='padding:7px 10px;text-align:left;font-size:12px;border-bottom:1px solid var(--border);color:var(--muted);';
+    var td='padding:7px 10px;font-size:13px;border-bottom:1px solid var(--border);';
+    var rows=(d.artifact||[]).map(function(a,i){
+      return '<tr><td style="'+td+'text-align:center;">'+(i+1)+'</td>'
+        +'<td style="'+td+'"><a href="'+esc(a.link)+'" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600;text-decoration:none;">'+esc(a.ten)+'</a></td>'
+        +'<td style="'+td+'color:var(--muted);">'+esc(a.noi_dung)+'</td>'
+        +'<td style="'+td+'text-align:center;">'+esc(a.cap_nhat)+'</td></tr>';
+    }).join('');
+    box.innerHTML='<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:20px;">'
+      +'<div style="font-size:15px;font-weight:700;margin-bottom:4px;">Trang Artifact (claude.ai)</div>'
+      +'<div style="font-size:11.5px;color:var(--muted);margin-bottom:12px;">Chỉ mở được khi đăng nhập claude.ai bằng tài khoản Claude của anh Khanh. Danh sách cập nhật '+esc(d.cap_nhat)+'.</div>'
+      +'<table style="width:100%;border-collapse:collapse;"><thead><tr><th style="'+th+'width:48px;text-align:center;">STT</th><th style="'+th+'">Tên</th><th style="'+th+'">Nội dung</th><th style="'+th+'width:110px;text-align:center;">Cập nhật</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }).catch(function(){box.innerHTML='';});
+}
+
 function renderAdminTab(){
   var root=document.getElementById('tab-admin');
-  root.innerHTML=_chiPhiBotHTML()+_permMatrixHTML()+'<div id="admin-logs"></div>';
+  root.innerHTML=_chiPhiBotHTML()+'<div id="admin-artifact"></div>'+_permMatrixHTML()+'<div id="admin-logs"></div>';
+  _artifactCard();
   var el=document.getElementById('admin-logs');
   el.innerHTML='<div style="text-align:center;padding:40px;color:var(--muted)"><div class="spinner"></div><div style="margin-top:12px">Đang tải dữ liệu...</div></div>';
   // Dùng GET request để tránh CORS

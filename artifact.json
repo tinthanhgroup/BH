@@ -1,0 +1,59 @@
+{
+ "cap_nhat": "26/11/2026",
+ "artifact": [
+  {
+   "ten": "Tiến độ Project A",
+   "noi_dung": "Tiến độ các project, sinh từ STATUS.md (dashboard/build.py)",
+   "link": "https://claude.ai/artifact/M5fUzLNN94VCsSgvc3ZnVW",
+   "cap_nhat": "26/11/2026"
+  },
+  {
+   "ten": "Hệ thống agent",
+   "noi_dung": "Danh sách bot, tác vụ hẹn giờ, skill, subagent",
+   "link": "https://claude.ai/artifact/MbAxBjNDVe68pjoNppQh3x",
+   "cap_nhat": "17/11/2026"
+  },
+  {
+   "ten": "Sổ quỹ và Amis T8–10",
+   "noi_dung": "Đối chiếu sổ quỹ với đề xuất Amis tháng 8–10/2026",
+   "link": "https://claude.ai/artifact/QdxVsqFAF6VFb7SMyzApge",
+   "cap_nhat": "26/11/2026"
+  },
+  {
+   "ten": "Sổ quỹ Amis Nha Trang",
+   "noi_dung": "Đối chiếu sổ quỹ với đề xuất Amis, Nha Trang",
+   "link": "https://claude.ai/artifact/PcwDgYDgsuj9tshuGBAzAp",
+   "cap_nhat": "26/11/2026"
+  },
+  {
+   "ten": "Nhắc bảo dưỡng",
+   "noi_dung": "Project 26: nhắc khách đến hạn bảo dưỡng",
+   "link": "https://claude.ai/artifact/Svb8GkDCkwhrJg3MLN8Vhf",
+   "cap_nhat": "19/11/2026"
+  },
+  {
+   "ten": "Kỳ nhắn tin bảo dưỡng",
+   "noi_dung": "Project 26: các kỳ nhắn tin nhắc bảo dưỡng",
+   "link": "https://claude.ai/artifact/Y1PdiMtpV2HAN3FjYMhway",
+   "cap_nhat": "16/11/2026"
+  },
+  {
+   "ten": "Quy tắc đặt hàng xe",
+   "noi_dung": "Quy tắc đặt hàng xe HTV (C:\\Data\\BH\\docs\\quy-tac-dat-hang.md)",
+   "link": "https://claude.ai/artifact/VZnNwVdwA357a6pA7v6eN2",
+   "cap_nhat": "04/11/2026"
+  },
+  {
+   "ten": "Hướng dẫn Báo cáo tuần",
+   "noi_dung": "Hướng dẫn GĐCN lập báo cáo tuần",
+   "link": "https://claude.ai/artifact/7NakrrmbZ4x2k6Q25w5zgs",
+   "cap_nhat": "19/10/2026"
+  },
+  {
+   "ten": "Báo cáo tuần GĐCN",
+   "noi_dung": "Mẫu báo cáo tuần Giám đốc chi nhánh",
+   "link": "https://claude.ai/artifact/JZStgJSnT3fA36kNnsrAUi",
+   "cap_nhat": "25/09/2026"
+  }
+ ]
+}
