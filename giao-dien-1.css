@@ -22,7 +22,7 @@ body *{font-family:Inter,system-ui,sans-serif !important;text-transform:none !im
 /* Độ đậm: nội dung 400; chỉ 500 cho tiêu đề, đầu bảng, số lớn thẻ chỉ số, chữ được nhấn */
 body *{font-weight:400 !important;}
 h1,h2,h3,h4,h5,h6,summary,thead th,b,strong,
-.kpi-num,.kpi .num,.chart-num,.filter-btn.active,
+.kpi-num,.kpi .num,.chart-num,
 [style*="font-weight:600"],[style*="font-weight:700"],[style*="font-weight:800"],
 [style*="font-weight: 600"],[style*="font-weight: 700"],[style*="font-weight: 800"],
 [style*="font-weight:bold"]{font-weight:500 !important;}
@@ -62,7 +62,7 @@ table.bang-nhe thead th{background:none !important;color:var(--muted) !important
 .filters input,.filters select,select,input[type=text],input[type=search],input[type=password],input[type=number],input[type=time]{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);}
 input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
 .reset-btn,.btn-clear{height:36px;padding:0 14px;font-size:13px;border-radius:6px;}
-.filter-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:13px;color:var(--text);background:#fff;}
+.filter-btn{height:36px;padding:0 14px;display:inline-flex;align-items:center;border-radius:6px;border:1px solid var(--border);font-size:13px;color:var(--text);background:#fff;}
 .filter-btn:hover{border-color:var(--accent);}
 .filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff;}
 /* Ô tìm kiếm có biểu tượng kính lúp (Quy định nội bộ): giữ lề trái cho biểu tượng */
@@ -138,3 +138,7 @@ table > tbody > tr.budget-total::before{counter-increment:none !important;conten
 /* STT canh trên ở các bảng có ô canh trên (Quy định, Chính sách, KM đối thủ, Nhà cung cấp) */
 .policy-table > tbody > tr::before,table.km > tbody > tr::before,table.data-table > tbody > tr::before{vertical-align:top !important;padding-top:11px !important;}
 table.km > thead > tr::before{vertical-align:bottom !important;}
+
+/* ===== 26/11/2026 — sửa chung sau lần chấm tab 7 CRM ===== */
+/* Ô bảng in đậm sẵn (style font-weight 600–800) về 400: tên, số trong danh sách là nội dung (nguyên tắc 3); dòng tổng/nhóm giữ 500 */
+tbody tr:not(.row-total):not(.dong-tong):not(.section-head):not(.budget-total) > td[style*="font-weight"]{font-weight:400 !important;}
