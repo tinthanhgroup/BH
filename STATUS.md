@@ -1,5 +1,5 @@
 # Status – Hệ thống báo cáo nội bộ Hyundai Tín Thanh (BH)
-Cập nhật: 25/11/2026
+Cập nhật: 28/11/2026
 
 ## Trạng thái: 🟢 Đúng tiến độ
 
@@ -35,6 +35,7 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 ## Nhật ký
 | Ngày | Sự kiện |
 |---|---|
+| 28/11/2026 | Tab 3 "BC Dịch vụ" nhúng Tổng hợp trang tra cứu GTGT thay Power BI; Power BI chuyển tab 10 (chỉ Admin) (docs/giao-dien-va-phan-quyen.md) |
 | 26/11/2026 | CRM (tab 7) sửa theo chấm Giao diện 1 (5,9/10): biểu đồ 3 hết tràn, màu phễu/trạng thái về dải màu nhấn, bỏ chữ đậm và màu xanh ở cột tên/Ký HĐ, rút chú thích; `giao-dien-1.css`: ô bảng in đậm sẵn về 400, nút lọc cao 36px |
 | 25/11/2026 | BC Bán hàng: Palisade LX3 (All New Palisade Hybrid) bỏ khỏi bảng 9/10/11 theo CV 82, CV 125 mục 2.3 (T11: báo bán 30 → 22, Q4 75 → 66); thêm bảng 12 theo dõi riêng LX3 (báo bán T10–T12, năm; Tồn/BO/LXX; danh sách xe đã phân khách); xem `docs/module-hanghoa.md` |
 | 24/11/2026 | Đặt hàng T11: đã gửi HTV CV 04/2026/CV-BHTT (23/11, ký số) – không đặt 19 xe còn thiếu, giãn giao 17 xe BO đến 31/12 (chị Đào chốt); mẫu đầu văn bản HTV chốt theo CV 04 (skill `van-ban-word` I-C); xem `2. Dat hang/T11 BS/Ghi chu dam phan HTV T11.md` |
