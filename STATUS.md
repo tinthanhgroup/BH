@@ -55,4 +55,3 @@ Hệ thống đang chạy, auto-sync bình thường. Đơn T10 đã đặt, HTV
 | 11/11/2026 | Tab Hàng hóa (`index.html`): ô LXX và Đã phân xe cộng xe LXX đã khớp khách DS nợ, ô LXX ghi "(N đã phân xe)"; bảng Thực hiện chỉ tiêu chuyển khách đó sang cột Đã phân xe; mobile giữ nguyên; xem `docs/module-hanghoa.md` mục "LXX đã phân khách" |
 | 11/11/2026 | Tucson Hybrid 3 chi nhánh đã xong; Palisade LX3 (ký HĐ đến 31/10) bỏ theo dõi, admin đã báo cáo HTV |
 | 11/11/2026 | Đã gửi email HTV xin gia hạn đặt đủ tồn tối thiểu CV157 đến 20/11; chờ HTV phản hồi |
-| 10/11/2026 | Trang Chính sách: thêm CV 59 (thanh toán đơn hàng T7–T12), CV 80 (phân bổ LX3, kèm thư 16/10, 31/10, 10/11), CV 82 (thưởng KD loại LX3), CV 61 & 103 (chi trả thưởng TVBH, PGBank), CV 33 (giữ xe sửa chữa lớn), CV 109 (điều kiện, hồ sơ thưởng DV-PT); PDF chép vào `1. Chinh sach 2026` |
