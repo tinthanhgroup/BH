@@ -1362,7 +1362,7 @@ function _doSwitchTab(t){
   if(t==='dv'){
     var dvIframe=document.getElementById('dv-iframe');
     if(!dvIframe.getAttribute('data-loaded')){
-      dvIframe.src='https://tinthanhgroup.github.io/tra-cuu-kh/?nhung=tonghop';
+      dvIframe.src='https://tinthanhgroup.github.io/tra-cuu-kh/?nhung=tonghop&v='+Date.now();   // v: luôn lấy bản mới (GitHub cho trình duyệt giữ bản cũ 10 phút)
       dvIframe.setAttribute('data-loaded','1');
     }
   }
